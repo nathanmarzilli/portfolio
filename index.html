@@ -3,501 +3,879 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nathan Marzilli — Tech, Sport & Entrepreneur</title>
-    <meta name="description" content="Portfolio de Nathan Marzilli — Créateur de projets digitaux, Sportif et Investisseur à Évian-les-Bains.">
+    <!-- Titre optimisé SEO -->
+    <title>Nathan Marzilli | Développeur Web & Entrepreneur - Chambéry / Évian</title>
+    <meta name="description" content="Développeur web freelance et entrepreneur entre Chambéry et Évian. Création de sites vitrines performants, gestion de projets digitaux et optimisation SEO.">
     
-    <!-- Police Google Fonts: Inter + Outfit (pour les titres un peu plus "branding") -->
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Phosphor Icons (Icônes modernes et légères) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
-    <!-- Script EmailJS -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="text/javascript">
-       (function(){
-          emailjs.init("TA_CLE_PUBLIQUE_ICI");
-       })();
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: {
+                            950: '#020617', 
+                            900: '#0B1120', 
+                            800: '#1E293B',
+                        },
+                        accent: {
+                            400: '#2DD4BF', // Teal
+                            500: '#14B8A6',
+                        }
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
     </script>
 
     <style>
-        /* --- VARIABLES & RESET --- */
-        :root {
-            /* Palette "Léman Tech" */
-            --bg-dark: #0f172a;       /* Slate 900 */
-            --bg-card: #1e293b;       /* Slate 800 */
-            --text-main: #f8fafc;     /* Slate 50 */
-            --text-muted: #94a3b8;    /* Slate 400 */
-            
-            /* Accents Viviaux */
-            --accent-primary: #0ea5e9; /* Sky 500 - L'eau / Tech */
-            --accent-secondary: #10b981; /* Emerald 500 - LMNP / Terrain */
-            --accent-sport: #f59e0b;   /* Amber 500 - Énergie / Sport */
-            
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-bg: rgba(30, 41, 59, 0.6);
-            
-            --container-width: 1100px;
-            --header-height: 80px;
-            --radius: 20px;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        /* Base & Noise Texture */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            line-height: 1.6;
+            background-color: #020617;
+            color: #E2E8F0;
             overflow-x: hidden;
-            /* Fond avec légers halos de lumière pour la "vie" */
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 40%),
-                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-            background-size: 100% 100%, 100% 100%, 50px 50px, 50px 50px;
-            background-attachment: fixed;
+            cursor: auto; 
         }
 
-        /* --- TYPOGRAPHY --- */
-        h1, h2, h3 { font-family: 'Outfit', sans-serif; font-weight: 700; line-height: 1.1; }
-        h1 { 
-            font-size: 3.8rem; 
-            background: linear-gradient(135deg, #fff 30%, var(--text-muted) 100%); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            margin-bottom: 1rem;
+        /* Curseur custom uniquement sur desktop */
+        @media (min-width: 768px) {
+            body {
+                cursor: none;
+            }
         }
-        h2 { font-size: 2.5rem; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 1rem; }
-        h2 i { color: var(--accent-primary); }
-        h3 { font-size: 1.3rem; margin-bottom: 0.5rem; color: #fff; }
-        p { color: var(--text-muted); margin-bottom: 1rem; font-size: 1.05rem; }
-        a { text-decoration: none; color: inherit; transition: 0.3s; }
-        
-        .highlight { color: var(--accent-primary); font-weight: 600; }
-        .location-tag { color: var(--accent-primary); display: inline-flex; align-items: center; gap: 6px; font-weight: 500; }
 
-        /* --- LAYOUT UTILS --- */
-        .container { max-width: var(--container-width); margin: 0 auto; padding: 0 24px; }
-        .section { padding: 100px 0; position: relative; }
-        
-        .btn {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 14px 32px;
-            background: var(--accent-primary);
-            color: #fff;
-            font-weight: 600;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
+        .bg-noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(14, 165, 233, 0.5); }
-        .btn i { font-size: 1.2rem; }
-        
-        .btn-outline { background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); box-shadow: none; }
-        .btn-outline:hover { border-color: var(--text-main); background: rgba(255,255,255,0.05); }
 
-        /* --- HEADER & NAV --- */
-        .site-header {
-            position: fixed; top: 0; left: 0; right: 0; height: var(--header-height);
-            z-index: 1000;
-            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--glass-border);
-            display: flex; align-items: center;
+        /* Custom Cursor */
+        .cursor-dot,
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
         }
-        .header-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.4rem; display: flex; align-items: center; gap: 12px; letter-spacing: -0.03em; }
-        .logo-img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-primary); }
-        
-        .nav-links { display: flex; gap: 32px; }
-        .nav-link { font-size: 0.95rem; font-weight: 500; opacity: 0.7; position: relative; transition: 0.3s; }
-        .nav-link:hover, .nav-link.active { opacity: 1; color: var(--accent-primary); }
-        
-        /* --- HERO SECTION --- */
-        .hero { min-height: 100vh; display: flex; align-items: center; padding-top: var(--header-height); position: relative; }
-        .hero-content { max-width: 700px; z-index: 2; }
-        
-        .hero-badges { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
-        .badge {
-            padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
-        }
-        .badge i { font-size: 1rem; }
-        .badge.tech { color: var(--accent-primary); background: rgba(14, 165, 233, 0.1); border-color: rgba(14, 165, 233, 0.2); }
-        .badge.sport { color: var(--accent-sport); background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); }
-        .badge.immo { color: var(--accent-secondary); background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); }
 
-        /* --- SPORTS BAR (Visual Strip) --- */
-        .sports-strip {
-            display: flex; gap: 40px; margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--glass-border);
-            opacity: 0.8;
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #2DD4BF;
         }
-        .sport-item { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-muted); transition: 0.3s; }
-        .sport-item i { font-size: 1.8rem; color: var(--text-main); }
-        .sport-item:hover { color: var(--accent-sport); transform: translateY(-3px); }
-        .sport-item:hover i { color: var(--accent-sport); }
 
-        /* --- CARDS --- */
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
-        
-        .tech-card {
-            background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: var(--radius);
-            padding: 32px; transition: all 0.3s ease; position: relative; overflow: hidden;
-            display: flex; flex-direction: column;
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(45, 212, 191, 0.5);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
         }
-        .tech-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.2); box-shadow: 0 15px 40px -10px rgba(0,0,0,0.5); }
-        .tech-card h3 { display: flex; align-items: center; gap: 10px; }
-        .tech-card-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--accent-primary); margin-bottom: 20px; }
-        
-        .skills-list { margin-top: auto; }
-        .skills-list li { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; color: var(--text-muted); font-size: 0.95rem; }
-        .skills-list li i { color: var(--accent-secondary); }
 
-        /* --- PROJECT BA-DEVIAN (Featured) --- */
-        .featured-project {
-            background: linear-gradient(180deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
-            border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 40px;
-            margin-bottom: 60px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center;
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        .browser-mockup {
-            background: #000; border-radius: 12px; overflow: hidden; border: 1px solid #334155;
-            box-shadow: 0 20px 50px -10px rgba(0,0,0,0.6); position: relative; aspect-ratio: 16/10;
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
         }
-        .browser-bar { background: #334155; padding: 8px 12px; display: flex; gap: 6px; align-items: center; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; background: #64748b; }
-        .dot.red { background: #ef4444; } .dot.yellow { background: #f59e0b; } .dot.green { background: #10b981; }
-        .browser-content { width: 100%; height: 100%; background: #fff; position: relative; }
-        /* Iframe pour preview live (ou image si iframe bloquée) */
-        .browser-content iframe { width: 100%; height: 100%; border: none; }
-        .browser-overlay {
-            position: absolute; top:0; left:0; width:100%; height:100%; 
-            background: rgba(0,0,0,0.0); pointer-events: none; /* Permet de scroller l'iframe */
+
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+
+        /* Cards */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            background: rgba(30, 41, 59, 0.3);
         }
         
-        /* --- CAROUSEL PROJECTS --- */
-        .carousel-container { position: relative; }
-        .carousel-track {
-            display: flex; gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 20px;
-            scrollbar-width: none;
+        /* Selected State for Calendar/Form */
+        .selected-option {
+            background-color: #2DD4BF !important; /* accent-400 */
+            color: #020617 !important; /* dark-950 */
+            border-color: #2DD4BF !important;
+            font-weight: bold;
         }
-        .carousel-track::-webkit-scrollbar { display: none; }
-        .project-card {
-            flex: 0 0 320px; scroll-snap-align: start; background: var(--bg-card);
-            border: 1px solid var(--glass-border); border-radius: var(--radius); overflow: hidden; transition: 0.3s;
-        }
-        .project-img { height: 180px; background: #0f172a; border-bottom: 1px solid var(--glass-border); position: relative; display: flex; justify-content: center; align-items: center; color: #475569; }
-        .project-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; opacity: 0.9; }
-        .project-card:hover .project-img img { transform: scale(1.05); opacity: 1; }
-        .project-content { padding: 24px; }
 
-        /* --- CONTACT --- */
-        .contact-wrapper { display: grid; grid-template-columns: 1fr 1.5fr; gap: 48px; }
-        .contact-form { background: var(--glass-bg); padding: 40px; border-radius: var(--radius); border: 1px solid var(--glass-border); }
-        .form-group input, .form-group textarea {
-            width: 100%; padding: 14px 18px; background: rgba(15, 23, 42, 0.8);
-            border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; margin-bottom: 20px;
-            font-family: 'Inter', sans-serif;
+        /* Bento Grid Specifics */
+        .bento-card {
+            overflow: hidden;
+            position: relative;
         }
-        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-primary); }
 
-        @media (max-width: 900px) {
-            .featured-project { grid-template-columns: 1fr; }
-            .contact-wrapper { grid-template-columns: 1fr; }
-            h1 { font-size: 2.8rem; }
-            .sports-strip { gap: 20px; flex-wrap: wrap; justify-content: center; }
+        .bento-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.06), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .bento-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Typography Gradients */
+        .text-gradient {
+            background: linear-gradient(135deg, #F8FAFC 0%, #94A3B8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .text-gradient-accent {
+            background: linear-gradient(135deg, #2DD4BF 0%, #3B82F6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Navbar Blur */
+        .nav-glass {
+            background: rgba(2, 6, 23, 0.6);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        
+        /* Calendar Styling */
+        .calendar-day.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
         }
     </style>
 </head>
-<body>
+<body class="selection:bg-accent-400/30 selection:text-white">
 
-    <!-- Header -->
-    <header class="site-header">
-        <div class="container header-inner">
-            <a href="#" class="logo">
-                <img src="images/profile.jpg" alt="NM" class="logo-img" onerror="this.src='https://ui-avatars.com/api/?name=Nathan+Marzilli&background=0ea5e9&color=fff'">
-                <span>Nathan M.</span>
+    <!-- Noise Overlay -->
+    <div class="bg-noise"></div>
+
+    <!-- Custom Cursor Elements -->
+    <div class="cursor-dot hidden md:block"></div>
+    <div class="cursor-outline hidden md:block"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-40 nav-glass transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <a href="#" class="font-display font-bold text-lg tracking-wide text-white flex items-center gap-3 group z-50">
+                <!-- Profile Image -->
+                <div class="relative w-10 h-10 rounded-full overflow-hidden border border-white/10 group-hover:border-accent-400 transition-colors">
+                    <!-- Placeholder si l'image n'existe pas, mettre images/profile.jpg -->
+                    <img src="images/profile.jpg" alt="Nathan" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=Nathan+Marzilli&background=0B1120&color=2DD4BF'">
+                </div>
+                <div>
+                    Nathan Marzilli
+                    <span class="block text-[10px] text-slate-500 font-normal uppercase tracking-wider">Entrepreneur & Dev</span>
+                </div>
             </a>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="#home" class="nav-link active">Accueil</a></li>
-                    <li><a href="#about" class="nav-link">Profil</a></li>
-                    <li><a href="#projects" class="nav-link">Projets</a></li>
-                    <li><a href="#contact" class="nav-link">Contact</a></li>
-                </ul>
-            </nav>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-400">
+                <a href="#about" class="hover:text-white transition-colors">Qui suis-je ?</a>
+                <a href="#projects" class="hover:text-white transition-colors">Réalisations</a>
+                <a href="#services" class="hover:text-white transition-colors">Offres</a>
+                <a href="#contact" class="px-5 py-2.5 rounded-full bg-white text-dark-950 hover:bg-accent-400 font-bold transition-all text-xs uppercase tracking-wider">
+                    Réserver un appel
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-white z-50">
+                <i class="ph ph-list text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="fixed inset-0 bg-dark-950/98 backdrop-blur-xl transform translate-x-full transition-transform duration-500 md:hidden flex flex-col justify-center items-center space-y-8 z-40">
+            <a href="#about" class="text-3xl font-display font-medium mobile-link">Qui suis-je ?</a>
+            <a href="#projects" class="text-3xl font-display font-medium mobile-link">Réalisations</a>
+            <a href="#services" class="text-3xl font-display font-medium mobile-link">Offres</a>
+            <a href="#contact" class="text-xl text-dark-950 bg-accent-400 px-8 py-3 rounded-full font-bold mobile-link">Réserver un appel</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="min-h-screen flex items-center justify-center relative pt-20 overflow-hidden">
+        <!-- Ambient Blobs -->
+        <div class="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob"></div>
+        <div class="absolute top-20 right-10 w-72 h-72 bg-accent-400/10 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+
+        <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+            <div class="reveal inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-slate-300 mb-8 backdrop-blur-sm">
+                <span class="w-1.5 h-1.5 rounded-full bg-accent-400 animate-pulse"></span>
+                Disponibilité immédiate pour janvier
+            </div>
+            
+            <h1 class="reveal delay-100 font-display text-5xl md:text-7xl font-bold leading-[1] mb-8 tracking-tight">
+                Votre site web mérite<br />
+                <span class="text-gradient-accent">une seconde jeunesse.</span>
+            </h1>
+            
+            <p class="reveal delay-200 text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed font-light">
+                Je transforme les sites vieillissants en outils modernes et performants.
+                <br class="hidden md:block">
+                Pas d'usine à gaz. Pas d'abonnement mensuel inutile. Juste de l'efficacité.
+            </p>
+            
+            <div class="reveal delay-300 flex flex-col sm:flex-row gap-5 justify-center items-center">
+                <a href="#contact" class="px-8 py-4 bg-white text-dark-950 font-bold rounded-full hover:scale-105 transition-transform flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                    <i class="ph-bold ph-calendar-check text-lg"></i>
+                    Prendre rendez-vous
+                </a>
+                <a href="#projects" class="px-8 py-4 rounded-full border border-white/10 text-slate-300 hover:bg-white/5 hover:text-white transition-all flex items-center gap-2">
+                    Voir les réalisations
+                </a>
+            </div>
         </div>
     </header>
 
-    <!-- Hero -->
-    <section id="home" class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-badges">
-                    <span class="badge tech"><i class="ph ph-code"></i> Tech Creator</span>
-                    <span class="badge sport"><i class="ph ph-medal"></i> Sportif & Compétiteur</span>
-                    <span class="badge immo"><i class="ph ph-buildings"></i> Investisseur</span>
-                </div>
-                
-                <h1>Tech, Sport &<br>Esprit d'entreprise.</h1>
-                
-                <p style="font-size: 1.15rem; margin: 24px 0 32px 0; max-width: 600px;">
-                    Basé à <span class="location-tag"><i class="ph ph-map-pin"></i> Évian-les-Bains</span>.
-                    Je conçois des projets digitaux avec la rigueur d'un sportif et la vision d'un investisseur.
-                </p>
-                
-                <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-                    <a href="#projects" class="btn">Voir mes projets <i class="ph ph-arrow-right"></i></a>
-                    <a href="#contact" class="btn btn-outline">Me contacter</a>
-                </div>
-
-                <!-- Sports Strip Visual -->
-                <div class="sports-strip">
-                    <div class="sport-item" title="Badminton">
-                        <i class="ph ph-tennis-ball"></i> <!-- Note: Phosphor n'a pas shuttlecock simple, tennis-ball souvent utilisé ou personnalisé -->
-                        <span>Badminton</span>
-                    </div>
-                    <div class="sport-item" title="Football">
-                        <i class="ph ph-soccer-ball"></i>
-                        <span>Football</span>
-                    </div>
-                    <div class="sport-item" title="Tennis">
-                        <i class="ph ph-tennis-ball"></i>
-                        <span>Tennis</span>
-                    </div>
-                    <div class="sport-item" title="Natation">
-                        <i class="ph ph-swimming-pool"></i>
-                        <span>Natation</span>
-                    </div>
-                    <div class="sport-item" title="Judo">
-                        <i class="ph ph-person-simple-throw"></i> <!-- Icone proche art martial -->
-                        <span>Judo</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About & Skills -->
-    <section id="about" class="section">
-        <div class="container">
-            <h2><i class="ph ph-user-circle"></i> À propos & Compétences</h2>
-            
-            <div class="card-grid">
-                <!-- Tech -->
-                <article class="tech-card">
-                    <div class="tech-card-icon"><i class="ph ph-laptop"></i></div>
-                    <h3>Développement Web</h3>
-                    <p>Autodidacte passionné, je transforme des idées en sites fonctionnels et esthétiques.</p>
-                    <ul class="skills-list">
-                        <li><i class="ph ph-check-circle"></i> HTML5, CSS3, JS Modern</li>
-                        <li><i class="ph ph-check-circle"></i> Gestion Hardware & Réseaux</li>
-                        <li><i class="ph ph-check-circle"></i> Création de A à Z</li>
-                    </ul>
-                </article>
-
-                <!-- Sport / Leadership -->
-                <article class="tech-card" style="border-top: 2px solid var(--accent-sport);">
-                    <div class="tech-card-icon" style="color: var(--accent-sport);"><i class="ph ph-trophy"></i></div>
-                    <h3>Leadership & Sport</h3>
-                    <p>Capitaine d'équipe. Le sport m'a appris la résilience, la stratégie et la gestion de groupe.</p>
-                    <ul class="skills-list">
-                        <li><i class="ph ph-users"></i> Gestion d'équipe (Capitanat)</li>
-                        <li><i class="ph ph-lightning"></i> Esprit de compétition</li>
-                        <li><i class="ph ph-heart"></i> Dépassement de soi</li>
-                    </ul>
-                </article>
-
-                <!-- Immo / Gestion -->
-                <article class="tech-card" style="border-top: 2px solid var(--accent-secondary);">
-                    <div class="tech-card-icon" style="color: var(--accent-secondary);"><i class="ph ph-house-line"></i></div>
-                    <h3>Gestion & LMNP</h3>
-                    <p>Gestionnaire d'un parc de 5 appartements. Rigueur administrative et financière garantie.</p>
-                    <ul class="skills-list">
-                        <li><i class="ph ph-chart-line-up"></i> Suivi financier & Fiscalité</li>
-                        <li><i class="ph ph-handshake"></i> Relationnel clients</li>
-                        <li><i class="ph ph-calendar-check"></i> Organisation stricte</li>
-                    </ul>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects -->
-    <section id="projects" class="section" style="background: rgba(0,0,0,0.2);">
-        <div class="container">
-            <h2><i class="ph ph-rocket-launch"></i> Réalisations</h2>
-
-            <!-- FEATURED PROJECT: BADEVIAN -->
-            <div class="featured-project">
-                <div class="project-info">
-                    <span class="badge sport" style="margin-bottom: 12px;">Projet Star 🏸</span>
-                    <h3 style="font-size: 2rem; margin-bottom: 16px;">Bad Evian Club 74</h3>
-                    <p style="font-size: 1.1rem; color: #cbd5e1; margin-bottom: 24px;">
-                        Le site web complet du club de Badminton d'Évian. Une plateforme vivante pour les membres, intégrant actualités, infos pratiques et identité visuelle forte.
-                    </p>
-                    <ul style="margin-bottom: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <li style="display: flex; gap: 8px;"><i class="ph ph-check" style="color:var(--accent-secondary)"></i> Design Responsive</li>
-                        <li style="display: flex; gap: 8px;"><i class="ph ph-check" style="color:var(--accent-secondary)"></i> Architecture HTML/CSS</li>
-                        <li style="display: flex; gap: 8px;"><i class="ph ph-check" style="color:var(--accent-secondary)"></i> Déployé sur GitHub</li>
-                    </ul>
-                    <a href="https://nathanmarzilli.github.io/badevian/" target="_blank" class="btn">
-                        Visiter le site <i class="ph ph-arrow-square-out"></i>
-                    </a>
-                </div>
-                
-                <!-- BROWSER MOCKUP FOR LIVE FEEL -->
-                <div class="browser-mockup">
-                    <div class="browser-bar">
-                        <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
-                        <div style="background:rgba(0,0,0,0.2); flex:1; height:6px; border-radius:4px; margin-left:10px;"></div>
-                    </div>
-                    <div class="browser-content">
-                        <!-- Utilisation d'une iframe pour simuler le "Live Preview" -->
-                        <iframe src="https://nathanmarzilli.github.io/badevian/" title="Aperçu BaDevian" loading="lazy"></iframe>
-                        <!-- Fallback visuel si l'iframe ne charge pas -->
-                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background: #fff; z-index:-1; display:flex; align-items:center; justify-content:center; color:#333; font-weight:bold;">
-                            <img src="https://nathanmarzilli.github.io/badevian/images/logo.png" alt="BaDevian Preview" onerror="this.style.display='none'">
-                            Chargement de l'aperçu...
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- OTHER PROJECTS CAROUSEL -->
-            <h3 style="margin-bottom: 20px; color: var(--text-muted); font-size: 1.2rem;">Autres projets exploratoires</h3>
-            <div class="carousel-container">
-                <div class="carousel-track" id="carousel">
+    <!-- Section Qui suis-je (SEO Optimized) -->
+    <section id="about" class="py-24 relative bg-dark-900/30 border-y border-white/5">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <span class="text-accent-400 font-display font-bold tracking-widest uppercase text-sm mb-4 block">À propos</span>
+                    <h2 class="font-display text-4xl font-bold text-white mb-6">
+                        Pragmatique, Technique & <br>
+                        <span class="text-slate-500">100% Humain.</span>
+                    </h2>
                     
-                    <div class="project-card">
-                        <div class="project-img">
-                            <i class="ph ph-music-notes" style="font-size: 3rem;"></i>
-                        </div>
-                        <div class="project-content">
-                            <h3>Blog Audio</h3>
-                            <p>Interface musicale avec lecteur intégré.</p>
-                        </div>
+                    <div class="prose prose-invert prose-lg text-slate-400 mb-8">
+                        <p class="mb-4">
+                            Bonjour, je suis <strong>Nathan Marzilli</strong>. Actuellement actif professionnellement en Suisse, j'ai pour ambition de développer mon activité indépendante depuis la France, en ciblant la région entre <strong>Chambéry et Évian-les-Bains</strong>.
+                        </p>
+                        <p>
+                            Mon approche du web est simple : je construis des sites comme je gère mes projets immobiliers ou sportifs. Avec rigueur, vision long terme et efficacité.
+                        </p>
                     </div>
 
-                    <div class="project-card">
-                        <div class="project-img">
-                            <i class="ph ph-file-text" style="font-size: 3rem;"></i>
-                        </div>
-                        <div class="project-content">
-                            <h3>CV Digital</h3>
-                            <p>CV interactif optimisé pour le recrutement.</p>
-                        </div>
-                    </div>
-
-                    <div class="project-card">
-                        <div class="project-img">
-                            <i class="ph ph-users-three" style="font-size: 3rem;"></i>
-                        </div>
-                        <div class="project-content">
-                            <h3>Asso Manager</h3>
-                            <p>Dashboard de gestion de bénévoles.</p>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact" class="section">
-        <div class="container">
-            <h2><i class="ph ph-paper-plane-tilt"></i> Me contacter</h2>
-            
-            <div class="contact-wrapper">
-                <div class="contact-info-box">
-                    <p class="highlight" style="font-size: 1.3rem; margin-bottom: 2rem; color: #fff;">
-                        Un projet web ? Une opportunité sur Évian ou Lausanne ?
-                    </p>
-                    <p>En tant qu'entrepreneur local, je privilégie les relations humaines directes et la confiance.</p>
-                    
-                    <div style="margin-top: 40px; display: flex; flex-direction: column; gap: 20px;">
-                        <div style="display: flex; gap: 16px; align-items: center;">
-                            <div style="width: 48px; height: 48px; background: rgba(14, 165, 233, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent-primary); font-size: 1.5rem;">
-                                <i class="ph ph-envelope-simple"></i>
-                            </div>
+                    <!-- Personal Stats / Badges -->
+                    <div class="flex flex-wrap gap-4">
+                        <div class="flex items-center gap-3 px-4 py-2 rounded-xl bg-white/5 border border-white/5">
+                            <i class="ph-duotone ph-house-line text-2xl text-orange-400"></i>
                             <div>
-                                <span style="display: block; font-size: 0.85rem; color: var(--text-muted);">Email</span>
-                                <span style="font-weight: 600; color: #fff;">contact@nathan-marzilli.com</span>
+                                <div class="text-white font-bold text-sm">Investisseur</div>
+                                <div class="text-xs text-slate-500">Gestion de 5 apparts (LMNP)</div>
                             </div>
                         </div>
+                        <div class="flex items-center gap-3 px-4 py-2 rounded-xl bg-white/5 border border-white/5">
+                            <i class="ph-duotone ph-users-three text-2xl text-blue-400"></i>
+                            <div>
+                                <div class="text-white font-bold text-sm">Famille</div>
+                                <div class="text-xs text-slate-500">Papa de 2 enfants</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 px-4 py-2 rounded-xl bg-white/5 border border-white/5">
+                            <i class="ph-duotone ph-camera text-2xl text-purple-400"></i>
+                            <div>
+                                <div class="text-white font-bold text-sm">Passion</div>
+                                <div class="text-xs text-slate-500">Photographie Canon</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reveal delay-100 relative">
+                    <!-- Decoratve elements behind -->
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-accent-400/20 rounded-full blur-3xl"></div>
+                    
+                    <div class="glass-card p-6 rounded-3xl border border-white/10 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-20">
+                            <i class="ph-duotone ph-tennis-ball text-8xl text-accent-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Leadership Sportif</h3>
+                        <p class="text-slate-400 text-sm mb-6">Capitaine d'équipe de Badminton. J'applique la même stratégie sur le terrain que dans mes projets : organisation, motivation et résultat.</p>
                         
-                        <div style="display: flex; gap: 16px; align-items: center;">
-                            <div style="width: 48px; height: 48px; background: rgba(16, 185, 129, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent-secondary); font-size: 1.5rem;">
-                                <i class="ph ph-map-pin"></i>
+                        <div class="h-px w-full bg-white/10 my-4"></div>
+                        
+                        <h3 class="text-xl font-bold text-white mb-2">Ce site est ma vitrine</h3>
+                        <p class="text-slate-400 text-sm">
+                            Construit sans constructeur lourd (pas de Wordpress/Wix), uniquement avec du code pur (HTML/JS/Tailwind) pour une vitesse maximale et un score Google parfait. C'est ce niveau de qualité que je propose.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal">
+                <div>
+                    <h2 class="font-display text-4xl font-bold text-white mb-2">Prototypes & Réalisations</h2>
+                    <p class="text-slate-400">Cliquez sur les projets pour voir le résultat en ligne.</p>
+                </div>
+            </div>
+
+            <!-- Grille générée par JS -->
+            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- INJECTION JS ICI -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Services / Pricing Section -->
+    <section id="services" class="py-24 border-t border-white/5 bg-dark-900/30">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-display text-4xl font-bold text-white mb-4">Des offres claires</h2>
+                <p class="text-slate-400 max-w-xl mx-auto">
+                    Pas de coûts cachés. Vous payez pour la création, et le site vous appartient à 100%.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Pack 1 -->
+                <div class="glass-card p-8 rounded-3xl relative group reveal hover:border-accent-400/30 flex flex-col">
+                    <h3 class="text-2xl font-display font-bold text-white mb-2">L'Essentiel</h3>
+                    <div class="text-3xl font-bold text-accent-400 mb-6">800€ <span class="text-sm text-slate-500 font-normal">TTC</span></div>
+                    <p class="text-slate-400 text-sm mb-8">Idéal pour les artisans ou commerçants qui veulent une présence propre et rapide.</p>
+                    
+                    <ul class="space-y-4 mb-8 text-slate-300 text-sm flex-grow">
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-check-circle text-accent-400"></i> Site One-Page (tout sur 1 page)
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-check-circle text-accent-400"></i> Design Moderne & Mobile First
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-check-circle text-accent-400"></i> Hébergement Gratuit
+                        </li>
+                    </ul>
+                    <a href="#contact" onclick="preselectOffer('Pack Essentiel')" class="block w-full py-3 rounded-xl border border-white/10 text-center text-white font-medium group-hover:bg-white group-hover:text-dark-950 transition-all">Choisir ce pack</a>
+                </div>
+
+                <!-- Pack 2 (Recommended) -->
+                <div class="glass-card p-8 rounded-3xl relative group border-accent-400/50 bg-accent-400/5 reveal delay-100 flex flex-col">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent-400 text-dark-950 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                        Recommandé
+                    </div>
+                    <h3 class="text-2xl font-display font-bold text-white mb-2">Vitrine Pro</h3>
+                    <div class="text-3xl font-bold text-accent-400 mb-6">1 200€ <span class="text-sm text-slate-500 font-normal">TTC</span></div>
+                    <p class="text-slate-400 text-sm mb-8">Pour présenter vos services en détail avec un design qui inspire confiance.</p>
+                    
+                    <ul class="space-y-4 mb-8 text-slate-300 text-sm flex-grow">
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-check-circle text-accent-400"></i> Jusqu'à 5 pages
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-check-circle text-accent-400"></i> Formulaire de contact sécurisé
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-check-circle text-accent-400"></i> Galerie Photos / Réalisations
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-check-circle text-accent-400"></i> Optimisation SEO de base
+                        </li>
+                    </ul>
+                    <a href="#contact" onclick="preselectOffer('Pack Vitrine Pro')" class="block w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold hover:shadow-[0_0_20px_rgba(45,212,191,0.3)] transition-all">Choisir ce pack</a>
+                </div>
+
+                <!-- Pack 3 -->
+                <div class="glass-card p-8 rounded-3xl relative group reveal delay-200 hover:border-purple-400/30 flex flex-col">
+                    <h3 class="text-2xl font-display font-bold text-white mb-2">Premium</h3>
+                    <div class="text-3xl font-bold text-purple-400 mb-6">1 500€ <span class="text-sm text-slate-500 font-normal">TTC</span></div>
+                    <p class="text-slate-400 text-sm mb-8">Un site qui marque les esprits. Animations fluides et fonctionnalités sur mesure.</p>
+                    
+                    <ul class="space-y-4 mb-8 text-slate-300 text-sm flex-grow">
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-check-circle text-purple-400"></i> Design Sur-Mesure & Animé
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-check-circle text-purple-400"></i> Frise chronologique / Blog
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-check-circle text-purple-400"></i> Intégration Avis Google
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-check-circle text-purple-400"></i> Formation prise en main (1h)
+                        </li>
+                    </ul>
+                    <a href="#contact" onclick="preselectOffer('Pack Premium')" class="block w-full py-3 rounded-xl border border-white/10 text-center text-white font-medium group-hover:bg-purple-400 group-hover:text-white group-hover:border-purple-400 transition-all">Choisir ce pack</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking / Contact Section -->
+    <footer id="contact" class="py-20 border-t border-white/5 bg-dark-900 relative">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16">
+                <!-- Left: Info & Manual Contact -->
+                <div>
+                    <h3 class="font-display text-4xl font-bold text-white mb-4">On discute de votre projet ?</h3>
+                    <p class="text-slate-400 mb-8">
+                        Réservez un créneau de 30 minutes gratuitement. Nous ferons le point sur vos besoins et je vous orienterai vers la meilleure solution.
+                    </p>
+                    
+                    <div class="space-y-6 mb-12">
+                        <div class="flex items-center gap-4 text-slate-300">
+                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                                <i class="ph-fill ph-envelope-simple text-accent-400"></i>
                             </div>
-                            <div>
-                                <span style="display: block; font-size: 0.85rem; color: var(--text-muted);">Localisation</span>
-                                <span style="font-weight: 600; color: #fff;">Évian-les-Bains, France</span>
-                            </div>
+                            <a href="mailto:nathan.marzilli@gmail.com" class="hover:text-white transition-colors">nathan.marzilli@gmail.com</a>
                         </div>
+                        <div class="flex items-center gap-4 text-slate-300">
+                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                                <i class="ph-fill ph-map-pin text-accent-400"></i>
+                            </div>
+                            <span>Évian-les-bains</span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <a href="#" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:bg-white hover:text-dark-950 transition-all">
+                            <i class="ph-fill ph-linkedin-logo text-xl">https://www.linkedin.com/in/nathanmarzilli/?originalSubdomain=fr</i>
+                        </a>
+                        <a href="#" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:bg-white hover:text-dark-950 transition-all">
+                            <i class="ph-fill ph-github-logo text-xl"></i>
+                        </a>
                     </div>
                 </div>
 
-                <div class="contact-form">
-                    <form id="contact-form">
-                        <div class="form-group">
-                            <input type="text" name="nom" required placeholder="Votre nom">
+                <!-- Right: Interactive Form -->
+                <div class="glass-card p-6 md:p-8 rounded-3xl border border-white/10">
+                    <form id="booking-form" class="space-y-6">
+                        <!-- Offer Selection -->
+                        <div>
+                            <label class="block text-sm font-bold text-white mb-3">Quelle offre vous intéresse ?</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" class="offer-btn px-2 py-2 rounded-lg border border-white/10 text-xs md:text-sm text-slate-400 hover:bg-white/5 transition-all" data-value="Pack Essentiel">Essentiel</button>
+                                <button type="button" class="offer-btn px-2 py-2 rounded-lg border border-white/10 text-xs md:text-sm text-slate-400 hover:bg-white/5 transition-all" data-value="Pack Vitrine Pro">Vitrine Pro</button>
+                                <button type="button" class="offer-btn px-2 py-2 rounded-lg border border-white/10 text-xs md:text-sm text-slate-400 hover:bg-white/5 transition-all" data-value="Pack Premium">Premium</button>
+                            </div>
+                            <input type="hidden" id="selected-offer" name="offer">
                         </div>
-                        <div class="form-group">
-                            <input type="email" name="email" required placeholder="Votre email professionnel">
+
+                        <!-- Date & Slot Selection -->
+                        <div>
+                            <label class="block text-sm font-bold text-white mb-3">Choisissez un créneau (30 min)</label>
+                            <p class="text-xs text-slate-500 mb-2">Dispo : Lun, Mar, Jeu, Ven (8h45-10h45 & 13h45-15h45)</p>
+                            
+                            <div class="flex gap-2 mb-4 overflow-x-auto pb-2" id="date-container">
+                                <!-- Dates generated by JS -->
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-3" id="slots-container">
+                                <div class="text-xs text-slate-500 italic col-span-2">Sélectionnez une date d'abord</div>
+                            </div>
+                            <input type="hidden" id="selected-date" name="date">
+                            <input type="hidden" id="selected-time" name="time">
                         </div>
-                        <div class="form-group">
-                            <textarea name="message" rows="4" required placeholder="Bonjour Nathan, parlons de..."></textarea>
-                        </div>
-                        <button type="submit" id="submit-btn" class="btn" style="width: 100%; justify-content: center; border:none; cursor:pointer;">
-                            Envoyer le message <i class="ph ph-paper-plane-right"></i>
+
+                        <!-- User Info -->
+                        <!-- Formulaire organisé en grille responsive -->
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
+							
+							<!-- Champ Nom -->
+							<div>
+								<label class="block text-xs text-slate-400 mb-1" for="user-name">Votre Nom</label>
+								<input type="text" id="user-name" placeholder="ex: Dupont" required class="w-full bg-dark-950/50 border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent-400 focus:outline-none transition-colors">
+							</div>
+
+							<!-- Champ Prénom -->
+							<div>
+								<label class="block text-xs text-slate-400 mb-1" for="user-firstname">Prénom</label>
+								<input type="text" id="user-firstname" placeholder="ex: Jean" class="w-full bg-dark-950/50 border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent-400 focus:outline-none transition-colors">
+							</div>
+
+							<!-- Champ Adresse email -->
+							<div>
+								<label class="block text-xs text-slate-400 mb-1" for="user-email">Adresse email</label>
+								<input type="email" id="user-email" placeholder="ex: jean.dupont@email.com" class="w-full bg-dark-950/50 border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent-400 focus:outline-none transition-colors">
+							</div>
+
+							<!-- Champ Numéro de téléphone -->
+							<div>
+								<label class="block text-xs text-slate-400 mb-1" for="user-phone">Numéro de téléphone</label>
+								<input type="tel" id="user-phone" placeholder="ex: 06 12 34 56 78" class="w-full bg-dark-950/50 border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent-400 focus:outline-none transition-colors">
+							</div>
+
+							<!-- Champ Deadline souhaitée (Combo Box) -->
+							<div class="md:col-span-2">
+								<label class="block text-xs text-slate-400 mb-1" for="user-deadline">Deadline souhaitée</label>
+								<select id="user-deadline" class="w-full bg-dark-950/50 border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent-400 focus:outline-none transition-colors appearance-none cursor-pointer">
+									<option value="" disabled selected>Sélectionnez une échéance</option>
+									<option value="asap">Dès que possible (ASAP)</option>
+									<option value="1-week">Sous 1 semaine</option>
+									<option value="2-weeks">Sous 2 semaines</option>
+									<option value="1-month">D'ici la fin du mois</option>
+									<option value="flexible">Flexible / À définir</option>
+								</select>
+							</div>
+
+						</div>
+
+                        <button type="submit" class="w-full py-3 rounded-xl bg-white text-dark-950 font-bold hover:bg-accent-400 transition-all flex items-center justify-center gap-2">
+                            Confirmer le rendez-vous
+                            <i class="ph-bold ph-paper-plane-right"></i>
                         </button>
-                        <p id="form-status" style="margin-top: 15px; text-align: center; font-size: 0.9rem;"></p>
                     </form>
                 </div>
             </div>
+            
+            <div class="text-center mt-16 text-slate-600 text-sm font-medium">
+                © <span id="year"></span> Nathan Marzilli. Tous droits réservés.
+            </div>
         </div>
-    </section>
-
-    <footer class="site-footer container" style="text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--glass-border);">
-        <p>© <span id="year"></span> Nathan Marzilli. Fait avec passion à Évian 🏔️</p>
     </footer>
 
+    <!-- Scripts -->
     <script>
+        // --- CONFIGURATION PROJETS ---
+        const projectsData = [
+            {
+                title: "Badevian",
+                subtitle: "Club de Badminton",
+                description: "Digitalisation complète de la gestion d'un club. Site vitrine performant avec intégration GitHub Pages. Un exemple concret de transformation digitale associative.",
+                tags: ["Sport", "Association", "Responsive"],
+                link: "https://nathanmarzilli.github.io/badevian/",
+                highlight: true, // Mise en avant
+                color: "from-emerald-900 to-slate-900",
+                icon: "ph-tennis-ball"
+            },
+            {
+                title: "Roch Fermetures",
+                subtitle: "Prototype Menuiserie",
+                description: "Refonte moderne pour une entreprise de menuiserie. Mise en avant des produits, devis simplifié et design industriel rassurant.",
+                tags: ["Prototype", "Bâtiment", "UX Design"],
+                link: "https://nathanmarzilli.github.io/roch-fermetures-prototype/",
+                highlight: true,
+                color: "from-orange-900 to-slate-900",
+                icon: "ph-house-line"
+            },
+            {
+                title: "Dashboard Analytics",
+                subtitle: "Interface B2B",
+                description: "Exemple d'interface de gestion pour PME. Visualisation claire des données pour prendre les bonnes décisions.",
+                tags: ["SaaS", "Dashboard", "React"],
+                link: "#",
+                highlight: false,
+                color: "from-blue-900 to-slate-900",
+                icon: "ph-chart-bar"
+            }
+        ];
+
+        // --- RENDER PROJECTS ---
+        function renderProjects() {
+            const grid = document.getElementById('projects-grid');
+            grid.innerHTML = projectsData.map((project, index) => {
+                const colSpan = project.highlight ? 'md:col-span-2' : '';
+                const delay = index * 100;
+                
+                return `
+                <article class="bento-card glass-card rounded-3xl p-6 md:p-8 flex flex-col gap-6 group ${colSpan} reveal h-full" style="transition-delay: ${delay}ms">
+                    <!-- Preview Container -->
+                    <a href="${project.link}" target="_blank" class="block relative w-full h-[250px] rounded-xl overflow-hidden bg-gradient-to-br ${project.color} border border-white/10 shadow-2xl group-hover:shadow-accent-400/10 transition-shadow">
+                        <!-- Browser Header -->
+                        <div class="absolute top-0 left-0 right-0 h-8 bg-dark-950/80 backdrop-blur-md border-b border-white/5 flex items-center px-4 gap-2 z-10">
+                            <div class="w-2.5 h-2.5 rounded-full bg-red-500/80"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-green-500/80"></div>
+                            <div class="ml-2 px-3 py-0.5 rounded-md bg-white/5 text-[10px] text-slate-500 font-mono w-full truncate border border-white/5">
+                                ${project.link.replace('https://', '')}
+                            </div>
+                        </div>
+                        
+                        <!-- Content Mockup -->
+                        <div class="absolute inset-0 pt-8 flex items-center justify-center group-hover:scale-105 transition-transform duration-700">
+                             <div class="text-center p-6">
+                                <i class="ph-duotone ${project.icon} text-6xl text-white/20 mb-3 block"></i>
+                                <span class="font-display font-bold text-white/90 text-2xl tracking-wider uppercase">${project.title}</span>
+                             </div>
+                        </div>
+                        
+                        <!-- Overlay on Hover -->
+                        <div class="absolute inset-0 bg-dark-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="px-6 py-2 rounded-full bg-white text-dark-950 font-bold transform translate-y-4 group-hover:translate-y-0 transition-transform">Visiter le site</span>
+                        </div>
+                    </a>
+                    
+                    <!-- Text Info -->
+                    <div class="flex flex-col flex-grow">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            ${project.tags.map(tag => `<span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/5 text-[10px] uppercase tracking-wide text-slate-300 font-semibold">${tag}</span>`).join('')}
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2 group-hover:text-accent-400 transition-colors">
+                            ${project.title}
+                        </h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6 flex-grow">
+                            ${project.description}
+                        </p>
+                        
+                        <!-- Visible Button (No hover needed) -->
+                        <a href="${project.link}" target="_blank" class="w-full flex justify-between items-center px-4 py-3 rounded-xl bg-white/5 hover:bg-accent-400 hover:text-dark-950 text-white font-semibold transition-all border border-white/5 group-hover:border-accent-400">
+                            Voir le projet
+                            <i class="ph-bold ph-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+                `;
+            }).join('');
+        }
+
+        // --- CALENDAR LOGIC ---
+        function initCalendar() {
+            const dateContainer = document.getElementById('date-container');
+            const slotsContainer = document.getElementById('slots-container');
+            const hiddenDate = document.getElementById('selected-date');
+            const hiddenTime = document.getElementById('selected-time');
+
+            // Generate next 14 days
+            const days = [];
+            const today = new Date();
+            
+            for(let i=1; i<=14; i++) { // Start tomorrow
+                const d = new Date(today);
+                d.setDate(today.getDate() + i);
+                const dayOfWeek = d.getDay(); // 0=Sun, 1=Mon, ..., 3=Wed
+                
+                // Skip Wednesday (3) and Sunday (0) and Saturday (6) - "Tous les jours sauf mercredi" usually implies working days
+                // Assuming Mon, Tue, Thu, Fri
+                if(dayOfWeek !== 0 && dayOfWeek !== 6 && dayOfWeek !== 3) {
+                    days.push(d);
+                }
+            }
+
+            // Render Dates
+            days.slice(0, 6).forEach(date => { // Show next 6 available days
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                const dayName = date.toLocaleDateString('fr-FR', { weekday: 'short' });
+                const dayNum = date.getDate();
+                
+                btn.className = 'flex-shrink-0 w-14 h-16 rounded-xl border border-white/10 bg-white/5 flex flex-col items-center justify-center hover:border-accent-400/50 transition-all focus:outline-none';
+                btn.innerHTML = `
+                    <span class="text-xs text-slate-400 uppercase">${dayName}</span>
+                    <span class="text-lg font-bold text-white">${dayNum}</span>
+                `;
+                
+                btn.onclick = (e) => {
+                    // Reset styling
+                    document.querySelectorAll('#date-container button').forEach(b => b.classList.remove('selected-option'));
+                    btn.classList.add('selected-option');
+                    
+                    hiddenDate.value = date.toLocaleDateString('fr-FR');
+                    generateSlots(date);
+                };
+                
+                dateContainer.appendChild(btn);
+            });
+
+            function generateSlots(date) {
+                // Slots: 8h45-10h45 & 13h45-15h45
+                // We will offer 30min slots within these ranges for booking
+                // Morning: 08:45, 09:15, 09:45, 10:15
+                // Afternoon: 13:45, 14:15, 14:45, 15:15
+                
+                const slots = [
+                    "08:45", "09:15", "09:45", "10:15",
+                    "13:45", "14:15", "14:45", "15:15"
+                ];
+
+                slotsContainer.innerHTML = '';
+                
+                slots.forEach(time => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'py-2 rounded-lg border border-white/10 bg-white/5 text-sm text-slate-300 hover:text-white hover:border-accent-400/50 transition-all';
+                    
+                    // Highlight morning slots if user preferred "bloqué le matin"
+                    const isMorning = parseInt(time) < 12;
+                    if(isMorning) {
+                         btn.innerHTML = `${time} <span class="text-[10px] text-accent-400 ml-1">★</span>`;
+                    } else {
+                        btn.textContent = time;
+                    }
+
+                    btn.onclick = () => {
+                        document.querySelectorAll('#slots-container button').forEach(b => b.classList.remove('selected-option'));
+                        btn.classList.add('selected-option');
+                        hiddenTime.value = time;
+                    };
+                    
+                    slotsContainer.appendChild(btn);
+                });
+            }
+        }
+
+        // --- FORM LOGIC ---
+        function initForm() {
+            // Offer Buttons Logic
+            const offerBtns = document.querySelectorAll('.offer-btn');
+            const hiddenOffer = document.getElementById('selected-offer');
+
+            offerBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    offerBtns.forEach(b => b.classList.remove('selected-option'));
+                    btn.classList.add('selected-option');
+                    hiddenOffer.value = btn.dataset.value;
+                });
+            });
+
+            // Submit Logic
+            document.getElementById('booking-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const name = document.getElementById('user-name').value;
+                const date = document.getElementById('selected-date').value;
+                const time = document.getElementById('selected-time').value;
+                const offer = document.getElementById('selected-offer').value || "Non spécifié";
+                const deadline = document.getElementById('user-deadline').value;
+
+                if(!date || !time) {
+                    alert("Merci de sélectionner une date et une heure.");
+                    return;
+                }
+
+                // Construct Mailto
+                const subject = `Demande de RDV - ${name}`;
+                const body = `Bonjour Nathan,\n\nJe souhaite réserver un créneau pour discuter de mon projet.\n\nInfos :\n- Nom : ${name}\n- Offre visée : ${offer}\n- Deadline : ${deadline}\n\nCréneau souhaité : ${date} à ${time}\n\nMerci de confirmer ce rendez-vous.`;
+                
+                window.location.href = `mailto:hello@nathan.dev?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            });
+        }
+
+        // Helper to scroll to contact and select offer
+        window.preselectOffer = function(offerName) {
+            const btns = document.querySelectorAll('.offer-btn');
+            btns.forEach(btn => {
+                if(btn.dataset.value === offerName) {
+                    btn.click();
+                }
+            });
+        }
+
+        // Initialize Everything
         document.addEventListener('DOMContentLoaded', () => {
+            renderProjects();
+            initCalendar();
+            initForm();
+            
+            // Set Year
             document.getElementById('year').textContent = new Date().getFullYear();
 
-            // Form Logic
-            const form = document.getElementById('contact-form');
-            const submitBtn = document.getElementById('submit-btn');
-            const statusMsg = document.getElementById('form-status');
+            // Reveal Animation
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
 
-            if(form) {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const originalText = submitBtn.innerHTML;
-                    submitBtn.innerHTML = "Envoi en cours...";
-                    submitBtn.style.opacity = "0.7";
-                    
-                    // Simule l'envoi
-                    setTimeout(() => {
-                        submitBtn.innerHTML = "Message Envoyé ! <i class='ph ph-check'></i>";
-                        submitBtn.style.backgroundColor = "var(--accent-secondary)";
-                        submitBtn.style.opacity = "1";
-                        statusMsg.textContent = "Merci ! Je reviens vers vous rapidement.";
-                        statusMsg.style.color = "var(--accent-secondary)";
-                        form.reset();
-                        
-                        setTimeout(() => {
-                            submitBtn.innerHTML = originalText;
-                            submitBtn.style.backgroundColor = "";
-                            statusMsg.textContent = "";
-                        }, 4000);
-                    }, 1500);
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+            
+            // Mobile Menu
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const menu = document.getElementById('mobile-menu');
+            const links = document.querySelectorAll('.mobile-link');
+            let isMenuOpen = false;
+
+            menuBtn.addEventListener('click', () => {
+                isMenuOpen = !isMenuOpen;
+                if(isMenuOpen) {
+                    menu.classList.remove('translate-x-full');
+                    menuBtn.innerHTML = '<i class="ph ph-x text-2xl"></i>';
+                } else {
+                    menu.classList.add('translate-x-full');
+                    menuBtn.innerHTML = '<i class="ph ph-list text-2xl"></i>';
+                }
+            });
+
+            links.forEach(link => {
+                link.addEventListener('click', () => {
+                    isMenuOpen = false;
+                    menu.classList.add('translate-x-full');
+                    menuBtn.innerHTML = '<i class="ph ph-list text-2xl"></i>';
+                });
+            });
+
+            // Cursor Logic (Desktop)
+            if (window.matchMedia("(min-width: 768px)").matches) {
+                const cursorDot = document.querySelector('.cursor-dot');
+                const cursorOutline = document.querySelector('.cursor-outline');
+                
+                window.addEventListener('mousemove', (e) => {
+                    const posX = e.clientX;
+                    const posY = e.clientY;
+
+                    cursorDot.style.left = `${posX}px`;
+                    cursorDot.style.top = `${posY}px`;
+
+                    cursorOutline.animate({
+                        left: `${posX}px`,
+                        top: `${posY}px`
+                    }, { duration: 500, fill: "forwards" });
+
+                    // Bento Hover variables
+                    document.querySelectorAll('.bento-card, .glass-card').forEach(card => {
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        card.style.setProperty('--mouse-x', `${x}px`);
+                        card.style.setProperty('--mouse-y', `${y}px`);
+                    });
                 });
             }
         });
