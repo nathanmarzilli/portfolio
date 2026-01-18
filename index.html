@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nathan Marzilli — Tech, Sport & Entrepreneur</title>
+    <meta name="description" content="Portfolio de Nathan Marzilli — Créateur de projets digitaux, Sportif et Investisseur à Évian-les-Bains.">
+    
+    <!-- Police Google Fonts: Inter + Outfit (pour les titres un peu plus "branding") -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons (Icônes modernes et légères) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Script EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          emailjs.init("TA_CLE_PUBLIQUE_ICI");
+       })();
+    </script>
+
+    <style>
+        /* --- VARIABLES & RESET --- */
+        :root {
+            /* Palette "Léman Tech" */
+            --bg-dark: #0f172a;       /* Slate 900 */
+            --bg-card: #1e293b;       /* Slate 800 */
+            --text-main: #f8fafc;     /* Slate 50 */
+            --text-muted: #94a3b8;    /* Slate 400 */
+            
+            /* Accents Viviaux */
+            --accent-primary: #0ea5e9; /* Sky 500 - L'eau / Tech */
+            --accent-secondary: #10b981; /* Emerald 500 - LMNP / Terrain */
+            --accent-sport: #f59e0b;   /* Amber 500 - Énergie / Sport */
+            
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(30, 41, 59, 0.6);
+            
+            --container-width: 1100px;
+            --header-height: 80px;
+            --radius: 20px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            /* Fond avec légers halos de lumière pour la "vie" */
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 40%),
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 50px 50px, 50px 50px;
+            background-attachment: fixed;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1, h2, h3 { font-family: 'Outfit', sans-serif; font-weight: 700; line-height: 1.1; }
+        h1 { 
+            font-size: 3.8rem; 
+            background: linear-gradient(135deg, #fff 30%, var(--text-muted) 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            margin-bottom: 1rem;
+        }
+        h2 { font-size: 2.5rem; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 1rem; }
+        h2 i { color: var(--accent-primary); }
+        h3 { font-size: 1.3rem; margin-bottom: 0.5rem; color: #fff; }
+        p { color: var(--text-muted); margin-bottom: 1rem; font-size: 1.05rem; }
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        
+        .highlight { color: var(--accent-primary); font-weight: 600; }
+        .location-tag { color: var(--accent-primary); display: inline-flex; align-items: center; gap: 6px; font-weight: 500; }
+
+        /* --- LAYOUT UTILS --- */
+        .container { max-width: var(--container-width); margin: 0 auto; padding: 0 24px; }
+        .section { padding: 100px 0; position: relative; }
+        
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 14px 32px;
+            background: var(--accent-primary);
+            color: #fff;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
+        }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(14, 165, 233, 0.5); }
+        .btn i { font-size: 1.2rem; }
+        
+        .btn-outline { background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); box-shadow: none; }
+        .btn-outline:hover { border-color: var(--text-main); background: rgba(255,255,255,0.05); }
+
+        /* --- HEADER & NAV --- */
+        .site-header {
+            position: fixed; top: 0; left: 0; right: 0; height: var(--header-height);
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex; align-items: center;
+        }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.4rem; display: flex; align-items: center; gap: 12px; letter-spacing: -0.03em; }
+        .logo-img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-primary); }
+        
+        .nav-links { display: flex; gap: 32px; }
+        .nav-link { font-size: 0.95rem; font-weight: 500; opacity: 0.7; position: relative; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { opacity: 1; color: var(--accent-primary); }
+        
+        /* --- HERO SECTION --- */
+        .hero { min-height: 100vh; display: flex; align-items: center; padding-top: var(--header-height); position: relative; }
+        .hero-content { max-width: 700px; z-index: 2; }
+        
+        .hero-badges { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+        .badge {
+            padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+        }
+        .badge i { font-size: 1rem; }
+        .badge.tech { color: var(--accent-primary); background: rgba(14, 165, 233, 0.1); border-color: rgba(14, 165, 233, 0.2); }
+        .badge.sport { color: var(--accent-sport); background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); }
+        .badge.immo { color: var(--accent-secondary); background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); }
+
+        /* --- SPORTS BAR (Visual Strip) --- */
+        .sports-strip {
+            display: flex; gap: 40px; margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--glass-border);
+            opacity: 0.8;
+        }
+        .sport-item { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-muted); transition: 0.3s; }
+        .sport-item i { font-size: 1.8rem; color: var(--text-main); }
+        .sport-item:hover { color: var(--accent-sport); transform: translateY(-3px); }
+        .sport-item:hover i { color: var(--accent-sport); }
+
+        /* --- CARDS --- */
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+        
+        .tech-card {
+            background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: var(--radius);
+            padding: 32px; transition: all 0.3s ease; position: relative; overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+        .tech-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.2); box-shadow: 0 15px 40px -10px rgba(0,0,0,0.5); }
+        .tech-card h3 { display: flex; align-items: center; gap: 10px; }
+        .tech-card-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--accent-primary); margin-bottom: 20px; }
+        
+        .skills-list { margin-top: auto; }
+        .skills-list li { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; color: var(--text-muted); font-size: 0.95rem; }
+        .skills-list li i { color: var(--accent-secondary); }
+
+        /* --- PROJECT BA-DEVIAN (Featured) --- */
+        .featured-project {
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 40px;
+            margin-bottom: 60px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center;
+        }
+        .browser-mockup {
+            background: #000; border-radius: 12px; overflow: hidden; border: 1px solid #334155;
+            box-shadow: 0 20px 50px -10px rgba(0,0,0,0.6); position: relative; aspect-ratio: 16/10;
+        }
+        .browser-bar { background: #334155; padding: 8px 12px; display: flex; gap: 6px; align-items: center; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #64748b; }
+        .dot.red { background: #ef4444; } .dot.yellow { background: #f59e0b; } .dot.green { background: #10b981; }
+        .browser-content { width: 100%; height: 100%; background: #fff; position: relative; }
+        /* Iframe pour preview live (ou image si iframe bloquée) */
+        .browser-content iframe { width: 100%; height: 100%; border: none; }
+        .browser-overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%; 
+            background: rgba(0,0,0,0.0); pointer-events: none; /* Permet de scroller l'iframe */
+        }
+        
+        /* --- CAROUSEL PROJECTS --- */
+        .carousel-container { position: relative; }
+        .carousel-track {
+            display: flex; gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 20px;
+            scrollbar-width: none;
+        }
+        .carousel-track::-webkit-scrollbar { display: none; }
+        .project-card {
+            flex: 0 0 320px; scroll-snap-align: start; background: var(--bg-card);
+            border: 1px solid var(--glass-border); border-radius: var(--radius); overflow: hidden; transition: 0.3s;
+        }
+        .project-img { height: 180px; background: #0f172a; border-bottom: 1px solid var(--glass-border); position: relative; display: flex; justify-content: center; align-items: center; color: #475569; }
+        .project-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; opacity: 0.9; }
+        .project-card:hover .project-img img { transform: scale(1.05); opacity: 1; }
+        .project-content { padding: 24px; }
+
+        /* --- CONTACT --- */
+        .contact-wrapper { display: grid; grid-template-columns: 1fr 1.5fr; gap: 48px; }
+        .contact-form { background: var(--glass-bg); padding: 40px; border-radius: var(--radius); border: 1px solid var(--glass-border); }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 14px 18px; background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; margin-bottom: 20px;
+            font-family: 'Inter', sans-serif;
+        }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-primary); }
+
+        @media (max-width: 900px) {
+            .featured-project { grid-template-columns: 1fr; }
+            .contact-wrapper { grid-template-columns: 1fr; }
+            h1 { font-size: 2.8rem; }
+            .sports-strip { gap: 20px; flex-wrap: wrap; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="#" class="logo">
+                <img src="images/profile.jpg" alt="NM" class="logo-img" onerror="this.src='https://ui-avatars.com/api/?name=Nathan+Marzilli&background=0ea5e9&color=fff'">
+                <span>Nathan M.</span>
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#home" class="nav-link active">Accueil</a></li>
+                    <li><a href="#about" class="nav-link">Profil</a></li>
+                    <li><a href="#projects" class="nav-link">Projets</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badges">
+                    <span class="badge tech"><i class="ph ph-code"></i> Tech Creator</span>
+                    <span class="badge sport"><i class="ph ph-medal"></i> Sportif & Compétiteur</span>
+                    <span class="badge immo"><i class="ph ph-buildings"></i> Investisseur</span>
+                </div>
+                
+                <h1>Tech, Sport &<br>Esprit d'entreprise.</h1>
+                
+                <p style="font-size: 1.15rem; margin: 24px 0 32px 0; max-width: 600px;">
+                    Basé à <span class="location-tag"><i class="ph ph-map-pin"></i> Évian-les-Bains</span>.
+                    Je conçois des projets digitaux avec la rigueur d'un sportif et la vision d'un investisseur.
+                </p>
+                
+                <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                    <a href="#projects" class="btn">Voir mes projets <i class="ph ph-arrow-right"></i></a>
+                    <a href="#contact" class="btn btn-outline">Me contacter</a>
+                </div>
+
+                <!-- Sports Strip Visual -->
+                <div class="sports-strip">
+                    <div class="sport-item" title="Badminton">
+                        <i class="ph ph-tennis-ball"></i> <!-- Note: Phosphor n'a pas shuttlecock simple, tennis-ball souvent utilisé ou personnalisé -->
+                        <span>Badminton</span>
+                    </div>
+                    <div class="sport-item" title="Football">
+                        <i class="ph ph-soccer-ball"></i>
+                        <span>Football</span>
+                    </div>
+                    <div class="sport-item" title="Tennis">
+                        <i class="ph ph-tennis-ball"></i>
+                        <span>Tennis</span>
+                    </div>
+                    <div class="sport-item" title="Natation">
+                        <i class="ph ph-swimming-pool"></i>
+                        <span>Natation</span>
+                    </div>
+                    <div class="sport-item" title="Judo">
+                        <i class="ph ph-person-simple-throw"></i> <!-- Icone proche art martial -->
+                        <span>Judo</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About & Skills -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2><i class="ph ph-user-circle"></i> À propos & Compétences</h2>
+            
+            <div class="card-grid">
+                <!-- Tech -->
+                <article class="tech-card">
+                    <div class="tech-card-icon"><i class="ph ph-laptop"></i></div>
+                    <h3>Développement Web</h3>
+                    <p>Autodidacte passionné, je transforme des idées en sites fonctionnels et esthétiques.</p>
+                    <ul class="skills-list">
+                        <li><i class="ph ph-check-circle"></i> HTML5, CSS3, JS Modern</li>
+                        <li><i class="ph ph-check-circle"></i> Gestion Hardware & Réseaux</li>
+                        <li><i class="ph ph-check-circle"></i> Création de A à Z</li>
+                    </ul>
+                </article>
+
+                <!-- Sport / Leadership -->
+                <article class="tech-card" style="border-top: 2px solid var(--accent-sport);">
+                    <div class="tech-card-icon" style="color: var(--accent-sport);"><i class="ph ph-trophy"></i></div>
+                    <h3>Leadership & Sport</h3>
+                    <p>Capitaine d'équipe. Le sport m'a appris la résilience, la stratégie et la gestion de groupe.</p>
+                    <ul class="skills-list">
+                        <li><i class="ph ph-users"></i> Gestion d'équipe (Capitanat)</li>
+                        <li><i class="ph ph-lightning"></i> Esprit de compétition</li>
+                        <li><i class="ph ph-heart"></i> Dépassement de soi</li>
+                    </ul>
+                </article>
+
+                <!-- Immo / Gestion -->
+                <article class="tech-card" style="border-top: 2px solid var(--accent-secondary);">
+                    <div class="tech-card-icon" style="color: var(--accent-secondary);"><i class="ph ph-house-line"></i></div>
+                    <h3>Gestion & LMNP</h3>
+                    <p>Gestionnaire d'un parc de 5 appartements. Rigueur administrative et financière garantie.</p>
+                    <ul class="skills-list">
+                        <li><i class="ph ph-chart-line-up"></i> Suivi financier & Fiscalité</li>
+                        <li><i class="ph ph-handshake"></i> Relationnel clients</li>
+                        <li><i class="ph ph-calendar-check"></i> Organisation stricte</li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="section" style="background: rgba(0,0,0,0.2);">
+        <div class="container">
+            <h2><i class="ph ph-rocket-launch"></i> Réalisations</h2>
+
+            <!-- FEATURED PROJECT: BADEVIAN -->
+            <div class="featured-project">
+                <div class="project-info">
+                    <span class="badge sport" style="margin-bottom: 12px;">Projet Star 🏸</span>
+                    <h3 style="font-size: 2rem; margin-bottom: 16px;">Bad Evian Club 74</h3>
+                    <p style="font-size: 1.1rem; color: #cbd5e1; margin-bottom: 24px;">
+                        Le site web complet du club de Badminton d'Évian. Une plateforme vivante pour les membres, intégrant actualités, infos pratiques et identité visuelle forte.
+                    </p>
+                    <ul style="margin-bottom: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <li style="display: flex; gap: 8px;"><i class="ph ph-check" style="color:var(--accent-secondary)"></i> Design Responsive</li>
+                        <li style="display: flex; gap: 8px;"><i class="ph ph-check" style="color:var(--accent-secondary)"></i> Architecture HTML/CSS</li>
+                        <li style="display: flex; gap: 8px;"><i class="ph ph-check" style="color:var(--accent-secondary)"></i> Déployé sur GitHub</li>
+                    </ul>
+                    <a href="https://nathanmarzilli.github.io/badevian/" target="_blank" class="btn">
+                        Visiter le site <i class="ph ph-arrow-square-out"></i>
+                    </a>
+                </div>
+                
+                <!-- BROWSER MOCKUP FOR LIVE FEEL -->
+                <div class="browser-mockup">
+                    <div class="browser-bar">
+                        <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+                        <div style="background:rgba(0,0,0,0.2); flex:1; height:6px; border-radius:4px; margin-left:10px;"></div>
+                    </div>
+                    <div class="browser-content">
+                        <!-- Utilisation d'une iframe pour simuler le "Live Preview" -->
+                        <iframe src="https://nathanmarzilli.github.io/badevian/" title="Aperçu BaDevian" loading="lazy"></iframe>
+                        <!-- Fallback visuel si l'iframe ne charge pas -->
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background: #fff; z-index:-1; display:flex; align-items:center; justify-content:center; color:#333; font-weight:bold;">
+                            <img src="https://nathanmarzilli.github.io/badevian/images/logo.png" alt="BaDevian Preview" onerror="this.style.display='none'">
+                            Chargement de l'aperçu...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OTHER PROJECTS CAROUSEL -->
+            <h3 style="margin-bottom: 20px; color: var(--text-muted); font-size: 1.2rem;">Autres projets exploratoires</h3>
+            <div class="carousel-container">
+                <div class="carousel-track" id="carousel">
+                    
+                    <div class="project-card">
+                        <div class="project-img">
+                            <i class="ph ph-music-notes" style="font-size: 3rem;"></i>
+                        </div>
+                        <div class="project-content">
+                            <h3>Blog Audio</h3>
+                            <p>Interface musicale avec lecteur intégré.</p>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-img">
+                            <i class="ph ph-file-text" style="font-size: 3rem;"></i>
+                        </div>
+                        <div class="project-content">
+                            <h3>CV Digital</h3>
+                            <p>CV interactif optimisé pour le recrutement.</p>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-img">
+                            <i class="ph ph-users-three" style="font-size: 3rem;"></i>
+                        </div>
+                        <div class="project-content">
+                            <h3>Asso Manager</h3>
+                            <p>Dashboard de gestion de bénévoles.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section">
+        <div class="container">
+            <h2><i class="ph ph-paper-plane-tilt"></i> Me contacter</h2>
+            
+            <div class="contact-wrapper">
+                <div class="contact-info-box">
+                    <p class="highlight" style="font-size: 1.3rem; margin-bottom: 2rem; color: #fff;">
+                        Un projet web ? Une opportunité sur Évian ou Lausanne ?
+                    </p>
+                    <p>En tant qu'entrepreneur local, je privilégie les relations humaines directes et la confiance.</p>
+                    
+                    <div style="margin-top: 40px; display: flex; flex-direction: column; gap: 20px;">
+                        <div style="display: flex; gap: 16px; align-items: center;">
+                            <div style="width: 48px; height: 48px; background: rgba(14, 165, 233, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent-primary); font-size: 1.5rem;">
+                                <i class="ph ph-envelope-simple"></i>
+                            </div>
+                            <div>
+                                <span style="display: block; font-size: 0.85rem; color: var(--text-muted);">Email</span>
+                                <span style="font-weight: 600; color: #fff;">contact@nathan-marzilli.com</span>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 16px; align-items: center;">
+                            <div style="width: 48px; height: 48px; background: rgba(16, 185, 129, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent-secondary); font-size: 1.5rem;">
+                                <i class="ph ph-map-pin"></i>
+                            </div>
+                            <div>
+                                <span style="display: block; font-size: 0.85rem; color: var(--text-muted);">Localisation</span>
+                                <span style="font-weight: 600; color: #fff;">Évian-les-Bains, France</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <form id="contact-form">
+                        <div class="form-group">
+                            <input type="text" name="nom" required placeholder="Votre nom">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="email" required placeholder="Votre email professionnel">
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" rows="4" required placeholder="Bonjour Nathan, parlons de..."></textarea>
+                        </div>
+                        <button type="submit" id="submit-btn" class="btn" style="width: 100%; justify-content: center; border:none; cursor:pointer;">
+                            Envoyer le message <i class="ph ph-paper-plane-right"></i>
+                        </button>
+                        <p id="form-status" style="margin-top: 15px; text-align: center; font-size: 0.9rem;"></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer container" style="text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--glass-border);">
+        <p>© <span id="year"></span> Nathan Marzilli. Fait avec passion à Évian 🏔️</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            // Form Logic
+            const form = document.getElementById('contact-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const statusMsg = document.getElementById('form-status');
+
+            if(form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = "Envoi en cours...";
+                    submitBtn.style.opacity = "0.7";
+                    
+                    // Simule l'envoi
+                    setTimeout(() => {
+                        submitBtn.innerHTML = "Message Envoyé ! <i class='ph ph-check'></i>";
+                        submitBtn.style.backgroundColor = "var(--accent-secondary)";
+                        submitBtn.style.opacity = "1";
+                        statusMsg.textContent = "Merci ! Je reviens vers vous rapidement.";
+                        statusMsg.style.color = "var(--accent-secondary)";
+                        form.reset();
+                        
+                        setTimeout(() => {
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.style.backgroundColor = "";
+                            statusMsg.textContent = "";
+                        }, 4000);
+                    }, 1500);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
