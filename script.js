@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
         {
             title: "Bad Evian",
             subtitle: "La transformation associative",
-            story: "Le club gérait ses inscriptions sur papier. J'ai créé une plateforme numérique complète qui permet désormais la gestion des adhérents et la communication instantanée. Résultat : +30% d'inscriptions l'année suivante grâce à la simplicité d'accès.",
+            story: "En modernisant l’identité du club, j’ai donné une image plus soignée et rassurante, qui inspire confiance aux adhérents et visiteurs.",
             url: "https://nathanmarzilli.github.io/badevian/", 
             type: "Site Club Sportif"
         },
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
 
                 <!-- Visual Side (Subtle Preview) -->
-                <div class="md:w-2/3 order-1 md:order-2 relative rounded-3xl overflow-hidden border border-white/10 bg-dark-900 group/frame interactive-hover h-[300px] md:h-auto">
+                <div class="md:w-2/3 order-1 md:order-2 relative rounded-3xl overflow-hidden border border-white/10 bg-dark-900 group/frame interactive-hover h-[300px] md:h-auto project-frame-container">
                     
                     <!-- Browser Header -->
                     <div class="absolute top-0 left-0 right-0 h-10 bg-dark-950/90 backdrop-blur border-b border-white/5 flex items-center px-4 gap-2 z-20">
@@ -60,18 +60,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>
 
-                    <!-- Iframe with Blur Effect until Hover -->
-                    <div class="absolute inset-0 top-10 bg-white transition-all duration-700 ease-out grayscale group-hover/frame:grayscale-0">
+                    <!-- Iframe with Blur Effect until Hover/Scroll -->
+                    <div class="absolute inset-0 top-10 bg-white transition-all duration-700 ease-out grayscale group-hover/frame:grayscale-0 iframe-container project-iframe">
                          <iframe src="${project.url}" 
                             class="w-[200%] h-[200%] border-0 transform scale-50 origin-top-left pointer-events-none" 
                             loading="lazy"
                             title="${project.title}">
                         </iframe>
                         <!-- Overlay Blur -->
-                        <div class="absolute inset-0 bg-dark-950/10 backdrop-blur-[2px] group-hover/frame:backdrop-blur-0 transition-all duration-500"></div>
+                        <div class="absolute inset-0 bg-dark-950/10 backdrop-blur-[2px] group-hover/frame:backdrop-blur-0 transition-all duration-500 iframe-overlay"></div>
                         
                         <!-- Hint -->
-                        <div class="absolute inset-0 flex items-center justify-center opacity-100 group-hover/frame:opacity-0 transition-opacity duration-300 pointer-events-none">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-100 group-hover/frame:opacity-0 transition-opacity duration-300 pointer-events-none hint-overlay">
                             <span class="px-4 py-2 bg-dark-950/80 rounded-full text-xs text-white backdrop-blur-md border border-white/10">Survoler pour aperçu</span>
                         </div>
                     </div>
@@ -85,7 +85,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
-    // --- 2. GESTION DES DISPONIBILITÉS (Depuis availability.js) ---
+    // --- 1.1 MOBILE SCROLL OBSERVER (New Feature) ---
+    // Sur mobile, on active l'aperçu quand l'élément est au centre de l'écran (scroll) au lieu du hover
+    const projectObserver = new IntersectionObserver((entries) => {
+        if (window.innerWidth < 768) { // Uniquement sur mobile
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('mobile-active');
+                } else {
+                    entry.target.classList.remove('mobile-active');
+                }
+            });
+        }
+    }, { threshold: 0.6 }); // 60% de l'élément visible déclenche l'effet
+
+    document.querySelectorAll('.project-frame-container').forEach(el => {
+        projectObserver.observe(el);
+    });
+
+    // --- 2. GESTION DES DISPONIBILITÉS ---
     function loadAvailability() {
         const dateContainer = document.getElementById('date-container');
         if (typeof PLANNING_DATA !== 'undefined' && PLANNING_DATA.days) {
@@ -131,8 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     loadAvailability();
 
-    // --- 3. LOGIQUE DU FORMULAIRE ET DES OFFRES ---
+    // --- 3. LOGIQUE DU FORMULAIRE ET DES OFFRES (GOLD) ---
     window.preselectOffer = function(offerName) {
+        // 1. Mise à jour des boutons du formulaire
         const btns = document.querySelectorAll('.offer-btn');
         const hiddenInput = document.getElementById('selected-offer');
         if (hiddenInput) hiddenInput.value = offerName;
@@ -140,6 +159,33 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.classList.remove('selected-option');
             if(btn.dataset.value === offerName) btn.classList.add('selected-option');
         });
+
+        // 2. Animation GOLD sur les cartes
+        // Mapping simple entre le nom de l'offre et l'ID de la carte
+        let cardId = '';
+        if (offerName === 'Pack Essentiel') cardId = 'card-essentiel';
+        else if (offerName === 'Pack Vitrine Artisan') cardId = 'card-vitrine';
+        else if (offerName === 'Pack Premium') cardId = 'card-premium';
+
+        // Reset de toutes les cartes
+        document.querySelectorAll('.pricing-card').forEach(card => {
+            card.classList.remove('gold-selected-card');
+            // Retirer le badge s'il existe
+            const badge = card.querySelector('.gold-badge');
+            if(badge) badge.remove();
+        });
+
+        // Appliquer le style Gold à la carte sélectionnée
+        const selectedCard = document.getElementById(cardId);
+        if (selectedCard) {
+            selectedCard.classList.add('gold-selected-card');
+            
+            // Créer et ajouter le badge animé
+            const badge = document.createElement('div');
+            badge.className = 'gold-badge absolute -top-3 left-1/2 -translate-x-1/2 bg-gold-400 text-dark-950 font-bold text-xs px-3 py-1 rounded-full shadow-lg z-50 animate-pop-in flex items-center gap-1';
+            badge.innerHTML = '<i class="ph-fill ph-star"></i> Pack Sélectionné';
+            selectedCard.appendChild(badge);
+        }
     };
     
     window.scrollToContactWithMaintenance = function() {
