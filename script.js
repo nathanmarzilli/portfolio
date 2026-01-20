@@ -111,7 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
             PLANNING_DATA.days.forEach((dayObj, index) => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
-                btn.className = `date-btn flex-shrink-0 w-14 h-16 rounded-xl border border-white/10 bg-white/5 flex flex-col items-center justify-center hover:border-accent-400 transition-all focus:outline-none interactive-hover ${index === 0 ? 'ml-0' : ''}`;
+                // Correctif: Largeur augmentée (w-16) et flex-shrink-0 pour éviter écrasement
+                btn.className = `date-btn flex-shrink-0 w-16 h-16 rounded-xl border border-white/10 bg-white/5 flex flex-col items-center justify-center hover:border-accent-400 transition-all focus:outline-none interactive-hover ${index === 0 ? 'ml-0' : ''}`;
                 
                 const dateParts = dayObj.date.split('-'); 
                 const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
@@ -289,7 +290,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Si demandé via le bouton 'i', on scroll
                 if (scroll && section) {
-                    section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Délai léger pour laisser le temps à l'accordéon de commencer à s'ouvrir
+                    setTimeout(() => {
+                        section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
                 }
             }
         }

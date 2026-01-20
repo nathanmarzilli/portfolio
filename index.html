@@ -24,7 +24,7 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] },
                     colors: {
-                        dark: { 950: '#020617', 900: '#0B1120', 800: '#1E293B' },
+                        dark: { 950: '#020617', 900: '#0B1120', 800: '#1E293B', 850: '#0f172a' },
                         accent: { 400: '#2DD4BF', 500: '#14B8A6' },
                         gold: { 400: '#FBBF24', 500: '#F59E0B', glow: 'rgba(251, 191, 36, 0.15)' }
                     },
@@ -135,7 +135,7 @@
             gap: 0.5rem;
         }
         
-        /* Correction Bug Date Hover : Ajout padding container et border explicite */
+        /* Correction Bug Date Hover */
         .date-btn:hover {
             border-color: #2DD4BF;
         }
@@ -153,15 +153,15 @@
             }
         }
         
-        /* Hébergement Accordéon */
+        /* Hébergement Accordéon - Augmentation max-height pour mobile */
         #hosting-content {
-            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+            transition: max-height 0.5s ease-out, opacity 0.4s ease-out;
             max-height: 0;
             opacity: 0;
             overflow: hidden;
         }
         #hosting-content.open {
-            max-height: 1000px; /* Valeur arbitraire suffisante */
+            max-height: 3000px; /* Augmenté pour éviter la coupure sur mobile */
             opacity: 1;
         }
         .rotate-chevron {
@@ -169,7 +169,7 @@
         }
     </style>
 </head>
-<body class="selection:bg-accent-400/30 selection:text-white">
+<body class="selection:bg-accent-400/30 selection:text-white bg-dark-950">
 
     <!-- Navigation -->
     <nav class="fixed w-full z-50 nav-glass transition-all duration-300">
@@ -211,7 +211,7 @@
     </nav>
 
     <!-- Hero -->
-    <header class="min-h-screen flex items-center justify-center relative pt-20 overflow-hidden">
+    <header class="min-h-screen flex items-center justify-center relative pt-20 overflow-hidden bg-dark-950">
         <div class="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob"></div>
         <div class="absolute top-20 right-10 w-72 h-72 bg-accent-400/10 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
 
@@ -244,8 +244,8 @@
         </div>
     </header>
 
-    <!-- About -->
-    <section id="about" class="pt-24 pb-12 relative bg-dark-900/30 border-t border-white/5">
+    <!-- About - Changement fond pour distinction -->
+    <section id="about" class="pt-24 pb-12 relative bg-[#0B1120] border-t border-white/5">
         <div class="max-w-6xl mx-auto px-6">
             <div class="grid md:grid-cols-2 gap-16 items-start">
                 <div class="reveal">
@@ -312,7 +312,7 @@
                         </p>
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-accent-400 flex items-center justify-center text-dark-950 font-bold 
-								transform transition-transform duration-300 hover:scale-110 hover:rotate-3">N</div>
+                                transform transition-transform duration-300 hover:scale-110 hover:rotate-3">N</div>
                             <div class="text-sm font-medium text-white">Nathan M.</div>
                         </div>
                     </div>
@@ -321,8 +321,8 @@
         </div>
     </section>
 
-    <!-- Technologies & Expertise -->
-    <section id="skills" class="py-12 bg-dark-950 border-b border-white/5">
+    <!-- Technologies & Expertise - Fond différent -->
+    <section id="skills" class="py-12 bg-dark-850 border-y border-white/5">
         <div class="max-w-6xl mx-auto px-6">
             <div class="glass-card p-8 rounded-3xl border border-white/5 bg-white/5">
                 <div class="grid md:grid-cols-2 gap-12">
@@ -359,7 +359,7 @@
                         </div>
                     </div>
 
-                    <!-- Langues -->
+                    <!-- Langues - Correctif Badge Alignement -->
                     <div class="reveal delay-100">
                         <h3 class="text-xl font-display font-bold text-white mb-6 flex items-center gap-2">
                             <i class="ph-duotone ph-translate text-accent-400"></i> Langues parlées
@@ -368,33 +368,37 @@
                             La barrière de la langue ne doit pas être un frein. Je peux créer votre site en plusieurs langues et communiquer avec vos équipes internationales.
                         </p>
                         <div class="space-y-4">
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover">
+                            <!-- Correctif: justify-between + flex-shrink-0 -->
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
                                 <div class="flex items-center gap-3">
-                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full">FR</span>
+                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">FR</span>
                                     <span class="text-sm font-bold text-white">Français</span>
                                 </div>
-                                <span class="text-xs text-accent-400 font-medium bg-accent-400/10 px-2 py-1 rounded">Langue maternelle</span>
+                                <span class="text-xs text-accent-400 font-medium bg-accent-400/10 px-2 py-1 rounded shrink-0 text-right">Langue maternelle</span>
                             </div>
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover">
+                            
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
                                 <div class="flex items-center gap-3">
-                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full">IT</span>
+                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">IT</span>
                                     <span class="text-sm font-bold text-white">Italien</span>
                                 </div>
-                                <span class="text-xs text-green-400 font-medium bg-green-400/10 px-2 py-1 rounded">Courant</span>
+                                <span class="text-xs text-green-400 font-medium bg-green-400/10 px-2 py-1 rounded shrink-0 text-right">Courant</span>
                             </div>
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover">
+                            
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
                                 <div class="flex items-center gap-3">
-                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full">EN</span>
+                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">EN</span>
                                     <span class="text-sm font-bold text-white">Anglais</span>
                                 </div>
-                                <span class="text-xs text-blue-400 font-medium bg-blue-400/10 px-2 py-1 rounded">C1 - Avancé</span>
+                                <span class="text-xs text-blue-400 font-medium bg-blue-400/10 px-2 py-1 rounded shrink-0 text-right">C1 - Avancé</span>
                             </div>
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover">
+                            
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
                                 <div class="flex items-center gap-3">
-                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full">JP</span>
+                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">JP</span>
                                     <span class="text-sm font-bold text-white">Japonais</span>
                                 </div>
-                                <span class="text-xs text-slate-400 font-medium bg-slate-400/10 px-2 py-1 rounded">Notions</span>
+                                <span class="text-xs text-slate-400 font-medium bg-slate-400/10 px-2 py-1 rounded shrink-0 text-right">Notions</span>
                             </div>
                         </div>
                     </div>
@@ -403,8 +407,8 @@
         </div>
     </section>
 
-    <!-- Projects (Storytelling) -->
-    <section id="projects" class="py-24 relative overflow-hidden">
+    <!-- Projects - Fond très sombre pour contraste -->
+    <section id="projects" class="py-24 relative overflow-hidden bg-dark-950">
         <div class="max-w-7xl mx-auto px-6">
             <div class="mb-16 reveal text-center">
                 <h2 class="font-display text-4xl font-bold text-white mb-4">Histoires de Réussite</h2>
@@ -419,8 +423,8 @@
         </div>
     </section>
 
-    <!-- Services & Pricing -->
-    <section id="services" class="py-24 border-t border-white/5 bg-dark-900/30">
+    <!-- Services & Pricing - Fond bleu nuit très sombre -->
+    <section id="services" class="py-24 border-t border-white/5 bg-[#0B1120]">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-16 reveal">
                 <h2 class="font-display text-4xl font-bold text-white mb-4">Tarifs & Sérénité</h2>
@@ -453,7 +457,7 @@
                 <div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover border-accent-400/30 bg-accent-400/5 relative overflow-visible pricing-card transition-all duration-300" id="card-vitrine">
                     <div class="absolute top-4 right-4 text-xs font-bold text-accent-400 bg-accent-400/10 px-2 py-1 rounded tag-populaire">POPULAIRE</div>
                     <h3 class="text-xl font-display font-bold text-white mb-2">Vitrine Artisan</h3>
-                    <div class="text-3xl font-bold text-accent-400 mb-6">1 700</div>
+                    <div class="text-3xl font-bold text-accent-400 mb-6">1 700€</div>
                     <ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site jusqu’à 5 pages personnalisé</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Option Site Multilingue incluse</li>
@@ -584,14 +588,15 @@
         </div>
     </section>
 
-    <!-- Contact -->
-    <footer id="contact" class="py-20 border-t border-white/5 bg-dark-900 relative overflow-hidden">
+    <!-- Contact - Fond très sombre -->
+    <footer id="contact" class="py-20 border-t border-white/5 bg-dark-950 relative overflow-hidden">
         <div class="max-w-6xl mx-auto px-6">
             <div class="grid lg:grid-cols-2 gap-16">
                 <!-- Contact Infos -->
                 <div class="w-full">
                     <h3 class="font-display text-4xl font-bold text-white mb-4">Parlons Concret</h3>
-                    <p class="text-slate-400 mb-8">
+                    <!-- Correctif : break-words & whitespace-normal pour éviter troncature mobile -->
+                    <p class="text-slate-400 mb-8 max-w-full break-words whitespace-normal">
                         Sélectionnez un créneau ci-contre. Je vous appellerai personnellement pour comprendre votre besoin.
                     </p>
                     <div class="space-y-4 mb-8 w-full">
@@ -645,17 +650,19 @@
                             <span id="total-price-display" class="text-xl font-bold text-accent-400">0€</span>
                         </div>
 
-                        <!-- 3. Disponibilités -->
-                        <div>
+                        <!-- 3. Disponibilités (Correction scroll horizontal) -->
+                        <div class="w-full overflow-hidden">
                             <label class="block text-sm font-bold text-white mb-2">Disponibilités</label>
-                            <div class="flex gap-2 mb-3 overflow-x-auto pb-2 scrollbar-hide p-1" id="date-container"></div>
+                            <div class="flex gap-2 mb-3 overflow-x-auto pb-2 scrollbar-hide p-1 w-full" id="date-container">
+                                <!-- Dates générées par JS -->
+                            </div>
                             <div class="grid grid-cols-4 gap-2" id="slots-container">
                                 <span class="col-span-4 text-xs text-slate-500 italic">Sélectionnez une date ci-dessus.</span>
                             </div>
                             <input type="hidden" id="selected-date"><input type="hidden" id="selected-time">
                         </div>
 
-                        <!-- 4. Infos Utilisateur (Nouveau Layout) -->
+                        <!-- 4. Infos Utilisateur -->
                         <div class="space-y-3">
                             <div class="grid grid-cols-2 gap-3">
                                 <input type="text" id="user-firstname" placeholder="Prénom (Obligatoire)" required class="bg-dark-950/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-accent-400 focus:outline-none interactive-hover w-full">
