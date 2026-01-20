@@ -86,9 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 1.1 MOBILE SCROLL OBSERVER (New Feature) ---
-    // Sur mobile, on active l'aperçu quand l'élément est au centre de l'écran (scroll) au lieu du hover
     const projectObserver = new IntersectionObserver((entries) => {
-        if (window.innerWidth < 768) { // Uniquement sur mobile
+        if (window.innerWidth < 768) { 
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('mobile-active');
@@ -97,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
-    }, { threshold: 0.6 }); // 60% de l'élément visible déclenche l'effet
+    }, { threshold: 0.6 });
 
     document.querySelectorAll('.project-frame-container').forEach(el => {
         projectObserver.observe(el);
@@ -151,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 3. LOGIQUE DU FORMULAIRE ET DES OFFRES (GOLD) ---
     window.preselectOffer = function(offerName) {
-        // 1. Mise à jour des boutons du formulaire
         const btns = document.querySelectorAll('.offer-btn');
         const hiddenInput = document.getElementById('selected-offer');
         if (hiddenInput) hiddenInput.value = offerName;
@@ -160,27 +158,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if(btn.dataset.value === offerName) btn.classList.add('selected-option');
         });
 
-        // 2. Animation GOLD sur les cartes
-        // Mapping simple entre le nom de l'offre et l'ID de la carte
         let cardId = '';
         if (offerName === 'Pack Essentiel') cardId = 'card-essentiel';
         else if (offerName === 'Pack Vitrine Artisan') cardId = 'card-vitrine';
         else if (offerName === 'Pack Premium') cardId = 'card-premium';
 
-        // Reset de toutes les cartes
         document.querySelectorAll('.pricing-card').forEach(card => {
             card.classList.remove('gold-selected-card');
-            // Retirer le badge s'il existe
             const badge = card.querySelector('.gold-badge');
             if(badge) badge.remove();
         });
 
-        // Appliquer le style Gold à la carte sélectionnée
         const selectedCard = document.getElementById(cardId);
         if (selectedCard) {
             selectedCard.classList.add('gold-selected-card');
-            
-            // Créer et ajouter le badge animé
             const badge = document.createElement('div');
             badge.className = 'gold-badge absolute -top-3 left-1/2 -translate-x-1/2 bg-gold-400 text-dark-950 font-bold text-xs px-3 py-1 rounded-full shadow-lg z-50 animate-pop-in flex items-center gap-1';
             badge.innerHTML = '<i class="ph-fill ph-star"></i> Pack Sélectionné';
@@ -198,6 +189,35 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.offer-btn').forEach(btn => {
         btn.addEventListener('click', () => preselectOffer(btn.dataset.value));
     });
+
+    // --- 3.1 LOGIQUE CHAMPS AVANCÉS ---
+    const toggleBtn = document.getElementById('toggle-details');
+    const advancedFields = document.getElementById('advanced-fields');
+    if (toggleBtn && advancedFields) {
+        toggleBtn.addEventListener('click', () => {
+            advancedFields.classList.remove('hidden');
+            toggleBtn.style.display = 'none'; // On cache le bouton après clic
+            // Animation simple d'apparition
+            advancedFields.style.opacity = '0';
+            advancedFields.style.transform = 'translateY(-10px)';
+            advancedFields.style.transition = 'all 0.5s ease';
+            setTimeout(() => {
+                advancedFields.style.opacity = '1';
+                advancedFields.style.transform = 'translateY(0)';
+            }, 50);
+        });
+    }
+
+    // Fonction utilitaire pour récupérer les valeurs des checkboxes
+    function getCheckedValues(name) {
+        return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
+            .map(cb => cb.value)
+            .join(', ');
+    }
+    function getRadioValue(name) {
+        const radio = document.querySelector(`input[name="${name}"]:checked`);
+        return radio ? radio.value : '';
+    }
 
     const form = document.getElementById('booking-form');
     if (form) {
@@ -231,14 +251,54 @@ document.addEventListener('DOMContentLoaded', () => {
                     successText.style.transform = 'translateY(0)';
                 }
 
-                const name = document.getElementById('user-name').value;
+                // Récupération des données standards
+                const prenom = document.getElementById('user-firstname').value;
+                const nom = document.getElementById('user-name').value;
                 const email = document.getElementById('user-email').value;
+                const telephone = document.getElementById('user-phone').value;
                 const offer = document.getElementById('selected-offer').value || "Aucun pack sélectionné";
                 const maintenance = document.getElementById('maintenance-toggle').checked ? "OUI (Pack Sérénité)" : "Non";
                 const userMsg = document.getElementById('user-message').value;
+
+                // Récupération des données avancées (si présentes)
+                const objectif = getCheckedValues('objectif');
+                const cible = getRadioValue('cible');
+                const action = getCheckedValues('action');
+                const pages = getCheckedValues('pages');
+                const inspirations = document.getElementById('field-inspirations').value;
+                const identite = getCheckedValues('identite');
+                const contenus = getCheckedValues('contenus');
+                const contraintes = document.getElementById('field-contraintes').value;
+                const delaiType = getRadioValue('delai');
+                const delaiDate = document.getElementById('delai-date').value;
+                const delaiFinal = delaiType === "Date précise" ? `Pour le ${delaiDate}` : delaiType;
+                const reussite = document.getElementById('field-reussite').value;
                 
-                const subject = `Nouveau Projet - ${name}`;
-                const body = `Nom: ${name}\nEmail: ${email}\nPack souhaité: ${offer}\nOption Maintenance: ${maintenance}\n\nRDV souhaité le ${date} à ${time}.\n\nMessage : ${userMsg}`;
+                const subject = `Nouveau Projet - ${prenom} ${nom}`;
+                
+                // Construction du corps de l'email structuré (Style "Google Form Response")
+                let body = `--- NOUVEAU PROJET ---\n\n`;
+                body += `👤 CLIENT\nNom : ${prenom} ${nom}\nEmail : ${email}\nTéléphone : ${telephone}\n\n`;
+                body += `📅 RENDEZ-VOUS\nDate : ${date}\nHeure : ${time}\n\n`;
+                body += `💎 OFFRE\nPack : ${offer}\nMaintenance : ${maintenance}\n\n`;
+                
+                // Ajout section avancée si remplie
+                if (objectif || cible || action || pages || inspirations || identite || contenus || contraintes || delaiType || reussite) {
+                    body += `📋 DÉTAILS DU PROJET (Formulaire Avancé)\n`;
+                    if(objectif) body += `1. Objectif : ${objectif}\n`;
+                    if(cible) body += `2. Cible : ${cible}\n`;
+                    if(action) body += `3. Action attendue : ${action}\n`;
+                    if(pages) body += `4. Pages : ${pages}\n`;
+                    if(inspirations) body += `5. Inspirations : ${inspirations}\n`;
+                    if(identite) body += `6. Identité visuelle : ${identite}\n`;
+                    if(contenus) body += `7. Contenus : ${contenus}\n`;
+                    if(contraintes) body += `8. Contraintes : ${contraintes}\n`;
+                    if(delaiFinal) body += `9. Délai : ${delaiFinal}\n`;
+                    if(reussite) body += `10. Critère de réussite : ${reussite}\n`;
+                    body += `\n`;
+                }
+
+                if(userMsg) body += `📝 MESSAGE SUPPLÉMENTAIRE\n${userMsg}`;
                 
                 setTimeout(() => {
                     window.location.href = `mailto:nathan.marzilli@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
