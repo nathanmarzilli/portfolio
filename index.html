@@ -409,7 +409,10 @@
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Optimisation mobile & performance</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Intégration des contenus fournis</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne clé en main</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Hébergement en option sous forme d'abonnement annuel</li>
+                        <li class="flex items-center gap-2 group cursor-help">
+                            <i class="ph-bold ph-info text-slate-500"></i>
+                            <span class="text-slate-200">Hébergement via OVH Cloud : <br><strong class="text-accent-400">~1.20€ / mois</strong> (Voir détails dans la section suivante)</span>
+                        </li>
                     </ul>
                     <a href="#contact" onclick="preselectOffer('Pack Essentiel')" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-colors font-medium relative z-10">Choisir</a>
                 </div>
@@ -426,7 +429,10 @@
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Formulaire de contact intégré</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne et responsive mobile & tablette</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne et configuration technique</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Hébergement en option sous forme d'abonnement annuel</li>
+                         <li class="flex items-center gap-2 group cursor-help">
+                            <i class="ph-bold ph-info text-slate-500"></i>
+                            <span class="text-slate-200">Hébergement via OVH Cloud : <br><strong class="text-accent-400">~1.20€ / mois</strong> (Voir détails dans la section suivante)</span>
+                        </li>
                     </ul>
                     <a href="#contact" onclick="preselectOffer('Pack Vitrine Artisan')" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10">Choisir</a>
                 </div>
@@ -442,9 +448,55 @@
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Statistiques & suivi de performance pour mesurer vos résultats</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Site responsive mobile & tablette</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Mise en ligne et configuration technique</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Hébergement en option sous forme d'abonnement annuel</li>
+                        <li class="flex items-center gap-2 group cursor-help">
+                            <i class="ph-bold ph-info text-slate-500"></i>
+                            <span class="text-slate-200">Hébergement via OVH Cloud : <br><strong class="text-purple-400">~4€ / mois</strong> (Voir détails dans la section suivante)</span>
+                        </li>
                     </ul>
                     <a href="#contact" onclick="preselectOffer('Pack Premium')" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10">Choisir</a>
+                </div>
+            </div>
+
+            <!-- OVH Explanation Block -->
+            <div class="mb-16 reveal interactive-hover">
+                <div class="glass-card p-6 md:p-8 rounded-3xl border border-white/10 bg-dark-900/50">
+                    <h3 class="text-xl font-display font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-cloud text-accent-400"></i> Pourquoi payer l'hébergement à part ?
+                    </h3>
+                    <p class="text-slate-400 text-sm mb-6 max-w-3xl">
+                        Pour que vous soyez <strong>100% propriétaire</strong> de votre site. Je ne prends aucune marge là-dessus. OVH Cloud est le leader français, sécurisé et fiable. C'est un abonnement que vous payez directement à l'hébergeur pour maintenir votre site en ligne et conserver votre nom de domaine.
+                    </p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Pack Starter -->
+                        <div class="p-4 rounded-xl bg-white/5 border border-white/5">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-bold text-white text-sm">Pour packs "Essentiel" & "Vitrine"</h4>
+                                <span class="text-accent-400 font-bold text-sm">~14.26€ <span class="text-xs font-normal text-slate-400">/an</span></span>
+                            </div>
+                            <p class="text-xs text-slate-500 mb-3">Offre OVH "Starter" (Idéal vitrine)</p>
+                            <ul class="text-xs text-slate-300 space-y-1">
+                                <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 1 Nom de domaine offert la 1ère année</li>
+                                <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 1 Go d'espace disque</li>
+                                <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 2 adresses e-mail professionnelles</li>
+                            </ul>
+                        </div>
+
+                        <!-- Pack Perso -->
+                        <div class="p-4 rounded-xl bg-white/5 border border-white/5">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-bold text-white text-sm">Pour pack "Premium"</h4>
+                                <span class="text-purple-400 font-bold text-sm">~47.38€ <span class="text-xs font-normal text-slate-400">/an</span></span>
+                            </div>
+                            <p class="text-xs text-slate-500 mb-3">Offre OVH "Perso" (Plus de puissance)</p>
+                            <ul class="text-xs text-slate-300 space-y-1">
+                                <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 1 Nom de domaine offert la 1ère année</li>
+                                <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 100 Go d'espace disque</li>
+                                <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 10 adresses e-mail professionnelles</li>
+                                <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Base de données & Modules en 1-clic</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
 
