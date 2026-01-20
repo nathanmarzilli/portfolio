@@ -85,9 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
-    // --- 1.1 MOBILE SCROLL OBSERVER (New Feature) ---
+    // --- 1.1 MOBILE & TABLET SCROLL OBSERVER ---
     const projectObserver = new IntersectionObserver((entries) => {
-        if (window.innerWidth < 768) { 
+        // Se déclenche pour Mobile ET Tablette (< 1024px)
+        if (window.innerWidth < 1024) { 
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('mobile-active');
@@ -110,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             PLANNING_DATA.days.forEach((dayObj, index) => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
-                btn.className = `flex-shrink-0 w-14 h-16 rounded-xl border border-white/10 bg-white/5 flex flex-col items-center justify-center hover:border-accent-400 transition-all focus:outline-none interactive-hover ${index === 0 ? 'ml-0' : ''}`;
+                btn.className = `date-btn flex-shrink-0 w-14 h-16 rounded-xl border border-white/10 bg-white/5 flex flex-col items-center justify-center hover:border-accent-400 transition-all focus:outline-none interactive-hover ${index === 0 ? 'ml-0' : ''}`;
                 
                 const dateParts = dayObj.date.split('-'); 
                 const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
@@ -148,11 +149,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     loadAvailability();
 
-    // --- 3. LOGIQUE DU FORMULAIRE ET DES OFFRES (GOLD) ---
+    // --- 3. LOGIQUE PRIX ET OFFRES (GOLD & SÉRÉNITÉ) ---
+    const PRICES = {
+        'Pack Essentiel': 900,
+        'Pack Vitrine Artisan': 1700,
+        'Pack Premium': 2500,
+        'Maintenance': 600
+    };
+    
+    function updateTotalDisplay() {
+        const selectedPack = document.getElementById('selected-offer').value;
+        const maintenanceChecked = document.getElementById('maintenance-toggle').checked;
+        const totalDisplay = document.getElementById('total-price-display');
+        
+        let total = 0;
+        if (selectedPack && PRICES[selectedPack]) {
+            total += PRICES[selectedPack];
+        }
+        if (maintenanceChecked) {
+            total += PRICES['Maintenance'];
+        }
+        
+        if (totalDisplay) {
+            totalDisplay.style.transform = 'scale(1.1)';
+            setTimeout(() => totalDisplay.style.transform = 'scale(1)', 150);
+            totalDisplay.innerText = total + '€';
+        }
+    }
+
     window.preselectOffer = function(offerName) {
         const btns = document.querySelectorAll('.offer-btn');
         const hiddenInput = document.getElementById('selected-offer');
         if (hiddenInput) hiddenInput.value = offerName;
+        
         btns.forEach(btn => {
             btn.classList.remove('selected-option');
             if(btn.dataset.value === offerName) btn.classList.add('selected-option');
@@ -177,11 +206,31 @@ document.addEventListener('DOMContentLoaded', () => {
             badge.innerHTML = '<i class="ph-fill ph-star"></i> Pack Sélectionné';
             selectedCard.appendChild(badge);
         }
+        
+        updateTotalDisplay();
     };
+    
+    const maintenanceToggle = document.getElementById('maintenance-toggle');
+    if (maintenanceToggle) {
+        maintenanceToggle.addEventListener('change', () => {
+            const cardSerenite = document.getElementById('card-serenite');
+            if (cardSerenite) {
+                if (maintenanceToggle.checked) {
+                    cardSerenite.classList.add('serenity-selected-card');
+                } else {
+                    cardSerenite.classList.remove('serenity-selected-card');
+                }
+            }
+            updateTotalDisplay();
+        });
+    }
     
     window.scrollToContactWithMaintenance = function() {
         const checkbox = document.getElementById('maintenance-toggle');
-        if (checkbox) checkbox.checked = true;
+        if (checkbox) {
+            checkbox.checked = true;
+            checkbox.dispatchEvent(new Event('change'));
+        }
         const contactSection = document.getElementById('contact');
         if (contactSection) contactSection.scrollIntoView({ behavior: 'smooth' });
     };
@@ -190,25 +239,35 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => preselectOffer(btn.dataset.value));
     });
 
-    // --- 3.1 LOGIQUE CHAMPS AVANCÉS ---
+    // --- 3.1 LOGIQUE CHAMPS AVANCÉS (TOGGLE) ---
     const toggleBtn = document.getElementById('toggle-details');
     const advancedFields = document.getElementById('advanced-fields');
     if (toggleBtn && advancedFields) {
         toggleBtn.addEventListener('click', () => {
-            advancedFields.classList.remove('hidden');
-            toggleBtn.style.display = 'none'; // On cache le bouton après clic
-            // Animation simple d'apparition
-            advancedFields.style.opacity = '0';
-            advancedFields.style.transform = 'translateY(-10px)';
-            advancedFields.style.transition = 'all 0.5s ease';
-            setTimeout(() => {
-                advancedFields.style.opacity = '1';
-                advancedFields.style.transform = 'translateY(0)';
-            }, 50);
+            const isHidden = advancedFields.classList.contains('hidden');
+            const icon = toggleBtn.querySelector('i');
+            const text = toggleBtn.querySelector('span');
+            
+            if (isHidden) {
+                advancedFields.classList.remove('hidden');
+                advancedFields.style.opacity = '0';
+                advancedFields.style.transform = 'translateY(-10px)';
+                advancedFields.style.transition = 'all 0.5s ease';
+                setTimeout(() => {
+                    advancedFields.style.opacity = '1';
+                    advancedFields.style.transform = 'translateY(0)';
+                }, 50);
+                
+                if(icon) icon.className = "ph-bold ph-minus-circle";
+                if(text) text.textContent = "Masquer les détails";
+            } else {
+                advancedFields.classList.add('hidden');
+                if(icon) icon.className = "ph-bold ph-plus-circle";
+                if(text) text.textContent = "Gagner du temps (Compléter mon projet)";
+            }
         });
     }
 
-    // Fonction utilitaire pour récupérer les valeurs des checkboxes
     function getCheckedValues(name) {
         return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
             .map(cb => cb.value)
@@ -251,7 +310,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     successText.style.transform = 'translateY(0)';
                 }
 
-                // Récupération des données standards
                 const prenom = document.getElementById('user-firstname').value;
                 const nom = document.getElementById('user-name').value;
                 const email = document.getElementById('user-email').value;
@@ -260,7 +318,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const maintenance = document.getElementById('maintenance-toggle').checked ? "OUI (Pack Sérénité)" : "Non";
                 const userMsg = document.getElementById('user-message').value;
 
-                // Récupération des données avancées (si présentes)
                 const objectif = getCheckedValues('objectif');
                 const cible = getRadioValue('cible');
                 const action = getCheckedValues('action');
@@ -276,13 +333,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const subject = `Nouveau Projet - ${prenom} ${nom}`;
                 
-                // Construction du corps de l'email structuré (Style "Google Form Response")
                 let body = `--- NOUVEAU PROJET ---\n\n`;
                 body += `👤 CLIENT\nNom : ${prenom} ${nom}\nEmail : ${email}\nTéléphone : ${telephone}\n\n`;
                 body += `📅 RENDEZ-VOUS\nDate : ${date}\nHeure : ${time}\n\n`;
-                body += `💎 OFFRE\nPack : ${offer}\nMaintenance : ${maintenance}\n\n`;
+                body += `💎 OFFRE & BUDGET\nPack : ${offer}\nMaintenance : ${maintenance}\nTotal Estimé : ${document.getElementById('total-price-display').innerText}\n\n`;
                 
-                // Ajout section avancée si remplie
                 if (objectif || cible || action || pages || inspirations || identite || contenus || contraintes || delaiType || reussite) {
                     body += `📋 DÉTAILS DU PROJET (Formulaire Avancé)\n`;
                     if(objectif) body += `1. Objectif : ${objectif}\n`;
@@ -321,7 +376,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Fermeture du menu mobile lors du clic sur un lien
     document.querySelectorAll('.mobile-link').forEach(link => {
         link.addEventListener('click', () => {
             if (menu) menu.classList.add('translate-x-full');
@@ -333,7 +387,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Animation au défilement (Reveal)
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => { 
             if (entry.isIntersecting) {
@@ -343,7 +396,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // Mise à jour automatique de l'année
     const yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 });

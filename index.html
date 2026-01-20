@@ -97,6 +97,14 @@
             background: linear-gradient(to bottom right, rgba(251, 191, 36, 0.05), rgba(30, 41, 59, 0.4)) !important;
             transform: translateY(-5px) scale(1.02);
         }
+        
+        /* Style spécifique pour Sérénité (Bleu) quand sélectionné */
+        .serenity-selected-card {
+            border-color: #60A5FA !important; /* Blue 400 */
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.15) !important;
+            background: linear-gradient(to bottom right, rgba(96, 165, 250, 0.1), rgba(30, 41, 59, 0.5)) !important;
+            transform: translateY(-3px) scale(1.01);
+        }
 
         /* Styles Mobile Active pour les Projets (Scroll) */
         .mobile-active .iframe-overlay {
@@ -125,6 +133,11 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+        }
+        
+        /* Date button Hover fix */
+        .date-btn:hover {
+            border-width: 2px;
         }
     </style>
 </head>
@@ -256,9 +269,15 @@
                 <div class="reveal delay-100 pt-8">
                     <div class="glass-card p-8 rounded-3xl border border-white/10 relative overflow-hidden interactive-hover">
                         <i class="ph-duotone ph-quotes text-6xl text-accent-400/20 absolute top-4 right-4"></i>
-                        <h3 class="text-xl font-bold text-white mb-4">Ma philosophie</h3>
+                        <h3 class="text-xl font-bold text-white mb-4">Ma philosophie : L'Efficacité</h3>
                         <p class="text-slate-400 text-sm leading-relaxed mb-6">
-                            "Un site web ne doit pas être une dépense, mais un investissement. Comme dans l'immobilier, je construis des fondations solides (code propre) pour que la valeur de votre présence en ligne augmente avec le temps (SEO)."
+                            Mon objectif est simple : répondre à vos besoins avec précision et rapidité.
+                            <br><br>
+                            <strong>Lundi :</strong> Démarrage du projet.<br>
+                            <strong>Mardi soir :</strong> Livraison de la première version.<br>
+                            <strong>Mercredi :</strong> Vos retours et ajustements.<br>
+                            <strong>Jeudi :</strong> Finitions et mise en ligne.<br><br>
+                            Un processus rodé pour garantir qualité et satisfaction, sans perte de temps.
                         </p>
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-accent-400 flex items-center justify-center text-dark-950 font-bold">N</div>
@@ -319,28 +338,28 @@
                         <div class="space-y-4">
                             <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5">
                                 <div class="flex items-center gap-3">
-                                    <span class="text-xl">🇫🇷</span>
+                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full">FR</span>
                                     <span class="text-sm font-bold text-white">Français</span>
                                 </div>
                                 <span class="text-xs text-accent-400 font-medium bg-accent-400/10 px-2 py-1 rounded">Langue maternelle</span>
                             </div>
                             <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5">
                                 <div class="flex items-center gap-3">
-                                    <span class="text-xl">🇮🇹</span>
+                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full">IT</span>
                                     <span class="text-sm font-bold text-white">Italien</span>
                                 </div>
                                 <span class="text-xs text-green-400 font-medium bg-green-400/10 px-2 py-1 rounded">Courant</span>
                             </div>
                             <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5">
                                 <div class="flex items-center gap-3">
-                                    <span class="text-xl">🇬🇧</span>
+                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full">EN</span>
                                     <span class="text-sm font-bold text-white">Anglais</span>
                                 </div>
                                 <span class="text-xs text-blue-400 font-medium bg-blue-400/10 px-2 py-1 rounded">C1 - Avancé</span>
                             </div>
                             <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5">
                                 <div class="flex items-center gap-3">
-                                    <span class="text-xl">🇯🇵</span>
+                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full">JP</span>
                                     <span class="text-sm font-bold text-white">Japonais</span>
                                 </div>
                                 <span class="text-xs text-slate-400 font-medium bg-slate-400/10 px-2 py-1 rounded">Notions</span>
@@ -432,7 +451,7 @@
             <!-- Maintenance & One-Shot -->
             <div class="grid md:grid-cols-2 gap-8 reveal">
                 <!-- Pack Sérénité -->
-                <div class="glass-card p-8 rounded-3xl border border-blue-500/20 bg-blue-500/5 interactive-hover flex flex-col justify-between">
+                <div class="glass-card p-8 rounded-3xl border border-blue-500/20 bg-blue-500/5 interactive-hover flex flex-col justify-between transition-all duration-300" id="card-serenite">
                     <div>
                         <div class="flex items-center gap-3 mb-4">
                             <i class="ph-duotone ph-shield-check text-3xl text-blue-400"></i>
@@ -525,6 +544,12 @@
                                 <label for="maintenance-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-dark-900 cursor-pointer border border-white/10"></label>
                             </div>
                         </div>
+                        
+                        <!-- Total Estimé (Dynamique) -->
+                        <div class="py-3 border-y border-white/10 flex justify-between items-center">
+                            <span class="text-sm text-slate-400">Total estimé :</span>
+                            <span id="total-price-display" class="text-xl font-bold text-accent-400">0€</span>
+                        </div>
 
                         <!-- 3. Disponibilités -->
                         <div>
@@ -539,19 +564,19 @@
                         <!-- 4. Infos Utilisateur (Nouveau Layout) -->
                         <div class="space-y-3">
                             <div class="grid grid-cols-2 gap-3">
-                                <input type="text" id="user-firstname" placeholder="Prénom" required class="bg-dark-950/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-accent-400 focus:outline-none interactive-hover">
-                                <input type="text" id="user-name" placeholder="Nom" required class="bg-dark-950/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-accent-400 focus:outline-none interactive-hover">
+                                <input type="text" id="user-firstname" placeholder="Prénom (Obligatoire)" required class="bg-dark-950/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-accent-400 focus:outline-none interactive-hover w-full">
+                                <input type="text" id="user-name" placeholder="Nom (Obligatoire)" required class="bg-dark-950/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-accent-400 focus:outline-none interactive-hover w-full">
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <input type="email" id="user-email" placeholder="Email (Vital pour réponse)" required class="bg-dark-950/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-accent-400 focus:outline-none interactive-hover">
-                                <input type="tel" id="user-phone" placeholder="Téléphone (Obligatoire)" required class="bg-dark-950/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-accent-400 focus:outline-none interactive-hover">
+                                <input type="email" id="user-email" placeholder="Email (format: nom@example.com)" required class="bg-dark-950/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-accent-400 focus:outline-none interactive-hover w-full">
+                                <input type="tel" id="user-phone" placeholder="Téléphone (format: 06 12 34 56 78)" required class="bg-dark-950/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-accent-400 focus:outline-none interactive-hover w-full">
                             </div>
                         </div>
 
                         <!-- Bouton Toggle Champs Avancés -->
                         <div class="text-center pt-2">
                             <button type="button" id="toggle-details" class="text-xs text-accent-400 font-bold uppercase tracking-wider hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto">
-                                <i class="ph-bold ph-plus-circle"></i> Gagner du temps (Compléter mon projet)
+                                <i class="ph-bold ph-plus-circle"></i> <span>Gagner du temps (Compléter mon projet)</span>
                             </button>
                         </div>
 
