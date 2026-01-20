@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr" class="scroll-smooth overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nathan Marzilli | Artisan Web & Développeur - France / Suisse</title>
-    <meta name="description" content="Artisan développeur web indépendant. Création de sites sur-mesure entre Évian et Lausanne.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nathan Marzilli | Expert Web & Ingénieur - France / Suisse</title>
+    <meta name="description" content="Ingénieur développeur web (14 ans d'expérience). Création de sites sur-mesure entre Évian et Lausanne.">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -56,7 +56,7 @@
     </script>
 
     <style>
-        body { background-color: #020617; color: #E2E8F0; overflow-x: hidden; }
+        body { background-color: #020617; color: #E2E8F0; overflow-x: hidden; width: 100%; }
         .nav-glass { background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
         .reveal { opacity: 0; transform: translateY(20px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
@@ -135,9 +135,37 @@
             gap: 0.5rem;
         }
         
-        /* Date button Hover fix */
+        /* Correction Bug Date Hover : Ajout padding container et border explicite */
         .date-btn:hover {
-            border-width: 2px;
+            border-color: #2DD4BF;
+        }
+        
+        /* Mobile Premium Button Fix: Prevent Stuck Hover */
+        @media (hover: none) {
+            .pricing-card a:hover {
+                background-color: inherit;
+                color: inherit;
+                border-color: rgba(255, 255, 255, 0.1);
+            }
+            .pricing-card a.selected-option {
+                background-color: #2DD4BF !important;
+                color: #020617 !important;
+            }
+        }
+        
+        /* Hébergement Accordéon */
+        #hosting-content {
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        #hosting-content.open {
+            max-height: 1000px; /* Valeur arbitraire suffisante */
+            opacity: 1;
+        }
+        .rotate-chevron {
+            transform: rotate(180deg);
         }
     </style>
 </head>
@@ -146,11 +174,11 @@
     <!-- Navigation -->
     <nav class="fixed w-full z-50 nav-glass transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 md:px-6 h-20 flex justify-between items-center">
-            <a href="#" class="font-display font-bold text-lg tracking-wide text-white flex items-center gap-3 group">
-                <div class="relative w-10 h-10 rounded-full overflow-hidden border border-white/10 group-hover:border-accent-400 transition-colors">
+            <a href="#" class="font-display font-bold text-lg tracking-wide text-white flex items-center gap-3 group shrink-0">
+                <div class="relative w-10 h-10 rounded-full overflow-hidden border border-white/10 group-hover:border-accent-400 transition-colors shrink-0">
                     <img src="images/profile.jpg" alt="Nathan" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=Nathan+Marzilli&background=0B1120&color=2DD4BF'">
                 </div>
-                <div class="leading-tight">
+                <div class="leading-tight truncate max-w-[120px] md:max-w-none">
                     Nathan Marzilli
                     <span class="block text-[10px] text-accent-400 font-normal uppercase tracking-wider">Artisan Web</span>
                 </div>
@@ -167,13 +195,13 @@
             </div>
 
             <!-- Mobile Controls -->
-            <div class="flex items-center gap-3 md:hidden z-50">
-                <a href="#contact" class="px-3 py-2 rounded-full bg-accent-400 text-dark-950 font-bold text-[10px] uppercase tracking-wider shadow-lg shadow-accent-400/20">Réserver</a>
+            <div class="flex items-center gap-3 md:hidden z-50 shrink-0">
+                <a href="#contact" class="px-3 py-2 rounded-full bg-accent-400 text-dark-950 font-bold text-[10px] uppercase tracking-wider shadow-lg shadow-accent-400/20 whitespace-nowrap">Réserver</a>
                 <button id="mobile-menu-btn" class="text-white p-1"><i class="ph ph-list text-2xl"></i></button>
             </div>
         </div>
 
-        <!-- Mobile Menu (FIXED: Background solid opaque) -->
+        <!-- Mobile Menu -->
         <div id="mobile-menu" class="fixed inset-x-0 top-[80px] h-[calc(100vh-80px)] bg-[#020617] transform translate-x-full transition-transform duration-500 md:hidden flex flex-col justify-start pt-12 items-center space-y-8 z-40 border-t border-white/5">
             <a href="#about" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">L'Artisan</a>
             <a href="#skills" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">Expertise</a>
@@ -223,44 +251,47 @@
                 <div class="reveal">
                     <span class="text-accent-400 font-display font-bold tracking-widest uppercase text-sm mb-4 block">L'Homme derrière le code</span>
                     <h2 class="font-display text-4xl font-bold text-white mb-6">
-                        Un développeur engagé,<br>
-                        <span class="text-slate-500">partenaire de votre réussite digitale.</span>
+                        Expertise & Confiance,<br>
+                        <span class="text-slate-500">au service de votre réussite.</span>
                     </h2>
                     
                     <div class="prose prose-invert prose-lg text-slate-400 mb-8">
                         <p>
-                            Je suis <strong>Nathan Marzilli</strong>. Artisan web, mais avant tout un homme passionné qui aime les choses bien faites. Je ne suis pas une agence anonyme, je suis la personne qui répondra au téléphone quand vous aurez besoin d'aide.
+                            Je suis <strong>Nathan Marzilli</strong>. Fort de <strong>14 ans d'expérience</strong> dans le développement web, je suis <strong>Ingénieur Diplômé (CTI)</strong> en Informatique et Réseaux de Télécommunications.
+                        </p>
+                        <p class="mt-4">
+                            Après avoir exercé dans de très grands groupes internationaux, j'ai choisi de mettre cette rigueur et ce savoir-faire technique au service de vos projets. Avec moi, vous n'achetez pas seulement un site, mais la tranquillité d'esprit d'un travail professionnel, fiable et durable.
                         </p>
                     </div>
 
                     <!-- Badges avec effet "Wow" -->
                     <div class="grid grid-cols-2 gap-4">
                         <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 interactive-hover cursor-default">
-                            <i class="ph-duotone ph-buildings text-2xl text-orange-400"></i>
+                            <i class="ph-duotone ph-student text-2xl text-orange-400"></i>
                             <div>
-                                <div class="text-white font-bold text-sm">Investisseur</div>
-                                <div class="text-xs text-slate-500">Gestion immobilière</div>
+                                <div class="text-white font-bold text-sm">Diplômé CTI</div>
+                                <div class="text-xs text-slate-500">Ingénieur Informatique</div>
                             </div>
                         </div>
                         <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 interactive-hover cursor-default">
-                            <i class="ph-duotone ph-baby text-2xl text-pink-400"></i>
+                            <i class="ph-duotone ph-briefcase text-2xl text-pink-400"></i>
                             <div>
-                                <div class="text-white font-bold text-sm">Famille</div>
-                                <div class="text-xs text-slate-500">Papa de 2 enfants</div>
+                                <div class="text-white font-bold text-sm">Expert</div>
+                                <div class="text-xs text-slate-500">14 ans d'expérience</div>
                             </div>
                         </div>
                         <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 interactive-hover cursor-default">
-                            <i class="ph-duotone ph-camera text-2xl text-purple-400"></i>
+                            <i class="ph-duotone ph-buildings text-2xl text-purple-400"></i>
                             <div>
-                                <div class="text-white font-bold text-sm">Créatif</div>
-                                <div class="text-xs text-slate-500">Passion Photo</div>
+                                <div class="text-white font-bold text-sm">Grands Comptes</div>
+                                <div class="text-xs text-slate-500">Expérience Corporate</div>
                             </div>
                         </div>
                         <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 interactive-hover cursor-default">
-                            <i class="ph-duotone ph-tennis-ball text-2xl text-emerald-400"></i>
+                            <i class="ph-duotone ph-handshake text-2xl text-emerald-400"></i>
                             <div>
-                                <div class="text-white font-bold text-sm">Sportif</div>
-                                <div class="text-xs text-slate-500">Sports de raquettes</div>
+                                <div class="text-white font-bold text-sm">Partenaire</div>
+                                <div class="text-xs text-slate-500">Pro & Fiable</div>
                             </div>
                         </div>
                     </div>
@@ -280,7 +311,8 @@
                             Un processus rodé pour garantir qualité et satisfaction, sans perte de temps.
                         </p>
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-accent-400 flex items-center justify-center text-dark-950 font-bold">N</div>
+                            <div class="w-10 h-10 rounded-full bg-accent-400 flex items-center justify-center text-dark-950 font-bold 
+								transform transition-transform duration-300 hover:scale-110 hover:rotate-3">N</div>
                             <div class="text-sm font-medium text-white">Nathan M.</div>
                         </div>
                     </div>
@@ -289,7 +321,7 @@
         </div>
     </section>
 
-    <!-- Technologies & Expertise (New Section) -->
+    <!-- Technologies & Expertise -->
     <section id="skills" class="py-12 bg-dark-950 border-b border-white/5">
         <div class="max-w-6xl mx-auto px-6">
             <div class="glass-card p-8 rounded-3xl border border-white/5 bg-white/5">
@@ -336,28 +368,28 @@
                             La barrière de la langue ne doit pas être un frein. Je peux créer votre site en plusieurs langues et communiquer avec vos équipes internationales.
                         </p>
                         <div class="space-y-4">
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5">
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover">
                                 <div class="flex items-center gap-3">
                                     <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full">FR</span>
                                     <span class="text-sm font-bold text-white">Français</span>
                                 </div>
                                 <span class="text-xs text-accent-400 font-medium bg-accent-400/10 px-2 py-1 rounded">Langue maternelle</span>
                             </div>
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5">
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover">
                                 <div class="flex items-center gap-3">
                                     <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full">IT</span>
                                     <span class="text-sm font-bold text-white">Italien</span>
                                 </div>
                                 <span class="text-xs text-green-400 font-medium bg-green-400/10 px-2 py-1 rounded">Courant</span>
                             </div>
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5">
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover">
                                 <div class="flex items-center gap-3">
                                     <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full">EN</span>
                                     <span class="text-sm font-bold text-white">Anglais</span>
                                 </div>
                                 <span class="text-xs text-blue-400 font-medium bg-blue-400/10 px-2 py-1 rounded">C1 - Avancé</span>
                             </div>
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5">
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover">
                                 <div class="flex items-center gap-3">
                                     <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full">JP</span>
                                     <span class="text-sm font-bold text-white">Japonais</span>
@@ -409,9 +441,9 @@
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Optimisation mobile & performance</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Intégration des contenus fournis</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne clé en main</li>
-                        <li class="flex items-center gap-2 group cursor-help">
-                            <i class="ph-bold ph-info text-slate-500"></i>
-                            <span class="text-slate-200">Hébergement via OVH Cloud : <br><strong class="text-accent-400">~1.20€ / mois</strong> (Voir détails dans la section suivante)</span>
+                        <li class="flex items-center gap-2 group cursor-pointer" onclick="toggleHosting(true)">
+                            <i class="ph-bold ph-info text-slate-500 group-hover:text-accent-400 transition-colors"></i>
+                            <span class="text-slate-200">Hébergement via OVH Cloud : <br><strong class="text-accent-400 border-b border-dashed border-accent-400/50">~1.20€ / mois</strong></span>
                         </li>
                     </ul>
                     <a href="#contact" onclick="preselectOffer('Pack Essentiel')" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-colors font-medium relative z-10">Choisir</a>
@@ -429,9 +461,9 @@
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Formulaire de contact intégré</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne et responsive mobile & tablette</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne et configuration technique</li>
-                         <li class="flex items-center gap-2 group cursor-help">
-                            <i class="ph-bold ph-info text-slate-500"></i>
-                            <span class="text-slate-200">Hébergement via OVH Cloud : <br><strong class="text-accent-400">~1.20€ / mois</strong> (Voir détails dans la section suivante)</span>
+                         <li class="flex items-center gap-2 group cursor-pointer" onclick="toggleHosting(true)">
+                            <i class="ph-bold ph-info text-slate-500 group-hover:text-accent-400 transition-colors"></i>
+                            <span class="text-slate-200">Hébergement via OVH Cloud : <br><strong class="text-accent-400 border-b border-dashed border-accent-400/50">~1.20€ / mois</strong></span>
                         </li>
                     </ul>
                     <a href="#contact" onclick="preselectOffer('Pack Vitrine Artisan')" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10">Choisir</a>
@@ -448,53 +480,63 @@
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Statistiques & suivi de performance pour mesurer vos résultats</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Site responsive mobile & tablette</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Mise en ligne et configuration technique</li>
-                        <li class="flex items-center gap-2 group cursor-help">
-                            <i class="ph-bold ph-info text-slate-500"></i>
-                            <span class="text-slate-200">Hébergement via OVH Cloud : <br><strong class="text-purple-400">~4€ / mois</strong> (Voir détails dans la section suivante)</span>
+                        <li class="flex items-center gap-2 group cursor-pointer" onclick="toggleHosting(true)">
+                            <i class="ph-bold ph-info text-slate-500 group-hover:text-purple-400 transition-colors"></i>
+                            <span class="text-slate-200">Hébergement via OVH Cloud : <br><strong class="text-purple-400 border-b border-dashed border-purple-400/50">~4€ / mois</strong></span>
                         </li>
                     </ul>
                     <a href="#contact" onclick="preselectOffer('Pack Premium')" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10">Choisir</a>
                 </div>
             </div>
 
-            <!-- OVH Explanation Block -->
-            <div class="mb-16 reveal interactive-hover">
-                <div class="glass-card p-6 md:p-8 rounded-3xl border border-white/10 bg-dark-900/50">
-                    <h3 class="text-xl font-display font-bold text-white mb-4 flex items-center gap-2">
-                        <i class="ph-duotone ph-cloud text-accent-400"></i> Pourquoi payer l'hébergement à part ?
-                    </h3>
-                    <p class="text-slate-400 text-sm mb-6 max-w-3xl">
-                        Pour que vous soyez <strong>100% propriétaire</strong> de votre site. Je ne prends aucune marge là-dessus. OVH Cloud est le leader français, sécurisé et fiable. C'est un abonnement que vous payez directement à l'hébergeur pour maintenir votre site en ligne et conserver votre nom de domaine.
-                    </p>
-                    
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <!-- Pack Starter -->
-                        <div class="p-4 rounded-xl bg-white/5 border border-white/5">
-                            <div class="flex justify-between items-start mb-2">
-                                <h4 class="font-bold text-white text-sm">Pour packs "Essentiel" & "Vitrine"</h4>
-                                <span class="text-accent-400 font-bold text-sm">~14.26€ <span class="text-xs font-normal text-slate-400">/an</span></span>
-                            </div>
-                            <p class="text-xs text-slate-500 mb-3">Offre OVH "Starter" (Idéal vitrine)</p>
-                            <ul class="text-xs text-slate-300 space-y-1">
-                                <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 1 Nom de domaine offert la 1ère année</li>
-                                <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 1 Go d'espace disque</li>
-                                <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 2 adresses e-mail professionnelles</li>
-                            </ul>
-                        </div>
+            <!-- OVH Explanation Block (Accordion) -->
+            <div class="mb-16 reveal" id="hosting-section">
+                <div class="glass-card rounded-3xl border border-white/10 bg-dark-900/50 overflow-hidden">
+                    <!-- Header Accordion -->
+                    <div class="p-6 md:p-8 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors" onclick="toggleHosting()">
+                        <h3 class="text-xl font-display font-bold text-white flex items-center gap-2">
+                            <i class="ph-duotone ph-cloud text-accent-400"></i> Pourquoi payer l'hébergement à part ?
+                        </h3>
+                        <i id="hosting-chevron" class="ph-bold ph-caret-down text-white text-xl transition-transform duration-300"></i>
+                    </div>
 
-                        <!-- Pack Perso -->
-                        <div class="p-4 rounded-xl bg-white/5 border border-white/5">
-                            <div class="flex justify-between items-start mb-2">
-                                <h4 class="font-bold text-white text-sm">Pour pack "Premium"</h4>
-                                <span class="text-purple-400 font-bold text-sm">~47.38€ <span class="text-xs font-normal text-slate-400">/an</span></span>
+                    <!-- Content Accordion -->
+                    <div id="hosting-content">
+                        <div class="p-6 md:p-8 pt-0">
+                            <p class="text-slate-400 text-sm mb-6 max-w-3xl">
+                                Pour que vous soyez <strong>100% propriétaire</strong> de votre site. Je ne prends aucune marge là-dessus. OVH Cloud est le leader français, sécurisé et fiable. C'est un abonnement que vous payez directement à l'hébergeur pour maintenir votre site en ligne et conserver votre nom de domaine.
+                            </p>
+                            
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <!-- Pack Starter -->
+                                <div class="p-4 rounded-xl bg-white/5 border border-white/5">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h4 class="font-bold text-white text-sm">Pour packs "Essentiel" & "Vitrine"</h4>
+                                        <span class="text-accent-400 font-bold text-sm">~14.26€ <span class="text-xs font-normal text-slate-400">/an</span></span>
+                                    </div>
+                                    <p class="text-xs text-slate-500 mb-3">Offre OVH "Starter" (Idéal vitrine)</p>
+                                    <ul class="text-xs text-slate-300 space-y-1">
+                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 1 Nom de domaine offert la 1ère année</li>
+                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 1 Go d'espace disque</li>
+                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 2 adresses e-mail professionnelles</li>
+                                    </ul>
+                                </div>
+
+                                <!-- Pack Perso -->
+                                <div class="p-4 rounded-xl bg-white/5 border border-white/5">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h4 class="font-bold text-white text-sm">Pour pack "Premium"</h4>
+                                        <span class="text-purple-400 font-bold text-sm">~47.38€ <span class="text-xs font-normal text-slate-400">/an</span></span>
+                                    </div>
+                                    <p class="text-xs text-slate-500 mb-3">Offre OVH "Perso" (Plus de puissance)</p>
+                                    <ul class="text-xs text-slate-300 space-y-1">
+                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 1 Nom de domaine offert la 1ère année</li>
+                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 100 Go d'espace disque</li>
+                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 10 adresses e-mail professionnelles</li>
+                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Base de données & Modules en 1-clic</li>
+                                    </ul>
+                                </div>
                             </div>
-                            <p class="text-xs text-slate-500 mb-3">Offre OVH "Perso" (Plus de puissance)</p>
-                            <ul class="text-xs text-slate-300 space-y-1">
-                                <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 1 Nom de domaine offert la 1ère année</li>
-                                <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 100 Go d'espace disque</li>
-                                <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 10 adresses e-mail professionnelles</li>
-                                <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Base de données & Modules en 1-clic</li>
-                            </ul>
                         </div>
                     </div>
                 </div>
@@ -543,29 +585,29 @@
     </section>
 
     <!-- Contact -->
-    <footer id="contact" class="py-20 border-t border-white/5 bg-dark-900 relative">
+    <footer id="contact" class="py-20 border-t border-white/5 bg-dark-900 relative overflow-hidden">
         <div class="max-w-6xl mx-auto px-6">
             <div class="grid lg:grid-cols-2 gap-16">
                 <!-- Contact Infos -->
-                <div>
+                <div class="w-full">
                     <h3 class="font-display text-4xl font-bold text-white mb-4">Parlons Concret</h3>
                     <p class="text-slate-400 mb-8">
                         Sélectionnez un créneau ci-contre. Je vous appellerai personnellement pour comprendre votre besoin.
                     </p>
-                    <div class="space-y-4 mb-8">
-                        <a href="mailto:nathan.marzilli@gmail.com" class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors interactive-hover">
-                            <i class="ph-fill ph-envelope-simple text-2xl text-accent-400"></i>
-                            <span class="text-slate-300">nathan.marzilli@gmail.com</span>
+                    <div class="space-y-4 mb-8 w-full">
+                        <a href="mailto:nathan.marzilli@gmail.com" class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors interactive-hover w-full overflow-hidden">
+                            <i class="ph-fill ph-envelope-simple text-2xl text-accent-400 shrink-0"></i>
+                            <span class="text-slate-300 truncate text-sm sm:text-base">nathan.marzilli@gmail.com</span>
                         </a>
-                        <div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 interactive-hover">
-                            <i class="ph-fill ph-map-pin text-2xl text-accent-400"></i>
-                            <span class="text-slate-300">74500 Évian-les-Bains / Lausanne</span>
+                        <div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 interactive-hover w-full">
+                            <i class="ph-fill ph-map-pin text-2xl text-accent-400 shrink-0"></i>
+                            <span class="text-slate-300 text-sm sm:text-base">74500 Évian-les-Bains / Lausanne</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Formulaire Amélioré -->
-                <div class="glass-card p-6 md:p-8 rounded-3xl border border-white/10">
+                <div class="glass-card p-6 md:p-8 rounded-3xl border border-white/10 w-full">
                     <form id="booking-form" class="space-y-6">
                         
                         <!-- 1. Selection Pack (Boutons) -->
@@ -606,7 +648,7 @@
                         <!-- 3. Disponibilités -->
                         <div>
                             <label class="block text-sm font-bold text-white mb-2">Disponibilités</label>
-                            <div class="flex gap-2 mb-3 overflow-x-auto pb-2 scrollbar-hide" id="date-container"></div>
+                            <div class="flex gap-2 mb-3 overflow-x-auto pb-2 scrollbar-hide p-1" id="date-container"></div>
                             <div class="grid grid-cols-4 gap-2" id="slots-container">
                                 <span class="col-span-4 text-xs text-slate-500 italic">Sélectionnez une date ci-dessus.</span>
                             </div>

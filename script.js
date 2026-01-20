@@ -268,6 +268,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- 3.2 LOGIQUE ACCORDÉON HÉBERGEMENT ---
+    window.toggleHosting = function(scroll = false) {
+        const content = document.getElementById('hosting-content');
+        const chevron = document.getElementById('hosting-chevron');
+        const section = document.getElementById('hosting-section');
+
+        if (content) {
+            // Vérifie si déjà ouvert
+            const isOpen = content.classList.contains('open');
+
+            if (isOpen && !scroll) {
+                // Si déjà ouvert et on ne demande pas de scroll forcé (clic titre), on ferme
+                content.classList.remove('open');
+                if (chevron) chevron.classList.remove('rotate-chevron');
+            } else {
+                // Sinon on ouvre
+                content.classList.add('open');
+                if (chevron) chevron.classList.add('rotate-chevron');
+                
+                // Si demandé via le bouton 'i', on scroll
+                if (scroll && section) {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        }
+    };
+
     function getCheckedValues(name) {
         return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
             .map(cb => cb.value)
