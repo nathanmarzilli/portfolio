@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bail Meublé 2026 | Éditeur Pro</title>
+    <meta name="description" content="Générateur de bail meublé conforme Loi ALUR - Design & Performance.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] },
+                    colors: {
+                        dark: { 950: '#020617', 900: '#0B1120', 800: '#1E293B' },
+                        accent: { 400: '#2DD4BF', 500: '#14B8A6', glow: 'rgba(45, 212, 191, 0.2)' },
+                        paper: '#ffffff'
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Styles Globaux & Scrollbar */
+        body { background-color: #020617; color: #E2E8F0; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2DD4BF; }
+
+        /* Glassmorphism Cards */
+        .glass-card { 
+            background: rgba(30, 41, 59, 0.3); 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(12px); 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Inputs Styling */
+        .input-pro {
+            background-color: rgba(2, 6, 23, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+            width: 100%;
+            border-radius: 0.75rem; /* rounded-xl */
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+        }
+        .input-pro:focus {
+            border-color: #2DD4BF;
+            box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2);
+            outline: none;
+            background-color: rgba(2, 6, 23, 0.8);
+        }
+        .input-pro::placeholder { color: #64748b; }
+        .input-readonly { background-color: rgba(255,255,255,0.05); color: #94a3b8; cursor: not-allowed; border-color: transparent; }
+
+        /* Labels */
+        .label-pro {
+            display: flex; align-items: center; gap: 0.5rem;
+            font-size: 0.8rem; font-weight: 600; color: #cbd5e1;
+            margin-bottom: 0.5rem; letter-spacing: 0.02em;
+        }
+        .label-pro i { color: #2DD4BF; font-size: 1.1rem; }
+
+        /* Section Titles */
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem; font-weight: 700; color: white;
+            margin-top: 2rem; margin-bottom: 1.5rem;
+            display: flex; items-center; gap: 0.75rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Toggle Buttons */
+        .btn-toggle-section {
+            width: 100%; text-align: left;
+            background: rgba(255,255,255,0.03);
+            border: 1px dashed rgba(255,255,255,0.1);
+            color: #94a3b8;
+            padding: 1rem; rounded-xl;
+            transition: all 0.3s;
+            display: flex; justify-content: space-between; align-items: center;
+            font-weight: 500;
+        }
+        .btn-toggle-section:hover { background: rgba(255,255,255,0.05); border-color: #2DD4BF; color: white; }
+        .btn-toggle-section.active { background: rgba(45, 212, 191, 0.1); border-color: #2DD4BF; color: #2DD4BF; }
+
+        /* Signature Canvas */
+        .sig-canvas {
+            background: #ffffff; /* Fond blanc obligatoire pour PDF */
+            border-radius: 0.75rem;
+            cursor: crosshair;
+            width: 100%; height: 120px;
+            touch-action: none;
+            border: 2px dashed #cbd5e1;
+        }
+
+        /* PDF Preview (Paper style) */
+        #pdf-content {
+            background: white; color: black;
+            font-family: 'Times New Roman', serif;
+            font-size: 10pt; line-height: 1.3;
+            padding: 15mm;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            width: 210mm; min-height: 297mm;
+            margin: 0 auto;
+        }
+        
+        /* Helper classes for PDF generation consistency */
+        .pdf-section-title { background: #f3f4f6; font-weight: bold; padding: 4px; border: 1px solid #000; margin-top: 15px; margin-bottom: 5px; font-size: 11pt; text-transform: uppercase; }
+        .pdf-row { display: flex; margin-bottom: 2px; }
+        .pdf-lbl { font-weight: bold; width: 170px; flex-shrink: 0; }
+        .pdf-val { flex-grow: 1; font-family: Arial, sans-serif; font-size: 10pt; }
+        .avoid-break { page-break-inside: avoid; }
+        .clause-text { text-align: justify; margin-bottom: 5px; font-size: 9.5pt; }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 1024px) {
+            .preview-col { display: none; } /* On cache la preview sur mobile */
+            .mobile-bottom-bar {
+                position: fixed; bottom: 0; left: 0; right: 0;
+                background: rgba(2, 6, 23, 0.95);
+                backdrop-filter: blur(10px);
+                border-top: 1px solid rgba(255,255,255,0.1);
+                padding: 1rem; z-index: 50;
+            }
+            /* Hidden container for PDF gen on mobile */
+            #pdf-hidden-container {
+                position: absolute; left: -9999px; top: 0; width: 210mm;
+            }
+        }
+        @media (min-width: 1025px) {
+            .mobile-bottom-bar { display: none; }
+            #pdf-hidden-container { display: none; } /* Not used on desktop */
+        }
+    </style>
+</head>
+<body class="selection:bg-accent-400/30 selection:text-white">
+
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-accent-400/10 rounded-full blur-[100px] animate-blob"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px] animate-blob" style="animation-delay: 2s"></div>
+    </div>
+
+    <div class="max-w-[1600px] mx-auto p-4 lg:p-8 flex gap-8 items-start min-h-screen">
+        
+        <div class="w-full lg:w-[480px] flex-shrink-0 flex flex-col gap-6 relative z-10 pb-24 lg:pb-0">
+            
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-accent-400">
+                <h1 class="font-display text-2xl font-bold text-white mb-1">Bail Meublé 2026</h1>
+                <p class="text-sm text-slate-400">Générateur conforme Loi ALUR</p>
+            </div>
+
+            <div class="glass-card p-6 lg:p-8 rounded-3xl" id="form-content">
+                
+                <h2 class="section-title"><i class="ph-duotone ph-house-line text-accent-400"></i> 1. Le Propriétaire</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="label-pro"><i class="ph-bold ph-user"></i> Nom du Bailleur</label>
+                        <input type="text" id="landlordName" value="Nathan Marzilli" readonly class="input-pro input-readonly">
+                    </div>
+                    <div>
+                        <label class="label-pro"><i class="ph-bold ph-map-pin"></i> Adresse</label>
+                        <input type="text" id="landlordAddress" value="75 CHEMIN DES MONTS DU JURA 74500 CHAMPANGES" readonly class="input-pro input-readonly">
+                    </div>
+                </div>
+
+                <h2 class="section-title"><i class="ph-duotone ph-users text-accent-400"></i> 2. Locataire(s)</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="label-pro">Nom & Prénom (Principal)</label>
+                        <input type="text" id="t1Name" placeholder="Ex: Jean Dupont" class="input-pro">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="label-pro">Né(e) le</label>
+                            <input type="date" id="t1Dob" class="input-pro">
+                        </div>
+                        <div>
+                            <label class="label-pro">À (Ville)</label>
+                            <input type="text" id="t1Pob" placeholder="Paris 12" class="input-pro">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="label-pro">Adresse Actuelle</label>
+                        <input type="text" id="t1Addr" placeholder="12 rue de la Paix" class="input-pro mb-3">
+                        <div class="grid grid-cols-3 gap-3">
+                            <input type="text" id="t1CP" placeholder="75000" class="input-pro col-span-1">
+                            <input type="text" id="t1City" placeholder="Paris" class="input-pro col-span-2">
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-toggle-section" onclick="toggle('secT2', this)">
+                        <span><i class="ph-bold ph-user-plus mr-2"></i> Ajouter un 2ème Locataire</span>
+                        <i class="ph-bold ph-caret-down"></i>
+                    </button>
+                    
+                    <div id="secT2" class="hidden space-y-4 p-4 rounded-xl bg-white/5 border border-white/10 mt-2">
+                        <input type="text" id="t2Name" placeholder="Nom Prénom (Locataire 2)" class="input-pro">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="date" id="t2Dob" class="input-pro">
+                            <input type="text" id="t2Pob" placeholder="Ville Naissance" class="input-pro">
+                        </div>
+                        <input type="text" id="t2Addr" placeholder="Adresse" class="input-pro">
+                        <div class="grid grid-cols-3 gap-3">
+                            <input type="text" id="t2CP" placeholder="CP" class="input-pro col-span-1">
+                            <input type="text" id="t2City" placeholder="Ville" class="input-pro col-span-2">
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-title"><i class="ph-duotone ph-shield-check text-accent-400"></i> 3. Caution / Garant</h2>
+                <div class="space-y-3">
+                    <button type="button" class="btn-toggle-section" onclick="toggle('secG1', this)">
+                        <span><i class="ph-bold ph-shield-plus mr-2"></i> Ajouter un Garant</span>
+                        <i class="ph-bold ph-caret-down"></i>
+                    </button>
+                    <div id="secG1" class="hidden space-y-4 p-4 rounded-xl bg-white/5 border border-white/10">
+                        <input type="text" id="g1Name" placeholder="Nom du Garant" class="input-pro">
+                        <input type="text" id="g1Addr" placeholder="Adresse" class="input-pro">
+                        <div class="grid grid-cols-3 gap-3">
+                            <input type="text" id="g1CP" placeholder="CP" class="input-pro col-span-1">
+                            <input type="text" id="g1City" placeholder="Ville" class="input-pro col-span-2">
+                        </div>
+                        
+                        <div class="border-t border-white/10 pt-3">
+                            <button type="button" class="text-xs text-accent-400 font-bold uppercase tracking-wider flex items-center" onclick="toggle('secG2', this)">+ Ajouter 2ème Garant</button>
+                            <div id="secG2" class="hidden space-y-4 mt-3">
+                                <input type="text" id="g2Name" placeholder="Nom Garant 2" class="input-pro">
+                                <input type="text" id="g2Addr" placeholder="Adresse" class="input-pro">
+                                <div class="grid grid-cols-3 gap-3">
+                                    <input type="text" id="g2CP" placeholder="CP" class="input-pro col-span-1">
+                                    <input type="text" id="g2City" placeholder="Ville" class="input-pro col-span-2">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-title"><i class="ph-duotone ph-buildings text-accent-400"></i> 4. Le Bien</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="label-pro">Adresse du bien</label>
+                        <input type="text" id="propAddr" placeholder="N° et Rue" class="input-pro mb-3">
+                        <div class="grid grid-cols-3 gap-3">
+                            <input type="text" id="propCP" placeholder="CP" class="input-pro col-span-1">
+                            <input type="text" id="propCity" placeholder="Ville" class="input-pro col-span-2">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="label-pro">Type</label>
+                            <select id="propType" class="input-pro">
+                                <option>Appartement</option><option>Maison</option><option>Studio</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="label-pro">Pièces</label>
+                            <input type="number" id="propRooms" class="input-pro">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="label-pro">Surface (m²)</label>
+                            <input type="number" id="propSurf" class="input-pro">
+                        </div>
+                        <div>
+                            <label class="label-pro">Construction</label>
+                            <select id="propEra" class="input-pro text-xs">
+                                <option value="Inconnue">Inconnue</option>
+                                <option value="Avant 1948">Avant 1948</option>
+                                <option value="1949-1974">1949-1974</option>
+                                <option value="1975-1989">1975-1989</option>
+                                <option value="1990-2005">1990-2005</option>
+                                <option value="Après 2005">Après 2005</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="label-pro">Chauffage</label>
+                            <select id="heatType" class="input-pro text-xs">
+                                <option>Individuel Élec.</option><option>Individuel Gaz</option><option>Collectif</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="label-pro">Eau Chaude</label>
+                            <select id="waterType" class="input-pro text-xs">
+                                <option>Indiv. Élec.</option><option>Indiv. Gaz</option><option>Collective</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="label-pro">Travaux récents</label>
+                        <input type="text" id="histWorks" value="Néant" class="input-pro">
+                    </div>
+                    <div>
+                        <label class="label-pro text-accent-400">Nb de clés remises</label>
+                        <input type="number" id="propKeys" value="2" class="input-pro font-bold text-accent-400">
+                    </div>
+
+                    <button type="button" class="btn-toggle-section" onclick="toggle('zoneTendueForm', this)">
+                        <span><i class="ph-bold ph-trend-up mr-2"></i> Zone Tendue / Encadrement</span>
+                        <i class="ph-bold ph-caret-down"></i>
+                    </button>
+                    <div id="zoneTendueForm" class="hidden space-y-4 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30">
+                        <p class="text-xs text-blue-300 mb-2"><i class="ph-fill ph-info"></i> Uniquement si zone tendue.</p>
+                        <input type="text" id="histLastRent" placeholder="Dernier loyer (ex: 700 €)" class="input-pro">
+                        <input type="text" id="histLastDate" placeholder="Date révision (JJ/MM/AAAA)" class="input-pro">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="refRent" placeholder="Réf (€/m²)" class="input-pro">
+                            <input type="text" id="maxRent" placeholder="Majoré (€/m²)" class="input-pro">
+                        </div>
+                        <input type="text" id="supRent" placeholder="Complément de loyer" class="input-pro">
+                    </div>
+                </div>
+
+                <h2 class="section-title"><i class="ph-duotone ph-coins text-accent-400"></i> 5. Loyer & Bail</h2>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="label-pro">Loyer HC (€)</label>
+                            <input type="number" id="finRent" onchange="calcDeposit()" class="input-pro font-bold text-lg">
+                        </div>
+                        <div>
+                            <label class="label-pro">Charges (€)</label>
+                            <input type="number" id="finCharges" class="input-pro">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="label-pro">Dépôt de Garantie (2 mois)</label>
+                        <input type="number" id="finDeposit" class="input-pro">
+                    </div>
+                    <div>
+                        <label class="label-pro">Frais Agence (Si applicable)</label>
+                        <input type="text" id="agencyFees" value="0.00 €" class="input-pro">
+                    </div>
+                    
+                    <div class="pt-4 border-t border-white/10"></div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="label-pro">Date d'effet</label>
+                            <input type="date" id="dateStart" class="input-pro">
+                        </div>
+                        <div>
+                            <label class="label-pro">Durée</label>
+                            <select id="durType" class="input-pro text-xs">
+                                <option value="1 an (Reconductible)">1 An (Résidence Princ.)</option>
+                                <option value="9 mois (Étudiant)">9 Mois (Étudiant)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-title"><i class="ph-duotone ph-files text-accent-400"></i> 6. Annexes</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label class="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/5 hover:border-accent-400 cursor-pointer transition-colors">
+                        <input type="checkbox" id="chk_edl" checked class="accent-accent-400 w-5 h-5"> 
+                        <span class="text-sm">État des lieux</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/5 hover:border-accent-400 cursor-pointer transition-colors">
+                        <input type="checkbox" id="chk_inv" checked class="accent-accent-400 w-5 h-5"> 
+                        <span class="text-sm">Inventaire</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/5 hover:border-accent-400 cursor-pointer transition-colors">
+                        <input type="checkbox" id="chk_dpe" checked class="accent-accent-400 w-5 h-5"> 
+                        <span class="text-sm">DPE</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/5 hover:border-accent-400 cursor-pointer transition-colors">
+                        <input type="checkbox" id="chk_erp" checked class="accent-accent-400 w-5 h-5"> 
+                        <span class="text-sm">ERP (Risques)</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/5 hover:border-accent-400 cursor-pointer transition-colors">
+                        <input type="checkbox" id="chk_reg" checked class="accent-accent-400 w-5 h-5"> 
+                        <span class="text-sm">Règlement Copro.</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/5 hover:border-accent-400 cursor-pointer transition-colors">
+                        <input type="checkbox" id="chk_not" checked class="accent-accent-400 w-5 h-5"> 
+                        <span class="text-sm">Notice Info.</span>
+                    </label>
+                </div>
+
+                <h2 class="section-title"><i class="ph-duotone ph-pen-nib text-accent-400"></i> 7. Signatures</h2>
+                <div class="space-y-6">
+                    <div>
+                        <label class="label-pro">Propriétaire (Nathan Marzilli)</label>
+                        <div class="relative">
+                            <canvas id="cvLandlord" class="sig-canvas"></canvas>
+                            <button onclick="clearPad('cvLandlord')" class="absolute top-2 right-2 text-[10px] bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Effacer</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="label-pro">Locataire 1</label>
+                        <div class="relative">
+                            <canvas id="cvT1" class="sig-canvas"></canvas>
+                            <button onclick="clearPad('cvT1')" class="absolute top-2 right-2 text-[10px] bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Effacer</button>
+                        </div>
+                    </div>
+
+                    <div id="pad-secT2" class="hidden">
+                        <label class="label-pro">Locataire 2</label>
+                        <div class="relative">
+                            <canvas id="cvT2" class="sig-canvas"></canvas>
+                            <button onclick="clearPad('cvT2')" class="absolute top-2 right-2 text-[10px] bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Effacer</button>
+                        </div>
+                    </div>
+                    <div id="pad-secG1" class="hidden">
+                        <label class="label-pro">Garant 1</label>
+                        <div class="relative">
+                            <canvas id="cvG1" class="sig-canvas"></canvas>
+                            <button onclick="clearPad('cvG1')" class="absolute top-2 right-2 text-[10px] bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Effacer</button>
+                        </div>
+                    </div>
+                    <div id="pad-secG2" class="hidden">
+                        <label class="label-pro">Garant 2</label>
+                        <div class="relative">
+                            <canvas id="cvG2" class="sig-canvas"></canvas>
+                            <button onclick="clearPad('cvG2')" class="absolute top-2 right-2 text-[10px] bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Effacer</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="generatePDF()" class="hidden lg:flex w-full mt-8 py-4 bg-accent-400 text-dark-950 rounded-xl font-bold text-lg items-center justify-center gap-2 hover:bg-white hover:scale-[1.02] transition-all shadow-[0_0_20px_rgba(45,212,191,0.3)]">
+                    <i class="ph-bold ph-download-simple"></i> Générer le Bail PDF
+                </button>
+            </div>
+        </div>
+
+        <div class="preview-col flex-grow hidden lg:flex justify-center sticky top-8 h-[calc(100vh-4rem)] overflow-y-auto rounded-3xl bg-dark-900/50 border border-white/5 backdrop-blur-sm p-8 custom-scrollbar">
+            <div id="pdf-content">
+                <div class="pdf-header text-center border-b-2 border-black pb-2 mb-4">
+                    <div class="text-xl font-bold uppercase tracking-wide">CONTRAT DE LOCATION MEUBLÉE</div>
+                    <div class="italic text-sm mt-1">Soumis au titre Ier bis de la loi n° 89-462 du 6 juillet 1989 (Loi ALUR)</div>
+                </div>
+
+                <div class="pdf-section-title">I. DÉSIGNATION DES PARTIES</div>
+                <div class="avoid-break">
+                    <div class="pdf-row"><span class="pdf-lbl">LE BAILLEUR :</span> <span class="pdf-val text-blue-800 font-bold" id="oLandlord"></span></div>
+                    <div class="pdf-row"><span class="pdf-lbl">Domicilié :</span> <span class="pdf-val" id="oLandlordAddr"></span></div>
+                </div>
+                <br>
+                <div class="avoid-break">
+                    <div class="pdf-row"><span class="pdf-lbl">LE(S) LOCATAIRE(S) :</span> <span class="pdf-val text-blue-800 font-bold" id="oTenant"></span></div>
+                    <div class="pdf-row"><span class="pdf-lbl">Détails :</span> <span class="pdf-val" id="oTenantDetails"></span></div>
+                    <div class="pdf-row"><span class="pdf-lbl">Adresse actuelle :</span> <span class="pdf-val" id="oTenantAddr"></span></div>
+                </div>
+                
+                <div id="pdf-guarantor-block" style="display:none;" class="avoid-break">
+                    <br>
+                    <div class="pdf-row"><span class="pdf-lbl">LA CAUTION :</span> <span class="pdf-val text-blue-800 font-bold" id="oGuarantor"></span></div>
+                    <div class="pdf-row"><span class="pdf-lbl">Adresse(s) :</span> <span class="pdf-val" id="oGuarantorAddr"></span></div>
+                </div>
+
+                <div class="pdf-section-title">II. OBJET DU CONTRAT</div>
+                <div class="avoid-break">
+                    <div class="pdf-row"><span class="pdf-lbl">Le Logement :</span> <span class="pdf-val"><span id="oPropType"></span> meublé de <span id="oPropSurf"></span> m², comprenant <span id="oPropRooms"></span> pièce(s).</span></div>
+                    <div class="pdf-row"><span class="pdf-lbl">Adresse :</span> <span class="pdf-val"><span id="oPropAddr"></span>, <span id="oPropCity"></span>.</span></div>
+                    <div class="pdf-row"><span class="pdf-lbl">Construction :</span> <span class="pdf-val" id="oPropEra"></span></div>
+                    <div class="pdf-row"><span class="pdf-lbl">Chauffage / Eau :</span> <span class="pdf-val"><span id="oHeat"></span> / <span id="oWater"></span></span></div>
+                    <div class="pdf-row"><span class="pdf-lbl">Clés remises :</span> <span class="pdf-val"><span id="oPropKeys"></span> jeux.</span></div>
+                </div>
+
+                <div class="pdf-section-title">III. DURÉE & PRISE D'EFFET</div>
+                <div class="avoid-break">
+                    <div class="pdf-row"><span class="pdf-lbl">Date d'effet :</span> <span class="pdf-val text-blue-800 font-bold" id="oDateStart"></span></div>
+                    <div class="pdf-row"><span class="pdf-lbl">Type de bail :</span> <span class="pdf-val" id="oDurType"></span></div>
+                    <div class="clause-text mt-2 text-xs text-gray-600 italic">
+                        Renouvellement tacite par an (Résidence Principale) ou Fin automatique (Bail Étudiant 9 mois).
+                    </div>
+                </div>
+
+                <div class="pdf-section-title">IV. CONDITIONS FINANCIÈRES</div>
+                <div class="avoid-break">
+                    <table class="w-full border-collapse border border-black mb-2 text-sm">
+                        <tr>
+                            <td class="border border-black p-1">Loyer Mensuel Hors Charges</td>
+                            <td class="border border-black p-1 text-right font-bold"><span id="oRent"></span> €</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-black p-1">Charges (Forfait)</td>
+                            <td class="border border-black p-1 text-right font-bold"><span id="oCharges"></span> €</td>
+                        </tr>
+                        <tr class="bg-gray-100 font-bold text-blue-800">
+                            <td class="border border-black p-1">TOTAL À PAYER</td>
+                            <td class="border border-black p-1 text-right"><span id="oTotal"></span> €</td>
+                        </tr>
+                    </table>
+                    <div class="pdf-row"><span class="pdf-lbl">Dépôt de Garantie :</span> <span class="pdf-val font-bold"><span id="oDeposit"></span> €</span></div>
+                </div>
+
+                <div id="zoneTendueBlock" class="avoid-break mt-2 p-1 border border-black text-xs hidden">
+                    <strong>Zone Tendue :</strong> Réf: <span id="oRefRent"></span> | Dernier: <span id="oLastRent"></span> | Complément: <span id="oSupRent"></span>
+                </div>
+
+                <div class="pdf-section-title">V. CLAUSES & ANNEXES</div>
+                <div class="clause-text">
+                    Le loyer est payable le 1er du mois. Révision annuelle selon IRL. Le locataire doit s'assurer. Clause résolutoire en cas d'impayé (2 mois).
+                </div>
+                <div class="pdf-row mt-2"><span class="pdf-lbl">Annexes remises :</span></div>
+                <ul id="oAnnexList" class="list-disc ml-5 text-xs mb-4"></ul>
+
+                <div class="border border-black p-2 bg-gray-50 avoid-break">
+                    <div class="text-center font-bold mb-2">SIGNATURES</div>
+                    <div class="text-xs text-center mb-2">Fait à <span id="oSignCity"></span>, le <span id="oSignDate"></span>.</div>
+                    <div id="sigGrid" class="grid grid-cols-2 gap-4"></div>
+                </div>
+                <div class="text-[8px] text-center text-gray-400 mt-2">Généré via Nathan Marzilli Tools</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pdf-hidden-container"></div>
+
+    <div class="mobile-bottom-bar flex items-center gap-4">
+        <div class="text-xs text-slate-400 flex-grow">
+            Remplissez le formulaire<br>pour activer le téléchargement.
+        </div>
+        <button onclick="generatePDF()" class="px-6 py-3 bg-accent-400 text-dark-950 rounded-xl font-bold shadow-lg shadow-accent-400/20 active:scale-95 transition-transform flex items-center gap-2">
+            <i class="ph-bold ph-file-pdf"></i> PDF
+        </button>
+    </div>
+
+    <script>
+        // --- UTILS ---
+        const getVal = (id) => { const el = document.getElementById(id); return el ? el.value : ""; }
+        const setTxt = (id, val) => { 
+            // On cible aussi bien l'élément visible (desktop) que le caché (mobile clone)
+            const els = document.querySelectorAll('#'+id); 
+            els.forEach(el => el.textContent = val || "________________"); 
+        };
+
+        // --- CALCUL DÉPÔT ---
+        function calcDeposit() {
+            const r = parseFloat(getVal('finRent')) || 0;
+            const el = document.getElementById('finDeposit');
+            if(el) el.value = r * 2;
+        }
+
+        // --- TOGGLE SECTIONS (Updated for Style) ---
+        function toggle(id, btn) {
+            const el = document.getElementById(id);
+            const pad = document.getElementById('pad-'+id);
+            const isHidden = el.classList.contains('hidden');
+            
+            if(isHidden) {
+                el.classList.remove('hidden');
+                btn.classList.add('active');
+                const icon = btn.querySelector('.ph-caret-down');
+                if(icon) icon.classList.replace('ph-caret-down', 'ph-caret-up');
+            } else {
+                el.classList.add('hidden');
+                btn.classList.remove('active');
+                const icon = btn.querySelector('.ph-caret-up');
+                if(icon) icon.classList.replace('ph-caret-up', 'ph-caret-down');
+            }
+
+            // Gestion Pads Signature
+            if(pad) {
+                if(isHidden) {
+                    pad.classList.remove('hidden');
+                    initPad(pad.querySelector('canvas').id);
+                } else {
+                    pad.classList.add('hidden');
+                }
+            }
+        }
+
+        // --- SIGNATURE CANVAS ---
+        const pads = {};
+        function initPad(cid) {
+            const c = document.getElementById(cid);
+            if(!c || pads[cid]) return;
+            
+            const ctx = c.getContext('2d');
+            const resize = () => {
+                const r = c.parentElement.getBoundingClientRect();
+                if(r.width > 0) { 
+                    const img = c.toDataURL(); // Save content
+                    c.width = r.width;
+                    c.height = 120; // Fixed height
+                    ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#000';
+                    // Restore if needed logic could go here, but mostly user redraws on resize
+                }
+            };
+            setTimeout(resize, 100); // Delay for layout
+
+            let drawing = false;
+            const getPos = (e) => {
+                const r = c.getBoundingClientRect();
+                const x = e.touches ? e.touches[0].clientX : e.clientX;
+                const y = e.touches ? e.touches[0].clientY : e.clientY;
+                return { x: x - r.left, y: y - r.top };
+            };
+            
+            const start = (e) => { drawing=true; ctx.beginPath(); const p=getPos(e); ctx.moveTo(p.x,p.y); e.preventDefault(); };
+            const draw = (e) => { if(!drawing)return; const p=getPos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); e.preventDefault(); };
+            const end = () => drawing=false;
+
+            c.addEventListener('mousedown', start); c.addEventListener('mousemove', draw);
+            c.addEventListener('mouseup', end); c.addEventListener('mouseleave', end);
+            c.addEventListener('touchstart', start, {passive: false}); 
+            c.addEventListener('touchmove', draw, {passive: false}); 
+            c.addEventListener('touchend', end);
+            pads[cid] = c;
+        }
+        
+        function clearPad(cid) { 
+            const c=pads[cid]; 
+            if(c) c.getContext('2d').clearRect(0,0,c.width,c.height); 
+        }
+
+        window.onload = () => { 
+            ['cvLandlord','cvT1'].forEach(initPad); 
+            window.addEventListener('resize', () => { Object.keys(pads).forEach(k => initPad(k)); });
+        };
+
+        // --- PDF GENERATION ---
+        function generatePDF() {
+            // 0. MOBILE CHECK: Clone PDF content to hidden container if mobile
+            let element = document.getElementById('pdf-content');
+            const isMobile = window.innerWidth <= 1024;
+            
+            if(isMobile) {
+                const hiddenContainer = document.getElementById('pdf-hidden-container');
+                hiddenContainer.innerHTML = element.innerHTML; // Copy structure
+                element = hiddenContainer; // Target clone
+            }
+
+            // 1. DATA MAPPING (Apply to both sets of IDs if cloned)
+            setTxt('oLandlord', getVal('landlordName'));
+            setTxt('oLandlordAddr', getVal('landlordAddress'));
+
+            let tDetails = "Né(e) le " + (getVal('t1Dob') ? new Date(getVal('t1Dob')).toLocaleDateString('fr-FR') : "__/__/____") + " à " + getVal('t1Pob');
+            let tName = getVal('t1Name');
+            let tAddr = getVal('t1Addr') + (getVal('t1CP') ? ", " + getVal('t1CP') : "") + (getVal('t1City') ? " " + getVal('t1City') : "");
+
+            if(!document.getElementById('secT2').classList.contains('hidden')) {
+                tName += " et " + getVal('t2Name');
+                tDetails += " ; " + getVal('t2Name') + " (" + (getVal('t2Dob') ? new Date(getVal('t2Dob')).toLocaleDateString('fr-FR') : "") + ")";
+                let t2FullAddr = getVal('t2Addr') + (getVal('t2CP') ? ", " + getVal('t2CP') : "") + (getVal('t2City') ? " " + getVal('t2City') : "");
+                tAddr += " / " + t2FullAddr;
+            }
+            setTxt('oTenant', tName); setTxt('oTenantDetails', tDetails); setTxt('oTenantAddr', tAddr);
+
+            // Garants
+            const hasG1 = !document.getElementById('secG1').classList.contains('hidden');
+            const hasG2 = !document.getElementById('secG2').classList.contains('hidden'); // Logic inside toggle needs check
+            
+            // Note: simple toggle visibility check via class 'hidden'
+            let gName = "", gAddr = "";
+            if(hasG1 && getVal('g1Name')) { 
+                gName += getVal('g1Name'); 
+                gAddr += getVal('g1Addr') + " " + getVal('g1City');
+            }
+            // Logic fix for nested toggle G2
+            const g2Input = document.getElementById('g2Name');
+            if(g2Input && g2Input.value) { 
+                gName += " & " + getVal('g2Name');
+                gAddr += " & " + getVal('g2Addr') + " " + getVal('g2City');
+            }
+
+            const gbList = element.querySelectorAll('#pdf-guarantor-block'); // handle mobile clone
+            gbList.forEach(gb => {
+                if(gName) { 
+                    gb.style.display = 'block'; 
+                    // Manual set for clone children
+                    gb.querySelector('#oGuarantor').textContent = gName;
+                    gb.querySelector('#oGuarantorAddr').textContent = gAddr;
+                } else { gb.style.display = 'none'; }
+            });
+
+            // Bien
+            setTxt('oPropAddr', getVal('propAddr'));
+            setTxt('oPropCity', (getVal('propCP') + " " + getVal('propCity')));
+            setTxt('oPropType', getVal('propType'));
+            setTxt('oPropSurf', getVal('propSurf'));
+            setTxt('oPropRooms', getVal('propRooms'));
+            setTxt('oPropEra', getVal('propEra'));
+            setTxt('oHeat', getVal('heatType'));
+            setTxt('oWater', getVal('waterType'));
+            setTxt('oPropKeys', getVal('propKeys'));
+
+            // Finances
+            const r = parseFloat(getVal('finRent')||0);
+            const c = parseFloat(getVal('finCharges')||0);
+            setTxt('oRent', r.toFixed(2));
+            setTxt('oCharges', c.toFixed(2));
+            setTxt('oTotal', (r+c).toFixed(2));
+            setTxt('oDeposit', getVal('finDeposit'));
+
+            // Zone Tendue
+            const ztBlockList = element.querySelectorAll('#zoneTendueBlock');
+            const ztVisible = !document.getElementById('zoneTendueForm').classList.contains('hidden');
+            const lastRent = getVal('histLastRent');
+            
+            ztBlockList.forEach(ztBlock => {
+                if(ztVisible && lastRent) {
+                    ztBlock.style.display = 'block';
+                    ztBlock.querySelector('#oLastRent').textContent = lastRent + " (" + getVal('histLastDate') + ")";
+                    ztBlock.querySelector('#oRefRent').textContent = getVal('refRent');
+                    ztBlock.querySelector('#oSupRent').textContent = getVal('supRent');
+                } else { ztBlock.style.display = 'none'; }
+            });
+
+            // Date
+            const ds = getVal('dateStart');
+            setTxt('oDateStart', ds ? new Date(ds).toLocaleDateString('fr-FR') : "__/__/____");
+            setTxt('oDurType', getVal('durType'));
+            setTxt('oSignCity', getVal('propCity'));
+            setTxt('oSignDate', new Date().toLocaleDateString('fr-FR'));
+
+            // Annexes
+            const ulList = element.querySelectorAll('#oAnnexList');
+            ulList.forEach(ul => {
+                ul.innerHTML = "";
+                ['edl','inv','dpe','erp','reg','not'].forEach(k => {
+                    const chk = document.getElementById('chk_'+k);
+                    if(chk && chk.checked) {
+                        const li = document.createElement('li');
+                        // Get label text from sibling span
+                        li.textContent = chk.nextElementSibling.textContent.trim();
+                        ul.appendChild(li);
+                    }
+                });
+            });
+
+            // Signatures Image Copy
+            const gridList = element.querySelectorAll('#sigGrid');
+            gridList.forEach(grid => {
+                grid.innerHTML = "";
+                const addSig = (role, name, cid) => {
+                    const div = document.createElement('div');
+                    div.style.border = "1px solid #ccc"; div.style.padding = "5px"; div.style.height = "100px"; div.style.position = "relative";
+                    const dataUrl = pads[cid] ? pads[cid].toDataURL() : "";
+                    div.innerHTML = `<div style="background:#eee; font-size:9px; text-align:center; font-weight:bold;">${role}</div>
+                                     <img src="${dataUrl}" style="max-height:60px; display:block; margin:5px auto;">
+                                     <div style="font-size:10px; position:absolute; bottom:2px; left:2px;">${name}</div>`;
+                    grid.appendChild(div);
+                };
+
+                addSig("LE BAILLEUR", getVal('landlordName'), 'cvLandlord');
+                addSig("LE LOCATAIRE", getVal('t1Name'), 'cvT1');
+                if(!document.getElementById('secT2').classList.contains('hidden')) addSig("LOCATAIRE 2", getVal('t2Name'), 'cvT2');
+                if(hasG1 && getVal('g1Name')) addSig("LA CAUTION", getVal('g1Name'), 'cvG1');
+                // G2 logic...
+            });
+
+            // 2. EXPORT
+            const btn = isMobile ? document.querySelector('.mobile-bottom-bar button') : document.querySelector('#form-content button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin"></i> Génération...`;
+
+            const opt = {
+                margin: 0,
+                filename: `Bail_${getVal('t1Name').replace(/\s/g,'_') || 'Nouveau'}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            setTimeout(() => {
+                html2pdf().set(opt).from(element).save().then(() => {
+                    btn.innerHTML = originalText;
+                    if(isMobile) {
+                        // Clean up clone
+                        document.getElementById('pdf-hidden-container').innerHTML = ""; 
+                    }
+                });
+            }, 500);
+        }
+    </script>
+</body>
+</html>
