@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bail Meublé 2026 - Conforme Loi ALUR</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 1. STYLE GÉNÉRAL & INTERFACE --- */
+        :root {
+            --primary: #1e293b;
+            --accent: #2563eb;
+            --bg: #f8fafc;
+            --paper: #ffffff;
+            --border: #cbd5e1;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            color: #334155;
+        }
+
+        .app-layout {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        /* --- COLONNE GAUCHE : FORMULAIRE --- */
+        .form-container {
+            flex: 0 0 420px;
+            background: var(--paper);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+        }
+
+        h1 { font-family: 'Merriweather', serif; font-size: 1.3rem; color: var(--primary); margin: 0 0 5px 0; }
+        h2 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #64748b; border-bottom: 1px solid var(--border); margin-top: 25px; padding-bottom: 5px; letter-spacing: 0.5px; }
+        
+        .alert-info { background: #eff6ff; border-left: 4px solid var(--accent); padding: 10px; font-size: 0.8rem; color: #1e40af; margin-bottom: 15px; border-radius: 0 4px 4px 0; }
+
+        label { display: block; font-size: 0.75rem; font-weight: 600; margin-bottom: 4px; color: #475569; }
+        input, select {
+            width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px;
+            font-family: 'Inter', sans-serif; font-size: 0.9rem; margin-bottom: 10px; box-sizing: border-box; transition: 0.2s;
+        }
+        input:focus, select:focus { border-color: var(--accent); outline: 3px solid #bfdbfe; }
+
+        .row { display: flex; gap: 10px; }
+        .col { flex: 1; }
+        /* Pour les codes postaux, on force une largeur plus petite si besoin, ici géré par flex */
+        .col-cp { flex: 0 0 90px; } 
+
+        /* Boutons et Toggle */
+        .btn-toggle {
+            background: #f1f5f9; color: var(--primary); border: 1px solid #e2e8f0; padding: 10px; width: 100%;
+            border-radius: 6px; cursor: pointer; text-align: left; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px;
+            display: flex; justify-content: space-between; align-items: center; transition: 0.2s;
+        }
+        .btn-toggle:hover { background: #e2e8f0; }
+        .btn-toggle.active { background: #eff6ff; color: var(--accent); border-color: var(--accent); }
+        
+        .hidden-section { display: none; padding: 12px; border: 1px dashed #cbd5e1; border-radius: 6px; margin-bottom: 10px; background: #fafafa; }
+
+        /* Checkbox Annexes Joli */
+        .chk-group { display: flex; flex-direction: column; gap: 6px; }
+        .chk-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer; }
+        .chk-item input { width: auto; margin: 0; cursor: pointer; }
+
+        /* Signatures Formulaire */
+        .pad-wrapper { margin-bottom: 10px; border: 1px solid #e2e8f0; padding: 5px; border-radius: 6px; background: white; }
+        .hidden-pad { display: none; }
+        .sig-canvas { border: 2px dashed #cbd5e1; width: 100%; height: 80px; background: #fafafa; cursor: crosshair; display: block; touch-action: none; }
+        .btn-clear { float: right; background: #ef4444; color: white; border: none; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; margin-top: -25px; position: relative; z-index: 10; margin-right: 5px; }
+
+        .btn-main {
+            width: 100%; background: var(--primary); color: white; padding: 15px; border: none; border-radius: 8px;
+            font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .btn-main:hover { background: #0f172a; transform: translateY(-1px); }
+
+        /* --- 2. PREVIEW ET PDF --- */
+        .preview-wrapper {
+            flex: 1;
+            display: block; 
+            padding-bottom: 50px;
+            /* Centre la preview */
+            display: flex;
+            justify-content: center;
+        }
+
+        #pdf-content {
+            background: white;
+            /* MODIFICATION ICI POUR L'IMPRESSION */
+            /* On enlève la largeur fixe rigide de 210mm pour éviter le crop */
+            width: 100%; 
+            max-width: 210mm; /* Pour que ça ressemble à une feuille A4 sur l'écran */
+            min-height: 297mm;
+            
+            /* On réduit le padding interne car html2pdf ajoutera des marges blanches autour */
+            padding: 10mm 15mm; 
+            
+            box-sizing: border-box;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            
+            /* TYPOGRAPHIE JURIDIQUE STRICTE */
+            font-family: 'Times New Roman', serif;
+            color: #000;
+            font-size: 10pt; 
+            line-height: 1.25;
+            text-align: justify;
+        }
+
+        /* Classes PDF Helper */
+        .avoid-break { page-break-inside: avoid; break-inside: avoid; } /* EMPÊCHE LA COUPURE */
+        
+        .pdf-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+        .pdf-title { font-size: 15pt; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+        .pdf-subtitle { font-size: 10pt; font-style: italic; margin-top: 5px; }
+
+        .pdf-section-title {
+            font-size: 11pt; font-weight: bold; text-transform: uppercase; background: #eee;
+            padding: 5px; margin-top: 15px; margin-bottom: 8px; border: 1px solid #000;
+            page-break-after: avoid; 
+        }
+
+        .pdf-row { display: flex; margin-bottom: 3px; align-items: baseline; }
+        .pdf-lbl { font-weight: bold; min-width: 160px; font-size: 10pt; }
+        .pdf-val { flex: 1; font-family: Arial, sans-serif; font-size: 9.5pt; font-weight: 500; }
+        .pdf-val.blue { color: #1e40af; font-weight: bold; }
+
+        /* Clauses */
+        .clause-block { margin-bottom: 10px; }
+        .clause-title { font-weight: bold; text-decoration: underline; display: block; margin-bottom: 3px; font-size: 10pt; }
+        .clause-text { font-size: 9.5pt; text-align: justify; margin-bottom: 4px; }
+        
+        .important-box { border: 2px solid #b91c1c; padding: 8px; margin: 10px 0; background: #fff1f2; }
+
+        /* Tableau Financier */
+        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-family: Arial, sans-serif; }
+        .pdf-table td { border: 1px solid #000; padding: 5px; font-size: 9.5pt; }
+        .pdf-table .bg-gray { background: #f3f4f6; font-weight: bold; }
+
+        /* Signatures */
+        .signatures-container {
+            margin-top: 20px; border: 1px solid #000; padding: 10px;
+        }
+        .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .sig-box { border: 1px solid #ccc; height: 100px; padding: 5px; position: relative; page-break-inside: avoid; }
+        .sig-label { font-size: 7pt; font-weight: bold; text-align: center; background: #eee; text-transform: uppercase; padding: 2px; }
+        .sig-img { display: block; max-height: 65px; max-width: 100%; margin: 5px auto; }
+        .sig-name { font-size: 8pt; text-align: center; font-family: Arial; position: absolute; bottom: 2px; width: 95%; left: 2.5%; border-top: 1px dotted #ccc; }
+
+        /* --- MEDIA QUERIES --- */
+        @media(max-width: 1100px) {
+            .app-layout { flex-direction: column; }
+            .form-container { width: 100%; max-height: none; position: static; padding: 15px; }
+            .preview-wrapper { display: none; } /* On cache la preview live sur mobile, le PDF sera généré quand même */
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-layout">
+    <div class="form-container">
+        <h1>Éditeur de Bail Meublé</h1>
+        <div class="alert-info">ℹ️ Remplissez les champs pour générer le contrat.</div>
+
+        <h2>1. Bailleur</h2>
+        <label>Nom du Propriétaire</label>
+        <input type="text" id="landlordName" value="Nathan Marzilli" readonly style="background:#f1f5f9; font-weight:bold;">
+        <label>Adresse du Propriétaire</label>
+        <input type="text" id="landlordAddress" value="75 CHEMIN DES MONTS DU JURA 74500 CHAMPANGES" readonly style="background:#f1f5f9; font-weight:bold;">
+
+        <h2>2. Locataire(s)</h2>
+        <label>Locataire 1 (Principal)</label>
+        <input type="text" id="t1Name" placeholder="Nom Prénom">
+        <div class="row">
+            <div class="col"><label>Né(e) le</label><input type="date" id="t1Dob"></div>
+            <div class="col"><label>À</label><input type="text" id="t1Pob" placeholder="Ville Naissance"></div>
+        </div>
+        <label>Adresse actuelle</label>
+        <input type="text" id="t1Addr" placeholder="N° et Rue">
+        <div class="row">
+            <div class="col-cp"><input type="text" id="t1CP" placeholder="CP (ex: 69000)"></div>
+            <div class="col"><input type="text" id="t1City" placeholder="Ville"></div>
+        </div>
+
+        <button class="btn-toggle" onclick="toggle('secT2', this)"><span>👥 Ajouter Locataire 2</span> <span>+</span></button>
+        <div id="secT2" class="hidden-section">
+            <label>Locataire 2</label>
+            <input type="text" id="t2Name" placeholder="Nom Prénom">
+            <div class="row">
+                <div class="col"><input type="date" id="t2Dob"></div>
+                <div class="col"><input type="text" id="t2Pob" placeholder="Ville Naissance"></div>
+            </div>
+            <label>Adresse actuelle</label>
+            <input type="text" id="t2Addr" placeholder="N° et Rue">
+            <div class="row">
+                <div class="col-cp"><input type="text" id="t2CP" placeholder="Code Postal"></div>
+                <div class="col"><input type="text" id="t2City" placeholder="Ville"></div>
+            </div>
+        </div>
+
+        <h2>3. Caution(s)</h2>
+        <button class="btn-toggle" onclick="toggle('secG1', this)"><span>🛡️ Ajouter un Garant</span> <span>+</span></button>
+        <div id="secG1" class="hidden-section">
+            <label>Garant 1</label>
+            <input type="text" id="g1Name" placeholder="Nom Prénom">
+            <input type="text" id="g1Addr" placeholder="Adresse (N° et Rue)">
+            <div class="row">
+                <div class="col-cp"><input type="text" id="g1CP" placeholder="Code Postal"></div>
+                <div class="col"><input type="text" id="g1City" placeholder="Ville"></div>
+            </div>
+            
+            <button class="btn-toggle" onclick="toggle('secG2', this)">+ Garant 2</button>
+            <div id="secG2" class="hidden-section" style="margin-top:10px;">
+                <label>Garant 2</label>
+                <input type="text" id="g2Name" placeholder="Nom Prénom">
+                <input type="text" id="g2Addr" placeholder="Adresse (N° et Rue)">
+                <div class="row">
+                    <div class="col-cp"><input type="text" id="g2CP" placeholder="Code Postal"></div>
+                    <div class="col"><input type="text" id="g2City" placeholder="Ville"></div>
+                </div>
+            </div>
+        </div>
+
+        <h2>4. Le Bien & Technique</h2>
+        <input type="text" id="propAddr" placeholder="Adresse du bien (N° et Rue)">
+        <div class="row">
+            <div class="col-cp"><input type="text" id="propCP" placeholder="CP"></div>
+            <div class="col"><input type="text" id="propCity" placeholder="Ville"></div>
+        </div>
+        <div class="row">
+            <div class="col"><label>Type</label><select id="propType"><option>Appartement</option><option>Maison</option><option>Studio</option></select></div>
+            <div class="col"><label>Pièces</label><input type="number" id="propRooms" placeholder="Nb"></div>
+        </div>
+        <div class="row">
+             <div class="col"><label>Surface (m²)</label><input type="number" id="propSurf"></div>
+        </div>
+        
+        <label>Année Construction</label>
+        <select id="propEra">
+            <option value="Inconnue">Inconnue</option>
+            <option value="Avant 1948">Avant 1948</option>
+            <option value="1949-1974">1949-1974</option>
+            <option value="1975-1989">1975-1989</option>
+            <option value="1990-2005">1990-2005</option>
+            <option value="Après 2005">Après 2005</option>
+        </select>
+        <div class="row">
+            <div class="col"><label>Chauffage</label><select id="heatType"><option>Individuel Électrique</option><option>Individuel Gaz</option><option>Collectif</option></select></div>
+            <div class="col"><label>Eau Chaude</label><select id="waterType"><option>Individuelle Élec.</option><option>Individuelle Gaz</option><option>Collective</option></select></div>
+        </div>
+        <label style="color:var(--accent)">🔑 Nombre de jeux de clés</label>
+        <input type="number" id="propKeys" value="2">
+
+        <h2>5. Historique</h2>
+        <label>Montant travaux (si effectués récemment)</label>
+        <input type="text" id="histWorks" value="Néant">
+
+        <button class="btn-toggle" onclick="toggle('zoneTendueForm', this)"><span>📈 Zone Tendue / Encadrement</span> <span>+</span></button>
+        <div id="zoneTendueForm" class="hidden-section">
+            <div class="alert-info">Ne remplir que si le logement est en zone tendue.</div>
+            <label>Dernier loyer appliqué</label>
+            <input type="text" id="histLastRent" placeholder="Ex: 700 €">
+            <label>Date dernière révision</label>
+            <input type="text" id="histLastDate" placeholder="JJ/MM/AAAA">
+            <div class="row">
+                <div class="col"><label>Réf (€/m²)</label><input type="text" id="refRent"></div>
+                <div class="col"><label>Majoré (€/m²)</label><input type="text" id="maxRent"></div>
+            </div>
+            <label>Complément de loyer</label>
+            <input type="text" id="supRent">
+        </div>
+
+        <h2>6. Loyer & Durée</h2>
+        <div class="row">
+            <div class="col"><label>Loyer HC €</label><input type="number" id="finRent" onchange="calcDeposit()"></div>
+            <div class="col"><label>Charges (Forfait) €</label><input type="number" id="finCharges"></div>
+        </div>
+        
+        <label>Dépôt de Garantie (2 mois HC)</label>
+        <input type="number" id="finDeposit">
+        <label>Honoraires TTC</label>
+        <input type="text" id="agencyFees" value="0.00 €">
+
+        <div class="row">
+            <div class="col"><label>Date Prise d'effet</label><input type="date" id="dateStart"></div>
+            <div class="col"><label>Type de Bail</label><select id="durType"><option value="1 an (Reconductible)">1 An (Résidence Princ.)</option><option value="9 mois (Étudiant)">9 Mois (Étudiant)</option></select></div>
+        </div>
+
+        <h2>7. Annexes</h2>
+        <div class="chk-group">
+            <label class="chk-item"><input type="checkbox" id="chk_edl" checked> État des lieux d'entrée</label>
+            <label class="chk-item"><input type="checkbox" id="chk_inv" checked> Inventaire Mobilier</label>
+            <label class="chk-item"><input type="checkbox" id="chk_dpe" checked> Diagnostic (DPE)</label>
+            <label class="chk-item"><input type="checkbox" id="chk_erp" checked> État des Risques (ERP)</label>
+            <label class="chk-item"><input type="checkbox" id="chk_reg" checked> Extrait Règlement Copropriété</label>
+            <label class="chk-item"><input type="checkbox" id="chk_not" checked> Notice d'information</label>
+        </div>
+
+        <h2>8. Signatures</h2>
+        <div class="pad-wrapper"><label>Propriétaire</label><canvas id="cvLandlord" class="sig-canvas"></canvas><button class="btn-clear" onclick="clearPad('cvLandlord')">Effacer</button></div>
+        <div class="pad-wrapper"><label>Locataire 1</label><canvas id="cvT1" class="sig-canvas"></canvas><button class="btn-clear" onclick="clearPad('cvT1')">Effacer</button></div>
+        
+        <div class="pad-wrapper hidden-pad" id="pad-secT2"><label>Locataire 2</label><canvas id="cvT2" class="sig-canvas"></canvas><button class="btn-clear" onclick="clearPad('cvT2')">Effacer</button></div>
+        <div class="pad-wrapper hidden-pad" id="pad-secG1"><label>Garant 1</label><canvas id="cvG1" class="sig-canvas"></canvas><button class="btn-clear" onclick="clearPad('cvG1')">Effacer</button></div>
+        <div class="pad-wrapper hidden-pad" id="pad-secG2"><label>Garant 2</label><canvas id="cvG2" class="sig-canvas"></canvas><button class="btn-clear" onclick="clearPad('cvG2')">Effacer</button></div>
+
+        <button class="btn-main" onclick="generatePDF()">📄 GÉNÉRER LE PDF</button>
+    </div>
+
+    <div class="preview-wrapper">
+        <div id="pdf-content">
+            <div class="pdf-header">
+                <div class="pdf-title">CONTRAT DE LOCATION MEUBLÉE</div>
+                <div class="pdf-subtitle">Soumis au titre Ier bis de la loi n° 89-462 du 6 juillet 1989 et modifié par la loi ALUR</div>
+            </div>
+
+            <div class="pdf-section-title">I. DÉSIGNATION DES PARTIES</div>
+            <div class="avoid-break">
+                <div class="pdf-row"><span class="pdf-lbl">LE BAILLEUR :</span> <span class="pdf-val blue" id="oLandlord"></span></div>
+                <div class="pdf-row"><span class="pdf-lbl">Domicilié :</span> <span class="pdf-val" id="oLandlordAddr"></span></div>
+            </div>
+            <br>
+            <div class="avoid-break">
+                <div class="pdf-row"><span class="pdf-lbl">LE(S) LOCATAIRE(S) :</span> <span class="pdf-val blue" id="oTenant"></span></div>
+                <div class="pdf-row"><span class="pdf-lbl">Détails :</span> <span class="pdf-val" id="oTenantDetails"></span></div>
+                <div class="pdf-row"><span class="pdf-lbl">Adresse actuelle :</span> <span class="pdf-val" id="oTenantAddr"></span></div>
+            </div>
+            
+            <div id="pdf-guarantor-block" style="display:none;" class="avoid-break">
+                <br>
+                <div class="pdf-row"><span class="pdf-lbl">LA CAUTION :</span> <span class="pdf-val blue" id="oGuarantor"></span></div>
+                <div class="pdf-row"><span class="pdf-lbl">Adresse(s) :</span> <span class="pdf-val" id="oGuarantorAddr"></span></div>
+            </div>
+
+            <div class="pdf-section-title">II. OBJET DU CONTRAT ET CONSISTANCE</div>
+            <div class="avoid-break">
+                <div class="pdf-row"><span class="pdf-lbl">Le Logement :</span> <span class="pdf-val"><span id="oPropType"></span> meublé de <span id="oPropSurf"></span> m², comprenant <span id="oPropRooms"></span> pièce(s) principale(s).</span></div>
+                <div class="pdf-row"><span class="pdf-lbl">Adresse :</span> <span class="pdf-val"><span id="oPropAddr"></span>, <span id="oPropCity"></span>.</span></div>
+                <div class="pdf-row"><span class="pdf-lbl">Période Construction :</span> <span class="pdf-val" id="oPropEra"></span></div>
+                <div class="pdf-row"><span class="pdf-lbl">Chauffage :</span> <span class="pdf-val" id="oHeat"></span></div>
+                <div class="pdf-row"><span class="pdf-lbl">Eau Chaude :</span> <span class="pdf-val" id="oWater"></span></div>
+                <div class="pdf-row"><span class="pdf-lbl">Moyens d'accès :</span> <span class="pdf-val"><span id="oPropKeys"></span> jeux de clés remis ce jour.</span></div>
+                <div class="pdf-row"><span class="pdf-lbl">Travaux récents :</span> <span class="pdf-val" id="oHistWorks"></span></div>
+            </div>
+
+            <div class="pdf-section-title">III. DATE DE PRISE D'EFFET ET DURÉE</div>
+            <div class="avoid-break">
+                <div class="pdf-row"><span class="pdf-lbl">Date d'effet :</span> <span class="pdf-val blue" id="oDateStart"></span></div>
+                <div class="pdf-row"><span class="pdf-lbl">Type de bail :</span> <span class="pdf-val" id="oDurType"></span></div>
+                <div class="clause-text" style="margin-top:5px;">
+                    <strong>A. Bail d'un an (Résidence principale) :</strong> Reconduction tacite par période d'un an, faute de congé donné par l'une des parties.
+                    <br><strong>B. Bail étudiant (9 mois) :</strong> Le bail prend fin automatiquement à son terme sans reconduction.
+                    <br><strong>Congé :</strong> Le locataire peut résilier à tout moment (préavis 1 mois). Le bailleur peut résilier à l'échéance avec motif légitime et sérieux (préavis 3 mois).
+                </div>
+            </div>
+
+            <div class="pdf-section-title">IV. CONDITIONS FINANCIÈRES</div>
+            <div class="avoid-break">
+                <table class="pdf-table">
+                    <tr>
+                        <td>Loyer Mensuel Hors Charges</td>
+                        <td style="text-align:right; font-weight:bold;"><span id="oRent"></span> €</td>
+                    </tr>
+                    <tr>
+                        <td>Charges (Forfait mensuel)</td>
+                        <td style="text-align:right; font-weight:bold;"><span id="oCharges"></span> €</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-gray">TOTAL MENSUEL À PAYER</td>
+                        <td class="bg-gray" style="text-align:right; color:#1d4ed8;"><span id="oTotal"></span> €</td>
+                    </tr>
+                    <tr>
+                        <td>Dépôt de Garantie (Versé ce jour)</td>
+                        <td style="text-align:right;"><span id="oDeposit"></span> €</td>
+                    </tr>
+                </table>
+                <div class="clause-text">Le forfait de charges couvre les charges locatives récupérables définies par décret. Il ne donne pas lieu à régularisation annuelle (sauf mention contraire explicite).</div>
+            </div>
+
+            <div id="zoneTendueBlock" style="border:1px solid #000; padding:5px; margin-top:5px; display:none;" class="avoid-break">
+                <div style="font-weight:bold; font-size:9pt; text-decoration:underline;">Informations Zone Tendue / Encadrement :</div>
+                <div class="pdf-row"><span class="pdf-lbl">Dernier loyer appliqué :</span> <span class="pdf-val" id="oLastRent"></span></div>
+                <div class="pdf-row"><span class="pdf-lbl">Loyer de référence :</span> <span class="pdf-val" id="oRefRent"></span></div>
+                <div class="pdf-row"><span class="pdf-lbl">Complément de loyer :</span> <span class="pdf-val" id="oSupRent"></span></div>
+            </div>
+
+            <div class="pdf-section-title">V. CLAUSES LÉGALES ET OBLIGATIONS</div>
+            
+            <div class="clause-block avoid-break">
+                <span class="clause-title">1. Paiement et Révision du Loyer</span>
+                <div class="clause-text">
+                    Le loyer est payable d'avance le 1er de chaque mois. Il sera révisé automatiquement chaque année à la date anniversaire du contrat, en fonction de la variation de l'Indice de Référence des Loyers (IRL) publié par l'INSEE. L'indice de référence est le dernier connu à la date de signature.
+                </div>
+            </div>
+
+            <div class="clause-block avoid-break">
+                <span class="clause-title">2. Obligations du Locataire</span>
+                <div class="clause-text">
+                    Le locataire est tenu de : 
+                    a) Payer le loyer et les charges au terme convenu. 
+                    b) User paisiblement des lieux suivant la destination prévue au contrat. 
+                    c) Répondre des dégradations qui surviennent pendant la durée du contrat (hors vétusté). 
+                    d) S'assurer contre les risques locatifs (incendie, dégât des eaux) et en justifier lors de la remise des clés et chaque année. 
+                    e) Laisser exécuter les travaux d'amélioration des parties communes ou privatives.
+                </div>
+            </div>
+
+            <div class="clause-block avoid-break">
+                <span class="clause-title">3. Clause de Solidarité (Colocation)</span>
+                <div class="clause-text">
+                    En cas de colocation, les preneurs sont tenus solidairement et indivisiblement à l'égard du bailleur du paiement des loyers, charges et accessoires. La solidarité d'un colocataire et de sa caution prend fin à la date d'effet du congé régulièrement délivré et lorsqu'un nouveau locataire figure au bail. À défaut de remplaçant, la solidarité s'éteint six mois après la fin du congé.
+                </div>
+            </div>
+
+            <div class="important-box avoid-break">
+                <span class="clause-title" style="color:#b91c1c;">4. CLAUSE RÉSOLUTOIRE DE PLEIN DROIT</span>
+                <div class="clause-text" style="color:#b91c1c;">
+                    À défaut de paiement de tout ou partie du loyer ou des charges aux termes convenus, ou en cas de non-versement du dépôt de garantie, <strong>le présent bail sera résilié de plein droit deux mois après un commandement de payer demeuré infructueux</strong>.
+                    En cas de défaut d'assurance locative, le bail sera résilié un mois après un commandement resté infructueux.
+                    En cas de troubles de voisinage constatés par une décision de justice, la résiliation est acquise.
+                </div>
+            </div>
+
+            <div class="pdf-section-title avoid-break">VI. ANNEXES</div>
+            <div class="clause-text avoid-break">Le locataire reconnaît avoir reçu ce jour, joints au contrat :</div>
+            <ul style="margin:5px 0; padding-left:20px; font-size:9.5pt;" id="oAnnexList" class="avoid-break">
+            </ul>
+
+            <div class="signatures-container avoid-break">
+                <div style="text-align:center; font-weight:bold; background:#e5e7eb; padding:5px; margin-bottom:10px;">VII. SIGNATURES</div>
+                <div style="text-align:center; font-size:9pt; margin-bottom:10px;">
+                    Fait à <span id="oSignCity"></span>, le <span id="oSignDate"></span>.<br>
+                    En autant d'originaux que de parties contractantes.
+                </div>
+
+                <div class="sig-grid" id="sigGrid">
+                </div>
+                <div style="text-align:center; font-size:7pt; color:#666; margin-top:10px;">
+                    Document généré électroniquement valant preuve de l'accord des parties (Art. 1367 Code Civil).
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- UTILS ---
+    const getVal = (id) => { const el = document.getElementById(id); return el ? el.value : ""; }
+    const setTxt = (id, val) => { 
+        const el = document.getElementById(id); 
+        if(el) el.textContent = val || "________________"; 
+    };
+
+    // --- CALCUL AUTOMATIQUE DÉPÔT ---
+    function calcDeposit() {
+        const r = parseFloat(getVal('finRent')) || 0;
+        document.getElementById('finDeposit').value = r * 2;
+    }
+
+    // --- GESTION AFFICHAGE (TOGGLE) ---
+    function toggle(id, btn) {
+        const el = document.getElementById(id);
+        const pad = document.getElementById('pad-'+id); // pour les signatures
+        const isHidden = el.style.display !== 'block';
+        
+        el.style.display = isHidden ? 'block' : 'none';
+        
+        // Gestion bouton +/-
+        const spans = btn.getElementsByTagName('span');
+        if(spans.length > 1) spans[1].textContent = isHidden ? '-' : '+';
+        btn.classList.toggle('active', isHidden);
+
+        // Si c'est une section signature
+        if(pad) {
+            pad.style.display = isHidden ? 'block' : 'none';
+            if(isHidden) initPad(pad.querySelector('canvas').id);
+        }
+    }
+
+    // --- SIGNATURE CANVAS ---
+    const pads = {};
+    function initPad(cid) {
+        const c = document.getElementById(cid);
+        if(!c || pads[cid]) return; // déjà init
+        
+        const ctx = c.getContext('2d');
+        const resize = () => {
+            const r = c.parentElement.getBoundingClientRect();
+            if(r.width > 0) { 
+                // Sauvegarde contenu si existe
+                const img = c.toDataURL();
+                c.width = r.width - 12; // marge
+                c.height = 80;
+                ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#000';
+            }
+        };
+        // Petit délai pour laisser le display block s'appliquer
+        setTimeout(resize, 50);
+
+        let drawing = false;
+        const getPos = (e) => {
+            const r = c.getBoundingClientRect();
+            const x = e.touches ? e.touches[0].clientX : e.clientX;
+            const y = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: x - r.left, y: y - r.top };
+        };
+        
+        const start = (e) => { drawing=true; ctx.beginPath(); const p=getPos(e); ctx.moveTo(p.x,p.y); e.preventDefault(); };
+        const draw = (e) => { if(!drawing)return; const p=getPos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); e.preventDefault(); };
+        const end = () => drawing=false;
+
+        c.addEventListener('mousedown', start); c.addEventListener('mousemove', draw);
+        c.addEventListener('mouseup', end); c.addEventListener('mouseleave', end);
+        c.addEventListener('touchstart', start); c.addEventListener('touchmove', draw); c.addEventListener('touchend', end);
+        pads[cid] = c;
+    }
+    
+    function clearPad(cid) { const c=pads[cid]; if(c) c.getContext('2d').clearRect(0,0,c.width,c.height); }
+
+    window.onload = () => { 
+        ['cvLandlord','cvT1'].forEach(initPad); 
+        // Resize listener pour mobile
+        window.addEventListener('resize', () => { Object.keys(pads).forEach(k => initPad(k)); });
+    };
+
+    // --- GÉNÉRATION PDF ---
+    function generatePDF() {
+        // 1. DATA MAPPING
+        setTxt('oLandlord', getVal('landlordName'));
+        setTxt('oLandlordAddr', getVal('landlordAddress'));
+
+        // Locataires - CONCATENATION ADRESSE MISE A JOUR
+        let tDetails = "Né(e) le " + (getVal('t1Dob') ? new Date(getVal('t1Dob')).toLocaleDateString('fr-FR') : "__/__/____") + " à " + getVal('t1Pob');
+        let tName = getVal('t1Name');
+        // Construction adresse T1 avec CP et Ville
+        let tAddr = getVal('t1Addr') + (getVal('t1CP') ? ", " + getVal('t1CP') : "") + (getVal('t1City') ? " " + getVal('t1City') : "");
+
+        if(document.getElementById('secT2').style.display === 'block') {
+            tName += " et " + getVal('t2Name');
+            tDetails += " ; " + getVal('t2Name') + " (" + (getVal('t2Dob') ? new Date(getVal('t2Dob')).toLocaleDateString('fr-FR') : "") + ")";
+            // Construction adresse T2 avec CP et Ville
+            let t2FullAddr = getVal('t2Addr') + (getVal('t2CP') ? ", " + getVal('t2CP') : "") + (getVal('t2City') ? " " + getVal('t2City') : "");
+            tAddr += " / " + t2FullAddr;
+        }
+        setTxt('oTenant', tName);
+        setTxt('oTenantDetails', tDetails);
+        setTxt('oTenantAddr', tAddr);
+
+        // Garants - CONCATENATION ADRESSE MISE A JOUR
+        const hasG1 = document.getElementById('secG1').style.display === 'block';
+        const hasG2 = document.getElementById('secG2').style.display === 'block';
+        let gName = "", gAddr = "";
+        
+        if(hasG1) { 
+            gName += getVal('g1Name'); 
+            gAddr += getVal('g1Addr') + (getVal('g1CP') ? ", " + getVal('g1CP') : "") + (getVal('g1City') ? " " + getVal('g1City') : "");
+        }
+        if(hasG2) { 
+            gName += " et " + getVal('g2Name'); 
+            let g2FullAddr = getVal('g2Addr') + (getVal('g2CP') ? ", " + getVal('g2CP') : "") + (getVal('g2City') ? " " + getVal('g2City') : "");
+            gAddr += " et " + g2FullAddr; 
+        }
+        
+        const gb = document.getElementById('pdf-guarantor-block');
+        if(gName) { gb.style.display = 'block'; setTxt('oGuarantor', gName); setTxt('oGuarantorAddr', gAddr); }
+        else { gb.style.display = 'none'; }
+
+        // Bien - MISE A JOUR CP + VILLE
+        setTxt('oPropAddr', getVal('propAddr'));
+        // Concaténation CP + Ville pour l'affichage
+        let propLoc = (getVal('propCP') ? getVal('propCP') + " " : "") + getVal('propCity');
+        setTxt('oPropCity', propLoc);
+        
+        setTxt('oPropType', getVal('propType'));
+        setTxt('oPropSurf', getVal('propSurf'));
+        setTxt('oPropRooms', getVal('propRooms'));
+        setTxt('oPropEra', getVal('propEra'));
+        setTxt('oHeat', getVal('heatType'));
+        setTxt('oWater', getVal('waterType'));
+        setTxt('oPropKeys', getVal('propKeys'));
+        setTxt('oHistWorks', getVal('histWorks'));
+
+        // Finances
+        const r = parseFloat(getVal('finRent')||0);
+        const c = parseFloat(getVal('finCharges')||0);
+        setTxt('oRent', r.toFixed(2));
+        setTxt('oCharges', c.toFixed(2));
+        setTxt('oTotal', (r+c).toFixed(2));
+        setTxt('oDeposit', getVal('finDeposit'));
+
+        // Zone Tendue Logic
+        const lastRent = getVal('histLastRent');
+        const refRent = getVal('refRent');
+        const maxRent = getVal('maxRent');
+        const ztBlock = document.getElementById('zoneTendueBlock');
+        const ztFormVisible = document.getElementById('zoneTendueForm').style.display === 'block';
+
+        if(ztFormVisible && (lastRent || refRent)) {
+            ztBlock.style.display = 'block';
+            setTxt('oLastRent', lastRent ? lastRent + " (Date: " + getVal('histLastDate') + ")" : "Non renseigné");
+            setTxt('oRefRent', (refRent) ? refRent + "€/m² (Ref) / " + maxRent + "€/m² (Majoré)" : "Non renseigné");
+            setTxt('oSupRent', getVal('supRent') || "Aucun");
+        } else {
+            ztBlock.style.display = 'none';
+        }
+
+        // Dates
+        const ds = getVal('dateStart');
+        setTxt('oDateStart', ds ? new Date(ds).toLocaleDateString('fr-FR') : "__/__/____");
+        setTxt('oDurType', getVal('durType'));
+        setTxt('oSignCity', getVal('propCity')); // On utilise la ville du bien par défaut pour le lieu de signature
+        setTxt('oSignDate', new Date().toLocaleDateString('fr-FR'));
+
+        // Annexes
+        const ul = document.getElementById('oAnnexList');
+        ul.innerHTML = "";
+        ['edl','inv','dpe','erp','reg','not'].forEach(k => {
+            const chk = document.getElementById('chk_'+k);
+            if(chk && chk.checked) {
+                const li = document.createElement('li');
+                li.textContent = chk.parentElement.textContent.trim();
+                ul.appendChild(li);
+            }
+        });
+
+        // Signatures Images
+        const grid = document.getElementById('sigGrid');
+        grid.innerHTML = "";
+        const addSig = (role, name, cid) => {
+            const div = document.createElement('div');
+            div.className = 'sig-box';
+            // On vérifie si le canvas existe dans pads
+            const dataUrl = pads[cid] ? pads[cid].toDataURL() : "";
+            div.innerHTML = `<div class="sig-label">${role}</div><img src="${dataUrl}" class="sig-img"><div class="sig-name">${name}</div>`;
+            grid.appendChild(div);
+        };
+
+        addSig("LE BAILLEUR", getVal('landlordName'), 'cvLandlord');
+        addSig("LE LOCATAIRE", getVal('t1Name'), 'cvT1');
+        if(document.getElementById('secT2').style.display === 'block') addSig("LOCATAIRE 2", getVal('t2Name'), 'cvT2');
+        if(hasG1) addSig("LA CAUTION", getVal('g1Name'), 'cvG1');
+        if(hasG2) addSig("LA CAUTION 2", getVal('g2Name'), 'cvG2');
+
+        // 2. EXPORT PDF
+        const element = document.getElementById('pdf-content');
+        const btn = document.querySelector('.btn-main');
+        const oldTxt = btn.innerText;
+        btn.innerText = "⏳ Génération en cours...";
+
+        const opt = {
+            // MODIF : Marges en mm [Haut, Droite, Bas, Gauche]
+            // 15mm de chaque côté = Standard et propre
+            // 15mm en haut force le contenu de la page 2 à ne pas coller au bord
+            margin:       [15, 15, 15, 15], 
+            
+            filename:     `Bail_${getVal('t1Name').replace(/\s/g,'_')}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak:    { mode: ['css', 'legacy'] }
+        };
+
+        setTimeout(() => {
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerText = oldTxt;
+            });
+        }, 500);
+    }
+</script>
+
+</body>
+</html>
