@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bail Meublé 2026 - Conforme Loi ALUR</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
@@ -23,6 +23,7 @@
             margin: 0;
             padding: 20px;
             color: #334155;
+            -webkit-font-smoothing: antialiased;
         }
 
         .app-layout {
@@ -63,13 +64,12 @@
 
         .row { display: flex; gap: 10px; }
         .col { flex: 1; }
-        /* Pour les codes postaux, on force une largeur plus petite si besoin, ici géré par flex */
         .col-cp { flex: 0 0 90px; } 
 
         /* Boutons et Toggle */
         .btn-toggle {
-            background: #f1f5f9; color: var(--primary); border: 1px solid #e2e8f0; padding: 10px; width: 100%;
-            border-radius: 6px; cursor: pointer; text-align: left; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px;
+            background: #f1f5f9; color: var(--primary); border: 1px solid #e2e8f0; padding: 12px; width: 100%;
+            border-radius: 8px; cursor: pointer; text-align: left; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px;
             display: flex; justify-content: space-between; align-items: center; transition: 0.2s;
         }
         .btn-toggle:hover { background: #e2e8f0; }
@@ -78,47 +78,40 @@
         .hidden-section { display: none; padding: 12px; border: 1px dashed #cbd5e1; border-radius: 6px; margin-bottom: 10px; background: #fafafa; }
 
         /* Checkbox Annexes Joli */
-        .chk-group { display: flex; flex-direction: column; gap: 6px; }
-        .chk-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer; }
-        .chk-item input { width: auto; margin: 0; cursor: pointer; }
+        .chk-group { display: flex; flex-direction: column; gap: 8px; }
+        .chk-item { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; cursor: pointer; padding: 5px 0; }
+        .chk-item input { width: 18px; height: 18px; margin: 0; cursor: pointer; }
 
         /* Signatures Formulaire */
         .pad-wrapper { margin-bottom: 10px; border: 1px solid #e2e8f0; padding: 5px; border-radius: 6px; background: white; }
         .hidden-pad { display: none; }
         .sig-canvas { border: 2px dashed #cbd5e1; width: 100%; height: 80px; background: #fafafa; cursor: crosshair; display: block; touch-action: none; }
-        .btn-clear { float: right; background: #ef4444; color: white; border: none; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; margin-top: -25px; position: relative; z-index: 10; margin-right: 5px; }
+        .btn-clear { float: right; background: #ef4444; color: white; border: none; font-size: 0.7rem; padding: 4px 10px; border-radius: 4px; cursor: pointer; margin-top: -30px; position: relative; z-index: 10; margin-right: 5px; }
 
         .btn-main {
             width: 100%; background: var(--primary); color: white; padding: 15px; border: none; border-radius: 8px;
             font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            transition: all 0.2s;
         }
         .btn-main:hover { background: #0f172a; transform: translateY(-1px); }
+        .btn-main:active { transform: translateY(0); }
 
         /* --- 2. PREVIEW ET PDF --- */
         .preview-wrapper {
             flex: 1;
-            display: block; 
+            display: flex; 
             padding-bottom: 50px;
-            /* Centre la preview */
-            display: flex;
             justify-content: center;
         }
 
         #pdf-content {
             background: white;
-            /* MODIFICATION ICI POUR L'IMPRESSION */
-            /* On enlève la largeur fixe rigide de 210mm pour éviter le crop */
             width: 100%; 
-            max-width: 210mm; /* Pour que ça ressemble à une feuille A4 sur l'écran */
+            max-width: 210mm; 
             min-height: 297mm;
-            
-            /* On réduit le padding interne car html2pdf ajoutera des marges blanches autour */
             padding: 10mm 15mm; 
-            
             box-sizing: border-box;
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            
-            /* TYPOGRAPHIE JURIDIQUE STRICTE */
             font-family: 'Times New Roman', serif;
             color: #000;
             font-size: 10pt; 
@@ -127,7 +120,7 @@
         }
 
         /* Classes PDF Helper */
-        .avoid-break { page-break-inside: avoid; break-inside: avoid; } /* EMPÊCHE LA COUPURE */
+        .avoid-break { page-break-inside: avoid; break-inside: avoid; } 
         
         .pdf-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
         .pdf-title { font-size: 15pt; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -166,11 +159,66 @@
         .sig-img { display: block; max-height: 65px; max-width: 100%; margin: 5px auto; }
         .sig-name { font-size: 8pt; text-align: center; font-family: Arial; position: absolute; bottom: 2px; width: 95%; left: 2.5%; border-top: 1px dotted #ccc; }
 
-        /* --- MEDIA QUERIES --- */
+        /* --- 3. MOBILE DESIGN OPTIMIZATIONS --- */
         @media(max-width: 1100px) {
-            .app-layout { flex-direction: column; }
-            .form-container { width: 100%; max-height: none; position: static; padding: 15px; }
-            .preview-wrapper { display: none; } /* On cache la preview live sur mobile, le PDF sera généré quand même */
+            body {
+                padding: 0;
+                background-color: #fff; /* Fond blanc sur mobile pour faire 'App' */
+            }
+
+            .app-layout {
+                flex-direction: column;
+                display: block;
+            }
+
+            /* FORMULAIRE MOBILE */
+            .form-container {
+                width: 100%;
+                max-width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+                border: none;
+                padding: 20px 20px 100px 20px; /* Padding bas pour le bouton sticky */
+                position: static;
+                max-height: none;
+                overflow: visible;
+            }
+
+            h1 { font-size: 1.5rem; margin-top: 10px; text-align: center; }
+            h2 { margin-top: 30px; font-size: 0.9rem; color: var(--accent); border-bottom: 2px solid #f1f5f9; }
+
+            /* Inputs plus gros pour le tactile et éviter le zoom iOS (min 16px) */
+            input, select {
+                font-size: 16px; 
+                padding: 12px;
+                background-color: #f8fafc;
+                border-color: #e2e8f0;
+            }
+            
+            label { font-size: 0.85rem; margin-top: 10px; }
+
+            /* MASQUER LA PREVIEW MAIS GARDER DANS LE DOM POUR PDF */
+            .preview-wrapper {
+                position: absolute;
+                left: -9999px; /* Hors écran */
+                top: 0;
+                width: 210mm; /* Largeur forcée pour que le PDF se génère correctement */
+                height: auto;
+                visibility: hidden;
+                overflow: hidden;
+            }
+
+            /* Bouton Sticky en bas sur mobile */
+            .btn-main {
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                width: calc(100% - 40px);
+                z-index: 1000;
+                box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+                padding: 18px;
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>
@@ -179,13 +227,13 @@
 <div class="app-layout">
     <div class="form-container">
         <h1>Éditeur de Bail Meublé</h1>
-        <div class="alert-info">ℹ️ Remplissez les champs pour générer le contrat.</div>
+        <div class="alert-info">ℹ️ Remplissez les champs ci-dessous. Sur mobile, le PDF sera généré sans prévisualisation.</div>
 
         <h2>1. Bailleur</h2>
         <label>Nom du Propriétaire</label>
-        <input type="text" id="landlordName" value="Nathan Marzilli" readonly style="background:#f1f5f9; font-weight:bold;">
+        <input type="text" id="landlordName" value="Nathan Marzilli" readonly style="background:#f1f5f9; font-weight:bold; color:#64748b;">
         <label>Adresse du Propriétaire</label>
-        <input type="text" id="landlordAddress" value="75 CHEMIN DES MONTS DU JURA 74500 CHAMPANGES" readonly style="background:#f1f5f9; font-weight:bold;">
+        <input type="text" id="landlordAddress" value="75 CHEMIN DES MONTS DU JURA 74500 CHAMPANGES" readonly style="background:#f1f5f9; font-weight:bold; color:#64748b;">
 
         <h2>2. Locataire(s)</h2>
         <label>Locataire 1 (Principal)</label>
@@ -323,7 +371,7 @@
         <div class="pad-wrapper hidden-pad" id="pad-secG1"><label>Garant 1</label><canvas id="cvG1" class="sig-canvas"></canvas><button class="btn-clear" onclick="clearPad('cvG1')">Effacer</button></div>
         <div class="pad-wrapper hidden-pad" id="pad-secG2"><label>Garant 2</label><canvas id="cvG2" class="sig-canvas"></canvas><button class="btn-clear" onclick="clearPad('cvG2')">Effacer</button></div>
 
-        <button class="btn-main" onclick="generatePDF()">📄 GÉNÉRER LE PDF</button>
+        <button class="btn-main" onclick="generatePDF()">📄 TÉLÉCHARGER LE PDF</button>
     </div>
 
     <div class="preview-wrapper">
@@ -667,11 +715,7 @@
         btn.innerText = "⏳ Génération en cours...";
 
         const opt = {
-            // MODIF : Marges en mm [Haut, Droite, Bas, Gauche]
-            // 15mm de chaque côté = Standard et propre
-            // 15mm en haut force le contenu de la page 2 à ne pas coller au bord
             margin:       [15, 15, 15, 15], 
-            
             filename:     `Bail_${getVal('t1Name').replace(/\s/g,'_')}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
