@@ -6,11 +6,10 @@
     <title>Générateur Quittance | Nathan Marzilli</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -65,6 +64,29 @@
             letter-spacing: 0.05em;
         }
 
+        /* Styles des boutons d'adresse rapide */
+        .addr-btn {
+            font-size: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .addr-btn:hover {
+            background: #2DD4BF;
+            color: #020617;
+            border-color: #2DD4BF;
+            font-weight: 600;
+        }
+        .addr-btn i { font-size: 1.1em; }
+
         .section-title {
             font-family: 'Space Grotesk', sans-serif;
             font-size: 1.1rem;
@@ -96,30 +118,43 @@
             touch-action: none;
         }
 
-        /* --- PDF PREVIEW STYLES --- */
+        /* --- PDF PREVIEW STYLES (Print Engine) --- */
         #pdf-content {
             background: white;
             color: black;
             font-family: 'Times New Roman', serif;
             font-size: 11pt;
             line-height: 1.4;
-            width: 210mm; /* A4 */
-            min-height: 148mm; /* A5 approx height or dynamic */
-            padding: 15mm 20mm;
+            /* LARGEUR CALCULÉE : 
+               A4 = 210mm. 
+               Marges PDF = 10mm gauche + 10mm droite = 20mm.
+               Reste = 190mm.
+               Sécurité demandée = -5mm.
+               Largeur finale HTML = 185mm.
+            */
+            width: 185mm; 
+            min-height: 100mm; /* Hauteur min pour le rendu */
+            padding: 0; /* Pas de padding pour que le titre colle en haut */
             box-sizing: border-box;
             position: relative;
+            margin: 0 auto; 
         }
 
-        .pdf-header-row { display: flex; justify-content: space-between; margin-bottom: 30px; align-items: flex-start; }
+        /* Espacement interne pour le visuel à l'écran, mais compact pour l'impression */
+        .pdf-inner-container {
+            padding: 5mm 0; 
+        }
+
+        .pdf-header-row { display: flex; justify-content: space-between; margin-bottom: 25px; align-items: flex-start; }
         .pdf-landlord { font-weight: bold; font-size: 10pt; line-height: 1.3; }
-        .pdf-tenant-box { border: 1px solid #000; padding: 10px 20px; min-width: 250px; border-radius: 4px; }
+        .pdf-tenant-box { border: 1px solid #000; padding: 10px 15px; min-width: 240px; border-radius: 4px; max-width: 50%; }
         
         .pdf-title { 
             text-align: center; 
             font-size: 16pt; 
             font-weight: bold; 
             text-transform: uppercase; 
-            margin: 20px 0 30px 0; 
+            margin: 10px 0 25px 0; 
             border-bottom: 2px solid #000;
             padding-bottom: 10px;
         }
@@ -141,10 +176,10 @@
             font-style: italic;
         }
 
-        .pdf-signature { margin-top: 30px; text-align: right; margin-right: 20px; }
+        .pdf-signature { margin-top: 25px; text-align: right; margin-right: 20px; }
         .sig-img { max-height: 80px; margin-top: 5px; }
 
-        /* Responsive */
+        /* Responsive Layout */
         .app-grid {
             display: grid;
             grid-template-columns: 450px 1fr;
@@ -153,15 +188,41 @@
             margin: 0 auto;
             align-items: start;
         }
+        
+        /* Mobile / Tablet Styles */
         @media (max-width: 1024px) {
             .app-grid { grid-template-columns: 1fr; }
-            .preview-container { display: none; } /* Hidden on mobile until download */
-            .preview-container.show-mobile { display: block; position: absolute; top: 0; left: -9999px; }
+            /* On cache la preview visuellement sur mobile pour sauver de la place, 
+               MAIS elle doit exister pour que le PDF se génère */
+            .preview-container { 
+                display: none; 
+            } 
+            /* Classe utilitaire activée temporairement pendant le téléchargement */
+            .preview-container.show-for-print { 
+                display: block; 
+                position: absolute; 
+                top: 0; 
+                left: 0; 
+                z-index: -100;
+                opacity: 0;
+                pointer-events: none;
+            }
             body { padding-bottom: 150px; }
         }
+
         .sticky-action-bar { margin-top: 2rem; }
         @media (max-width: 1024px) {
-            .sticky-action-bar { position: fixed; bottom: 0; left: 0; right: 0; padding: 1rem; background: rgba(2,6,23,0.95); z-index: 50; border-top: 1px solid rgba(255,255,255,0.1); }
+            .sticky-action-bar { 
+                position: fixed; 
+                bottom: 0; 
+                left: 0; 
+                right: 0; 
+                padding: 1rem; 
+                background: rgba(2,6,23,0.95); 
+                z-index: 50; 
+                border-top: 1px solid rgba(255,255,255,0.1); 
+                backdrop-filter: blur(10px);
+            }
         }
     </style>
 </head>
@@ -210,9 +271,28 @@
                     <label class="label-premium">Nom du Locataire</label>
                     <input type="text" id="tenantName" placeholder="ex: Mme SID Farah" class="input-premium" oninput="updatePreview()">
                 </div>
+                
                 <div>
                     <label class="label-premium">Adresse du bien loué</label>
-                    <textarea id="propAddr" rows="2" class="input-premium" oninput="updatePreview()">41 BIS RUE GARIBALDI
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+                        <button type="button" class="addr-btn" onclick="setAddress('SP1')">
+                            <i class="ph-bold ph-map-pin"></i> Saint-Priest 1 (Cerisioz)
+                        </button>
+                        <button type="button" class="addr-btn" onclick="setAddress('SP2')">
+                            <i class="ph-bold ph-map-pin"></i> Saint-Priest 2 (Heyrieux)
+                        </button>
+                        <button type="button" class="addr-btn" onclick="setAddress('EV1')">
+                            <i class="ph-bold ph-house"></i> Evian 1 (Apt 7)
+                        </button>
+                        <button type="button" class="addr-btn" onclick="setAddress('EV2')">
+                            <i class="ph-bold ph-house"></i> Evian 2 (Apt 6)
+                        </button>
+                        <button type="button" class="addr-btn" onclick="setAddress('EV3')">
+                            <i class="ph-bold ph-house"></i> Evian 3 (Touvière)
+                        </button>
+                    </div>
+
+                    <textarea id="propAddr" rows="3" class="input-premium" oninput="updatePreview()" placeholder="L'adresse s'affichera ici...">41 BIS RUE GARIBALDI
 Résidence Les Cerisioz Bâtiment 8D
 69800 SAINT-PRIEST</textarea>
                 </div>
@@ -245,7 +325,7 @@ Résidence Les Cerisioz Bâtiment 8D
             
             <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 mb-4">
                 <div class="flex justify-between text-sm text-blue-200 mb-2">
-                    <span>Période calculée :</span>
+                    <span>Période (1er au dernier jour) :</span>
                 </div>
                 <div class="flex gap-2">
                     <input type="date" id="dateStart" class="input-premium text-sm" onchange="updatePreview()">
@@ -293,64 +373,66 @@ Résidence Les Cerisioz Bâtiment 8D
 
         <div class="preview-container flex justify-center sticky top-24">
             <div class="relative">
-                <div class="absolute inset-0 bg-white transform rotate-1 rounded shadow-xl -z-10 w-[210mm] h-full"></div>
+                <div class="absolute inset-0 bg-white transform rotate-1 rounded shadow-xl -z-10 w-[190mm] h-full left-1/2 -translate-x-1/2"></div>
                 
                 <div id="pdf-content">
-                    <div class="pdf-header-row">
-                        <div class="pdf-landlord">
-                            <span id="pLandlordName" style="text-transform: uppercase;"></span><br>
-                            <span id="pLandlordAddr"></span>
+                    <div class="pdf-inner-container">
+                        <div class="pdf-header-row">
+                            <div class="pdf-landlord">
+                                <span id="pLandlordName" style="text-transform: uppercase;"></span><br>
+                                <span id="pLandlordAddr"></span>
+                            </div>
+                            <div class="pdf-tenant-box">
+                                <strong>Locataire :</strong><br>
+                                <span id="pTenantName" style="font-size:12pt; font-weight:bold;"></span><br>
+                                Adresse des lieux loués :<br>
+                                <span id="pPropAddr" style="white-space: pre-line;"></span>
+                            </div>
                         </div>
-                        <div class="pdf-tenant-box">
-                            <strong>Locataire :</strong><br>
-                            <span id="pTenantName" style="font-size:12pt; font-weight:bold;"></span><br>
-                            Adresse des lieux loués :<br>
-                            <span id="pPropAddr" style="white-space: pre-line;"></span>
+
+                        <div class="pdf-title">
+                            QUITTANCE DE LOYER<br>
+                            <span style="font-size:12pt; font-weight:normal;">DU MOIS DE <span id="pMonthTitle"></span></span>
                         </div>
-                    </div>
 
-                    <div class="pdf-title">
-                        QUITTANCE DE LOYER<br>
-                        <span style="font-size:12pt; font-weight:normal;">DU MOIS DE <span id="pMonthTitle"></span></span>
-                    </div>
+                        <table class="pdf-table">
+                            <thead>
+                                <tr>
+                                    <th>Loyer</th>
+                                    <th>Provisions sur Charges</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span id="pRent"></span> €</td>
+                                    <td><span id="pCharges"></span> €</td>
+                                    <td style="font-weight:bold;"><span id="pTotal"></span> €</td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                    <table class="pdf-table">
-                        <thead>
-                            <tr>
-                                <th>Loyer</th>
-                                <th>Provisions sur Charges</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><span id="pRent"></span> €</td>
-                                <td><span id="pCharges"></span> €</td>
-                                <td style="font-weight:bold;"><span id="pTotal"></span> €</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        <div class="pdf-legal-text">
+                            Je soussigné, reconnais avoir reçu de <strong><span id="pTenantBody"></span></strong> la somme de : 
+                            <strong><span id="pTotalLetters"></span></strong> 
+                            pour la période du <strong><span id="pDateStart"></span></strong> au <strong><span id="pDateEnd"></span></strong> 
+                            pour le loyer des lieux occupés dans ledit immeuble.
+                            <br><br>
+                            Dont la quittance sans préjudice du terme courant, sans présomption de paiement des loyers antérieurs, et sous toutes réserves de droit.
+                        </div>
 
-                    <div class="pdf-legal-text">
-                        Je soussigné, reconnais avoir reçu de <strong><span id="pTenantBody"></span></strong> la somme de : 
-                        <strong><span id="pTotalLetters"></span></strong> 
-                        pour la période du <strong><span id="pDateStart"></span></strong> au <strong><span id="pDateEnd"></span></strong> 
-                        pour le loyer des lieux occupés dans ledit immeuble.
-                        <br><br>
-                        Dont la quittance sans préjudice du terme courant, sans présomption de paiement des loyers antérieurs, et sous toutes réserves de droit.
-                    </div>
+                        <div style="margin-top: 20px; font-weight: bold;">
+                            PUBLIÉ LE <span id="pDatePublish"></span>
+                        </div>
 
-                    <div style="margin-top: 20px; font-weight: bold;">
-                        PUBLIÉ LE <span id="pDatePublish"></span>
-                    </div>
+                        <div class="pdf-signature">
+                            <div style="margin-bottom:10px; font-weight:bold; text-transform:uppercase;" id="pSignName"></div>
+                            <div id="pSigImgContainer"></div>
+                        </div>
 
-                    <div class="pdf-signature">
-                        <div style="margin-bottom:10px; font-weight:bold; text-transform:uppercase;" id="pSignName"></div>
-                        <div id="pSigImgContainer"></div>
-                    </div>
-
-                    <div class="pdf-nota">
-                        <strong>NOTA :</strong> nul locataire ou occupant ne peut déménager avant d'avoir reçu ou donné congé par écrit aux époques prescrites par la loi avant d'avoir fait faire d'abord toutes les réparations locatives qui sont à sa charge et justifié par une quittance du receveur qu'il a acquitté toutes ses contributions de l'année courante. Il doit à son départ libérer complètement les lieux, sous peine de tous frais et dommages-intérêts.
+                        <div class="pdf-nota">
+                            <strong>NOTA :</strong> nul locataire ou occupant ne peut déménager avant d'avoir reçu ou donné congé par écrit aux époques prescrites par la loi avant d'avoir fait faire d'abord toutes les réparations locatives qui sont à sa charge et justifié par une quittance du receveur qu'il a acquitté toutes ses contributions de l'année courante. Il doit à son départ libérer complètement les lieux, sous peine de tous frais et dommages-intérêts.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -359,68 +441,32 @@ Résidence Les Cerisioz Bâtiment 8D
     </main>
 
     <script>
-        // --- UTILS: Number to Letters (Simplified French) ---
-        function numberToFrench(num) {
-            const units = ['', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf'];
-            const teens = ['dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf'];
-            const tens = ['', 'dix', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'soixante-dix', 'quatre-vingt', 'quatre-vingt-dix'];
-            
-            if (num === 0) return 'zéro';
-            
-            let str = '';
-            
-            // Hundreds
-            if (num >= 100) {
-                const h = Math.floor(num / 100);
-                if (h > 1) str += units[h] + ' cents ';
-                else str += 'cent ';
-                num %= 100;
-            }
-            
-            // Tens & Units
-            if (num > 0) {
-                if (num < 10) str += units[num];
-                else if (num < 20) str += teens[num - 10];
-                else {
-                    const t = Math.floor(num / 10);
-                    const u = num % 10;
-                    
-                    if (t === 7 || t === 9) {
-                        str += tens[t - 1] + (t===7 && u===1 ? ' et ' : '-'); // 70, 90 base
-                        str += (u < 10 ? teens[u] : teens[u]); // Fix logic simplified for brevity
-                        // Actually easier to just hardcode 70-79 and 90-99 logic for a receipt
-                        // Let's do a robust simple mapper for receipts up to 9999
-                    } else {
-                        str += tens[t];
-                        if (u > 0) str += (u === 1 && t !== 8 ? ' et ' : '-') + units[u];
-                    }
+        // --- 1. GESTION DES ADRESSES ---
+        const addresses = {
+            'SP1': "41 BIS RUE GARIBALDI\nRésidence Les Cerisioz Bâtiment 8D\n69800 SAINT-PRIEST",
+            'SP2': "9 Route d'Heyrieux\n69800 SAINT-PRIEST",
+            'EV1': "26 Rue du port\nRésidence TOPOR\n74500 EVIAN-LES-BAINS\nAppartement n°7",
+            'EV2': "26 Rue du port\nRésidence TOPOR\n74500 EVIAN-LES-BAINS\nAppartement n°6",
+            'EV3': "15 Rue de la Touvière\nRésidence LES RIVES DU LÉMAN\n74500 EVIAN-LES-BAINS"
+        };
+
+        function setAddress(key) {
+            const addr = addresses[key];
+            if(addr) {
+                document.getElementById('propAddr').value = addr;
+                updatePreview();
+                // Petit effet visuel pour confirmer
+                const btn = document.activeElement;
+                if(btn) {
+                    const originalColor = btn.style.borderColor;
+                    btn.style.borderColor = "#2DD4BF";
+                    setTimeout(() => btn.style.borderColor = originalColor, 300);
                 }
             }
-            
-            // Correction rapide pour 70-79 et 90-99 (cas complexes simplifiés ici)
-            // Pour être pro, utilisons une logique clean ou input manuel si besoin.
-            // Voici une version corrigée pour les montants loyers standards (ex: 590)
-            
-            return convertHundreds(Math.floor(num + 0.1)); // Integer part
         }
 
-        function convertHundreds(n) {
-            const u = ['','Un','Deux','Trois','Quatre','Cinq','Six','Sept','Huit','Neuf'];
-            const d = ['','Dix','Vingt','Trente','Quarante','Cinquante','Soixante','Soixante-dix','Quatre-vingt','Quatre-vingt-dix'];
-            
-            if (n === 0) return "";
-            if (n === 590) return "CINQ CENT QUATRE-VINGT-DIX"; // Quick fix for your specific case example
-            
-            // Basic fallback text
-            let s = n.toString();
-            // Pour garantir la perfection juridique, je vais ajouter la somme en lettres en majuscules
-            // via une méthode plus robuste ci-dessous dans l'updatePreview
-            return ""; 
-        }
-
-        // Vraie fonction de conversion pour la preview
+        // --- UTILS: Conversion Nombres en Lettres ---
         const writtenNumber = (n) => {
-            // Mapping simple suffisant pour les loyers < 10000
             const map = {
                 0: "Zéro", 1: "Un", 2: "Deux", 3: "Trois", 4: "Quatre", 5: "Cinq", 6: "Six", 7: "Sept", 8: "Huit", 9: "Neuf",
                 10: "Dix", 11: "Onze", 12: "Douze", 13: "Treize", 14: "Quatorze", 15: "Quinze", 16: "Seize", 20: "Vingt",
@@ -444,14 +490,13 @@ Résidence Les Cerisioz Bâtiment 8D
                     let t = Math.floor(val/10)*10;
                     let u = val % 10;
                     
-                    // Gestion 70-79 et 90-99
                     if(t === 70) { t = 60; u += 10; }
                     if(t === 90) { t = 80; u += 10; }
 
                     res += map[t];
                     if(u > 0) {
                         if(u === 1 && t < 80) res += " et Un";
-                        else if(u < 17) res += "-" + map[u]; // ex: Soixante-dix
+                        else if(u < 17) res += "-" + map[u]; 
                         else res += "-" + map[u]; 
                     }
                 }
@@ -462,7 +507,10 @@ Résidence Les Cerisioz Bâtiment 8D
 
         // --- LOGIC ---
         const getVal = (id) => document.getElementById(id).value;
-        const setTxt = (id, txt) => document.getElementById(id).innerText = txt;
+        const setTxt = (id, txt) => {
+            const el = document.getElementById(id);
+            if(el) el.innerText = txt;
+        };
 
         // Init Dates
         function init() {
@@ -480,9 +528,10 @@ Résidence Les Cerisioz Bâtiment 8D
             const m = parseInt(getVal('selMonth'));
             const y = parseInt(getVal('selYear'));
             
-            // Start: 1st of month
+            // PÉRIODE : DU 1er AU DERNIER JOUR
+            // Date(y, m, 1) -> Le 1er du mois 'm'
+            // Date(y, m + 1, 0) -> Le jour 0 du mois suivant, ce qui revient au dernier jour du mois 'm'
             const start = new Date(y, m, 1);
-            // End: Last day of month
             const end = new Date(y, m + 1, 0);
 
             document.getElementById('dateStart').valueAsDate = start;
@@ -589,8 +638,11 @@ Résidence Les Cerisioz Bâtiment 8D
             cont.appendChild(img);
         }
 
-        // --- PDF GENERATION ---
+        // --- PDF GENERATION FIX ---
         function generatePDF() {
+            // CRUCIAL : Scroll en haut pour éviter le bug de page blanche
+            window.scrollTo(0, 0);
+
             const element = document.getElementById('pdf-content');
             const btn = document.querySelector('.sticky-action-bar button');
             const oldTxt = btn.innerHTML;
@@ -598,29 +650,40 @@ Résidence Les Cerisioz Bâtiment 8D
             // Show loader
             btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin"></i> Génération...`;
 
-            // Mobile formatting fix before print
+            // Mobile formatting fix
             const previewContainer = document.querySelector('.preview-container');
             const wasHidden = window.getComputedStyle(previewContainer).display === 'none';
+            
             if(wasHidden) {
-                previewContainer.classList.add('show-mobile');
+                // On rend le container visible mais hors champ pour la capture
+                previewContainer.classList.add('show-for-print');
             }
 
             const monthName = document.getElementById('selMonth').options[document.getElementById('selMonth').selectedIndex].text;
             const year = getVal('selYear');
-            const tenant = getVal('tenantName').split(' ')[0] || "Locataire";
+            // Nettoyage du nom de fichier
+            const tenant = (getVal('tenantName') || "Locataire").replace(/[^a-z0-9]/gi, '_').substring(0, 15);
 
             const opt = {
-                margin:       10,
+                margin:       10, // Marges standard A4 (10mm)
                 filename:     `Quittance_${monthName}_${year}_${tenant}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            html2pdf().set(opt).from(element).save().then(() => {
-                btn.innerHTML = oldTxt;
-                if(wasHidden) previewContainer.classList.remove('show-mobile');
-            });
+            // Petit délai pour laisser le temps au DOM de s'afficher si caché
+            setTimeout(() => {
+                html2pdf().set(opt).from(element).save().then(() => {
+                    btn.innerHTML = oldTxt;
+                    if(wasHidden) previewContainer.classList.remove('show-for-print');
+                }).catch(err => {
+                    console.error(err);
+                    alert("Erreur lors de la génération. Veuillez réessayer.");
+                    btn.innerHTML = oldTxt;
+                    if(wasHidden) previewContainer.classList.remove('show-for-print');
+                });
+            }, 100);
         }
 
         // Run
