@@ -211,17 +211,20 @@
         }
 
         .sticky-action-bar { margin-top: 2rem; }
+        
         @media (max-width: 1024px) {
             .sticky-action-bar { 
-                position: fixed; 
-                bottom: 0; 
-                left: 0; 
-                right: 0; 
-                padding: 1rem; 
-                background: rgba(2,6,23,0.95); 
-                z-index: 50; 
-                border-top: 1px solid rgba(255,255,255,0.1); 
-                backdrop-filter: blur(10px);
+                /* MODIFICATION ICI : On enlève le position:fixed pour que le bouton
+                   s'affiche simplement à la fin du flux, sous la signature */
+                position: relative; 
+                bottom: auto; 
+                left: auto; 
+                right: auto; 
+                padding: 1rem 0; 
+                background: transparent; 
+                z-index: 10; 
+                border-top: none; 
+                backdrop-filter: none;
             }
         }
     </style>
