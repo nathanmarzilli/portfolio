@@ -260,9 +260,10 @@
                     <input type="text" id="landlordName" value="Nathan MARZILLI" readonly class="input-premium opacity-60 cursor-not-allowed font-bold text-accent-400">
                 </div>
                 <div>
-                    <label class="label-premium">Adresse Fiscale</label>
-                    <input type="text" id="landlordAddr" value="75, CHEMIN DES MONTS DU JURA, 74500 CHAMPANGES" readonly class="input-premium opacity-60 cursor-not-allowed">
-                </div>
+					<label class="label-premium">Adresse Fiscale</label>
+					<textarea id="landlordAddr" rows="2" readonly class="input-premium opacity-60 cursor-not-allowed resize-none">75 CHEMIN DES MONTS DU JURA
+				74500 CHAMPANGES</textarea>
+				</div>
             </div>
 
             <div class="section-title"><i class="ph-duotone ph-house-line"></i> 2. Location & Locataire</div>
@@ -379,9 +380,9 @@ Résidence Les Cerisioz Bâtiment 8D
                     <div class="pdf-inner-container">
                         <div class="pdf-header-row">
                             <div class="pdf-landlord">
-                                <span id="pLandlordName" style="text-transform: uppercase;"></span><br>
-                                <span id="pLandlordAddr"></span>
-                            </div>
+								<span id="pLandlordName" style="text-transform: uppercase;"></span><br>
+								<span id="pLandlordAddr" style="white-space: pre-line;"></span>
+							</div>
                             <div class="pdf-tenant-box">
                                 <strong>Locataire :</strong><br>
                                 <span id="pTenantName" style="font-size:12pt; font-weight:bold;"></span><br>
