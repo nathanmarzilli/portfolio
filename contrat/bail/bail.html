@@ -135,23 +135,24 @@
         }
 
         /* --- PDF PRINT STYLES (STRICT & ISOLATED) --- */
-        /* Ce bloc CSS ne s'applique qu'à l'intérieur de #pdf-content pour garantir l'impression */
         #pdf-content {
-			background: white;
-			color: black;
-			font-family: 'Times New Roman', serif;
-			font-size: 10pt;
-			line-height: 1.25;
-			text-align: justify;
-			
-			/* CORRECTION : Largeur flexible et suppression du padding CSS */
-			width: 100%; 
-			padding: 0; 
-			
-			min-height: 297mm;
-			box-sizing: border-box;
-			position: relative;
-		}
+            background: white;
+            color: black;
+            font-family: 'Times New Roman', serif;
+            font-size: 10pt;
+            line-height: 1.25;
+            text-align: justify;
+            
+            /* CORRECTION #1 : Largeur fixée à 208mm (légèrement < 210mm) pour éviter le rognage */
+            width: 208mm; 
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0; 
+            
+            min-height: 297mm;
+            box-sizing: border-box;
+            position: relative;
+        }
 
         /* Helper classes internal to PDF */
         .pdf-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
@@ -186,17 +187,17 @@
             align-items: start;
         }
 
-        /* Mobile & Tablet optimizations */
-        @media (max-width: 1024px) {
+        /* CORRECTION #2 : Responsive Button Logic */
+        
+        /* Mobile Only (< 768px) : Bouton collé en bas */
+        @media (max-width: 767px) {
             .app-grid { grid-template-columns: 1fr; gap: 0; }
             
-            /* Hide Preview on Mobile/Tablet */
             .preview-container { 
                 position: absolute; 
                 opacity: 0; 
                 pointer-events: none; 
                 height: 0; overflow: hidden;
-                /* Keep it in DOM for generation but invisible */
                 z-index: -10;
             }
 
@@ -207,7 +208,6 @@
                 box-shadow: none;
             }
 
-            /* Sticky Button on Mobile */
             .sticky-action-bar {
                 position: fixed;
                 bottom: 0; left: 0; right: 0;
@@ -220,7 +220,8 @@
             }
         }
 
-        @media (min-width: 1025px) {
+        /* Tablet & Desktop (>= 768px) : Bouton statique (ne cache plus rien) */
+        @media (min-width: 768px) {
             .sticky-action-bar {
                 position: static;
                 margin-top: 2rem;
@@ -228,6 +229,15 @@
                 padding: 0;
                 border: none;
                 box-shadow: none;
+            }
+        }
+
+        /* Desktop specific layout tweaks still apply via standard CSS above */
+        @media (max-width: 1024px) {
+             /* Keep layout 1 column for tablet but button is now static thanks to rule above */
+             .app-grid { grid-template-columns: 1fr; gap: 0; }
+             .preview-container { 
+                position: absolute; opacity: 0; pointer-events: none; height: 0; overflow: hidden; z-index: -10;
             }
         }
         
@@ -983,16 +993,16 @@
             }
 
             const opt = {
-				/* CORRECTION : Marges gérées ici (Haut, Droite, Bas, Gauche) */
-				/* 15mm vertical, 20mm horizontal pour respecter le standard A4 et éviter la coupure */
-				margin:       [15, 20, 15, 20], 
-				
-				filename:     `Bail_${getVal('t1Name').replace(/\s/g,'_') || 'Nouveau'}.pdf`,
-				image:        { type: 'jpeg', quality: 0.98 },
-				html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
-				jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-				pagebreak:    { mode: ['css', 'legacy'] }
-			};
+                /* CORRECTION : Marges gérées ici (Haut, Droite, Bas, Gauche) */
+                /* 15mm vertical, 20mm horizontal pour respecter le standard A4 et éviter la coupure */
+                margin:       [15, 20, 15, 20], 
+                
+                filename:     `Bail_${getVal('t1Name').replace(/\s/g,'_') || 'Nouveau'}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak:    { mode: ['css', 'legacy'] }
+            };
 
             // Delay to ensure rendering
             setTimeout(() => {
