@@ -1,27 +1,31 @@
-// Import des fonctions Firebase depuis le CDN (Version 10)
+// ============================================================
+// IMPORTS FIREBASE (AUTH + FIRESTORE)
+// ============================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // ============================================================
-// 1. CONFIGURATION FIREBASE (REMPLACE PAR TES CLÉS ICI)
+// 1. CONFIGURATION FIREBASE
 // ============================================================
 const firebaseConfig = {
-  apiKey: "AIzaSyD6Q-HVto8eybwGo9YgcFx4hu7rWBLNYfg",
-  authDomain: "portfolio-nathan-e148f.firebaseapp.com",
-  projectId: "portfolio-nathan-e148f",
-  storageBucket: "portfolio-nathan-e148f.firebasestorage.app",
-  messagingSenderId: "61408006418",
-  appId: "1:61408006418:web:8a448e8ca60ec77bf523cb"
+    apiKey: "AIzaSyD6Q-HVto8eybwGo9YgcFx4hu7rWBLNYfg",
+    authDomain: "portfolio-nathan-e148f.firebaseapp.com",
+    projectId: "portfolio-nathan-e148f",
+    storageBucket: "portfolio-nathan-e148f.firebasestorage.app",
+    messagingSenderId: "61408006418",
+    appId: "1:61408006418:web:8a448e8ca60ec77bf523cb"
 };
 
 // Initialisation de Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app); // Base de données pour les réservations
 
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==============================================
-    // 2. GESTION DES PROJETS (TON CODE EXISTANT)
+    // 2. GESTION DES PROJETS
     // ==============================================
     const projectsData = [
         {
@@ -100,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
-    // NOTE : On attache cette fonction à 'window' car nous sommes dans un module
+    // Fonction globale pour le détail des features
     window.showProjectDesc = function(projectIndex, btnIndex) {
         document.querySelectorAll(`.proj-btn-${projectIndex}`).forEach(btn => {
             btn.classList.remove('bg-white/10', 'border-accent-400', 'text-white');
@@ -120,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==============================================
-    // 3. ADMIN SÉCURISÉ (AUTHENTIFICATION FIREBASE)
+    // 3. ADMIN SÉCURISÉ (AUTHENTIFICATION)
     // ==============================================
     const adminModal = document.getElementById('admin-modal');
     const adminContent = document.getElementById('admin-content');
@@ -129,7 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const actionsGrid = document.getElementById('admin-actions-grid');
     const loginError = document.getElementById('login-error');
 
-    // Gestion ouverture/fermeture Modale
     window.toggleAdminModal = function() {
         if (adminModal.classList.contains('hidden')) {
             adminModal.classList.remove('hidden');
@@ -139,13 +142,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 adminContent.classList.add('scale-100');
             }, 10);
             
-            // Vérifie si l'utilisateur est déjà connecté grâce à Firebase
             onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    showDashboard();
-                } else {
-                    showLogin();
-                }
+                if (user) showDashboard();
+                else showLogin();
             });
 
         } else {
@@ -180,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('admin-id').value = '';
         document.getElementById('admin-pass').value = '';
         loginError.classList.add('hidden');
-        
         document.getElementById('admin-pass').type = 'password';
         document.getElementById('eye-icon').classList.remove('ph-eye-slash');
         document.getElementById('eye-icon').classList.add('ph-eye');
@@ -197,24 +195,17 @@ document.addEventListener('DOMContentLoaded', () => {
         renderAdminButtons();
     }
 
-    // --- C'EST ICI QUE LA CONNEXION SE FAIT ---
     window.attemptLogin = function() {
         const idInput = document.getElementById('admin-id').value.trim();
         const passInput = document.getElementById('admin-pass').value.trim();
-        
-        // ASTUCE : On ajoute le domaine email si tu ne l'as pas mis
-        // Comme ça tu peux juste taper "nathan.marzilli"
         const emailToUse = idInput.includes('@') ? idInput : idInput + '@gmail.com';
 
-        // Connexion via Firebase
         signInWithEmailAndPassword(auth, emailToUse, passInput)
             .then((userCredential) => {
-                // Succès !
                 loginError.classList.add('hidden');
                 showDashboard();
             })
             .catch((error) => {
-                // Erreur
                 console.error("Erreur de connexion :", error.code, error.message);
                 loginError.classList.remove('hidden');
                 adminContent.classList.add('animate-pulse');
@@ -222,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     };
 
-    // Déconnexion
     window.logout = function() {
         signOut(auth).then(() => {
             showLogin();
@@ -233,8 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const adminActions = [
         { label: "Créer Devis / Facture", icon: "ph-file-text", color: "text-blue-400", link: "/portfolio/contrat/devis&contrat/" },
-        { label: "Quittance de Loyer", icon: "ph-house-line", color: "text-green-400", link: "portfolio/contrat/quittance/" },
-        { label: "Bail Location Meublée", icon: "ph-key", color: "text-purple-400", link: "portfolio/contrat/bail/" }
+        { label: "Quittance de Loyer", icon: "ph-house-line", color: "text-green-400", link: "/portfolio/contrat/quittance/" },
+        { label: "Bail Location Meublée", icon: "ph-key", color: "text-purple-400", link: "/portfolio/contrat/bail/" }
     ];
 
     function renderAdminButtons() {
@@ -249,33 +239,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 </a>
             `).join('');
 
-            // Bouton de déconnexion ajouté à la fin
             html += `
                 <button onclick="window.logout()" class="w-full mt-4 py-3 rounded-xl border border-white/10 text-slate-400 text-xs font-bold uppercase tracking-widest hover:bg-white/5 hover:text-white transition-all">
                     Se déconnecter
                 </button>
             `;
-            
             actionsGrid.innerHTML = html;
         }
     }
 
-    document.getElementById('admin-pass').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') window.attemptLogin();
-    });
+    const passField = document.getElementById('admin-pass');
+    if(passField) {
+        passField.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') window.attemptLogin();
+        });
+    }
 
     // ==============================================
-    // 4. LOGIQUE SKILLS & GLOBAL (INCHANGÉ)
+    // 4. ANIMATIONS & UI (SKILLS, OBSERVERS)
     // ==============================================
     const techDescriptions = {
-        'html': { title: 'Structure HTML5 Sémantique', text: 'Je construis le squelette de votre site en respectant les standards du web (W3C). Un code propre garantit une meilleure accessibilité pour les personnes handicapées et une lecture parfaite par les robots de Google (SEO).', icon: 'ph-file-html', color: 'text-orange-500' },
-        'css': { title: 'Design CSS3 Moderne', text: 'Mise en forme avancée sans alourdir le site. J\'utilise les animations CSS fluides (60fps) et les layouts Flexbox/Grid pour que votre site soit beau et réactif sur tous les écrans.', icon: 'ph-file-css', color: 'text-blue-500' },
-        'js': { title: 'JavaScript Dynamique', text: 'Le moteur de l\'interactivité. Je développe des fonctionnalités sur-mesure (calculateurs, filtres, cartes) sans dépendre de plugins lourds. Votre site réagit instantanément aux actions de l\'utilisateur.', icon: 'ph-file-js', color: 'text-yellow-400' },
-        'tailwind': { title: 'Tailwind CSS Framework', text: 'Mon outil de prédilection pour le design. Il permet de construire des interfaces uniques ultra-rapidement tout en générant un fichier CSS final minuscule pour un chargement éclair.', icon: 'ph-paint-brush-broad', color: 'text-cyan-400' },
-        'git': { title: 'Versionning Git', text: 'La sécurité de votre code. Chaque modification est enregistrée dans un historique. Cela permet de travailler sans risque et de revenir en arrière si une nouvelle fonctionnalité ne convient pas.', icon: 'ph-git-branch', color: 'text-red-500' },
-        'responsive': { title: 'Mobile First', text: 'Plus de 60% des visites se font sur mobile. Je conçois votre site d\'abord pour les smartphones, puis j\'adapte l\'affichage pour les tablettes et ordinateurs. L\'expérience est parfaite partout.', icon: 'ph-device-mobile', color: 'text-purple-400' },
-        'firebase': { title: 'Backend Google Firebase', text: 'Une base de données puissante et sécurisée par Google. Idéal pour héberger vos données dynamiques (scores en direct, commentaires, authentification utilisateurs) sans gérer de serveur complexe.', icon: 'ph-fire', color: 'text-orange-400' },
-        'seo': { title: 'SEO & Performance', text: 'La visibilité avant tout. J\'optimise la structure technique (balises meta, sitemap, vitesse) pour que Google adore votre site autant que vos visiteurs. Objectif : Score 100/100.', icon: 'ph-magnifying-glass', color: 'text-green-500' }
+        'html': { title: 'Structure HTML5 Sémantique', text: 'Je construis le squelette de votre site en respectant les standards du web (W3C).', icon: 'ph-file-html', color: 'text-orange-500' },
+        'css': { title: 'Design CSS3 Moderne', text: 'Mise en forme avancée, animations fluides (60fps) et layouts Flexbox/Grid.', icon: 'ph-file-css', color: 'text-blue-500' },
+        'js': { title: 'JavaScript Dynamique', text: 'Fonctionnalités sur-mesure (calculateurs, filtres) sans plugins lourds.', icon: 'ph-file-js', color: 'text-yellow-400' },
+        'tailwind': { title: 'Tailwind CSS', text: 'Interfaces uniques construites rapidement, fichier CSS final minuscule.', icon: 'ph-paint-brush-broad', color: 'text-cyan-400' },
+        'git': { title: 'Versionning Git', text: 'Sécurité du code et historique de chaque modification.', icon: 'ph-git-branch', color: 'text-red-500' },
+        'responsive': { title: 'Mobile First', text: 'Conception pensée pour les smartphones avant tout.', icon: 'ph-device-mobile', color: 'text-purple-400' },
+        'firebase': { title: 'Google Firebase', text: 'Base de données temps réel et sécurisée pour vos données dynamiques.', icon: 'ph-fire', color: 'text-orange-400' },
+        'seo': { title: 'SEO & Performance', text: 'Structure technique optimisée pour Google. Objectif : Score 100/100.', icon: 'ph-magnifying-glass', color: 'text-green-500' }
     };
 
     const techItems = document.querySelectorAll('.tech-item');
@@ -284,6 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const descText = document.getElementById('tech-text');
     const descIcon = document.getElementById('tech-bg-icon');
 
+    // Init première techno
     setTimeout(() => {
         const firstTech = document.querySelector('[data-tech="html"]');
         if(firstTech) updateTechDescription(firstTech);
@@ -334,6 +326,170 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+
+    // ==============================================
+    // 5. NOUVEAU SYSTÈME DE RÉSERVATION DYNAMIQUE
+    // ==============================================
     
-    if(typeof loadAvailability === 'function') loadAvailability();
+    const daysContainer = document.getElementById('calendar-days');
+    const slotsContainer = document.getElementById('calendar-slots');
+    const dateInput = document.getElementById('selected-date');
+    const timeInput = document.getElementById('selected-time');
+
+    // Créneaux horaires disponibles par défaut
+    const DEFAULT_SLOTS = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
+
+    // 5a. Initialisation du Calendrier (14 prochains jours)
+    async function initCalendar() {
+        if(!daysContainer) return;
+
+        daysContainer.innerHTML = '';
+        const today = new Date();
+        let delay = 0;
+
+        for (let i = 1; i <= 14; i++) {
+            const d = new Date(today);
+            d.setDate(today.getDate() + i);
+            
+            // Exclure Week-end (0=Dimanche, 6=Samedi)
+            if (d.getDay() === 0 || d.getDay() === 6) continue;
+
+            const dateStr = d.toISOString().split('T')[0];
+            const dayName = d.toLocaleDateString('fr-FR', { weekday: 'short' });
+            const dayNum = d.toLocaleDateString('fr-FR', { day: 'numeric' });
+            const monthName = d.toLocaleDateString('fr-FR', { month: 'short' });
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `date-btn flex-shrink-0 w-16 h-20 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 flex flex-col items-center justify-center transition-all duration-300 group focus:outline-none reveal-day`;
+            btn.style.animationDelay = `${delay}ms`;
+            btn.innerHTML = `
+                <span class="text-xs text-slate-400 uppercase font-bold group-hover:text-accent-400">${dayName}</span>
+                <span class="text-xl font-bold text-white my-1">${dayNum}</span>
+                <span class="text-[10px] text-slate-500">${monthName}</span>
+            `;
+            
+            btn.addEventListener('click', (e) => selectDate(btn, dateStr));
+            daysContainer.appendChild(btn);
+            delay += 50;
+        }
+    }
+
+    // 5b. Sélection d'une date
+    async function selectDate(btn, dateStr) {
+        // UI Reset
+        document.querySelectorAll('.date-btn').forEach(b => {
+            b.classList.remove('bg-accent-400', 'border-accent-400');
+            b.querySelector('span').classList.remove('text-dark-950'); 
+        });
+        
+        // UI Active
+        btn.classList.remove('bg-white/5');
+        btn.classList.add('bg-accent-400', 'border-accent-400');
+        const spans = btn.querySelectorAll('span');
+        spans.forEach(s => {
+            s.classList.remove('text-slate-400', 'text-white', 'text-slate-500');
+            s.classList.add('text-dark-950');
+        });
+
+        dateInput.value = dateStr;
+        timeInput.value = ""; 
+        
+        await loadSlotsForDate(dateStr);
+    }
+
+    // 5c. Chargement des créneaux depuis Firestore
+    async function loadSlotsForDate(dateStr) {
+        slotsContainer.innerHTML = '<div class="col-span-4 text-center text-accent-400"><i class="ph-duotone ph-spinner animate-spin text-2xl"></i></div>';
+        
+        try {
+            // Vérifier les réservations existantes pour ce jour
+            const q = query(collection(db, "bookings"), where("date", "==", dateStr));
+            const querySnapshot = await getDocs(q);
+            const takenSlots = [];
+            querySnapshot.forEach((doc) => {
+                takenSlots.push(doc.data().time);
+            });
+
+            slotsContainer.innerHTML = '';
+            
+            if(DEFAULT_SLOTS.length === takenSlots.length) {
+                slotsContainer.innerHTML = '<div class="col-span-4 text-center text-slate-500 text-xs py-2">Complet ce jour</div>';
+                return;
+            }
+
+            DEFAULT_SLOTS.forEach(time => {
+                const isTaken = takenSlots.includes(time);
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.disabled = isTaken;
+                btn.textContent = time;
+                btn.className = `py-2 rounded-lg text-sm font-medium border transition-all duration-200
+                    ${isTaken 
+                        ? 'bg-dark-900 border-transparent text-slate-700 cursor-not-allowed line-through' 
+                        : 'bg-white/5 border-white/10 text-white hover:border-accent-400 hover:text-accent-400 time-btn'}`;
+                
+                if(!isTaken) {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('bg-accent-400', 'text-dark-950', 'hover:text-accent-400'));
+                        btn.classList.remove('bg-white/5', 'hover:text-accent-400');
+                        btn.classList.add('bg-accent-400', 'text-dark-950');
+                        timeInput.value = time;
+                    });
+                }
+                slotsContainer.appendChild(btn);
+            });
+        } catch (err) {
+            console.error("Erreur chargement slots:", err);
+            slotsContainer.innerHTML = '<div class="col-span-4 text-center text-red-400 text-xs">Erreur connexion</div>';
+        }
+    }
+
+    // 5d. Soumission du Formulaire
+    const bookingForm = document.getElementById('booking-form');
+    if(bookingForm) {
+        bookingForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-booking');
+            const originalText = submitBtn.innerHTML;
+            
+            if(!dateInput.value || !timeInput.value) {
+                alert("Veuillez sélectionner une date et une heure.");
+                return;
+            }
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="ph-bold ph-spinner animate-spin text-xl"></i> Réservation...';
+
+                // Envoi vers Firestore
+                await addDoc(collection(db, "bookings"), {
+                    date: dateInput.value,
+                    time: timeInput.value,
+                    name: document.getElementById('client-name').value,
+                    email: document.getElementById('client-email').value,
+                    phone: document.getElementById('client-phone').value,
+                    project: document.getElementById('project-type').value,
+                    created_at: new Date().toISOString(),
+                    status: 'pending' 
+                });
+
+                // Succès
+                document.getElementById('booking-success').classList.remove('hidden');
+                document.getElementById('booking-success').classList.add('flex');
+                
+            } catch (error) {
+                console.error("Erreur booking:", error);
+                alert("Une erreur est survenue lors de la réservation.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+    }
+
+    // Lancement du calendrier
+    initCalendar();
+
 });
