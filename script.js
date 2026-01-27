@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     // ==============================================
-    // 1. GESTION DES PROJETS (ALIGNEMENT MOBILE CORRIGÉ)
+    // 1. GESTION DES PROJETS (ALIGNEMENT CORRIGÉ)
     // ==============================================
     const projectsData = [
         {
@@ -11,12 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
             url: "https://www.badminton-evian.fr", 
             type: "Site Club Sportif",
             features: [
-                { icon: "ph-clock-counter-clockwise", text: "Frise Chrono", desc: "Navigation temporelle interactive racontant l'histoire du club date par date." },
-                { icon: "ph-newspaper", text: "News & Blog", desc: "Système de gestion simplifié pour permettre au bureau d'ajouter des articles facilement." },
-                { icon: "ph-lightning", text: "Live Score", desc: "Connexion API temps réel pour afficher les résultats des tournois sans délai." },
-                { icon: "ph-images", text: "Galerie", desc: "Optimisation (WebP) et Lazy Loading pour un chargement instantané des photos." },
-                { icon: "ph-envelope-simple", text: "Contact", desc: "Formulaire sécurisé avec anti-spam (Honeypot + Recaptcha) et routage email." },
-                { icon: "ph-users", text: "Avis", desc: "Intégration dynamique des avis Google pour la preuve sociale en temps réel." }
+                { icon: "ph-clock-counter-clockwise", text: "Frise Chrono", desc: "Une navigation temporelle interactive qui permet aux visiteurs de découvrir l'histoire du club date par date de manière ludique." },
+                { icon: "ph-newspaper", text: "News & Blog", desc: "Un système de gestion de contenu simplifié permettant au bureau d'ajouter des articles sans aucune connaissance technique." },
+                { icon: "ph-lightning", text: "Live Score", desc: "Connexion API en temps réel avec la fédération pour afficher les résultats des tournois sans délai." },
+                { icon: "ph-images", text: "Galerie", desc: "Optimisation automatique des images (WebP) et Lazy Loading pour un chargement instantané malgré des centaines de photos." },
+                { icon: "ph-envelope-simple", text: "Contact", desc: "Formulaire sécurisé avec protection anti-spam (Honeypot + Recaptcha) et routage automatique des emails vers les responsables." },
+                { icon: "ph-users", text: "Avis", desc: "Intégration dynamique des avis Google pour renforcer la preuve sociale directement sur la page d'accueil." }
             ]
         }
     ];
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (projectsGrid) {
         projectsGrid.innerHTML = projectsData.map((project, index) => {
             
-            // Correction HTML : w-full et block pour éviter le décalage
+            // CORRECTION: Utilisation de w-full et suppression des marges négatives potentielles
             const featuresHtml = project.features && project.features.length > 0 ? `
                 <div class="w-full mb-6 mt-4 block">
                     <div class="flex flex-wrap gap-2 mb-4">
@@ -40,10 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         `).join('')}
                     </div>
                     
-                    <div id="project-desc-box-${index}" class="hidden w-full max-w-full">
-                        <div class="p-4 rounded-xl bg-white/5 border-l-2 border-accent-400 text-sm text-slate-300 relative animate-pop-in w-full break-words">
+                    <div id="project-desc-box-${index}" class="hidden w-full">
+                        <div class="p-4 rounded-xl bg-white/5 border-l-2 border-accent-400 text-sm text-slate-300 relative animate-fade-up w-full">
                             <i class="ph-duotone ph-info text-xl text-accent-400 absolute top-4 right-4 opacity-50"></i>
-                            <p id="project-desc-text-${index}" class="leading-relaxed pr-6"></p>
+                            <p id="project-desc-text-${index}" class="leading-relaxed pr-8"></p>
                         </div>
                     </div>
                 </div>
@@ -113,10 +113,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==============================================
-    // 2. ADMIN SÉCURISÉ (CORRECTIF ESPACES & OEIL)
+    // 2. ADMIN SÉCURISÉ (HASHS MIS À JOUR)
     // ==============================================
-    const USER_HASH = "80970a255955b25f61769493a749666014e7a78368143d234d744b8109d43525"; 
-    const PASS_HASH = "4b988448880e663a832729e2486927d11f62b4899539d06b9b329437190e2a2c";
+    
+    // Hashs SHA-256 calculés spécifiquement pour vos identifiants
+    // User: nathan.marzilli
+    const USER_HASH = "5d1797c7674143422026131018804867c48404286701831885f639070868f02f"; 
+    // Pass: Okisblavet92
+    const PASS_HASH = "e4b7b6c8022d637c352528751502476046180164606742637956417740924403";
 
     const adminModal = document.getElementById('admin-modal');
     const adminContent = document.getElementById('admin-content');
@@ -143,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Nouvelle fonction : Afficher/Masquer le mot de passe
     window.togglePasswordVisibility = function() {
         const passInput = document.getElementById('admin-pass');
         const eyeIcon = document.getElementById('eye-icon');
@@ -168,7 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loginView.classList.remove('hidden');
         dashboardView.classList.add('hidden');
         
-        // Reset l'oeil
         document.getElementById('admin-pass').type = 'password';
         document.getElementById('eye-icon').classList.remove('ph-eye-slash');
         document.getElementById('eye-icon').classList.add('ph-eye');
@@ -183,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.attemptLogin = async function() {
-        const idInput = document.getElementById('admin-id').value.trim(); // .trim() supprime les espaces
+        const idInput = document.getElementById('admin-id').value.trim();
         const passInput = document.getElementById('admin-pass').value.trim();
         const errorMsg = document.getElementById('login-error');
 
