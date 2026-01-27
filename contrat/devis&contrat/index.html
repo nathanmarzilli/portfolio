@@ -21,15 +21,6 @@
                         dark: { 950: '#020617', 900: '#0B1120', 800: '#1E293B' },
                         accent: { 400: '#2DD4BF', 500: '#14B8A6' },
                         gold: { 400: '#FBBF24' }
-                    },
-                    animation: { 'blob': 'blob 7s infinite' },
-                    keyframes: {
-                        blob: {
-                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
-                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
-                        }
                     }
                 }
             }
@@ -38,6 +29,15 @@
 
     <style>
         body { background-color: #020617; color: #E2E8F0; }
+
+        /* SÉCURITÉ & LOADER */
+        #secure-content { display: none; }
+        #auth-loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #020617; z-index: 9999;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
         
         .glass-card {
             background: rgba(30, 41, 59, 0.4);
@@ -87,13 +87,14 @@
         }
         .section-title i { color: #2DD4BF; }
 
-        /* Switch Mode */
+        /* Switch Mode Styles */
         .mode-btn {
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
             font-weight: 600;
             transition: all 0.3s;
             border: 1px solid transparent;
+            cursor: pointer;
         }
         .mode-btn.active {
             background: #2DD4BF;
@@ -105,21 +106,46 @@
             color: #94a3b8;
             border-color: rgba(255,255,255,0.1);
         }
+        .mode-btn.inactive:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
 
         /* PDF Engine Styles */
         #pdf-content {
             background: white;
             color: #1e293b;
-            font-family: 'Inter', sans-serif; /* Plus moderne qu'une quittance */
+            font-family: 'Inter', sans-serif;
             font-size: 10pt;
             width: 210mm;
             min-height: 297mm;
             padding: 0;
             margin: 0 auto;
-            position: relative;
+            /* CORRECTION LAYOUT : Flex column pour gérer le footer sticky proprement */
+            display: flex;
+            flex-direction: column;
         }
-        .pdf-page { padding: 15mm 15mm; height: 100%; position: relative; }
         
+        /* La page occupe tout l'espace et s'organise en colonne */
+        .pdf-page { 
+            padding: 15mm 15mm; 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-start;
+        }
+        
+        /* Cette div pousse le footer vers le bas */
+        .content-wrapper {
+            flex: 1; /* Prend tout l'espace disponible */
+        }
+        
+        /* Footer qui s'adapte */
+        .pdf-footer {
+            margin-top: auto; /* Pousse vers le bas mais reste dans le flux */
+            padding-top: 20px;
+        }
+
         /* Table Styles within PDF */
         .doc-table { width: 100%; border-collapse: collapse; margin-top: 30px; }
         .doc-table th { text-align: left; padding: 10px; border-bottom: 2px solid #e2e8f0; color: #64748b; font-size: 8pt; text-transform: uppercase; font-weight: 600; }
@@ -142,187 +168,224 @@
 </head>
 <body class="selection:bg-accent-400/30 selection:text-white pb-24 lg:pb-10">
 
-    <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
-        <div class="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[100px] mix-blend-screen animate-blob"></div>
-        <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-accent-400/10 rounded-full blur-[100px] mix-blend-screen animate-blob animation-delay-2000"></div>
+    <div id="auth-loader">
+        <i class="ph-duotone ph-spinner animate-spin text-4xl text-accent-400 mb-4"></i>
+        <p class="text-slate-400 font-display uppercase tracking-widest text-xs">Accès Sécurisé en cours...</p>
     </div>
 
-    <nav class="w-full border-b border-white/5 bg-dark-950/50 backdrop-blur-md sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <a href="index.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+    <div id="secure-content">
+
+        <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
+            <div class="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[100px] mix-blend-screen animate-blob"></div>
+            <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-accent-400/10 rounded-full blur-[100px] mix-blend-screen animate-blob animation-delay-2000"></div>
+        </div>
+
+        <nav class="w-full border-b border-white/5 bg-dark-950/50 backdrop-blur-md sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-400 to-blue-600 flex items-center justify-center text-dark-950 font-bold">
                         <i class="ph-bold ph-file-text"></i>
                     </div>
                     <span class="font-display font-bold text-lg tracking-wide text-white">Nathan<span class="text-accent-400">Docs</span></span>
+                </div>
+                <a href="../../index.html" class="text-xs font-medium text-slate-400 hover:text-white transition-colors flex items-center gap-2 border border-white/10 px-3 py-1.5 rounded-lg bg-white/5">
+                    <i class="ph-bold ph-arrow-left"></i> Retour
                 </a>
             </div>
-            <a href="index.html" class="text-xs font-medium text-slate-400 hover:text-white transition-colors flex items-center gap-2">
-                <i class="ph-bold ph-arrow-left"></i> Retour au site
-            </a>
-        </div>
-    </nav>
+        </nav>
 
-    <main class="grid lg:grid-cols-[450px_1fr] gap-8 p-4 lg:p-8 max-w-[1600px] mx-auto items-start">
-        
-        <div class="glass-card form-panel p-6">
+        <main class="grid lg:grid-cols-[450px_1fr] gap-8 p-4 lg:p-8 max-w-[1600px] mx-auto items-start">
             
-            <div class="flex p-1 bg-dark-900 rounded-lg mb-6 border border-white/10">
-                <button onclick="setMode('quote')" id="btn-quote" class="mode-btn active flex-1">Devis</button>
-                <button onclick="setMode('invoice')" id="btn-invoice" class="mode-btn inactive flex-1">Facture</button>
-            </div>
+            <div class="glass-card form-panel p-6">
+                
+                <div class="flex p-1 bg-dark-900 rounded-lg mb-6 border border-white/10">
+                    <button onclick="setMode('quote')" id="btn-quote" class="mode-btn active flex-1">Devis</button>
+                    <button onclick="setMode('invoice')" id="btn-invoice" class="mode-btn inactive flex-1">Facture</button>
+                </div>
 
-            <div class="section-title mt-0"><i class="ph-duotone ph-identification-card"></i> Infos Client</div>
-            <div class="space-y-3">
-                <div>
-                    <label class="label-premium">Client / Société</label>
-                    <input type="text" id="clientName" placeholder="ex: SAS MABOUL" class="input-premium" oninput="updatePreview()">
-                </div>
-                <div>
-                    <label class="label-premium">Adresse</label>
-                    <textarea id="clientAddr" rows="2" placeholder="Adresse complète" class="input-premium resize-none" oninput="updatePreview()"></textarea>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
+                <div class="section-title mt-0"><i class="ph-duotone ph-identification-card"></i> Infos Client</div>
+                <div class="space-y-3">
                     <div>
-                        <label class="label-premium">N° Doc</label>
-                        <input type="text" id="docNumber" value="DEV-2024-001" class="input-premium" oninput="updatePreview()">
+                        <label class="label-premium">Client / Société</label>
+                        <input type="text" id="clientName" placeholder="ex: SAS MABOUL" class="input-premium" oninput="updatePreview()">
                     </div>
                     <div>
-                        <label class="label-premium">Date</label>
-                        <input type="date" id="docDate" class="input-premium" onchange="updatePreview()">
+                        <label class="label-premium">Adresse</label>
+                        <textarea id="clientAddr" rows="2" placeholder="Adresse complète" class="input-premium resize-none" oninput="updatePreview()"></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="label-premium">N° Doc</label>
+                            <input type="text" id="docNumber" value="DEV-2024-001" class="input-premium" oninput="updatePreview()">
+                        </div>
+                        <div>
+                            <label class="label-premium">Date</label>
+                            <input type="date" id="docDate" class="input-premium" onchange="updatePreview()">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="section-title"><i class="ph-duotone ph-list-plus"></i> Prestations</div>
-            
-            <div class="flex gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide">
-                <button onclick="addItem('Pack Essentiel', 900)" class="text-[10px] bg-white/5 border border-white/10 px-2 py-1 rounded text-slate-300 hover:bg-accent-400 hover:text-dark-950 transition-colors whitespace-nowrap">+ Essentiel</button>
-                <button onclick="addItem('Pack Vitrine Artisan', 1700)" class="text-[10px] bg-white/5 border border-white/10 px-2 py-1 rounded text-slate-300 hover:bg-accent-400 hover:text-dark-950 transition-colors whitespace-nowrap">+ Vitrine</button>
-                <button onclick="addItem('Pack Premium', 2500)" class="text-[10px] bg-white/5 border border-white/10 px-2 py-1 rounded text-slate-300 hover:bg-accent-400 hover:text-dark-950 transition-colors whitespace-nowrap">+ Premium</button>
-                <button onclick="addItem('Acompte 30%', -1)" class="text-[10px] bg-white/5 border border-white/10 px-2 py-1 rounded text-gold-400 border-gold-400/30 hover:bg-gold-400 hover:text-dark-950 transition-colors whitespace-nowrap">% Acompte</button>
-            </div>
+                <div class="section-title"><i class="ph-duotone ph-list-plus"></i> Prestations</div>
+                
+                <div class="flex gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide">
+                    <button onclick="addItem('Pack Essentiel', 900)" class="text-[10px] bg-white/5 border border-white/10 px-2 py-1 rounded text-slate-300 hover:bg-accent-400 hover:text-dark-950 transition-colors whitespace-nowrap">+ Essentiel</button>
+                    <button onclick="addItem('Pack Vitrine Artisan', 1700)" class="text-[10px] bg-white/5 border border-white/10 px-2 py-1 rounded text-slate-300 hover:bg-accent-400 hover:text-dark-950 transition-colors whitespace-nowrap">+ Vitrine</button>
+                    <button onclick="addItem('Pack Premium', 2500)" class="text-[10px] bg-white/5 border border-white/10 px-2 py-1 rounded text-slate-300 hover:bg-accent-400 hover:text-dark-950 transition-colors whitespace-nowrap">+ Premium</button>
+                    <button onclick="addItem('Acompte 30%', -1)" class="text-[10px] bg-white/5 border border-white/10 px-2 py-1 rounded text-gold-400 border-gold-400/30 hover:bg-gold-400 hover:text-dark-950 transition-colors whitespace-nowrap">% Acompte</button>
+                </div>
 
-            <div id="items-container" class="space-y-3 mb-4">
-                </div>
-            
-            <button onclick="addItem()" class="w-full py-2 rounded border border-dashed border-white/20 text-slate-400 text-xs hover:border-accent-400 hover:text-accent-400 transition-colors">
-                + Ajouter une ligne vide
-            </button>
-
-            <div class="mt-4 pt-4 border-t border-white/10">
-                <div class="flex justify-between items-center mb-2">
-                    <label class="label-premium mb-0">Appliquer TVA (20%)</label>
-                    <input type="checkbox" id="tvaToggle" class="accent-accent-400 w-4 h-4" onchange="calcTotal()">
-                </div>
-                <div class="flex justify-between items-center text-xl font-bold text-accent-400">
-                    <span>Total à payer</span>
-                    <span id="formTotal">0.00 €</span>
-                </div>
-            </div>
-
-            <div class="section-title"><i class="ph-duotone ph-pen-nib"></i> Validation</div>
-            <div id="sign-section">
-                <div class="mb-2 flex justify-between items-end">
-                    <label class="label-premium">Signature Client (Bon pour accord)</label>
-                    <button onclick="clearPad()" class="text-xs text-red-400 hover:text-red-300 transition-colors">Effacer</button>
-                </div>
-                <div class="sig-wrapper">
-                    <canvas id="sigCanvas"></canvas>
-                </div>
-            </div>
-            
-            <div class="sticky bottom-0 bg-dark-950/80 backdrop-blur pt-4 pb-2 mt-6 border-t border-white/10">
-                <button class="w-full py-4 rounded-xl bg-gradient-to-r from-accent-500 to-blue-600 text-white font-bold text-lg shadow-lg hover:shadow-accent-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-3" onclick="generatePDF()">
-                    <span>Télécharger PDF</span>
-                    <i class="ph-bold ph-download-simple"></i>
+                <div id="items-container" class="space-y-3 mb-4">
+                    </div>
+                
+                <button onclick="addItem()" class="w-full py-2 rounded border border-dashed border-white/20 text-slate-400 text-xs hover:border-accent-400 hover:text-accent-400 transition-colors">
+                    + Ajouter une ligne vide
                 </button>
+
+                <div class="mt-4 pt-4 border-t border-white/10">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="label-premium mb-0">Appliquer TVA (20%)</label>
+                        <input type="checkbox" id="tvaToggle" class="accent-accent-400 w-4 h-4" onchange="calcTotal()">
+                    </div>
+                    <div class="flex justify-between items-center text-xl font-bold text-accent-400">
+                        <span>Total à payer</span>
+                        <span id="formTotal">0.00 €</span>
+                    </div>
+                </div>
+
+                <div class="section-title"><i class="ph-duotone ph-pen-nib"></i> Validation</div>
+                <div id="sign-section">
+                    <div class="mb-2 flex justify-between items-end">
+                        <label class="label-premium">Signature Client (Bon pour accord)</label>
+                        <button onclick="clearPad()" class="text-xs text-red-400 hover:text-red-300 transition-colors">Effacer</button>
+                    </div>
+                    <div class="sig-wrapper">
+                        <canvas id="sigCanvas"></canvas>
+                    </div>
+                </div>
+                
+                <div class="sticky bottom-0 bg-dark-950/80 backdrop-blur pt-4 pb-2 mt-6 border-t border-white/10">
+                    <button class="w-full py-4 rounded-xl bg-gradient-to-r from-accent-500 to-blue-600 text-white font-bold text-lg shadow-lg hover:shadow-accent-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-3" onclick="generatePDF()">
+                        <span>Télécharger PDF</span>
+                        <i class="ph-bold ph-download-simple"></i>
+                    </button>
+                </div>
             </div>
-        </div>
 
-        <div class="preview-container flex justify-center sticky top-24">
-            <div class="relative shadow-2xl">
-                <div id="pdf-content">
-                    <div class="pdf-page">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 40px;">
-                            <div>
-                                <h1 style="font-size: 24pt; font-weight: 800; color: #1e293b; letter-spacing: -1px; margin: 0;">
-                                    Nathan <span style="color: #14b8a6;">Marzilli</span>
-                                </h1>
-                                <p style="font-size: 9pt; color: #64748b; margin-top: 5px; line-height: 1.4;">
-                                    Ingénieur & Artisan Web<br>
-                                    74500 Évian-les-Bains<br>
-                                    SIRET : 123 456 789 00012<br>
-                                    nathan.marzilli@gmail.com
-                                </p>
-                            </div>
-                            <div style="text-align: right;">
-                                <div id="docTitle" style="font-size: 28pt; font-weight: 800; color: #e2e8f0; text-transform: uppercase; letter-spacing: 2px;">DEVIS</div>
-                                <div style="margin-top: 10px; font-size: 10pt;">
-                                    <strong>N° <span id="pDocNumber"></span></strong><br>
-                                    Date : <span id="pDocDate"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 40px; width: 50%; margin-left: auto;">
-                            <p style="font-size: 8pt; color: #94a3b8; text-transform: uppercase; font-weight: 700; margin-bottom: 5px;">Destinataire</p>
-                            <div style="font-size: 11pt; font-weight: 700; color: #0f172a;" id="pClientName">Nom du Client</div>
-                            <div style="font-size: 10pt; color: #334155; white-space: pre-line;" id="pClientAddr">Adresse...</div>
-                        </div>
-
-                        <table class="doc-table">
-                            <thead>
-                                <tr>
-                                    <th>Description</th>
-                                    <th style="text-align: center;">Qté</th>
-                                    <th style="text-align: right;">Prix Unit.</th>
-                                    <th style="text-align: right;">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody id="pTableBody">
-                                </tbody>
-                        </table>
-
-                        <div style="margin-top: 30px; display: flex; justify-content: flex-end;">
-                            <table style="width: 40%; border-collapse: collapse;">
-                                <tr>
-                                    <td style="padding: 8px; text-align: right; color: #64748b;">Total HT</td>
-                                    <td style="padding: 8px; text-align: right; font-weight: 600;" id="pTotalHT">0.00 €</td>
-                                </tr>
-                                <tr id="rowTVA" style="display: none;">
-                                    <td style="padding: 8px; text-align: right; color: #64748b;">TVA (20%)</td>
-                                    <td style="padding: 8px; text-align: right;" id="pTVA">0.00 €</td>
-                                </tr>
-                                <tr style="border-top: 2px solid #0f172a;">
-                                    <td style="padding: 15px 8px; text-align: right; font-weight: 800; font-size: 14pt;">NET À PAYER</td>
-                                    <td style="padding: 15px 8px; text-align: right; font-weight: 800; font-size: 14pt; color: #14b8a6;" id="pTotalNet">0.00 €</td>
-                                </tr>
-                            </table>
-                        </div>
-
-                        <div style="position: absolute; bottom: 15mm; left: 15mm; right: 15mm;">
-                            <div style="font-size: 8pt; color: #64748b; margin-bottom: 20px; text-align: justify; line-height: 1.4;" id="legalText">
-                                </div>
+            <div class="preview-container flex justify-center sticky top-24">
+                <div class="relative shadow-2xl">
+                    <div id="pdf-content">
+                        <div class="pdf-page">
                             
-                            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 20px;">
-                                <div style="font-size: 8pt; color: #94a3b8;">
-                                    Dispensé d'immatriculation au registre du commerce et des sociétés (RCS) et au répertoire des métiers (RM).
-                                    <span id="tvaMention">TVA non applicable, art. 293 B du CGI.</span>
+                            <div class="content-wrapper">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 40px;">
+                                    <div>
+                                        <h1 style="font-size: 24pt; font-weight: 800; color: #1e293b; letter-spacing: -1px; margin: 0;">
+                                            Nathan <span style="color: #14b8a6;">Marzilli</span>
+                                        </h1>
+                                        <p style="font-size: 9pt; color: #64748b; margin-top: 5px; line-height: 1.4;">
+                                            Ingénieur & Artisan Web<br>
+                                            74500 Évian-les-Bains<br>
+                                            SIRET : 123 456 789 00012<br>
+                                            nathan.marzilli@gmail.com
+                                        </p>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div id="docTitle" style="font-size: 28pt; font-weight: 800; color: #e2e8f0; text-transform: uppercase; letter-spacing: 2px;">DEVIS</div>
+                                        <div style="margin-top: 10px; font-size: 10pt;">
+                                            <strong>N° <span id="pDocNumber"></span></strong><br>
+                                            Date : <span id="pDocDate"></span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div id="pSigBlock" style="border: 1px solid #cbd5e1; height: 80px; width: 200px; padding: 5px;">
-                                    <div style="font-size: 7pt; color: #94a3b8; margin-bottom: 2px;">Bon pour accord (Date & Signature)</div>
-                                    <img id="pSigImg" style="max-height: 60px; max-width: 100%; display: none;">
+
+                                <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 40px; width: 50%; margin-left: auto;">
+                                    <p style="font-size: 8pt; color: #94a3b8; text-transform: uppercase; font-weight: 700; margin-bottom: 5px;">Destinataire</p>
+                                    <div style="font-size: 11pt; font-weight: 700; color: #0f172a;" id="pClientName">Nom du Client</div>
+                                    <div style="font-size: 10pt; color: #334155; white-space: pre-line;" id="pClientAddr">Adresse...</div>
+                                </div>
+
+                                <table class="doc-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Description</th>
+                                            <th style="text-align: center;">Qté</th>
+                                            <th style="text-align: right;">Prix Unit.</th>
+                                            <th style="text-align: right;">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pTableBody">
+                                    </tbody>
+                                </table>
+
+                                <div style="margin-top: 30px; display: flex; justify-content: flex-end;">
+                                    <table style="width: 40%; border-collapse: collapse;">
+                                        <tr>
+                                            <td style="padding: 8px; text-align: right; color: #64748b;">Total HT</td>
+                                            <td style="padding: 8px; text-align: right; font-weight: 600;" id="pTotalHT">0.00 €</td>
+                                        </tr>
+                                        <tr id="rowTVA" style="display: none;">
+                                            <td style="padding: 8px; text-align: right; color: #64748b;">TVA (20%)</td>
+                                            <td style="padding: 8px; text-align: right;" id="pTVA">0.00 €</td>
+                                        </tr>
+                                        <tr style="border-top: 2px solid #0f172a;">
+                                            <td style="padding: 15px 8px; text-align: right; font-weight: 800; font-size: 14pt;">NET À PAYER</td>
+                                            <td style="padding: 15px 8px; text-align: right; font-weight: 800; font-size: 14pt; color: #14b8a6;" id="pTotalNet">0.00 €</td>
+                                        </tr>
+                                    </table>
                                 </div>
                             </div>
-                        </div>
+                            <div class="pdf-footer">
+                                <div style="font-size: 8pt; color: #64748b; margin-bottom: 20px; text-align: justify; line-height: 1.4;" id="legalText">
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 20px;">
+                                    <div style="font-size: 8pt; color: #94a3b8;">
+                                        Dispensé d'immatriculation au registre du commerce et des sociétés (RCS) et au répertoire des métiers (RM).
+                                        <span id="tvaMention">TVA non applicable, art. 293 B du CGI.</span>
+                                    </div>
+                                    <div id="pSigBlock" style="border: 1px solid #cbd5e1; height: 80px; width: 200px; padding: 5px;">
+                                        <div style="font-size: 7pt; color: #94a3b8; margin-bottom: 2px;">Bon pour accord (Date & Signature)</div>
+                                        <img id="pSigImg" style="max-height: 60px; max-width: 100%; display: none;">
+                                    </div>
+                                </div>
+                            </div>
 
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-    </main>
+        </main>
+    </div> <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // --- CONFIGURATION FIREBASE (REMPLACE PAR TES CLÉS !) ---
+        const firebaseConfig = {
+		  apiKey: "AIzaSyD6Q-HVto8eybwGo9YgcFx4hu7rWBLNYfg",
+		  authDomain: "portfolio-nathan-e148f.firebaseapp.com",
+		  projectId: "portfolio-nathan-e148f",
+		  storageBucket: "portfolio-nathan-e148f.firebasestorage.app",
+		  messagingSenderId: "61408006418",
+		  appId: "1:61408006418:web:8a448e8ca60ec77bf523cb"
+		};
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // --- VÉRIFICATION DE SÉCURITÉ ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // UTILISATEUR CONNECTÉ
+                document.getElementById('auth-loader').style.display = 'none';
+                document.getElementById('secure-content').style.display = 'block';
+                if(window.initApp) window.initApp();
+            } else {
+                // PAS CONNECTÉ -> REDIRECTION
+                window.location.href = "../../index.html#contact"; 
+            }
+        });
+    </script>
 
     <script>
         // --- DATA STATE ---
@@ -331,8 +394,8 @@
             { desc: "Création Site Web - Pack Vitrine", qty: 1, price: 1700 }
         ];
 
-        // --- INIT ---
-        window.onload = function() {
+        // --- INIT APP (Appelé par Firebase) ---
+        window.initApp = function() {
             const d = new Date();
             document.getElementById('docDate').valueAsDate = d;
             
@@ -341,18 +404,23 @@
             
             // Render initial state
             renderItems();
-            setMode('quote');
+            setMode('quote'); // Initialise l'état correct des boutons
         };
 
-        // --- MODE SWITCHER ---
+        // --- MODE SWITCHER (FIXED) ---
         function setMode(mode) {
             currentMode = mode;
             const btnQuote = document.getElementById('btn-quote');
             const btnInvoice = document.getElementById('btn-invoice');
             
             if (mode === 'quote') {
-                btnQuote.className = 'mode-btn active flex-1';
-                btnInvoice.className = 'mode-btn inactive flex-1';
+                // Mode DEVIS : Quote Actif, Invoice Inactif
+                btnQuote.classList.add('active');
+                btnQuote.classList.remove('inactive');
+                
+                btnInvoice.classList.add('inactive');
+                btnInvoice.classList.remove('active');
+                
                 document.getElementById('docTitle').innerText = "DEVIS";
                 document.getElementById('docTitle').style.color = "#e2e8f0"; // Slate Light
                 
@@ -371,8 +439,13 @@
                 }
 
             } else {
-                btnInvoice.className = 'mode-btn inactive flex-1';
-                btnInvoice.className = 'mode-btn active flex-1';
+                // Mode FACTURE : Invoice Actif, Quote Inactif
+                btnInvoice.classList.add('active');
+                btnInvoice.classList.remove('inactive');
+
+                btnQuote.classList.add('inactive');
+                btnQuote.classList.remove('active');
+
                 document.getElementById('docTitle').innerText = "FACTURE";
                 document.getElementById('docTitle').style.color = "#14b8a6"; // Teal
                 
@@ -382,8 +455,7 @@
                     <strong>Pénalités de retard :</strong> 3 fois le taux d'intérêt légal. Indemnité forfaitaire pour frais de recouvrement : 40€.<br>
                     <strong>Réserve de propriété :</strong> Les biens/services vendus demeurent la propriété du vendeur jusqu'au complet paiement du prix.
                 `;
-                // Souvent pas de signature sur une facture transmise par email, mais on peut la laisser si besoin
-                // Ici on la cache pour le style "clean"
+                
                 document.getElementById('pSigBlock').style.display = 'none';
                 document.getElementById('sign-section').style.display = 'none';
 
@@ -492,12 +564,16 @@
         let canvas, ctx, drawing = false;
         function initPad() {
             canvas = document.getElementById('sigCanvas');
+            if(!canvas) return; // Sécurité si le canvas n'est pas encore dans le DOM
             ctx = canvas.getContext('2d');
+            
             const resize = () => {
                 const rect = canvas.parentElement.getBoundingClientRect();
-                canvas.width = rect.width;
-                canvas.height = 100;
-                ctx.lineWidth = 2; ctx.strokeStyle = '#000';
+                if(rect.width > 0) {
+                    canvas.width = rect.width;
+                    canvas.height = 100;
+                    ctx.lineWidth = 2; ctx.strokeStyle = '#000';
+                }
             };
             window.addEventListener('resize', resize);
             resize(); // Init size

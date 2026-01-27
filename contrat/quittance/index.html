@@ -29,6 +29,16 @@
     <style>
         /* --- UI APPLICATION --- */
         body { background-color: #020617; color: #E2E8F0; }
+
+        /* SÉCURITÉ */
+        #secure-content { display: none; } /* Caché par défaut */
+        
+        #auth-loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #020617; z-index: 9999;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
         
         .glass-card {
             background: rgba(30, 41, 59, 0.4);
@@ -231,218 +241,260 @@
 </head>
 <body class="selection:bg-accent-400/30 selection:text-white pb-24 lg:pb-10">
 
-    <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
-        <div class="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[100px] mix-blend-screen animate-blob"></div>
-        <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-accent-400/10 rounded-full blur-[100px] mix-blend-screen animate-blob animation-delay-2000"></div>
+    <div id="auth-loader">
+        <i class="ph-duotone ph-spinner animate-spin text-4xl text-accent-400 mb-4"></i>
+        <p class="text-slate-400 font-display uppercase tracking-widest text-xs">Vérification de l'identité...</p>
     </div>
 
-    <nav class="w-full border-b border-white/5 bg-dark-950/50 backdrop-blur-md sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-400 to-blue-600 flex items-center justify-center text-dark-950 font-bold">
-                    <i class="ph-bold ph-receipt"></i>
-                </div>
-                <span class="font-display font-bold text-lg tracking-wide text-white">Quittance<span class="text-accent-400">Generator</span></span>
-            </div>
-            <div class="text-xs font-medium text-slate-400">Marzilli Édition</div>
+    <div id="secure-content">
+
+        <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
+            <div class="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[100px] mix-blend-screen animate-blob"></div>
+            <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-accent-400/10 rounded-full blur-[100px] mix-blend-screen animate-blob animation-delay-2000"></div>
         </div>
-    </nav>
 
-    <main class="app-grid p-4 lg:p-8">
-        
-        <div class="glass-card form-panel p-6 lg:p-8">
-            <div class="mb-6">
-                <h1 class="font-display text-2xl font-bold text-white mb-2">Nouvelle Quittance</h1>
-                <p class="text-slate-400 text-sm">Génération conforme aux obligations légales (Loi ALUR).</p>
-            </div>
-
-            <div class="section-title"><i class="ph-duotone ph-user-circle"></i> 1. Informations Bailleur</div>
-            <div class="grid grid-cols-1 gap-4 mb-4">
-                <div>
-                    <label class="label-premium">Propriétaire</label>
-                    <input type="text" id="landlordName" value="Nathan MARZILLI" readonly class="input-premium opacity-60 cursor-not-allowed font-bold text-accent-400">
-                </div>
-                <div>
-					<label class="label-premium">Adresse Fiscale</label>
-					<textarea id="landlordAddr" rows="2" readonly class="input-premium opacity-60 cursor-not-allowed resize-none">75 CHEMIN DES MONTS DU JURA
-				74500 CHAMPANGES</textarea>
-				</div>
-            </div>
-
-            <div class="section-title"><i class="ph-duotone ph-house-line"></i> 2. Location & Locataire</div>
-            <div class="space-y-4">
-                <div>
-                    <label class="label-premium">Nom du Locataire</label>
-                    <input type="text" id="tenantName" placeholder="ex: Mme SID Farah" class="input-premium" oninput="updatePreview()">
-                </div>
-                
-                <div>
-                    <label class="label-premium">Adresse du bien loué</label>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
-                        <button type="button" class="addr-btn" onclick="setAddress('SP1')">
-                            <i class="ph-bold ph-map-pin"></i> Saint-Priest 1 (Cerisioz)
-                        </button>
-                        <button type="button" class="addr-btn" onclick="setAddress('SP2')">
-                            <i class="ph-bold ph-map-pin"></i> Saint-Priest 2 (Heyrieux)
-                        </button>
-                        <button type="button" class="addr-btn" onclick="setAddress('EV1')">
-                            <i class="ph-bold ph-house"></i> Evian 1 (Apt 7)
-                        </button>
-                        <button type="button" class="addr-btn" onclick="setAddress('EV2')">
-                            <i class="ph-bold ph-house"></i> Evian 2 (Apt 6)
-                        </button>
-                        <button type="button" class="addr-btn" onclick="setAddress('EV3')">
-                            <i class="ph-bold ph-house"></i> Evian 3 (Touvière)
-                        </button>
+        <nav class="w-full border-b border-white/5 bg-dark-950/50 backdrop-blur-md sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-400 to-blue-600 flex items-center justify-center text-dark-950 font-bold">
+                        <i class="ph-bold ph-receipt"></i>
                     </div>
-
-                    <textarea id="propAddr" rows="3" class="input-premium" oninput="updatePreview()" placeholder="L'adresse s'affichera ici...">41 BIS RUE GARIBALDI
-Résidence Les Cerisioz Bâtiment 8D
-69800 SAINT-PRIEST</textarea>
+                    <span class="font-display font-bold text-lg tracking-wide text-white">Quittance<span class="text-accent-400">Generator</span></span>
                 </div>
-            </div>
-
-            <div class="section-title"><i class="ph-duotone ph-calendar"></i> 3. Période & Montants</div>
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                    <label class="label-premium">Mois Concerné</label>
-                    <select id="selMonth" class="input-premium" onchange="calcDates()">
-                        <option value="0">Janvier</option>
-                        <option value="1">Février</option>
-                        <option value="2">Mars</option>
-                        <option value="3">Avril</option>
-                        <option value="4">Mai</option>
-                        <option value="5">Juin</option>
-                        <option value="6">Juillet</option>
-                        <option value="7">Août</option>
-                        <option value="8">Septembre</option>
-                        <option value="9">Octobre</option>
-                        <option value="10">Novembre</option>
-                        <option value="11">Décembre</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="label-premium">Année</label>
-                    <input type="number" id="selYear" class="input-premium" value="2026" onchange="calcDates()">
-                </div>
-            </div>
-            
-            <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 mb-4">
-                <div class="flex justify-between text-sm text-blue-200 mb-2">
-                    <span>Période (1er au dernier jour) :</span>
-                </div>
-                <div class="flex gap-2">
-                    <input type="date" id="dateStart" class="input-premium text-sm" onchange="updatePreview()">
-                    <input type="date" id="dateEnd" class="input-premium text-sm" onchange="updatePreview()">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                    <label class="label-premium text-white">Loyer (€)</label>
-                    <input type="number" id="rentVal" value="550" step="0.01" class="input-premium font-bold text-lg" oninput="calcTotal()">
-                </div>
-                <div>
-                    <label class="label-premium text-white">Charges (€)</label>
-                    <input type="number" id="chargeVal" value="40" step="0.01" class="input-premium font-bold text-lg" oninput="calcTotal()">
-                </div>
-            </div>
-            
-            <div class="mb-4">
-                <label class="label-premium text-accent-400">Total à payer (€)</label>
-                <input type="text" id="totalVal" readonly class="input-premium font-display font-bold text-xl text-accent-400 border-accent-400/30">
-            </div>
-            
-            <div>
-                <label class="label-premium">Date de Paiement / Édition</label>
-                <input type="date" id="publishDate" class="input-premium" onchange="updatePreview()">
-            </div>
-
-            <div class="section-title"><i class="ph-duotone ph-pen-nib"></i> 4. Signature</div>
-            <div class="mb-2 flex justify-between items-end">
-                <label class="label-premium">Signature Bailleur</label>
-                <button onclick="clearPad()" class="text-xs text-red-400 hover:text-red-300 transition-colors">Effacer</button>
-            </div>
-            <div class="sig-wrapper">
-                <canvas id="sigCanvas"></canvas>
-            </div>
-
-            <div class="sticky-action-bar">
-                <button class="w-full py-4 rounded-xl bg-gradient-to-r from-accent-500 to-blue-600 text-white font-bold text-lg shadow-lg hover:shadow-accent-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-3" onclick="generatePDF()">
-                    <span>Télécharger la Quittance PDF</span>
-                    <i class="ph-bold ph-download-simple"></i>
-                </button>
-            </div>
-        </div>
-
-        <div class="preview-container flex justify-center sticky top-24">
-            <div class="relative">
-                <div class="absolute inset-0 bg-white transform rotate-1 rounded shadow-xl -z-10 w-[190mm] h-full left-1/2 -translate-x-1/2"></div>
                 
-                <div id="pdf-content">
-                    <div class="pdf-inner-container">
-                        <div class="pdf-header-row">
-                            <div class="pdf-landlord">
-								<span id="pLandlordName" style="text-transform: uppercase;"></span><br>
-								<span id="pLandlordAddr" style="white-space: pre-line;"></span>
-							</div>
-                            <div class="pdf-tenant-box">
-                                <strong>Locataire :</strong><br>
-                                <span id="pTenantName" style="font-size:12pt; font-weight:bold;"></span><br>
-                                Adresse des lieux loués :<br>
-                                <span id="pPropAddr" style="white-space: pre-line;"></span>
+                <a href="../../index.html" class="text-xs font-bold text-slate-400 hover:text-white flex items-center gap-2 border border-white/10 px-3 py-1.5 rounded-lg bg-white/5">
+                    <i class="ph-bold ph-arrow-left"></i> Retour
+                </a>
+            </div>
+        </nav>
+
+        <main class="app-grid p-4 lg:p-8">
+            
+            <div class="glass-card form-panel p-6 lg:p-8">
+                <div class="mb-6">
+                    <h1 class="font-display text-2xl font-bold text-white mb-2">Nouvelle Quittance</h1>
+                    <p class="text-slate-400 text-sm">Génération conforme aux obligations légales (Loi ALUR).</p>
+                </div>
+
+                <div class="section-title"><i class="ph-duotone ph-user-circle"></i> 1. Informations Bailleur</div>
+                <div class="grid grid-cols-1 gap-4 mb-4">
+                    <div>
+                        <label class="label-premium">Propriétaire</label>
+                        <input type="text" id="landlordName" value="Nathan MARZILLI" readonly class="input-premium opacity-60 cursor-not-allowed font-bold text-accent-400">
+                    </div>
+                    <div>
+                        <label class="label-premium">Adresse Fiscale</label>
+                        <textarea id="landlordAddr" rows="2" readonly class="input-premium opacity-60 cursor-not-allowed resize-none">75 CHEMIN DES MONTS DU JURA
+                    74500 CHAMPANGES</textarea>
+                    </div>
+                </div>
+
+                <div class="section-title"><i class="ph-duotone ph-house-line"></i> 2. Location & Locataire</div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="label-premium">Nom du Locataire</label>
+                        <input type="text" id="tenantName" placeholder="ex: Mme SID Farah" class="input-premium" oninput="updatePreview()">
+                    </div>
+                    
+                    <div>
+                        <label class="label-premium">Adresse du bien loué</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+                            <button type="button" class="addr-btn" onclick="setAddress('SP1')">
+                                <i class="ph-bold ph-map-pin"></i> Saint-Priest 1 (Cerisioz)
+                            </button>
+                            <button type="button" class="addr-btn" onclick="setAddress('SP2')">
+                                <i class="ph-bold ph-map-pin"></i> Saint-Priest 2 (Heyrieux)
+                            </button>
+                            <button type="button" class="addr-btn" onclick="setAddress('EV1')">
+                                <i class="ph-bold ph-house"></i> Evian 1 (Apt 7)
+                            </button>
+                            <button type="button" class="addr-btn" onclick="setAddress('EV2')">
+                                <i class="ph-bold ph-house"></i> Evian 2 (Apt 6)
+                            </button>
+                            <button type="button" class="addr-btn" onclick="setAddress('EV3')">
+                                <i class="ph-bold ph-house"></i> Evian 3 (Touvière)
+                            </button>
+                        </div>
+
+                        <textarea id="propAddr" rows="3" class="input-premium" oninput="updatePreview()" placeholder="L'adresse s'affichera ici...">41 BIS RUE GARIBALDI
+    Résidence Les Cerisioz Bâtiment 8D
+    69800 SAINT-PRIEST</textarea>
+                    </div>
+                </div>
+
+                <div class="section-title"><i class="ph-duotone ph-calendar"></i> 3. Période & Montants</div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="label-premium">Mois Concerné</label>
+                        <select id="selMonth" class="input-premium" onchange="calcDates()">
+                            <option value="0">Janvier</option>
+                            <option value="1">Février</option>
+                            <option value="2">Mars</option>
+                            <option value="3">Avril</option>
+                            <option value="4">Mai</option>
+                            <option value="5">Juin</option>
+                            <option value="6">Juillet</option>
+                            <option value="7">Août</option>
+                            <option value="8">Septembre</option>
+                            <option value="9">Octobre</option>
+                            <option value="10">Novembre</option>
+                            <option value="11">Décembre</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label-premium">Année</label>
+                        <input type="number" id="selYear" class="input-premium" value="2026" onchange="calcDates()">
+                    </div>
+                </div>
+                
+                <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 mb-4">
+                    <div class="flex justify-between text-sm text-blue-200 mb-2">
+                        <span>Période (1er au dernier jour) :</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="date" id="dateStart" class="input-premium text-sm" onchange="updatePreview()">
+                        <input type="date" id="dateEnd" class="input-premium text-sm" onchange="updatePreview()">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="label-premium text-white">Loyer (€)</label>
+                        <input type="number" id="rentVal" value="550" step="0.01" class="input-premium font-bold text-lg" oninput="calcTotal()">
+                    </div>
+                    <div>
+                        <label class="label-premium text-white">Charges (€)</label>
+                        <input type="number" id="chargeVal" value="40" step="0.01" class="input-premium font-bold text-lg" oninput="calcTotal()">
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="label-premium text-accent-400">Total à payer (€)</label>
+                    <input type="text" id="totalVal" readonly class="input-premium font-display font-bold text-xl text-accent-400 border-accent-400/30">
+                </div>
+                
+                <div>
+                    <label class="label-premium">Date de Paiement / Édition</label>
+                    <input type="date" id="publishDate" class="input-premium" onchange="updatePreview()">
+                </div>
+
+                <div class="section-title"><i class="ph-duotone ph-pen-nib"></i> 4. Signature</div>
+                <div class="mb-2 flex justify-between items-end">
+                    <label class="label-premium">Signature Bailleur</label>
+                    <button onclick="clearPad()" class="text-xs text-red-400 hover:text-red-300 transition-colors">Effacer</button>
+                </div>
+                <div class="sig-wrapper">
+                    <canvas id="sigCanvas"></canvas>
+                </div>
+
+                <div class="sticky-action-bar">
+                    <button class="w-full py-4 rounded-xl bg-gradient-to-r from-accent-500 to-blue-600 text-white font-bold text-lg shadow-lg hover:shadow-accent-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-3" onclick="generatePDF()">
+                        <span>Télécharger la Quittance PDF</span>
+                        <i class="ph-bold ph-download-simple"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="preview-container flex justify-center sticky top-24">
+                <div class="relative">
+                    <div class="absolute inset-0 bg-white transform rotate-1 rounded shadow-xl -z-10 w-[190mm] h-full left-1/2 -translate-x-1/2"></div>
+                    
+                    <div id="pdf-content">
+                        <div class="pdf-inner-container">
+                            <div class="pdf-header-row">
+                                <div class="pdf-landlord">
+                                    <span id="pLandlordName" style="text-transform: uppercase;"></span><br>
+                                    <span id="pLandlordAddr" style="white-space: pre-line;"></span>
+                                </div>
+                                <div class="pdf-tenant-box">
+                                    <strong>Locataire :</strong><br>
+                                    <span id="pTenantName" style="font-size:12pt; font-weight:bold;"></span><br>
+                                    Adresse des lieux loués :<br>
+                                    <span id="pPropAddr" style="white-space: pre-line;"></span>
+                                </div>
+                            </div>
+
+                            <div class="pdf-title">
+                                QUITTANCE DE LOYER<br>
+                                <span style="font-size:12pt; font-weight:normal;">DU MOIS DE <span id="pMonthTitle"></span></span>
+                            </div>
+
+                            <table class="pdf-table">
+                                <thead>
+                                    <tr>
+                                        <th>Loyer</th>
+                                        <th>Provisions sur Charges</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span id="pRent"></span> €</td>
+                                        <td><span id="pCharges"></span> €</td>
+                                        <td style="font-weight:bold;"><span id="pTotal"></span> €</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="pdf-legal-text">
+                                Je soussigné, reconnais avoir reçu de <strong><span id="pTenantBody"></span></strong> la somme de : 
+                                <strong><span id="pTotalLetters"></span></strong> 
+                                pour la période du <strong><span id="pDateStart"></span></strong> au <strong><span id="pDateEnd"></span></strong> 
+                                pour le loyer des lieux occupés dans ledit immeuble.
+                                <br><br>
+                                Dont la quittance sans préjudice du terme courant, sans présomption de paiement des loyers antérieurs, et sous toutes réserves de droit.
+                            </div>
+
+                            <div style="margin-top: 20px; font-weight: bold;">
+                                PUBLIÉ LE <span id="pDatePublish"></span>
+                            </div>
+
+                            <div class="pdf-signature">
+                                <div style="margin-bottom:10px; font-weight:bold; text-transform:uppercase;" id="pSignName"></div>
+                                <div id="pSigImgContainer"></div>
+                            </div>
+
+                            <div class="pdf-nota">
+                                <strong>NOTA :</strong> nul locataire ou occupant ne peut déménager avant d'avoir reçu ou donné congé par écrit aux époques prescrites par la loi avant d'avoir fait faire d'abord toutes les réparations locatives qui sont à sa charge et justifié par une quittance du receveur qu'il a acquitté toutes ses contributions de l'année courante. Il doit à son départ libérer complètement les lieux, sous peine de tous frais et dommages-intérêts.
                             </div>
                         </div>
-
-                        <div class="pdf-title">
-                            QUITTANCE DE LOYER<br>
-                            <span style="font-size:12pt; font-weight:normal;">DU MOIS DE <span id="pMonthTitle"></span></span>
-                        </div>
-
-                        <table class="pdf-table">
-                            <thead>
-                                <tr>
-                                    <th>Loyer</th>
-                                    <th>Provisions sur Charges</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><span id="pRent"></span> €</td>
-                                    <td><span id="pCharges"></span> €</td>
-                                    <td style="font-weight:bold;"><span id="pTotal"></span> €</td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <div class="pdf-legal-text">
-                            Je soussigné, reconnais avoir reçu de <strong><span id="pTenantBody"></span></strong> la somme de : 
-                            <strong><span id="pTotalLetters"></span></strong> 
-                            pour la période du <strong><span id="pDateStart"></span></strong> au <strong><span id="pDateEnd"></span></strong> 
-                            pour le loyer des lieux occupés dans ledit immeuble.
-                            <br><br>
-                            Dont la quittance sans préjudice du terme courant, sans présomption de paiement des loyers antérieurs, et sous toutes réserves de droit.
-                        </div>
-
-                        <div style="margin-top: 20px; font-weight: bold;">
-                            PUBLIÉ LE <span id="pDatePublish"></span>
-                        </div>
-
-                        <div class="pdf-signature">
-                            <div style="margin-bottom:10px; font-weight:bold; text-transform:uppercase;" id="pSignName"></div>
-                            <div id="pSigImgContainer"></div>
-                        </div>
-
-                        <div class="pdf-nota">
-                            <strong>NOTA :</strong> nul locataire ou occupant ne peut déménager avant d'avoir reçu ou donné congé par écrit aux époques prescrites par la loi avant d'avoir fait faire d'abord toutes les réparations locatives qui sont à sa charge et justifié par une quittance du receveur qu'il a acquitté toutes ses contributions de l'année courante. Il doit à son départ libérer complètement les lieux, sous peine de tous frais et dommages-intérêts.
-                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-    </main>
+        </main>
+    </div> <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // --- 1. CONFIGURATION FIREBASE (REMPLACE PAR TES CLÉS !) ---
+        const firebaseConfig = {
+		  apiKey: "AIzaSyD6Q-HVto8eybwGo9YgcFx4hu7rWBLNYfg",
+		  authDomain: "portfolio-nathan-e148f.firebaseapp.com",
+		  projectId: "portfolio-nathan-e148f",
+		  storageBucket: "portfolio-nathan-e148f.firebasestorage.app",
+		  messagingSenderId: "61408006418",
+		  appId: "1:61408006418:web:8a448e8ca60ec77bf523cb"
+		};
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // --- 2. VÉRIFICATION DE SÉCURITÉ ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // UTILISATEUR CONNECTÉ
+                document.getElementById('auth-loader').style.display = 'none';
+                document.getElementById('secure-content').style.display = 'block';
+                
+                // On lance l'application une fois le contenu visible
+                if(window.initApp) window.initApp();
+            } else {
+                // PAS CONNECTÉ -> REDIRECTION
+                window.location.href = "../../index.html#contact"; 
+            }
+        });
+    </script>
 
     <script>
         // --- 1. GESTION DES ADRESSES ---
@@ -516,8 +568,8 @@ Résidence Les Cerisioz Bâtiment 8D
             if(el) el.innerText = txt;
         };
 
-        // Init Dates
-        function init() {
+        // Init Dates (Attaché à Window pour être appelé par Firebase)
+        window.initApp = function() {
             const d = new Date();
             document.getElementById('selMonth').value = d.getMonth(); // Current Month
             document.getElementById('selYear').value = d.getFullYear();
@@ -533,8 +585,6 @@ Résidence Les Cerisioz Bâtiment 8D
             const y = parseInt(getVal('selYear'));
             
             // PÉRIODE : DU 1er AU DERNIER JOUR
-            // Date(y, m, 1) -> Le 1er du mois 'm'
-            // Date(y, m + 1, 0) -> Le jour 0 du mois suivant, ce qui revient au dernier jour du mois 'm'
             const start = new Date(y, m, 1);
             const end = new Date(y, m + 1, 0);
 
@@ -595,15 +645,20 @@ Résidence Les Cerisioz Bâtiment 8D
 
         function initPad() {
             canvas = document.getElementById('sigCanvas');
+            // Vérification si canvas existe (au cas où)
+            if(!canvas) return;
+
             ctx = canvas.getContext('2d');
             
             // Resize logic
             const resize = () => {
                 const rect = canvas.parentElement.getBoundingClientRect();
-                canvas.width = rect.width;
-                canvas.height = 120;
-                ctx.lineWidth = 2;
-                ctx.strokeStyle = '#000';
+                if(rect.width > 0) {
+                    canvas.width = rect.width;
+                    canvas.height = 120;
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = '#000';
+                }
             };
             window.addEventListener('resize', resize);
             resize();
@@ -689,9 +744,6 @@ Résidence Les Cerisioz Bâtiment 8D
                 });
             }, 100);
         }
-
-        // Run
-        window.onload = init;
     </script>
 </body>
 </html>
