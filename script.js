@@ -1,7 +1,27 @@
+// Import des fonctions Firebase depuis le CDN (Version 10)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+// ============================================================
+// 1. CONFIGURATION FIREBASE (REMPLACE PAR TES CLÉS ICI)
+// ============================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyD6Q-HVto8eybwGo9YgcFx4hu7rWBLNYfg",
+  authDomain: "portfolio-nathan-e148f.firebaseapp.com",
+  projectId: "portfolio-nathan-e148f",
+  storageBucket: "portfolio-nathan-e148f.firebasestorage.app",
+  messagingSenderId: "61408006418",
+  appId: "1:61408006418:web:8a448e8ca60ec77bf523cb"
+};
+
+// Initialisation de Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // ==============================================
-    // 1. GESTION DES PROJETS (ALIGNEMENT CORRIGÉ)
+    // 2. GESTION DES PROJETS (TON CODE EXISTANT)
     // ==============================================
     const projectsData = [
         {
@@ -25,13 +45,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (projectsGrid) {
         projectsGrid.innerHTML = projectsData.map((project, index) => {
-            
-            // CORRECTION: Utilisation de w-full et suppression des marges négatives potentielles
             const featuresHtml = project.features && project.features.length > 0 ? `
                 <div class="w-full mb-6 mt-4 block">
                     <div class="flex flex-wrap gap-2 mb-4">
                         ${project.features.map((f, i) => `
-                            <button onclick="showProjectDesc(${index}, ${i})" 
+                            <button onclick="window.showProjectDesc(${index}, ${i})" 
                                 class="proj-btn-${index} group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 bg-dark-900 text-xs text-slate-300 hover:border-accent-400 hover:text-white hover:bg-white/5 transition-all duration-300 cursor-pointer focus:outline-none"
                                 data-desc="${f.desc}">
                                 <i class="ph-bold ${f.icon} text-accent-400 group-hover:scale-110 transition-transform"></i>
@@ -39,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             </button>
                         `).join('')}
                     </div>
-                    
                     <div id="project-desc-box-${index}" class="hidden w-full">
                         <div class="p-4 rounded-xl bg-white/5 border-l-2 border-accent-400 text-sm text-slate-300 relative animate-fade-up w-full">
                             <i class="ph-duotone ph-info text-xl text-accent-400 absolute top-4 right-4 opacity-50"></i>
@@ -57,27 +74,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         <h3 class="text-3xl font-display font-bold text-white mb-1">${project.title}</h3>
                         <p class="text-slate-500 italic text-sm mb-4">${project.subtitle}</p>
                     </div>
-                    
-                    <p class="text-slate-300 leading-relaxed text-sm mb-2 border-l-2 border-accent-400 pl-4">
-                        "${project.story}"
-                    </p>
-
+                    <p class="text-slate-300 leading-relaxed text-sm mb-2 border-l-2 border-accent-400 pl-4">"${project.story}"</p>
                     ${featuresHtml}
-
                     <a href="${project.url}" target="_blank" class="inline-flex items-center gap-2 text-white font-bold hover:text-accent-400 transition-colors w-fit group/link mt-auto">
                         Visiter le site <i class="ph-bold ph-arrow-right group-hover/link:translate-x-1 transition-transform"></i>
                     </a>
                 </div>
-
                 <div class="md:w-2/3 order-1 md:order-2 relative rounded-3xl overflow-hidden border border-white/10 bg-dark-900 group/frame interactive-hover h-[300px] md:h-auto project-frame-container">
                     <div class="absolute top-0 left-0 right-0 h-10 bg-dark-950/90 backdrop-blur border-b border-white/5 flex items-center px-4 gap-2 z-20">
-                        <div class="flex gap-1.5">
-                            <div class="w-2.5 h-2.5 rounded-full bg-slate-600"></div>
-                            <div class="w-2.5 h-2.5 rounded-full bg-slate-600"></div>
-                        </div>
-                        <div class="ml-4 text-[10px] text-slate-500 font-mono opacity-50 flex-grow truncate">
-                            ${project.url.replace('https://', '')}
-                        </div>
+                        <div class="flex gap-1.5"><div class="w-2.5 h-2.5 rounded-full bg-slate-600"></div><div class="w-2.5 h-2.5 rounded-full bg-slate-600"></div></div>
+                        <div class="ml-4 text-[10px] text-slate-500 font-mono opacity-50 flex-grow truncate">${project.url.replace('https://', '')}</div>
                     </div>
                     <div class="absolute inset-0 top-10 bg-white transition-all duration-700 ease-out grayscale group-hover/frame:grayscale-0 iframe-container project-iframe">
                          <iframe src="${project.url}" class="w-[200%] h-[200%] border-0 transform scale-50 origin-top-left pointer-events-none" loading="lazy"></iframe>
@@ -94,6 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
+    // NOTE : On attache cette fonction à 'window' car nous sommes dans un module
     window.showProjectDesc = function(projectIndex, btnIndex) {
         document.querySelectorAll(`.proj-btn-${projectIndex}`).forEach(btn => {
             btn.classList.remove('bg-white/10', 'border-accent-400', 'text-white');
@@ -113,21 +120,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==============================================
-    // 2. ADMIN SÉCURISÉ (HASHS MIS À JOUR)
+    // 3. ADMIN SÉCURISÉ (AUTHENTIFICATION FIREBASE)
     // ==============================================
-    
-    // Hashs SHA-256 calculés spécifiquement pour vos identifiants
-    // User: nathan.marzilli
-    const USER_HASH = "5d1797c7674143422026131018804867c48404286701831885f639070868f02f"; 
-    // Pass: Okisblavet92
-    const PASS_HASH = "e4b7b6c8022d637c352528751502476046180164606742637956417740924403";
-
     const adminModal = document.getElementById('admin-modal');
     const adminContent = document.getElementById('admin-content');
     const loginView = document.getElementById('admin-login-view');
     const dashboardView = document.getElementById('admin-dashboard-view');
     const actionsGrid = document.getElementById('admin-actions-grid');
+    const loginError = document.getElementById('login-error');
 
+    // Gestion ouverture/fermeture Modale
     window.toggleAdminModal = function() {
         if (adminModal.classList.contains('hidden')) {
             adminModal.classList.remove('hidden');
@@ -136,6 +138,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 adminContent.classList.remove('scale-95');
                 adminContent.classList.add('scale-100');
             }, 10);
+            
+            // Vérifie si l'utilisateur est déjà connecté grâce à Firebase
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    showDashboard();
+                } else {
+                    showLogin();
+                }
+            });
+
         } else {
             adminModal.classList.add('opacity-0');
             adminContent.classList.remove('scale-100');
@@ -167,40 +179,56 @@ document.addEventListener('DOMContentLoaded', () => {
     function resetAdminForm() {
         document.getElementById('admin-id').value = '';
         document.getElementById('admin-pass').value = '';
-        document.getElementById('login-error').classList.add('hidden');
-        loginView.classList.remove('hidden');
-        dashboardView.classList.add('hidden');
+        loginError.classList.add('hidden');
         
         document.getElementById('admin-pass').type = 'password';
         document.getElementById('eye-icon').classList.remove('ph-eye-slash');
         document.getElementById('eye-icon').classList.add('ph-eye');
     }
 
-    async function sha256(message) {
-        const msgBuffer = new TextEncoder().encode(message);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        return hashHex;
+    function showLogin() {
+        loginView.classList.remove('hidden');
+        dashboardView.classList.add('hidden');
     }
 
-    window.attemptLogin = async function() {
+    function showDashboard() {
+        loginView.classList.add('hidden');
+        dashboardView.classList.remove('hidden');
+        renderAdminButtons();
+    }
+
+    // --- C'EST ICI QUE LA CONNEXION SE FAIT ---
+    window.attemptLogin = function() {
         const idInput = document.getElementById('admin-id').value.trim();
         const passInput = document.getElementById('admin-pass').value.trim();
-        const errorMsg = document.getElementById('login-error');
+        
+        // ASTUCE : On ajoute le domaine email si tu ne l'as pas mis
+        // Comme ça tu peux juste taper "nathan.marzilli"
+        const emailToUse = idInput.includes('@') ? idInput : idInput + '@gmail.com';
 
-        const inputUserHash = await sha256(idInput);
-        const inputPassHash = await sha256(passInput);
+        // Connexion via Firebase
+        signInWithEmailAndPassword(auth, emailToUse, passInput)
+            .then((userCredential) => {
+                // Succès !
+                loginError.classList.add('hidden');
+                showDashboard();
+            })
+            .catch((error) => {
+                // Erreur
+                console.error("Erreur de connexion :", error.code, error.message);
+                loginError.classList.remove('hidden');
+                adminContent.classList.add('animate-pulse');
+                setTimeout(() => adminContent.classList.remove('animate-pulse'), 500);
+            });
+    };
 
-        if (inputUserHash === USER_HASH && inputPassHash === PASS_HASH) {
-            loginView.classList.add('hidden');
-            dashboardView.classList.remove('hidden');
-            renderAdminButtons();
-        } else {
-            errorMsg.classList.remove('hidden');
-            adminContent.classList.add('animate-pulse');
-            setTimeout(() => adminContent.classList.remove('animate-pulse'), 500);
-        }
+    // Déconnexion
+    window.logout = function() {
+        signOut(auth).then(() => {
+            showLogin();
+        }).catch((error) => {
+            console.error("Erreur déconnexion", error);
+        });
     };
 
     const adminActions = [
@@ -211,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderAdminButtons() {
         if(actionsGrid) {
-            actionsGrid.innerHTML = adminActions.map(action => `
+            let html = adminActions.map(action => `
                 <a href="${action.link}" target="_blank" class="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-accent-400 transition-all group">
                     <div class="w-10 h-10 rounded-full bg-dark-950 flex items-center justify-center border border-white/10 group-hover:border-${action.color.split('-')[1]}-400 transition-colors">
                         <i class="ph-bold ${action.icon} ${action.color} text-xl"></i>
@@ -220,15 +248,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     <i class="ph-bold ph-arrow-right ml-auto text-slate-500 group-hover:text-accent-400 transition-colors"></i>
                 </a>
             `).join('');
+
+            // Bouton de déconnexion ajouté à la fin
+            html += `
+                <button onclick="window.logout()" class="w-full mt-4 py-3 rounded-xl border border-white/10 text-slate-400 text-xs font-bold uppercase tracking-widest hover:bg-white/5 hover:text-white transition-all">
+                    Se déconnecter
+                </button>
+            `;
+            
+            actionsGrid.innerHTML = html;
         }
     }
 
     document.getElementById('admin-pass').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') attemptLogin();
+        if (e.key === 'Enter') window.attemptLogin();
     });
 
     // ==============================================
-    // 3. LOGIQUE SKILLS & GLOBAL (INCHANGÉ)
+    // 4. LOGIQUE SKILLS & GLOBAL (INCHANGÉ)
     // ==============================================
     const techDescriptions = {
         'html': { title: 'Structure HTML5 Sémantique', text: 'Je construis le squelette de votre site en respectant les standards du web (W3C). Un code propre garantit une meilleure accessibilité pour les personnes handicapées et une lecture parfaite par les robots de Google (SEO).', icon: 'ph-file-html', color: 'text-orange-500' },
