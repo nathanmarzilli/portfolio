@@ -323,89 +323,103 @@
 
     <!-- Technologies & Expertise - Fond différent -->
     <section id="skills" class="py-12 bg-dark-850 border-y border-white/5">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="glass-card p-8 rounded-3xl border border-white/5 bg-white/5">
-                <div class="grid md:grid-cols-2 gap-12">
-                    <!-- Tech Stack -->
-                    <div class="reveal">
-                        <h3 class="text-xl font-display font-bold text-white mb-6 flex items-center gap-2">
-                            <i class="ph-duotone ph-code text-accent-400"></i> Technologies Maîtrisées
-                        </h3>
-                        <div class="grid grid-cols-3 sm:grid-cols-4 gap-4">
-                            <div class="flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 transition-colors group">
-                                <i class="ph-bold ph-file-html text-3xl text-orange-500 mb-2 group-hover:scale-110 transition-transform"></i>
-                                <span class="text-xs text-slate-400 font-medium">HTML5</span>
-                            </div>
-                            <div class="flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 transition-colors group">
-                                <i class="ph-bold ph-file-css text-3xl text-blue-500 mb-2 group-hover:scale-110 transition-transform"></i>
-                                <span class="text-xs text-slate-400 font-medium">CSS3</span>
-                            </div>
-                            <div class="flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 transition-colors group">
-                                <i class="ph-bold ph-file-js text-3xl text-yellow-400 mb-2 group-hover:scale-110 transition-transform"></i>
-                                <span class="text-xs text-slate-400 font-medium">JS</span>
-                            </div>
-                            <div class="flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 transition-colors group">
-                                <i class="ph-bold ph-paint-brush-broad text-3xl text-cyan-400 mb-2 group-hover:scale-110 transition-transform"></i>
-                                <span class="text-xs text-slate-400 font-medium">Tailwind</span>
-                            </div>
-                            <div class="flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 transition-colors group">
-                                <i class="ph-bold ph-git-branch text-3xl text-red-500 mb-2 group-hover:scale-110 transition-transform"></i>
-                                <span class="text-xs text-slate-400 font-medium">Git</span>
-                            </div>
-                            <div class="flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 transition-colors group">
-                                <i class="ph-bold ph-device-mobile text-3xl text-purple-400 mb-2 group-hover:scale-110 transition-transform"></i>
-                                <span class="text-xs text-slate-400 font-medium">Responsive</span>
-                            </div>
-                        </div>
-                    </div>
+		<div class="max-w-6xl mx-auto px-6">
+			<div class="glass-card p-8 rounded-3xl border border-white/5 bg-white/5">
+				<div class="grid md:grid-cols-2 gap-12">
+					
+					<div class="reveal">
+						<h3 class="text-xl font-display font-bold text-white mb-6 flex items-center gap-2">
+							<i class="ph-duotone ph-code text-accent-400"></i> Technologies Maîtrisées
+						</h3>
+						
+						<div class="grid grid-cols-3 sm:grid-cols-4 gap-4 mb-8">
+							<div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="html">
+								<i class="ph-bold ph-file-html text-3xl text-orange-500 mb-2 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+								<span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">HTML5</span>
+							</div>
+							<div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="css">
+								<i class="ph-bold ph-file-css text-3xl text-blue-500 mb-2 group-hover:scale-110 group-hover:-rotate-6 transition-transform"></i>
+								<span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">CSS3</span>
+							</div>
+							<div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="js">
+								<i class="ph-bold ph-file-js text-3xl text-yellow-400 mb-2 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+								<span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">JS (ES6+)</span>
+							</div>
+							<div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="tailwind">
+								<i class="ph-bold ph-paint-brush-broad text-3xl text-cyan-400 mb-2 group-hover:scale-110 group-hover:-rotate-6 transition-transform"></i>
+								<span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">Tailwind</span>
+							</div>
+							<div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="git">
+								<i class="ph-bold ph-git-branch text-3xl text-red-500 mb-2 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+								<span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">Git</span>
+							</div>
+							<div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="responsive">
+								<i class="ph-bold ph-device-mobile text-3xl text-purple-400 mb-2 group-hover:scale-110 group-hover:-rotate-6 transition-transform"></i>
+								<span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">Mobile</span>
+							</div>
+							<div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="firebase">
+								<i class="ph-bold ph-fire text-3xl text-orange-400 mb-2 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+								<span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">Firebase</span>
+							</div>
+							<div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="seo">
+								<i class="ph-bold ph-magnifying-glass text-3xl text-green-500 mb-2 group-hover:scale-110 group-hover:-rotate-6 transition-transform"></i>
+								<span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">SEO</span>
+							</div>
+						</div>
 
-                    <!-- Langues - Correctif Badge Alignement -->
-                    <div class="reveal delay-100">
-                        <h3 class="text-xl font-display font-bold text-white mb-6 flex items-center gap-2">
-                            <i class="ph-duotone ph-translate text-accent-400"></i> Langues parlées
-                        </h3>
-                        <p class="text-sm text-slate-400 mb-6">
-                            La barrière de la langue ne doit pas être un frein. Je peux créer votre site en plusieurs langues et communiquer avec vos équipes internationales.
-                        </p>
-                        <div class="space-y-4">
-                            <!-- Correctif: justify-between + flex-shrink-0 -->
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
-                                <div class="flex items-center gap-3">
-                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">FR</span>
-                                    <span class="text-sm font-bold text-white">Français</span>
-                                </div>
-                                <span class="text-xs text-accent-400 font-medium bg-accent-400/10 px-2 py-1 rounded shrink-0 text-right">Langue maternelle</span>
-                            </div>
-                            
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
-                                <div class="flex items-center gap-3">
-                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">IT</span>
-                                    <span class="text-sm font-bold text-white">Italien</span>
-                                </div>
-                                <span class="text-xs text-green-400 font-medium bg-green-400/10 px-2 py-1 rounded shrink-0 text-right">Courant</span>
-                            </div>
-                            
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
-                                <div class="flex items-center gap-3">
-                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">EN</span>
-                                    <span class="text-sm font-bold text-white">Anglais</span>
-                                </div>
-                                <span class="text-xs text-blue-400 font-medium bg-blue-400/10 px-2 py-1 rounded shrink-0 text-right">C1 - Avancé</span>
-                            </div>
-                            
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
-                                <div class="flex items-center gap-3">
-                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">JP</span>
-                                    <span class="text-sm font-bold text-white">Japonais</span>
-                                </div>
-                                <span class="text-xs text-slate-400 font-medium bg-slate-400/10 px-2 py-1 rounded shrink-0 text-right">Notions</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+						<div id="tech-description-box" class="min-h-[100px] p-4 rounded-xl bg-gradient-to-br from-dark-950 to-dark-900 border border-white/10 relative overflow-hidden transition-all duration-300 opacity-0 transform translate-y-4">
+							<div class="absolute top-0 right-0 p-4 opacity-10">
+								<i id="tech-bg-icon" class="ph-duotone ph-code text-6xl text-white"></i>
+							</div>
+							<h4 id="tech-title" class="text-accent-400 font-bold text-lg mb-2 relative z-10">Sélectionnez une techno</h4>
+							<p id="tech-text" class="text-slate-400 text-sm relative z-10 leading-relaxed">
+								Cliquez sur une icône ci-dessus pour découvrir mon niveau d'expertise et l'usage que j'en fais pour vos projets.
+							</p>
+						</div>
+					</div>
+
+					<div class="reveal delay-100">
+						<h3 class="text-xl font-display font-bold text-white mb-6 flex items-center gap-2">
+							<i class="ph-duotone ph-translate text-accent-400"></i> Langues parlées
+						</h3>
+						<p class="text-sm text-slate-400 mb-6">
+							La barrière de la langue ne doit pas être un frein. Je peux créer votre site en plusieurs langues et communiquer avec vos équipes internationales.
+						</p>
+						<div class="space-y-4">
+							<div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
+								<div class="flex items-center gap-3">
+									<span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">FR</span>
+									<span class="text-sm font-bold text-white">Français</span>
+								</div>
+								<span class="text-xs text-accent-400 font-medium bg-accent-400/10 px-2 py-1 rounded shrink-0 text-right">Langue maternelle</span>
+							</div>
+							<div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
+								<div class="flex items-center gap-3">
+									<span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">IT</span>
+									<span class="text-sm font-bold text-white">Italien</span>
+								</div>
+								<span class="text-xs text-green-400 font-medium bg-green-400/10 px-2 py-1 rounded shrink-0 text-right">Courant</span>
+							</div>
+							<div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
+								<div class="flex items-center gap-3">
+									<span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">EN</span>
+									<span class="text-sm font-bold text-white">Anglais</span>
+								</div>
+								<span class="text-xs text-blue-400 font-medium bg-blue-400/10 px-2 py-1 rounded shrink-0 text-right">C1 - Avancé</span>
+							</div>
+							<div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
+								<div class="flex items-center gap-3">
+									<span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">JP</span>
+									<span class="text-sm font-bold text-white">Japonais</span>
+								</div>
+								<span class="text-xs text-slate-400 font-medium bg-slate-400/10 px-2 py-1 rounded shrink-0 text-right">Notions</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 
     <!-- Projects - Fond très sombre pour contraste -->
     <section id="projects" class="py-24 relative overflow-hidden bg-dark-950">
