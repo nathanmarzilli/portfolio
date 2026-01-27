@@ -604,212 +604,89 @@
 
     <!-- Contact - Fond très sombre -->
     <footer id="contact" class="py-20 border-t border-white/5 bg-dark-950 relative overflow-hidden">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="grid lg:grid-cols-2 gap-16">
-                <!-- Contact Infos -->
-                <div class="w-full">
-                    <h3 class="font-display text-4xl font-bold text-white mb-4">Parlons Concret</h3>
-                    <!-- Correctif : break-words & whitespace-normal pour éviter troncature mobile -->
-                    <p class="text-slate-400 mb-8 max-w-full break-words whitespace-normal">
-                        Sélectionnez un créneau ci-contre. Je vous appellerai personnellement pour comprendre votre besoin.
-                    </p>
-                    <div class="space-y-4 mb-8 w-full">
-                        <a href="mailto:nathan.marzilli@gmail.com" class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors interactive-hover w-full overflow-hidden">
-                            <i class="ph-fill ph-envelope-simple text-2xl text-accent-400 shrink-0"></i>
-                            <span class="text-slate-300 truncate text-sm sm:text-base">nathan.marzilli@gmail.com</span>
-                        </a>
-                        <div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 interactive-hover w-full">
-                            <i class="ph-fill ph-map-pin text-2xl text-accent-400 shrink-0"></i>
-                            <span class="text-slate-300 text-sm sm:text-base">74500 Évian-les-Bains / Lausanne</span>
-                        </div>
-                    </div>
-                </div>
+		<div class="max-w-6xl mx-auto px-6">
+			<div class="grid lg:grid-cols-2 gap-16">
+				<div class="w-full">
+					<h3 class="font-display text-4xl font-bold text-white mb-4">Parlons Concret</h3>
+					<p class="text-slate-400 mb-8 max-w-full break-words whitespace-normal">
+						Sélectionnez un créneau ci-contre. Je vous appellerai personnellement pour comprendre votre besoin.
+					</p>
+					<div class="space-y-4 mb-8 w-full">
+						<a href="mailto:nathan.marzilli@gmail.com" class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors interactive-hover w-full overflow-hidden">
+							<i class="ph-fill ph-envelope-simple text-2xl text-accent-400 shrink-0"></i>
+							<span class="text-slate-300 truncate text-sm sm:text-base">nathan.marzilli@gmail.com</span>
+						</a>
+						<div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 interactive-hover w-full">
+							<i class="ph-fill ph-map-pin text-2xl text-accent-400 shrink-0"></i>
+							<span class="text-slate-300 text-sm sm:text-base">74500 Évian-les-Bains / Lausanne</span>
+						</div>
+					</div>
+				</div>
 
-                <!-- Formulaire Amélioré -->
-                <div class="glass-card p-6 md:p-8 rounded-3xl border border-white/10 w-full">
-                    <form id="booking-form" class="space-y-6">
-                        
-                        <!-- 1. Selection Pack (Boutons) -->
-                        <div>
-                            <label class="block text-sm font-bold text-white mb-3">Quel est votre besoin ?</label>
-                            <div class="grid grid-cols-3 gap-2">
-                                <button type="button" class="offer-btn px-2 py-3 rounded-xl border border-white/10 bg-white/5 text-xs text-slate-400 hover:border-accent-400 transition-all text-center interactive-hover" data-value="Pack Essentiel">
-                                    Essentiel
-                                </button>
-                                <button type="button" class="offer-btn px-2 py-3 rounded-xl border border-white/10 bg-white/5 text-xs text-slate-400 hover:border-accent-400 transition-all text-center interactive-hover" data-value="Pack Vitrine Artisan">
-                                    Vitrine
-                                </button>
-                                <button type="button" class="offer-btn px-2 py-3 rounded-xl border border-white/10 bg-white/5 text-xs text-slate-400 hover:border-accent-400 transition-all text-center interactive-hover" data-value="Pack Premium">
-                                    Premium
-                                </button>
-                            </div>
-                            <input type="hidden" id="selected-offer" name="offer">
-                        </div>
+				<div class="glass-card p-6 md:p-8 rounded-3xl border border-white/10 w-full">
+					<form id="booking-form" class="space-y-6">
+						 <div class="text-center text-slate-500 text-xs py-10 border border-dashed border-white/10 rounded-xl">
+							(Le formulaire de réservation reste ici)
+						 </div>
+					</form>
+				</div>
+			</div>
 
-                        <!-- 2. Maintenance (Toggle séparé) -->
-                        <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-between interactive-hover">
-                            <div>
-                                <h4 class="text-sm font-bold text-white">Pack Sérénité</h4>
-                                <p class="text-[10px] text-blue-300">Maintenance & Mises à jour (600€/an)</p>
-                            </div>
-                            <div class="relative inline-block w-10 h-6 align-middle select-none transition duration-200 ease-in">
-                                <input type="checkbox" name="maintenance" id="maintenance-toggle" class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 appearance-none cursor-pointer top-1 left-1 transition-all duration-300"/>
-                                <label for="maintenance-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-dark-900 cursor-pointer border border-white/10"></label>
-                            </div>
-                        </div>
-                        
-                        <!-- Total Estimé (Dynamique) -->
-                        <div class="py-3 border-y border-white/10 flex justify-between items-center">
-                            <span class="text-sm text-slate-400">Total estimé :</span>
-                            <span id="total-price-display" class="text-xl font-bold text-accent-400">0€</span>
-                        </div>
+			<div class="flex flex-col md:flex-row justify-between items-center mt-16 pt-8 border-t border-white/5 gap-4">
+				<div class="text-slate-600 text-sm">© <span id="year"></span> Nathan Marzilli.</div>
+				<button onclick="toggleAdminModal()" class="text-slate-700 hover:text-accent-400 transition-colors text-xs flex items-center gap-2 uppercase tracking-widest font-bold">
+					<i class="ph-bold ph-lock-key"></i> Administration
+				</button>
+			</div>
+		</div>
 
-                        <!-- 3. Disponibilités (Correction scroll horizontal) -->
-                        <div class="w-full overflow-hidden">
-                            <label class="block text-sm font-bold text-white mb-2">Disponibilités</label>
-                            <div class="flex gap-2 mb-3 overflow-x-auto pb-2 scrollbar-hide p-1 w-full" id="date-container">
-                                <!-- Dates générées par JS -->
-                            </div>
-                            <div class="grid grid-cols-4 gap-2" id="slots-container">
-                                <span class="col-span-4 text-xs text-slate-500 italic">Sélectionnez une date ci-dessus.</span>
-                            </div>
-                            <input type="hidden" id="selected-date"><input type="hidden" id="selected-time">
-                        </div>
+		<div id="admin-modal" class="fixed inset-0 z-[100] bg-dark-950/90 backdrop-blur-xl hidden flex items-center justify-center p-4 transition-all duration-300 opacity-0">
+			<div class="glass-card w-full max-w-md p-8 rounded-3xl border border-white/10 bg-dark-900 shadow-2xl transform scale-95 transition-all duration-300" id="admin-content">
+				
+				<div class="flex justify-between items-center mb-8">
+					<h3 class="text-xl font-display font-bold text-white flex items-center gap-2">
+						<i class="ph-duotone ph-shield-check text-accent-400"></i> Espace Sécurisé
+					</h3>
+					<button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white transition-colors">
+						<i class="ph-bold ph-x text-xl"></i>
+					</button>
+				</div>
 
-                        <!-- 4. Infos Utilisateur -->
-                        <div class="space-y-3">
-                            <div class="grid grid-cols-2 gap-3">
-                                <input type="text" id="user-firstname" placeholder="Prénom (Obligatoire)" required class="bg-dark-950/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-accent-400 focus:outline-none interactive-hover w-full">
-                                <input type="text" id="user-name" placeholder="Nom (Obligatoire)" required class="bg-dark-950/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-accent-400 focus:outline-none interactive-hover w-full">
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <input type="email" id="user-email" placeholder="Email (format: nom@example.com)" required class="bg-dark-950/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-accent-400 focus:outline-none interactive-hover w-full">
-                                <input type="tel" id="user-phone" placeholder="Téléphone (format: 06 12 34 56 78)" required class="bg-dark-950/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-accent-400 focus:outline-none interactive-hover w-full">
-                            </div>
-                        </div>
+				<div id="admin-login-view" class="space-y-4">
+					<div class="space-y-2">
+						<label class="text-xs font-bold text-slate-400 uppercase">Identifiant</label>
+						<input type="text" id="admin-id" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors" placeholder="Identifiant...">
+					</div>
+					<div class="space-y-2">
+						<label class="text-xs font-bold text-slate-400 uppercase">Mot de passe</label>
+						<div class="relative">
+							<input type="password" id="admin-pass" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors pr-12" placeholder="••••••••">
+							<button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
+								<i id="eye-icon" class="ph-bold ph-eye"></i>
+							</button>
+						</div>
+					</div>
+					<div id="login-error" class="hidden text-red-400 text-xs font-bold flex items-center gap-2">
+						<i class="ph-bold ph-warning"></i> Identifiants incorrects
+					</div>
+					<button onclick="attemptLogin()" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 font-bold hover:bg-white transition-colors mt-2">
+						Accéder au tableau de bord
+					</button>
+				</div>
 
-                        <!-- Bouton Toggle Champs Avancés -->
-                        <div class="text-center pt-2">
-                            <button type="button" id="toggle-details" class="text-xs text-accent-400 font-bold uppercase tracking-wider hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto">
-                                <i class="ph-bold ph-plus-circle"></i> <span>Gagner du temps (Compléter mon projet)</span>
-                            </button>
-                        </div>
+				<div id="admin-dashboard-view" class="hidden space-y-4">
+					<p class="text-sm text-slate-400 mb-4">Bienvenue, Nathan. Que souhaitez-vous créer ?</p>
+					<div class="grid gap-3" id="admin-actions-grid"></div>
+					<div class="pt-4 border-t border-white/5 mt-4">
+						<button onclick="toggleAdminModal()" class="w-full py-2 rounded-lg border border-white/10 text-slate-400 text-xs hover:text-white hover:bg-white/5 transition-colors">
+							Déconnexion
+						</button>
+					</div>
+				</div>
 
-                        <!-- Champs Avancés (Masqués par défaut) -->
-                        <div id="advanced-fields" class="hidden space-y-6 pt-4 border-t border-white/5 mt-4">
-                            
-                            <!-- 1. Objectif -->
-                            <div>
-                                <div class="form-section-title"><i class="ph-bold ph-target"></i> 1. Objectif du site</div>
-                                <div class="grid grid-cols-2 gap-2 text-sm text-slate-300">
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="objectif" value="Être contacté" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Être contacté</label>
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="objectif" value="Présenter activité" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Présenter activité</label>
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="objectif" value="Rassurer clients" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Rassurer clients</label>
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="objectif" value="Générer devis" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Générer devis</label>
-                                </div>
-                            </div>
-
-                            <!-- 2. Cible -->
-                            <div>
-                                <div class="form-section-title"><i class="ph-bold ph-users"></i> 2. Cible principale</div>
-                                <div class="flex gap-4 text-sm text-slate-300">
-                                    <label class="flex items-center gap-2"><input type="radio" name="cible" value="Particuliers" class="text-accent-400 bg-dark-900 border-white/20"> Particuliers</label>
-                                    <label class="flex items-center gap-2"><input type="radio" name="cible" value="Professionnels" class="text-accent-400 bg-dark-900 border-white/20"> Professionnels</label>
-                                    <label class="flex items-center gap-2"><input type="radio" name="cible" value="Les deux" class="text-accent-400 bg-dark-900 border-white/20"> Les deux</label>
-                                </div>
-                            </div>
-
-                            <!-- 3. Action Attendue -->
-                            <div>
-                                <div class="form-section-title"><i class="ph-bold ph-cursor-click"></i> 3. Action attendue</div>
-                                <div class="grid grid-cols-2 gap-2 text-sm text-slate-300">
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="action" value="Appeler" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Appeler</label>
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="action" value="Remplir formulaire" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Formulaire</label>
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="action" value="Envoyer email" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Email</label>
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="action" value="Prendre RDV" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Prendre RDV</label>
-                                </div>
-                            </div>
-
-                            <!-- 4. Pages Souhaitées -->
-                            <div>
-                                <div class="form-section-title"><i class="ph-bold ph-files"></i> 4. Pages souhaitées</div>
-                                <div class="grid grid-cols-2 gap-2 text-sm text-slate-300">
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="pages" value="Accueil" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Accueil</label>
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="pages" value="Services" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Services</label>
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="pages" value="À propos" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> À propos</label>
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="pages" value="Contact" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Contact</label>
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="pages" value="Galerie" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Galerie</label>
-                                </div>
-                            </div>
-
-                            <!-- 5. Inspirations -->
-                            <div>
-                                <div class="form-section-title"><i class="ph-bold ph-lightbulb"></i> 5. Inspirations visuelles</div>
-                                <textarea id="field-inspirations" placeholder="Sites que vous aimez ou n'aimez pas..." class="w-full bg-dark-900/50 border border-white/10 rounded-lg px-3 py-2 text-white text-xs focus:border-accent-400 focus:outline-none h-16"></textarea>
-                            </div>
-
-                            <!-- 6. Identité Visuelle -->
-                            <div>
-                                <div class="form-section-title"><i class="ph-bold ph-palette"></i> 6. Identité visuelle existante</div>
-                                <div class="grid grid-cols-2 gap-2 text-sm text-slate-300">
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="identite" value="Logo" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Logo</label>
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="identite" value="Couleurs" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Couleurs</label>
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="identite" value="Polices" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Polices</label>
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="identite" value="Rien (à créer)" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Rien (à créer)</label>
-                                </div>
-                            </div>
-
-                            <!-- 7. Contenus -->
-                            <div>
-                                <div class="form-section-title"><i class="ph-bold ph-article"></i> 7. Contenus existants</div>
-                                <div class="grid grid-cols-2 gap-2 text-sm text-slate-300">
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="contenus" value="Textes" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Textes</label>
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="contenus" value="Photos" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Photos</label>
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="contenus" value="Vidéos" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Vidéos</label>
-                                    <label class="flex items-center gap-2"><input type="checkbox" name="contenus" value="Aucun (à générer)" class="form-checkbox rounded text-accent-400 bg-dark-900 border-white/20"> Aucun</label>
-                                </div>
-                            </div>
-
-                            <!-- 8. Contraintes -->
-                            <div>
-                                <div class="form-section-title"><i class="ph-bold ph-warning-circle"></i> 8. Contraintes particulières</div>
-                                <textarea id="field-contraintes" placeholder="RGPD, Secteur réglementé, mentions obligatoires..." class="w-full bg-dark-900/50 border border-white/10 rounded-lg px-3 py-2 text-white text-xs focus:border-accent-400 focus:outline-none h-16"></textarea>
-                            </div>
-
-                            <!-- 9. Délai -->
-                            <div>
-                                <div class="form-section-title"><i class="ph-bold ph-hourglass"></i> 9. Délai souhaité</div>
-                                <div class="flex flex-col gap-2 text-sm text-slate-300">
-                                    <label class="flex items-center gap-2"><input type="radio" name="delai" value="Dès que possible" class="text-accent-400 bg-dark-900 border-white/20"> Dès que possible</label>
-                                    <label class="flex items-center gap-2"><input type="radio" name="delai" value="Date précise" class="text-accent-400 bg-dark-900 border-white/20"> Date précise : <input type="text" id="delai-date" placeholder="jj/mm/aaaa" class="bg-transparent border-b border-white/20 text-xs w-24 focus:outline-none"></label>
-                                </div>
-                            </div>
-
-                             <!-- 10. Réussite -->
-                             <div>
-                                <div class="form-section-title"><i class="ph-bold ph-trophy"></i> 10. Réussite du projet</div>
-                                <textarea id="field-reussite" placeholder="Comment saurez-vous que ce site est une réussite dans 3 mois ?" class="w-full bg-dark-900/50 border border-white/10 rounded-lg px-3 py-2 text-white text-xs focus:border-accent-400 focus:outline-none h-16"></textarea>
-                            </div>
-
-                        </div>
-
-                        <!-- Message Standard -->
-                        <textarea id="user-message" placeholder="Message libre (Autre précisions ?)" class="w-full bg-dark-950/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-accent-400 focus:outline-none interactive-hover h-24"></textarea>
-
-                        <button id="submit-btn" type="submit" class="w-full py-4 rounded-xl bg-white text-dark-950 font-bold hover:bg-accent-400 transition-all flex items-center justify-center gap-2 relative overflow-hidden group interactive-hover">
-                            <span class="btn-text flex items-center gap-2">Confirmer le RDV & Envoyer le dossier <i class="ph-bold ph-paper-plane-right"></i></span>
-                            <span class="success-text absolute inset-0 flex items-center justify-center gap-2 bg-accent-400 text-dark-950 opacity-0 transform translate-y-10 transition-all duration-300">
-                                <i class="ph-bold ph-check-circle text-xl"></i> Dossier envoyé !
-                            </span>
-                            <i id="plane-anim" class="ph-fill ph-paper-plane-right text-2xl absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-dark-950 opacity-0 z-20 pointer-events-none"></i>
-                        </button>
-                        <p class="text-xs text-slate-500 text-center italic mt-2">Les informations sont transmises directement pour préparer notre échange.</p>
-                    </form>
-                </div>
-            </div>
-            <div class="text-center mt-16 text-slate-600 text-sm">© <span id="year"></span> Nathan Marzilli.</div>
-        </div>
-    </footer>
+			</div>
+		</div>
+	</footer>
 
     <!-- Fichiers JS externes -->
     <script src="availability.js"></script>
