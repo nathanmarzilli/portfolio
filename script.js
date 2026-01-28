@@ -602,4 +602,43 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+	
+	// ==============================================
+	// GESTION ACCORDÉON HÉBERGEMENT
+	// ==============================================
+	window.toggleHosting = function(forceOpen = false) {
+		const content = document.getElementById('hosting-content');
+		const chevron = document.getElementById('hosting-chevron');
+		const section = document.getElementById('hosting-section');
+
+		if (!content || !chevron) return;
+
+		// Fonction pour ouvrir
+		const open = () => {
+			content.classList.add('open');
+			chevron.classList.add('rotate-chevron');
+		};
+
+		// Fonction pour fermer
+		const close = () => {
+			content.classList.remove('open');
+			chevron.classList.remove('rotate-chevron');
+		};
+
+		if (forceOpen) {
+			// Cas : Clic sur le "i" dans les packs
+			open();
+			// Scroll fluide vers la section explicative
+			if(section) {
+				section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			}
+		} else {
+			// Cas : Clic normal sur l'accordéon (Toggle)
+			if (content.classList.contains('open')) {
+				close();
+			} else {
+				open();
+			}
+		}
+	};
 });

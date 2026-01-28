@@ -110,6 +110,21 @@
         @media (hover: none) {
             .pricing-card a:hover { background-color: inherit; color: inherit; border-color: rgba(255, 255, 255, 0.1); }
         }
+		
+		/* Hébergement Accordéon */
+		#hosting-content {
+			transition: max-height 0.5s ease-out, opacity 0.4s ease-out;
+			max-height: 0; /* Fermé par défaut */
+			opacity: 0;
+			overflow: hidden;
+		}
+		#hosting-content.open {
+			max-height: 1000px; /* Suffisant pour tout afficher */
+			opacity: 1;
+		}
+		.rotate-chevron {
+			transform: rotate(180deg);
+		}
     </style>
 </head>
 <body class="selection:bg-accent-400/30 selection:text-white bg-dark-950">
@@ -394,7 +409,18 @@
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne clé en main</li>
                         <li class="flex items-center gap-2 group cursor-pointer" onclick="toggleHosting(true)">
                             <i class="ph-bold ph-info text-slate-500 group-hover:text-accent-400 transition-colors"></i>
-                            <span class="text-slate-200">Hébergement OVH : <br><strong class="text-accent-400 text-xs">+ 7.79€/an</strong> (1ère année offerte)</span>
+                            <li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
+							  <i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-accent-400"></i>
+							  <span class="text-slate-200">
+								Hébergement OVH<br>
+								<strong class="text-accent-400 text-xs">
+								  14,26€ (hébergement) + 7,79€/an (domaine)
+								</strong>
+								<span class="block text-xs text-slate-400">
+								  1ère année offerte
+								</span>
+							  </span>
+							</li>
                         </li>
                     </ul>
                     <a href="#contact" onclick="selectOffer('Essentiel', 900)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-colors font-medium relative z-10">Choisir</a>
@@ -413,7 +439,16 @@
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne et configuration technique</li>
                         <li class="flex items-center gap-2 group cursor-pointer" onclick="toggleHosting(true)">
                             <i class="ph-bold ph-info text-slate-500 group-hover:text-accent-400 transition-colors"></i>
-                            <span class="text-slate-200">Hébergement OVH : <br><strong class="text-accent-400 text-xs">+ 7.79€/an</strong> (1ère année offerte)</span>
+							  <span class="text-slate-200">
+								Hébergement OVH<br>
+								<strong class="text-accent-400 text-xs">
+								  14,26€ (hébergement) + 7,79€/an (domaine)
+								</strong>
+								<span class="block text-xs text-slate-400">
+								  1ère année offerte
+								</span>
+							  </span>
+							</li>
                         </li>
                     </ul>
                     <a href="#contact" onclick="selectOffer('Vitrine', 1700)" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10">Choisir</a>
@@ -431,7 +466,16 @@
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Mise en ligne et configuration technique</li>
                         <li class="flex items-center gap-2 group cursor-pointer" onclick="toggleHosting(true)">
                             <i class="ph-bold ph-info text-slate-500 group-hover:text-purple-400 transition-colors"></i>
-                             <span class="text-slate-200">Hébergement OVH : <br><strong class="text-purple-400 text-xs">+ ~47€/an</strong> (Performance)</span>
+							  <span class="text-slate-200">
+								Hébergement OVH<br>
+								<strong class="text-accent-400 text-xs">
+								  47€ (hébergement) + 7,79€/an (domaine)
+								</strong>
+								<span class="block text-xs text-slate-400">
+								  1ère année offerte
+								</span>
+							  </span>
+							</li>
                         </li>
                     </ul>
                     <a href="#contact" onclick="selectOffer('Premium', 2500)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10">Choisir</a>
