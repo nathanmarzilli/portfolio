@@ -6,15 +6,12 @@
     <title>Nathan Marzilli | Expert Web & Ingénieur - France / Suisse</title>
     <meta name="description" content="Ingénieur développeur web (14 ans d'expérience). Création de sites sur-mesure entre Évian et Lausanne.">
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 
-    <!-- Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <script>
@@ -49,10 +46,10 @@
                             '0%': { transform: 'translateX(-50%) scale(0)', opacity: 0 },
                             '100%': { transform: 'translateX(-50%) scale(1)', opacity: 1 }
                         },
-						fadeUp: {
-							'0%': { transform: 'translateY(10px)', opacity: 0 },
-							'100%': { transform: 'translateY(0)', opacity: 1 }
-						}
+                        fadeUp: {
+                            '0%': { transform: 'translateY(10px)', opacity: 0 },
+                            '100%': { transform: 'translateY(0)', opacity: 1 }
+                        }
                     }
                 }
             }
@@ -70,10 +67,7 @@
         
         .text-gradient-accent { background: linear-gradient(135deg, #2DD4BF 0%, #3B82F6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* Effet "Wow" Interactif */
-        .interactive-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .interactive-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .interactive-hover:hover {
             transform: translateY(-3px) scale(1.02);
             box-shadow: 0 10px 30px -10px rgba(45, 212, 191, 0.2);
@@ -81,114 +75,76 @@
             background: rgba(255, 255, 255, 0.08);
         }
 
-        /* Toggle Switch Custom */
-        .toggle-checkbox:checked { right: 0; border-color: #2DD4BF; }
-        .toggle-checkbox:checked + .toggle-label { background-color: #2DD4BF; }
-        
-        /* Styles pour les sélections (Boutons formulaire) */
-        .selected-option {
-            background-color: #2DD4BF !important;
-            color: #020617 !important;
-            border-color: #2DD4BF !important;
-            font-weight: bold;
-            transform: scale(1.05);
-        }
-
-        /* Styles spécifiques pour le Pack Sélectionné (GOLD) */
+        /* --- STYLES SELECTION PACKS --- */
         .gold-selected-card {
-            border-color: #FBBF24 !important; /* Gold 400 */
+            border-color: #FBBF24 !important;
             box-shadow: 0 0 30px rgba(251, 191, 36, 0.15) !important;
             background: linear-gradient(to bottom right, rgba(251, 191, 36, 0.05), rgba(30, 41, 59, 0.4)) !important;
             transform: translateY(-5px) scale(1.02);
+            z-index: 10;
         }
         
-        /* Style spécifique pour Sérénité (Bleu) quand sélectionné */
         .serenity-selected-card {
-            border-color: #60A5FA !important; /* Blue 400 */
+            border-color: #60A5FA !important;
             box-shadow: 0 0 30px rgba(96, 165, 250, 0.15) !important;
             background: linear-gradient(to bottom right, rgba(96, 165, 250, 0.1), rgba(30, 41, 59, 0.5)) !important;
             transform: translateY(-3px) scale(1.01);
         }
 
-        /* Styles Mobile Active pour les Projets (Scroll) */
-        .mobile-active .iframe-overlay {
-             backdrop-filter: blur(0) !important;
-             background-color: transparent !important;
+        /* Styles boutons radio formulaire */
+        .pack-radio-label {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .mobile-active .project-iframe {
-            filter: grayscale(0) !important;
-        }
-        .mobile-active .hint-overlay {
-            opacity: 0 !important;
+        .pack-radio-input:checked + .pack-radio-label {
+            background-color: #2DD4BF;
+            color: #020617;
+            border-color: #2DD4BF;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
         }
 
-        /* Form styling extras */
-        .form-checkbox:checked {
-            background-color: #2DD4BF;
-            border-color: #2DD4BF;
-        }
+        .mobile-active .iframe-overlay { backdrop-filter: blur(0) !important; background-color: transparent !important; }
+        .mobile-active .project-iframe { filter: grayscale(0) !important; }
+        .mobile-active .hint-overlay { opacity: 0 !important; }
+
         .form-section-title {
-            color: #2DD4BF;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            color: #2DD4BF; font-size: 0.8rem; text-transform: uppercase;
+            letter-spacing: 0.05em; font-weight: 700; margin-bottom: 0.5rem;
+            display: flex; align-items: center; gap: 0.5rem;
         }
         
-        /* Correction Bug Date Hover */
-        .date-btn:hover {
-            border-color: #2DD4BF;
-        }
+        .date-btn:hover { border-color: #2DD4BF; }
         
-        /* Mobile Premium Button Fix: Prevent Stuck Hover */
         @media (hover: none) {
-            .pricing-card a:hover {
-                background-color: inherit;
-                color: inherit;
-                border-color: rgba(255, 255, 255, 0.1);
-            }
-            .pricing-card a.selected-option {
-                background-color: #2DD4BF !important;
-                color: #020617 !important;
-            }
+            .pricing-card a:hover { background-color: inherit; color: inherit; border-color: rgba(255, 255, 255, 0.1); }
         }
         
-        /* Hébergement Accordéon - Augmentation max-height pour mobile */
-        #hosting-content {
-            transition: max-height 0.5s ease-out, opacity 0.4s ease-out;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-        }
-        #hosting-content.open {
-            max-height: 3000px; /* Augmenté pour éviter la coupure sur mobile */
-            opacity: 1;
-        }
-        .rotate-chevron {
-            transform: rotate(180deg);
-        }
+        #hosting-content { transition: max-height 0.5s ease-out, opacity 0.4s ease-out; max-height: 0; opacity: 0; overflow: hidden; }
+        #hosting-content.open { max-height: 3000px; opacity: 1; }
+        .rotate-chevron { transform: rotate(180deg); }
     </style>
 </head>
 <body class="selection:bg-accent-400/30 selection:text-white bg-dark-950">
 
-    <!-- Navigation -->
     <nav class="fixed w-full z-50 nav-glass transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 md:px-6 h-20 flex justify-between items-center">
             <a href="#" class="font-display font-bold text-lg tracking-wide text-white flex items-center gap-3 group shrink-0">
                 <div class="relative w-10 h-10 rounded-full overflow-hidden border border-white/10 group-hover:border-accent-400 transition-colors shrink-0">
                     <img src="images/profile.jpg" alt="Nathan" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=Nathan+Marzilli&background=0B1120&color=2DD4BF'">
                 </div>
-                <div class="leading-tight truncate max-w-[120px] md:max-w-none">
+                <div class="leading-tight">
                     Nathan Marzilli
                     <span class="block text-[10px] text-accent-400 font-normal uppercase tracking-wider">Artisan Web</span>
                 </div>
             </a>
 
             <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-400">
+                <button onclick="toggleAdminModal()" id="header-admin-btn" class="text-slate-600 hover:text-white transition-colors" title="Administration">
+                    <i class="ph-bold ph-shield text-lg" id="header-shield-icon"></i>
+                </button>
+
                 <a href="#about" class="hover:text-white transition-colors">L'Artisan</a>
                 <a href="#skills" class="hover:text-white transition-colors">Expertise</a>
                 <a href="#projects" class="hover:text-white transition-colors">Réalisations</a>
@@ -198,14 +154,14 @@
                 </a>
             </div>
 
-            <!-- Mobile Controls -->
             <div class="flex items-center gap-3 md:hidden z-50 shrink-0">
+                <button onclick="toggleAdminModal()" class="text-slate-600 p-1"><i class="ph-bold ph-shield"></i></button>
+
                 <a href="#contact" class="px-3 py-2 rounded-full bg-accent-400 text-dark-950 font-bold text-[10px] uppercase tracking-wider shadow-lg shadow-accent-400/20 whitespace-nowrap">Réserver</a>
                 <button id="mobile-menu-btn" class="text-white p-1"><i class="ph ph-list text-2xl"></i></button>
             </div>
         </div>
 
-        <!-- Mobile Menu -->
         <div id="mobile-menu" class="fixed inset-x-0 top-[80px] h-[calc(100vh-80px)] bg-[#020617] transform translate-x-full transition-transform duration-500 md:hidden flex flex-col justify-start pt-12 items-center space-y-8 z-40 border-t border-white/5">
             <a href="#about" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">L'Artisan</a>
             <a href="#skills" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">Expertise</a>
@@ -214,7 +170,6 @@
         </div>
     </nav>
 
-    <!-- Hero -->
     <header class="min-h-screen flex items-center justify-center relative pt-20 overflow-hidden bg-dark-950">
         <div class="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob"></div>
         <div class="absolute top-20 right-10 w-72 h-72 bg-accent-400/10 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
@@ -248,7 +203,6 @@
         </div>
     </header>
 
-    <!-- About - Changement fond pour distinction -->
     <section id="about" class="pt-24 pb-12 relative bg-[#0B1120] border-t border-white/5">
         <div class="max-w-6xl mx-auto px-6">
             <div class="grid md:grid-cols-2 gap-16 items-start">
@@ -264,40 +218,44 @@
                             Je suis <strong>Nathan Marzilli</strong>. Fort de <strong>14 ans d'expérience</strong> dans le développement web, je suis <strong>Ingénieur Diplômé (CTI)</strong> en Informatique et Réseaux de Télécommunications.
                         </p>
                         <p class="mt-4">
-                            Après avoir exercé dans de très grands groupes internationaux, j'ai choisi de mettre cette rigueur et ce savoir-faire technique au service de vos projets. Avec moi, vous n'achetez pas seulement un site, mais la tranquillité d'esprit d'un travail professionnel, fiable et durable.
+                            Après avoir exercé dans de très grands groupes internationaux, j'ai choisi de mettre cette rigueur et ce savoir-faire technique au service de vos projets.
                         </p>
                     </div>
 
-                    <!-- Badges avec effet "Wow" -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 interactive-hover cursor-default">
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <div class="about-badge cursor-pointer flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 interactive-hover" data-about="diplome">
                             <i class="ph-duotone ph-student text-2xl text-orange-400"></i>
                             <div>
                                 <div class="text-white font-bold text-sm">Diplômé CTI</div>
                                 <div class="text-xs text-slate-500">Ingénieur Informatique</div>
                             </div>
                         </div>
-                        <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 interactive-hover cursor-default">
+                        <div class="about-badge cursor-pointer flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 interactive-hover" data-about="expert">
                             <i class="ph-duotone ph-briefcase text-2xl text-pink-400"></i>
                             <div>
                                 <div class="text-white font-bold text-sm">Expert</div>
                                 <div class="text-xs text-slate-500">14 ans d'expérience</div>
                             </div>
                         </div>
-                        <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 interactive-hover cursor-default">
+                        <div class="about-badge cursor-pointer flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 interactive-hover" data-about="comptes">
                             <i class="ph-duotone ph-buildings text-2xl text-purple-400"></i>
                             <div>
                                 <div class="text-white font-bold text-sm">Grands Comptes</div>
-                                <div class="text-xs text-slate-500">Expérience Corporate</div>
+                                <div class="text-xs text-slate-500">EDF & ELCA</div>
                             </div>
                         </div>
-                        <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 interactive-hover cursor-default">
+                        <div class="about-badge cursor-pointer flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 interactive-hover" data-about="partenaire">
                             <i class="ph-duotone ph-handshake text-2xl text-emerald-400"></i>
                             <div>
                                 <div class="text-white font-bold text-sm">Partenaire</div>
                                 <div class="text-xs text-slate-500">Pro & Fiable</div>
                             </div>
                         </div>
+                    </div>
+
+                    <div id="about-desc-box" class="min-h-[80px] p-4 rounded-xl bg-gradient-to-br from-dark-950 to-dark-900 border border-white/10 relative overflow-hidden transition-all duration-300 opacity-0 transform translate-y-4">
+                         <h4 id="about-title" class="text-accent-400 font-bold text-sm mb-1">Cliquez sur un badge...</h4>
+                         <p id="about-text" class="text-slate-400 text-xs leading-relaxed">Pour découvrir le détail de mon parcours.</p>
                     </div>
                 </div>
 
@@ -312,11 +270,10 @@
                             <strong>Mardi soir :</strong> Livraison de la première version.<br>
                             <strong>Mercredi :</strong> Vos retours et ajustements.<br>
                             <strong>Jeudi :</strong> Finitions et mise en ligne.<br><br>
-                            Un processus rodé pour garantir qualité et satisfaction, sans perte de temps.
+                            Un processus rodé pour garantir qualité et satisfaction.
                         </p>
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-accent-400 flex items-center justify-center text-dark-950 font-bold 
-                                transform transition-transform duration-300 hover:scale-110 hover:rotate-3">N</div>
+                            <div class="w-10 h-10 rounded-full bg-accent-400 flex items-center justify-center text-dark-950 font-bold transform transition-transform duration-300 hover:scale-110 hover:rotate-3">N</div>
                             <div class="text-sm font-medium text-white">Nathan M.</div>
                         </div>
                     </div>
@@ -325,123 +282,118 @@
         </div>
     </section>
 
-    <!-- Technologies & Expertise - Fond différent -->
     <section id="skills" class="py-12 bg-dark-850 border-y border-white/5">
-		<div class="max-w-6xl mx-auto px-6">
-			<div class="glass-card p-8 rounded-3xl border border-white/5 bg-white/5">
-				<div class="grid md:grid-cols-2 gap-12">
-					
-					<div class="reveal">
-						<h3 class="text-xl font-display font-bold text-white mb-6 flex items-center gap-2">
-							<i class="ph-duotone ph-code text-accent-400"></i> Technologies Maîtrisées
-						</h3>
-						
-						<div class="grid grid-cols-3 sm:grid-cols-4 gap-4 mb-8">
-							<div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="html">
-								<i class="ph-bold ph-file-html text-3xl text-orange-500 mb-2 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
-								<span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">HTML5</span>
-							</div>
-							<div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="css">
-								<i class="ph-bold ph-file-css text-3xl text-blue-500 mb-2 group-hover:scale-110 group-hover:-rotate-6 transition-transform"></i>
-								<span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">CSS3</span>
-							</div>
-							<div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="js">
-								<i class="ph-bold ph-file-js text-3xl text-yellow-400 mb-2 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
-								<span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">JS (ES6+)</span>
-							</div>
-							<div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="tailwind">
-								<i class="ph-bold ph-paint-brush-broad text-3xl text-cyan-400 mb-2 group-hover:scale-110 group-hover:-rotate-6 transition-transform"></i>
-								<span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">Tailwind</span>
-							</div>
-							<div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="git">
-								<i class="ph-bold ph-git-branch text-3xl text-red-500 mb-2 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
-								<span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">Git</span>
-							</div>
-							<div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="responsive">
-								<i class="ph-bold ph-device-mobile text-3xl text-purple-400 mb-2 group-hover:scale-110 group-hover:-rotate-6 transition-transform"></i>
-								<span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">Mobile</span>
-							</div>
-							<div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="firebase">
-								<i class="ph-bold ph-fire text-3xl text-orange-400 mb-2 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
-								<span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">Firebase</span>
-							</div>
-							<div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="seo">
-								<i class="ph-bold ph-magnifying-glass text-3xl text-green-500 mb-2 group-hover:scale-110 group-hover:-rotate-6 transition-transform"></i>
-								<span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">SEO</span>
-							</div>
-						</div>
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="glass-card p-8 rounded-3xl border border-white/5 bg-white/5">
+                <div class="grid md:grid-cols-2 gap-12">
+                    
+                    <div class="reveal">
+                        <h3 class="text-xl font-display font-bold text-white mb-6 flex items-center gap-2">
+                            <i class="ph-duotone ph-code text-accent-400"></i> Technologies Maîtrisées
+                        </h3>
+                        
+                        <div class="grid grid-cols-3 sm:grid-cols-4 gap-4 mb-8">
+                            <div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="html">
+                                <i class="ph-bold ph-file-html text-3xl text-orange-500 mb-2 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                <span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">HTML5</span>
+                            </div>
+                            <div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="css">
+                                <i class="ph-bold ph-file-css text-3xl text-blue-500 mb-2 group-hover:scale-110 group-hover:-rotate-6 transition-transform"></i>
+                                <span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">CSS3</span>
+                            </div>
+                            <div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="js">
+                                <i class="ph-bold ph-file-js text-3xl text-yellow-400 mb-2 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                <span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">JS</span>
+                            </div>
+                            <div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="tailwind">
+                                <i class="ph-bold ph-paint-brush-broad text-3xl text-cyan-400 mb-2 group-hover:scale-110 group-hover:-rotate-6 transition-transform"></i>
+                                <span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">Tailwind</span>
+                            </div>
+                            <div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="git">
+                                <i class="ph-bold ph-git-branch text-3xl text-red-500 mb-2 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                <span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">Git</span>
+                            </div>
+                            <div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="responsive">
+                                <i class="ph-bold ph-device-mobile text-3xl text-purple-400 mb-2 group-hover:scale-110 group-hover:-rotate-6 transition-transform"></i>
+                                <span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">Mobile</span>
+                            </div>
+                            <div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="firebase">
+                                <i class="ph-bold ph-fire text-3xl text-orange-400 mb-2 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                <span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">Firebase</span>
+                            </div>
+                            <div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="seo">
+                                <i class="ph-bold ph-magnifying-glass text-3xl text-green-500 mb-2 group-hover:scale-110 group-hover:-rotate-6 transition-transform"></i>
+                                <span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">SEO</span>
+                            </div>
+                        </div>
 
-						<div id="tech-description-box" class="min-h-[100px] p-4 rounded-xl bg-gradient-to-br from-dark-950 to-dark-900 border border-white/10 relative overflow-hidden transition-all duration-300 opacity-0 transform translate-y-4">
-							<div class="absolute top-0 right-0 p-4 opacity-10">
-								<i id="tech-bg-icon" class="ph-duotone ph-code text-6xl text-white"></i>
-							</div>
-							<h4 id="tech-title" class="text-accent-400 font-bold text-lg mb-2 relative z-10">Sélectionnez une techno</h4>
-							<p id="tech-text" class="text-slate-400 text-sm relative z-10 leading-relaxed">
-								Cliquez sur une icône ci-dessus pour découvrir mon niveau d'expertise et l'usage que j'en fais pour vos projets.
-							</p>
-						</div>
-					</div>
+                        <div id="tech-description-box" class="min-h-[100px] p-4 rounded-xl bg-gradient-to-br from-dark-950 to-dark-900 border border-white/10 relative overflow-hidden transition-all duration-300 opacity-0 transform translate-y-4">
+                            <div class="absolute top-0 right-0 p-4 opacity-10">
+                                <i id="tech-bg-icon" class="ph-duotone ph-code text-6xl text-white"></i>
+                            </div>
+                            <h4 id="tech-title" class="text-accent-400 font-bold text-lg mb-2 relative z-10">Sélectionnez une techno</h4>
+                            <p id="tech-text" class="text-slate-400 text-sm relative z-10 leading-relaxed">
+                                Cliquez sur une icône ci-dessus pour découvrir mon niveau d'expertise.
+                            </p>
+                        </div>
+                    </div>
 
-					<div class="reveal delay-100">
-						<h3 class="text-xl font-display font-bold text-white mb-6 flex items-center gap-2">
-							<i class="ph-duotone ph-translate text-accent-400"></i> Langues parlées
-						</h3>
-						<p class="text-sm text-slate-400 mb-6">
-							La barrière de la langue ne doit pas être un frein. Je peux créer votre site en plusieurs langues et communiquer avec vos équipes internationales.
-						</p>
-						<div class="space-y-4">
-							<div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
-								<div class="flex items-center gap-3">
-									<span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">FR</span>
-									<span class="text-sm font-bold text-white">Français</span>
-								</div>
-								<span class="text-xs text-accent-400 font-medium bg-accent-400/10 px-2 py-1 rounded shrink-0 text-right">Langue maternelle</span>
-							</div>
-							<div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
-								<div class="flex items-center gap-3">
-									<span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">IT</span>
-									<span class="text-sm font-bold text-white">Italien</span>
-								</div>
-								<span class="text-xs text-green-400 font-medium bg-green-400/10 px-2 py-1 rounded shrink-0 text-right">Courant</span>
-							</div>
-							<div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
-								<div class="flex items-center gap-3">
-									<span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">EN</span>
-									<span class="text-sm font-bold text-white">Anglais</span>
-								</div>
-								<span class="text-xs text-blue-400 font-medium bg-blue-400/10 px-2 py-1 rounded shrink-0 text-right">C1 - Avancé</span>
-							</div>
-							<div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
-								<div class="flex items-center gap-3">
-									<span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">JP</span>
-									<span class="text-sm font-bold text-white">Japonais</span>
-								</div>
-								<span class="text-xs text-slate-400 font-medium bg-slate-400/10 px-2 py-1 rounded shrink-0 text-right">Notions</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
+                    <div class="reveal delay-100">
+                        <h3 class="text-xl font-display font-bold text-white mb-6 flex items-center gap-2">
+                            <i class="ph-duotone ph-translate text-accent-400"></i> Langues parlées
+                        </h3>
+                        <p class="text-sm text-slate-400 mb-6">
+                            La barrière de la langue ne doit pas être un frein.
+                        </p>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">FR</span>
+                                    <span class="text-sm font-bold text-white">Français</span>
+                                </div>
+                                <span class="text-xs text-accent-400 font-medium bg-accent-400/10 px-2 py-1 rounded shrink-0 text-right">Langue maternelle</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">IT</span>
+                                    <span class="text-sm font-bold text-white">Italien</span>
+                                </div>
+                                <span class="text-xs text-green-400 font-medium bg-green-400/10 px-2 py-1 rounded shrink-0 text-right">Courant</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">EN</span>
+                                    <span class="text-sm font-bold text-white">Anglais</span>
+                                </div>
+                                <span class="text-xs text-blue-400 font-medium bg-blue-400/10 px-2 py-1 rounded shrink-0 text-right">C1 - Avancé</span>
+                            </div>
+                             <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">JP</span>
+                                    <span class="text-sm font-bold text-white">Japonais</span>
+                                </div>
+                                <span class="text-xs text-slate-400 font-medium bg-slate-400/10 px-2 py-1 rounded shrink-0 text-right">Notions</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <!-- Projects - Fond très sombre pour contraste -->
     <section id="projects" class="py-24 relative overflow-hidden bg-dark-950">
         <div class="max-w-7xl mx-auto px-6">
             <div class="mb-16 reveal text-center">
                 <h2 class="font-display text-4xl font-bold text-white mb-4">Histoires de Réussite</h2>
                 <p class="text-slate-400 max-w-2xl mx-auto">
-                    Chaque site est une réponse unique à un besoin précis. Voici comment j'ai aidé mes clients.
+                    Chaque site est une réponse unique à un besoin précis.
                 </p>
             </div>
-
             <div id="projects-grid" class="flex flex-col gap-16">
-                <!-- Injection JS (Storytelling) -->
-            </div>
+                </div>
         </div>
     </section>
 
-    <!-- Services & Pricing - Fond bleu nuit très sombre -->
     <section id="services" class="py-24 border-t border-white/5 bg-[#0B1120]">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-16 reveal">
@@ -451,122 +403,55 @@
                 </p>
             </div>
 
-            <!-- Packs Grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-                <!-- Pack 1 -->
                 <div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-essentiel">
                     <h3 class="text-xl font-display font-bold text-white mb-2">L'Essentiel</h3>
                     <div class="text-3xl font-bold text-accent-400 mb-6">900€</div>
                     <ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site One-Page personnalisé</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne adapté à votre activité</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Optimisation mobile & performance</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Intégration des contenus fournis</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne clé en main</li>
                         <li class="flex items-center gap-2 group cursor-pointer" onclick="toggleHosting(true)">
                             <i class="ph-bold ph-info text-slate-500 group-hover:text-accent-400 transition-colors"></i>
-                            <span class="text-slate-200">Hébergement via OVH Cloud : <br><strong class="text-accent-400 border-b border-dashed border-accent-400/50">~1.20€ / mois</strong></span>
+                            <span class="text-slate-200">Hébergement OVH : <br><strong class="text-accent-400 text-xs">+ 7.79€/an</strong> (1ère année offerte)</span>
                         </li>
                     </ul>
-                    <a href="#contact" onclick="preselectOffer('Pack Essentiel')" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-colors font-medium relative z-10">Choisir</a>
+                    <a href="#contact" onclick="selectOffer('Essentiel')" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-colors font-medium relative z-10">Choisir</a>
                 </div>
 
-                <!-- Pack 2 -->
                 <div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover border-accent-400/30 bg-accent-400/5 relative overflow-visible pricing-card transition-all duration-300" id="card-vitrine">
                     <div class="absolute top-4 right-4 text-xs font-bold text-accent-400 bg-accent-400/10 px-2 py-1 rounded tag-populaire">POPULAIRE</div>
                     <h3 class="text-xl font-display font-bold text-white mb-2">Vitrine Artisan</h3>
                     <div class="text-3xl font-bold text-accent-400 mb-6">1 700€</div>
                     <ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site jusqu’à 5 pages personnalisé</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Option Site Multilingue incluse</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Galerie de réalisations pour mettre en valeur vos projets</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Formulaire de contact intégré</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne et responsive mobile & tablette</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne et configuration technique</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site jusqu’à 5 pages</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Option Multilingue incluse</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Galerie & Formulaire</li>
                          <li class="flex items-center gap-2 group cursor-pointer" onclick="toggleHosting(true)">
                             <i class="ph-bold ph-info text-slate-500 group-hover:text-accent-400 transition-colors"></i>
-                            <span class="text-slate-200">Hébergement via OVH Cloud : <br><strong class="text-accent-400 border-b border-dashed border-accent-400/50">~1.20€ / mois</strong></span>
+                            <span class="text-slate-200">Hébergement OVH : <br><strong class="text-accent-400 text-xs">+ 7.79€/an</strong> (1ère année offerte)</span>
                         </li>
                     </ul>
-                    <a href="#contact" onclick="preselectOffer('Pack Vitrine Artisan')" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10">Choisir</a>
+                    <a href="#contact" onclick="selectOffer('Vitrine')" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10">Choisir</a>
                 </div>
 
-                <!-- Pack 3 -->
                 <div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-premium">
                     <h3 class="text-xl font-display font-bold text-white mb-2">Premium</h3>
                     <div class="text-3xl font-bold text-purple-400 mb-6">2500€</div>
                     <ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Design 100% sur-mesure adapté à votre identité</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Blog ou section Actualités pour dynamiser votre contenu</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Intégration des avis Google pour renforcer la confiance</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Statistiques & suivi de performance pour mesurer vos résultats</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Site responsive mobile & tablette</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Mise en ligne et configuration technique</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Design 100% sur-mesure</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Blog / Actualités</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Avis Google intégrés</li>
                         <li class="flex items-center gap-2 group cursor-pointer" onclick="toggleHosting(true)">
                             <i class="ph-bold ph-info text-slate-500 group-hover:text-purple-400 transition-colors"></i>
-                            <span class="text-slate-200">Hébergement via OVH Cloud : <br><strong class="text-purple-400 border-b border-dashed border-purple-400/50">~4€ / mois</strong></span>
+                             <span class="text-slate-200">Hébergement OVH : <br><strong class="text-purple-400 text-xs">+ ~47€/an</strong> (Plus puissant)</span>
                         </li>
                     </ul>
-                    <a href="#contact" onclick="preselectOffer('Pack Premium')" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10">Choisir</a>
+                    <a href="#contact" onclick="selectOffer('Premium')" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10">Choisir</a>
                 </div>
             </div>
 
-            <!-- OVH Explanation Block (Accordion) -->
-            <div class="mb-16 reveal" id="hosting-section">
-                <div class="glass-card rounded-3xl border border-white/10 bg-dark-900/50 overflow-hidden">
-                    <!-- Header Accordion -->
-                    <div class="p-6 md:p-8 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors" onclick="toggleHosting()">
-                        <h3 class="text-xl font-display font-bold text-white flex items-center gap-2">
-                            <i class="ph-duotone ph-cloud text-accent-400"></i> Pourquoi payer l'hébergement à part ?
-                        </h3>
-                        <i id="hosting-chevron" class="ph-bold ph-caret-down text-white text-xl transition-transform duration-300"></i>
-                    </div>
-
-                    <!-- Content Accordion -->
-                    <div id="hosting-content">
-                        <div class="p-6 md:p-8 pt-0">
-                            <p class="text-slate-400 text-sm mb-6 max-w-3xl">
-                                Pour que vous soyez <strong>100% propriétaire</strong> de votre site. Je ne prends aucune marge là-dessus. OVH Cloud est le leader français, sécurisé et fiable. C'est un abonnement que vous payez directement à l'hébergeur pour maintenir votre site en ligne et conserver votre nom de domaine.
-                            </p>
-                            
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <!-- Pack Starter -->
-                                <div class="p-4 rounded-xl bg-white/5 border border-white/5">
-                                    <div class="flex justify-between items-start mb-2">
-                                        <h4 class="font-bold text-white text-sm">Pour packs "Essentiel" & "Vitrine"</h4>
-                                        <span class="text-accent-400 font-bold text-sm">~14.26€ <span class="text-xs font-normal text-slate-400">/an</span></span>
-                                    </div>
-                                    <p class="text-xs text-slate-500 mb-3">Offre OVH "Starter" (Idéal vitrine)</p>
-                                    <ul class="text-xs text-slate-300 space-y-1">
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 1 Nom de domaine offert la 1ère année</li>
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 1 Go d'espace disque</li>
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 2 adresses e-mail professionnelles</li>
-                                    </ul>
-                                </div>
-
-                                <!-- Pack Perso -->
-                                <div class="p-4 rounded-xl bg-white/5 border border-white/5">
-                                    <div class="flex justify-between items-start mb-2">
-                                        <h4 class="font-bold text-white text-sm">Pour pack "Premium"</h4>
-                                        <span class="text-purple-400 font-bold text-sm">~47.38€ <span class="text-xs font-normal text-slate-400">/an</span></span>
-                                    </div>
-                                    <p class="text-xs text-slate-500 mb-3">Offre OVH "Perso" (Plus de puissance)</p>
-                                    <ul class="text-xs text-slate-300 space-y-1">
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 1 Nom de domaine offert la 1ère année</li>
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 100 Go d'espace disque</li>
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 10 adresses e-mail professionnelles</li>
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Base de données & Modules en 1-clic</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Maintenance & One-Shot -->
             <div class="grid md:grid-cols-2 gap-8 reveal">
-                <!-- Pack Sérénité -->
                 <div class="glass-card p-8 rounded-3xl border border-blue-500/20 bg-blue-500/5 interactive-hover flex flex-col justify-between transition-all duration-300" id="card-serenite">
                     <div>
                         <div class="flex items-center gap-3 mb-4">
@@ -574,188 +459,188 @@
                             <h3 class="text-xl font-bold text-white">Pack Sérénité</h3>
                         </div>
                         <p class="text-slate-400 text-sm mb-4">
-                            Dormez tranquille. Mises à jour de sécurité, sauvegardes et <strong>1 intervention simple incluse par mois</strong> (changement photo, texte, horaire).
+                            Dormez tranquille. Mises à jour de sécurité, sauvegardes et <strong>1 intervention simple incluse par mois</strong>.
                         </p>
                     </div>
                     <div class="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
                         <span class="text-2xl font-bold text-blue-400">600€ <span class="text-sm text-slate-500 font-normal">/an</span></span>
-                        <button onclick="scrollToContactWithMaintenance()" class="px-4 py-2 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-bold uppercase hover:bg-blue-500 hover:text-white transition-all">Ajouter au devis</button>
+                        <button onclick="toggleSerenityOption()" class="px-4 py-2 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-bold uppercase hover:bg-blue-500 hover:text-white transition-all">Ajouter au devis</button>
                     </div>
                 </div>
 
-                <!-- Interventions Ponctuelles -->
                 <div class="glass-card p-8 rounded-3xl interactive-hover">
-                    <h3 class="text-lg font-bold text-white mb-4">Interventions Ponctuelles</h3>
-                    <p class="text-slate-500 text-xs mb-6">Sans pack maintenance, voici les tarifs à la carte :</p>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center border-b border-white/5 pb-2">
-                            <span class="text-sm text-slate-300">Simple (Texte/Photo)</span>
-                            <span class="font-bold text-white">100€</span>
-                        </div>
-                        <div class="flex justify-between items-center border-b border-white/5 pb-2">
-                            <span class="text-sm text-slate-300">Complexe (Mise en page)</span>
-                            <span class="font-bold text-white">200€</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-slate-300">Très Complexe (Fonctionnalité)</span>
-                            <span class="font-bold text-white">300€</span>
-                        </div>
-                    </div>
+                    <h3 class="text-lg font-bold text-white mb-4">Transparence Hébergement</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        Vous êtes propriétaire de votre nom de domaine. Vous payez l'hébergement directement à OVH Cloud (Leader Français).
+                        <br><br>
+                        <strong class="text-accent-400">Pack Starter :</strong> 7.79€ HT / an (1ère année offerte).
+                        <br>
+                        <strong class="text-purple-400">Pack Perso :</strong> ~47€ HT / an.
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact - Fond très sombre -->
     <footer id="contact" class="py-20 border-t border-white/5 bg-dark-950 relative overflow-hidden">
-		<div class="max-w-6xl mx-auto px-6">
-			<div class="grid lg:grid-cols-2 gap-16">
-				<div class="w-full">
-					<h3 class="font-display text-4xl font-bold text-white mb-4">Parlons Concret</h3>
-					<p class="text-slate-400 mb-8 max-w-full break-words whitespace-normal">
-						Sélectionnez un créneau ci-contre. Je vous appellerai personnellement pour comprendre votre besoin.
-					</p>
-					<div class="space-y-4 mb-8 w-full">
-						<a href="mailto:nathan.marzilli@gmail.com" class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors interactive-hover w-full overflow-hidden">
-							<i class="ph-fill ph-envelope-simple text-2xl text-accent-400 shrink-0"></i>
-							<span class="text-slate-300 truncate text-sm sm:text-base">nathan.marzilli@gmail.com</span>
-						</a>
-						<div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 interactive-hover w-full">
-							<i class="ph-fill ph-map-pin text-2xl text-accent-400 shrink-0"></i>
-							<span class="text-slate-300 text-sm sm:text-base">74500 Évian-les-Bains / Lausanne</span>
-						</div>
-					</div>
-				</div>
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16">
+                <div class="w-full">
+                    <h3 class="font-display text-4xl font-bold text-white mb-4">Parlons Concret</h3>
+                    <p class="text-slate-400 mb-8 max-w-full break-words whitespace-normal">
+                        Sélectionnez un créneau ci-contre. Je vous appellerai pour comprendre votre besoin.
+                    </p>
+                    <div class="space-y-4 mb-8 w-full">
+                        <a href="mailto:nathan.marzilli@gmail.com" class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors interactive-hover w-full overflow-hidden">
+                            <i class="ph-fill ph-envelope-simple text-2xl text-accent-400 shrink-0"></i>
+                            <span class="text-slate-300 truncate text-sm sm:text-base">nathan.marzilli@gmail.com</span>
+                        </a>
+                        <div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 interactive-hover w-full">
+                            <i class="ph-fill ph-map-pin text-2xl text-accent-400 shrink-0"></i>
+                            <span class="text-slate-300 text-sm sm:text-base">74500 Évian-les-Bains / Lausanne</span>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="glass-card p-6 md:p-8 rounded-3xl border border-white/10 w-full">
-					<form id="booking-form" class="space-y-6 relative">
-						<div id="booking-success" class="hidden absolute inset-0 z-20 bg-dark-900/95 backdrop-blur-md flex-col items-center justify-center text-center p-6 rounded-3xl animate-fade-up">
-							<div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
-								<i class="ph-fill ph-check-circle text-4xl text-green-500"></i>
-							</div>
-							<h4 class="text-xl font-bold text-white mb-2">Demande reçue !</h4>
-							<p class="text-slate-400 text-sm mb-6">Je vous recontacterai sur le créneau choisi pour valider le rendez-vous.</p>
-							<button type="button" onclick="location.reload()" class="px-6 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white text-sm transition-colors">Nouvelle demande</button>
-						</div>
+                <div class="glass-card p-6 md:p-8 rounded-3xl border border-white/10 w-full">
+                    <form id="booking-form" class="space-y-6 relative">
+                        <div id="booking-success" class="hidden absolute inset-0 z-20 bg-dark-900/95 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 rounded-3xl animate-fade-up">
+                            <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
+                                <i class="ph-fill ph-check-circle text-4xl text-green-500"></i>
+                            </div>
+                            <h4 class="text-xl font-bold text-white mb-2">Demande reçue !</h4>
+                            <p class="text-slate-400 text-sm mb-6">Je vous recontacterai rapidement.</p>
+                            <button type="button" onclick="location.reload()" class="px-6 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white text-sm transition-colors">Nouvelle demande</button>
+                        </div>
 
-						<div class="space-y-4">
-							<div class="form-section-title"><i class="ph-bold ph-calendar-blank"></i> Choisir un moment</div>
-							
-							<div class="flex space-x-3 overflow-x-auto pb-2 scrollbar-hide" id="calendar-days">
-								<div class="animate-pulse flex gap-2">
-									<div class="w-16 h-20 bg-white/5 rounded-xl"></div>
-									<div class="w-16 h-20 bg-white/5 rounded-xl"></div>
-									<div class="w-16 h-20 bg-white/5 rounded-xl"></div>
-								</div>
-							</div>
+                        <div class="space-y-4">
+                            <div class="form-section-title"><i class="ph-bold ph-calendar-blank"></i> Choisir un moment</div>
+                            <div class="flex space-x-3 overflow-x-auto pb-2 scrollbar-hide" id="calendar-days">
+                                </div>
+                            <div id="calendar-slots" class="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                                <div class="text-xs text-slate-500 italic col-span-3">Sélectionnez un jour...</div>
+                            </div>
+                            <input type="hidden" id="selected-date" name="date" required>
+                            <input type="hidden" id="selected-time" name="time" required>
+                        </div>
 
-							<div id="calendar-slots" class="grid grid-cols-3 sm:grid-cols-4 gap-3">
-								<div class="text-xs text-slate-500 italic col-span-3">Sélectionnez un jour ci-dessus...</div>
-							</div>
-							
-							<input type="hidden" id="selected-date" name="date" required>
-							<input type="hidden" id="selected-time" name="time" required>
-						</div>
+                        <div class="space-y-4 pt-4 border-t border-white/5">
+                            <div class="form-section-title"><i class="ph-bold ph-user"></i> Vos Coordonnées</div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-xs text-slate-400 uppercase font-bold ml-1">Nom complet</label>
+                                    <input type="text" id="client-name" required placeholder="Votre nom" 
+                                        class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-xs text-slate-400 uppercase font-bold ml-1">Email</label>
+                                    <input type="email" id="client-email" required placeholder="votre@email.com" 
+                                        class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-1">
+                                <label class="text-xs text-slate-400 uppercase font-bold ml-1">Téléphone</label>
+                                <input type="tel" id="client-phone" required placeholder="06 12 34 56 78" 
+                                    class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
+                            </div>
 
-						<div class="space-y-4 pt-4 border-t border-white/5">
-							<div class="form-section-title"><i class="ph-bold ph-user"></i> Vos Coordonnées</div>
-							
-							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-								<div class="space-y-1">
-									<label class="text-xs text-slate-400 uppercase font-bold ml-1">Nom complet</label>
-									<input type="text" id="client-name" required placeholder="John Doe" 
-										class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
-								</div>
-								<div class="space-y-1">
-									<label class="text-xs text-slate-400 uppercase font-bold ml-1">Email</label>
-									<input type="email" id="client-email" required placeholder="john@example.com" 
-										class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
-								</div>
-							</div>
-							
-							<div class="space-y-1">
-								<label class="text-xs text-slate-400 uppercase font-bold ml-1">Téléphone</label>
-								<input type="tel" id="client-phone" required placeholder="06 12 34 56 78" 
-									class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
-							</div>
+                            <div class="space-y-2 pt-2">
+                                <label class="text-xs text-slate-400 uppercase font-bold ml-1">Pack Sélectionné</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div class="relative">
+                                        <input type="radio" name="project_pack" id="pack-essentiel" value="Essentiel" class="hidden pack-radio-input" onchange="updateCardSelection('Essentiel')">
+                                        <label for="pack-essentiel" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">
+                                            Essentiel
+                                        </label>
+                                    </div>
+                                    <div class="relative">
+                                        <input type="radio" name="project_pack" id="pack-vitrine" value="Vitrine" class="hidden pack-radio-input" checked onchange="updateCardSelection('Vitrine')">
+                                        <label for="pack-vitrine" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">
+                                            Vitrine
+                                        </label>
+                                    </div>
+                                    <div class="relative">
+                                        <input type="radio" name="project_pack" id="pack-premium" value="Premium" class="hidden pack-radio-input" onchange="updateCardSelection('Premium')">
+                                        <label for="pack-premium" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">
+                                            Premium
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
 
-							<div class="space-y-1">
-								<label class="text-xs text-slate-400 uppercase font-bold ml-1">Type de projet</label>
-								<select id="project-type" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm appearance-none">
-									<option value="Pack Essentiel">Pack Essentiel (900€)</option>
-									<option value="Pack Vitrine">Pack Vitrine (1700€)</option>
-									<option value="Pack Premium">Pack Premium (2500€)</option>
-									<option value="Autre">Autre / Sur mesure</option>
-								</select>
-							</div>
-						</div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-blue-500/5 border border-blue-500/20">
+                                <div class="flex items-center gap-2">
+                                    <input type="checkbox" id="check-serenite" class="w-4 h-4 rounded text-blue-500 focus:ring-blue-500 bg-dark-950 border-white/20">
+                                    <label for="check-serenite" class="text-sm text-slate-300 font-medium cursor-pointer select-none">Ajouter Pack Sérénité</label>
+                                </div>
+                                <span class="text-xs text-blue-400 font-bold">+600€/an</span>
+                            </div>
 
-						<button type="submit" id="submit-booking" class="w-full py-4 rounded-xl bg-gradient-to-r from-accent-500 to-blue-600 text-white font-bold text-lg shadow-lg hover:shadow-accent-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed">
-							<span>Confirmer le rendez-vous</span>
-							<i class="ph-bold ph-paper-plane-right"></i>
-						</button>
-						<p class="text-[10px] text-slate-500 text-center">En cliquant, vous acceptez d'être recontacté.</p>
-					</form>
-				</div>
-			</div>
+                            <div class="space-y-1">
+                                <label class="text-xs text-slate-400 uppercase font-bold ml-1">Description de la demande</label>
+                                <textarea id="client-desc" rows="3" placeholder="Parlez-moi un peu de votre projet..." class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm resize-none"></textarea>
+                            </div>
+                        </div>
 
-			<div class="flex flex-col md:flex-row justify-between items-center mt-16 pt-8 border-t border-white/5 gap-4">
-				<div class="text-slate-600 text-sm">© <span id="year"></span> Nathan Marzilli.</div>
-				<button onclick="toggleAdminModal()" class="text-slate-700 hover:text-accent-400 transition-colors text-xs flex items-center gap-2 uppercase tracking-widest font-bold">
-					<i class="ph-bold ph-lock-key"></i> Administration
-				</button>
-			</div>
-		</div>
+                        <button type="submit" id="submit-booking" class="w-full py-4 rounded-xl bg-gradient-to-r from-accent-500 to-blue-600 text-white font-bold text-lg shadow-lg hover:shadow-accent-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span>Confirmer le rendez-vous</span>
+                            <i class="ph-bold ph-paper-plane-right"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
 
-		<div id="admin-modal" class="fixed inset-0 z-[100] bg-dark-950/90 backdrop-blur-xl hidden flex items-center justify-center p-4 transition-all duration-300 opacity-0">
-			<div class="glass-card w-full max-w-md p-8 rounded-3xl border border-white/10 bg-dark-900 shadow-2xl transform scale-95 transition-all duration-300" id="admin-content">
-				
-				<div class="flex justify-between items-center mb-8">
-					<h3 class="text-xl font-display font-bold text-white flex items-center gap-2">
-						<i class="ph-duotone ph-shield-check text-accent-400"></i> Espace Sécurisé
-					</h3>
-					<button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white transition-colors">
-						<i class="ph-bold ph-x text-xl"></i>
-					</button>
-				</div>
+            <div class="flex flex-col md:flex-row justify-between items-center mt-16 pt-8 border-t border-white/5 gap-4">
+                <div class="text-slate-600 text-sm">© <span id="year"></span> Nathan Marzilli.</div>
+                <button onclick="toggleAdminModal()" class="text-slate-700 hover:text-accent-400 transition-colors text-xs flex items-center gap-2 uppercase tracking-widest font-bold">
+                    <i class="ph-bold ph-lock-key"></i> Administration
+                </button>
+            </div>
+        </div>
 
-				<div id="admin-login-view" class="space-y-4">
-					<div class="space-y-2">
-						<label class="text-xs font-bold text-slate-400 uppercase">Identifiant</label>
-						<input type="text" id="admin-id" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors" placeholder="Identifiant...">
-					</div>
-					<div class="space-y-2">
-						<label class="text-xs font-bold text-slate-400 uppercase">Mot de passe</label>
-						<div class="relative">
-							<input type="password" id="admin-pass" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors pr-12" placeholder="••••••••">
-							<button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
-								<i id="eye-icon" class="ph-bold ph-eye"></i>
-							</button>
-						</div>
-					</div>
-					<div id="login-error" class="hidden text-red-400 text-xs font-bold flex items-center gap-2">
-						<i class="ph-bold ph-warning"></i> Identifiants incorrects
-					</div>
-					<button onclick="attemptLogin()" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 font-bold hover:bg-white transition-colors mt-2">
-						Accéder au tableau de bord
-					</button>
-				</div>
+        <div id="admin-modal" class="fixed inset-0 z-[100] bg-dark-950/90 backdrop-blur-xl hidden flex items-center justify-center p-4 transition-all duration-300 opacity-0">
+            <div class="glass-card w-full max-w-md p-8 rounded-3xl border border-white/10 bg-dark-900 shadow-2xl transform scale-95 transition-all duration-300" id="admin-content">
+                <div class="flex justify-between items-center mb-8">
+                    <h3 class="text-xl font-display font-bold text-white flex items-center gap-2">
+                        <i class="ph-duotone ph-shield-check text-accent-400"></i> Espace Sécurisé
+                    </h3>
+                    <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white transition-colors">
+                        <i class="ph-bold ph-x text-xl"></i>
+                    </button>
+                </div>
 
-				<div id="admin-dashboard-view" class="hidden space-y-4">
-					<p class="text-sm text-slate-400 mb-4">Bienvenue, Nathan. Que souhaitez-vous créer ?</p>
-					<div class="grid gap-3" id="admin-actions-grid"></div>
-					<div class="pt-4 border-t border-white/5 mt-4">
-						<!--<button onclick="toggleAdminModal()" class="w-full py-2 rounded-lg border border-white/10 text-slate-400 text-xs hover:text-white hover:bg-white/5 transition-colors">
-							Déconnexion
-						</button>-->
-					</div>
-				</div>
+                <div id="admin-login-view" class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-400 uppercase">Identifiant</label>
+                        <input type="text" id="admin-id" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors" placeholder="ID">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-400 uppercase">Mot de passe</label>
+                        <div class="relative">
+                            <input type="password" id="admin-pass" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors pr-12" placeholder="••••••••">
+                            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
+                                <i id="eye-icon" class="ph-bold ph-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="login-error" class="hidden text-red-400 text-xs font-bold flex items-center gap-2">
+                        <i class="ph-bold ph-warning"></i> Erreur connexion
+                    </div>
+                    <button onclick="attemptLogin()" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 font-bold hover:bg-white transition-colors mt-2">
+                        Connexion
+                    </button>
+                </div>
 
-			</div>
-		</div>
-	</footer>
+                <div id="admin-dashboard-view" class="hidden space-y-4">
+                    <p class="text-sm text-slate-400 mb-4">Bienvenue, Nathan.</p>
+                    <div class="grid gap-3" id="admin-actions-grid"></div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-    <!-- Fichiers JS externes -->
     <script src="availability.js"></script>
     <script type="module" src="script.js"></script>
 </body>

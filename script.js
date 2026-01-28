@@ -17,30 +17,29 @@ const firebaseConfig = {
     appId: "1:61408006418:web:8a448e8ca60ec77bf523cb"
 };
 
-// Initialisation de Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app); // Base de données pour les réservations
+const db = getFirestore(app);
 
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==============================================
-    // 2. GESTION DES PROJETS
+    // 2. GESTION DES PROJETS (DATA & RENDERING)
     // ==============================================
     const projectsData = [
         {
             title: "Bad Evian",
             subtitle: "La transformation associative",
-            story: "En modernisant l’identité du club, j’ai donné une image plus soignée et rassurante, qui inspire confiance aux adhérents et visiteurs.",
+            story: "En modernisant l’identité du club, j’ai donné une image plus soignée et rassurante, qui inspire confiance aux adhérents.",
             url: "https://www.badminton-evian.fr", 
             type: "Site Club Sportif",
             features: [
-                { icon: "ph-clock-counter-clockwise", text: "Frise Chrono", desc: "Une navigation temporelle interactive qui permet aux visiteurs de découvrir l'histoire du club date par date de manière ludique." },
-                { icon: "ph-newspaper", text: "News & Blog", desc: "Un système de gestion de contenu simplifié permettant au bureau d'ajouter des articles sans aucune connaissance technique." },
-                { icon: "ph-lightning", text: "Live Score", desc: "Connexion API en temps réel avec la fédération pour afficher les résultats des tournois sans délai." },
-                { icon: "ph-images", text: "Galerie", desc: "Optimisation automatique des images (WebP) et Lazy Loading pour un chargement instantané malgré des centaines de photos." },
-                { icon: "ph-envelope-simple", text: "Contact", desc: "Formulaire sécurisé avec protection anti-spam (Honeypot + Recaptcha) et routage automatique des emails vers les responsables." },
-                { icon: "ph-users", text: "Avis", desc: "Intégration dynamique des avis Google pour renforcer la preuve sociale directement sur la page d'accueil." }
+                { icon: "ph-clock-counter-clockwise", text: "Frise Chrono", desc: "Navigation temporelle interactive pour l'histoire du club." },
+                { icon: "ph-newspaper", text: "News & Blog", desc: "Gestion de contenu simplifiée pour le bureau." },
+                { icon: "ph-lightning", text: "Live Score", desc: "Connexion API temps réel pour les résultats." },
+                { icon: "ph-images", text: "Galerie", desc: "Optimisation WebP et Lazy Loading." },
+                { icon: "ph-envelope-simple", text: "Contact", desc: "Formulaire sécurisé anti-spam." },
+                { icon: "ph-users", text: "Avis", desc: "Intégration avis Google." }
             ]
         }
     ];
@@ -104,27 +103,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
-    // Fonction globale pour le détail des features
     window.showProjectDesc = function(projectIndex, btnIndex) {
         document.querySelectorAll(`.proj-btn-${projectIndex}`).forEach(btn => {
             btn.classList.remove('bg-white/10', 'border-accent-400', 'text-white');
             btn.classList.add('bg-dark-900', 'border-white/10', 'text-slate-300');
         });
-
         const clickedBtn = document.querySelectorAll(`.proj-btn-${projectIndex}`)[btnIndex];
         clickedBtn.classList.remove('bg-dark-900', 'border-white/10', 'text-slate-300');
         clickedBtn.classList.add('bg-white/10', 'border-accent-400', 'text-white');
-
         const box = document.getElementById(`project-desc-box-${projectIndex}`);
         const text = document.getElementById(`project-desc-text-${projectIndex}`);
-        
         box.classList.remove('hidden');
         text.textContent = clickedBtn.getAttribute('data-desc');
     };
 
-
     // ==============================================
-    // 3. ADMIN SÉCURISÉ (AUTHENTIFICATION)
+    // 3. ADMIN & AUTH
     // ==============================================
     const adminModal = document.getElementById('admin-modal');
     const adminContent = document.getElementById('admin-content');
@@ -132,6 +126,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const dashboardView = document.getElementById('admin-dashboard-view');
     const actionsGrid = document.getElementById('admin-actions-grid');
     const loginError = document.getElementById('login-error');
+    const shieldIcon = document.getElementById('header-shield-icon');
+
+    // Listener d'état de connexion pour mettre à jour le bouclier
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // User connecté : Bouclier Vert ou allumé
+            if(shieldIcon) {
+                shieldIcon.classList.remove('text-slate-600');
+                shieldIcon.classList.add('text-green-400');
+                shieldIcon.parentElement.classList.add('animate-pulse'); // Effet subtil
+            }
+        } else {
+            // User déconnecté
+            if(shieldIcon) {
+                shieldIcon.classList.add('text-slate-600');
+                shieldIcon.classList.remove('text-green-400');
+                shieldIcon.parentElement.classList.remove('animate-pulse');
+            }
+        }
+    });
 
     window.toggleAdminModal = function() {
         if (adminModal.classList.contains('hidden')) {
@@ -142,10 +156,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 adminContent.classList.add('scale-100');
             }, 10);
             
-            onAuthStateChanged(auth, (user) => {
-                if (user) showDashboard();
-                else showLogin();
-            });
+            // Vérif auto si déjà connecté
+            if(auth.currentUser) showDashboard();
+            else showLogin();
 
         } else {
             adminModal.classList.add('opacity-0');
@@ -161,16 +174,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.togglePasswordVisibility = function() {
         const passInput = document.getElementById('admin-pass');
         const eyeIcon = document.getElementById('eye-icon');
-        
         if (passInput.type === 'password') {
             passInput.type = 'text';
-            eyeIcon.classList.remove('ph-eye');
-            eyeIcon.classList.add('ph-eye-slash');
+            eyeIcon.classList.replace('ph-eye', 'ph-eye-slash');
             eyeIcon.parentElement.classList.add('text-white');
         } else {
             passInput.type = 'password';
-            eyeIcon.classList.remove('ph-eye-slash');
-            eyeIcon.classList.add('ph-eye');
+            eyeIcon.classList.replace('ph-eye-slash', 'ph-eye');
             eyeIcon.parentElement.classList.remove('text-white');
         }
     };
@@ -179,9 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('admin-id').value = '';
         document.getElementById('admin-pass').value = '';
         loginError.classList.add('hidden');
-        document.getElementById('admin-pass').type = 'password';
-        document.getElementById('eye-icon').classList.remove('ph-eye-slash');
-        document.getElementById('eye-icon').classList.add('ph-eye');
     }
 
     function showLogin() {
@@ -201,12 +208,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const emailToUse = idInput.includes('@') ? idInput : idInput + '@gmail.com';
 
         signInWithEmailAndPassword(auth, emailToUse, passInput)
-            .then((userCredential) => {
+            .then(() => {
                 loginError.classList.add('hidden');
                 showDashboard();
             })
             .catch((error) => {
-                console.error("Erreur de connexion :", error.code, error.message);
+                console.error("Auth error:", error);
                 loginError.classList.remove('hidden');
                 adminContent.classList.add('animate-pulse');
                 setTimeout(() => adminContent.classList.remove('animate-pulse'), 500);
@@ -216,9 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.logout = function() {
         signOut(auth).then(() => {
             showLogin();
-        }).catch((error) => {
-            console.error("Erreur déconnexion", error);
-        });
+        }).catch((error) => console.error("Logout error", error));
     };
 
     const adminActions = [
@@ -238,7 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <i class="ph-bold ph-arrow-right ml-auto text-slate-500 group-hover:text-accent-400 transition-colors"></i>
                 </a>
             `).join('');
-
             html += `
                 <button onclick="window.logout()" class="w-full mt-4 py-3 rounded-xl border border-white/10 text-slate-400 text-xs font-bold uppercase tracking-widest hover:bg-white/5 hover:text-white transition-all">
                     Se déconnecter
@@ -256,55 +260,70 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==============================================
-    // 4. ANIMATIONS & UI (SKILLS, OBSERVERS)
+    // 4. ANIMATIONS & UI (SKILLS & ABOUT)
     // ==============================================
+    
+    // --- TECH DESCRIPTION ---
     const techDescriptions = {
-        'html': { title: 'Structure HTML5 Sémantique', text: 'Je construis le squelette de votre site en respectant les standards du web (W3C).', icon: 'ph-file-html', color: 'text-orange-500' },
-        'css': { title: 'Design CSS3 Moderne', text: 'Mise en forme avancée, animations fluides (60fps) et layouts Flexbox/Grid.', icon: 'ph-file-css', color: 'text-blue-500' },
-        'js': { title: 'JavaScript Dynamique', text: 'Fonctionnalités sur-mesure (calculateurs, filtres) sans plugins lourds.', icon: 'ph-file-js', color: 'text-yellow-400' },
-        'tailwind': { title: 'Tailwind CSS', text: 'Interfaces uniques construites rapidement, fichier CSS final minuscule.', icon: 'ph-paint-brush-broad', color: 'text-cyan-400' },
-        'git': { title: 'Versionning Git', text: 'Sécurité du code et historique de chaque modification.', icon: 'ph-git-branch', color: 'text-red-500' },
-        'responsive': { title: 'Mobile First', text: 'Conception pensée pour les smartphones avant tout.', icon: 'ph-device-mobile', color: 'text-purple-400' },
-        'firebase': { title: 'Google Firebase', text: 'Base de données temps réel et sécurisée pour vos données dynamiques.', icon: 'ph-fire', color: 'text-orange-400' },
-        'seo': { title: 'SEO & Performance', text: 'Structure technique optimisée pour Google. Objectif : Score 100/100.', icon: 'ph-magnifying-glass', color: 'text-green-500' }
+        'html': { title: 'Structure HTML5 Sémantique', text: 'Respect des standards W3C.', icon: 'ph-file-html', color: 'text-orange-500' },
+        'css': { title: 'Design CSS3 Moderne', text: 'Animations fluides et layouts Flexbox/Grid.', icon: 'ph-file-css', color: 'text-blue-500' },
+        'js': { title: 'JavaScript Dynamique', text: 'Fonctionnalités sur-mesure sans lourdeur.', icon: 'ph-file-js', color: 'text-yellow-400' },
+        'tailwind': { title: 'Tailwind CSS', text: 'Interfaces uniques et légères.', icon: 'ph-paint-brush-broad', color: 'text-cyan-400' },
+        'git': { title: 'Versionning Git', text: 'Sécurité et historique.', icon: 'ph-git-branch', color: 'text-red-500' },
+        'responsive': { title: 'Mobile First', text: 'Pensé pour smartphone avant tout.', icon: 'ph-device-mobile', color: 'text-purple-400' },
+        'firebase': { title: 'Google Firebase', text: 'Base de données temps réel.', icon: 'ph-fire', color: 'text-orange-400' },
+        'seo': { title: 'SEO & Performance', text: 'Optimisé pour Google.', icon: 'ph-magnifying-glass', color: 'text-green-500' }
     };
 
-    const techItems = document.querySelectorAll('.tech-item');
-    const descBox = document.getElementById('tech-description-box');
-    const descTitle = document.getElementById('tech-title');
-    const descText = document.getElementById('tech-text');
-    const descIcon = document.getElementById('tech-bg-icon');
-
-    // Init première techno
-    setTimeout(() => {
-        const firstTech = document.querySelector('[data-tech="html"]');
-        if(firstTech) updateTechDescription(firstTech);
-    }, 1000);
-
-    techItems.forEach(item => {
-        item.addEventListener('click', () => updateTechDescription(item));
+    document.querySelectorAll('.tech-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const techKey = item.getAttribute('data-tech');
+            updateDescriptionBox('tech', item, techDescriptions[techKey]);
+        });
     });
 
-    function updateTechDescription(element) {
-        techItems.forEach(t => {
-            t.classList.remove('border-accent-400', 'bg-white/10');
-            t.classList.add('border-white/5', 'bg-dark-900');
+    // --- ABOUT DESCRIPTION (NOUVEAU) ---
+    const aboutDescriptions = {
+        'diplome': { title: "Ingénieur Diplômé CTI", text: "Un label de qualité reconnu par l'État, garantissant une rigueur scientifique, une capacité d'analyse complexe et une méthodologie éprouvée.", color: 'text-orange-400' },
+        'expert': { title: "14 ans d'expérience", text: "J'ai vu le web évoluer. Cette séniorité me permet d'éviter les pièges classiques, d'anticiper les problèmes techniques et de livrer vite et bien.", color: 'text-pink-400' },
+        'comptes': { title: "Grands Comptes (EDF / ELCA)", text: "3 ans chez EDF (Rigueur industrielle) et 9 ans chez ELCA (Leader Suisse de l'IT). J'applique ces standards d'excellence à vos projets.", color: 'text-purple-400' },
+        'partenaire': { title: "Partenaire de confiance", text: "Chez ELCA, le slogan était 'We make it work'. C'est ancré en moi : je ne vous lâche pas tant que ça ne marche pas parfaitement.", color: 'text-emerald-400' }
+    };
+
+    document.querySelectorAll('.about-badge').forEach(badge => {
+        badge.addEventListener('click', () => {
+            const key = badge.getAttribute('data-about');
+            updateDescriptionBox('about', badge, aboutDescriptions[key]);
         });
+    });
+
+    // Fonction générique pour mettre à jour une boite de description
+    function updateDescriptionBox(type, element, data) {
+        // Reset styles selection
+        const selector = type === 'tech' ? '.tech-item' : '.about-badge';
+        document.querySelectorAll(selector).forEach(el => {
+            el.classList.remove('border-accent-400', 'bg-white/10');
+            el.classList.add('border-white/5', 'bg-dark-900', 'bg-white/5'); // Reset générique
+        });
+        
+        // Active style
         element.classList.remove('border-white/5', 'bg-dark-900');
         element.classList.add('border-accent-400', 'bg-white/10');
 
-        const techKey = element.getAttribute('data-tech');
-        const data = techDescriptions[techKey];
+        const box = document.getElementById(`${type}-desc-box`);
+        const title = document.getElementById(`${type}-title`);
+        const text = document.getElementById(`${type}-text`);
+        const icon = document.getElementById(`${type}-bg-icon`); // Uniquement pour tech
 
-        if (data && descBox) {
-            descBox.classList.remove('opacity-100', 'translate-y-0');
-            descBox.classList.add('opacity-0', 'translate-y-4');
+        if (data && box) {
+            box.classList.remove('opacity-100', 'translate-y-0');
+            box.classList.add('opacity-0', 'translate-y-4');
             setTimeout(() => {
-                descTitle.textContent = data.title;
-                descText.textContent = data.text;
-                descIcon.className = `ph-duotone ${data.icon} text-6xl absolute top-4 right-4 opacity-10 transition-colors duration-300 ${data.color}`;
-                descBox.classList.remove('opacity-0', 'translate-y-4');
-                descBox.classList.add('opacity-100', 'translate-y-0');
+                title.textContent = data.title;
+                text.textContent = data.text;
+                if(icon) icon.className = `ph-duotone ${data.icon} text-6xl absolute top-4 right-4 opacity-10 transition-colors duration-300 ${data.color}`;
+                box.classList.remove('opacity-0', 'translate-y-4');
+                box.classList.add('opacity-100', 'translate-y-0');
             }, 300);
         }
     }
@@ -314,36 +333,87 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    const projectObserver = new IntersectionObserver((entries) => {
-        if (window.innerWidth < 1024) { 
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('mobile-active');
-                else entry.target.classList.remove('mobile-active');
-            });
-        }
-    }, { threshold: 0.6 });
-    document.querySelectorAll('.project-frame-container').forEach(el => projectObserver.observe(el));
-
     const yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-
     // ==============================================
-    // 5. NOUVEAU SYSTÈME DE RÉSERVATION DYNAMIQUE
+    // 5. GESTION OFFRES & SELECTION (GOLD & FORM)
     // ==============================================
     
+    // Fonction appelée par les boutons "Choisir" des cartes
+    window.selectOffer = function(offerName) {
+        // 1. Scroll vers contact
+        document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        
+        // 2. Selectionner le bon radio button
+        const radioToSelect = document.querySelector(`input[name="project_pack"][value="${offerName}"]`);
+        if(radioToSelect) {
+            radioToSelect.checked = true;
+            // Déclencher l'update visuel
+            window.updateCardSelection(offerName); 
+        }
+    };
+
+    // Fonction appelée par le bouton "Ajouter au devis" du pack sérénité
+    window.toggleSerenityOption = function() {
+        document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        const checkSerenity = document.getElementById('check-serenite');
+        if(checkSerenity) {
+            checkSerenity.checked = !checkSerenity.checked;
+            // Update visuel carte sérénité
+            updateSerenityCard(checkSerenity.checked);
+        }
+    };
+
+    // Update visuel de la carte sérénité quand checkbox change
+    const checkSerenity = document.getElementById('check-serenite');
+    if(checkSerenity) {
+        checkSerenity.addEventListener('change', (e) => {
+            updateSerenityCard(e.target.checked);
+        });
+    }
+
+    function updateSerenityCard(isChecked) {
+        const card = document.getElementById('card-serenite');
+        if(card) {
+            if(isChecked) card.classList.add('serenity-selected-card');
+            else card.classList.remove('serenity-selected-card');
+        }
+    }
+
+    // Gestion du contour doré sur les cartes de prix
+    window.updateCardSelection = function(selectedVal) {
+        // Reset classes
+        ['card-essentiel', 'card-vitrine', 'card-premium'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.classList.remove('gold-selected-card');
+        });
+
+        // Add class to selected
+        let targetId = '';
+        if(selectedVal === 'Essentiel') targetId = 'card-essentiel';
+        if(selectedVal === 'Vitrine') targetId = 'card-vitrine';
+        if(selectedVal === 'Premium') targetId = 'card-premium';
+
+        const targetEl = document.getElementById(targetId);
+        if(targetEl) targetEl.classList.add('gold-selected-card');
+    };
+
+    // Initialisation au chargement (Vitrine par défaut)
+    window.updateCardSelection('Vitrine');
+
+
+    // ==============================================
+    // 6. CALENDRIER & FORMULAIRE DEVIS
+    // ==============================================
     const daysContainer = document.getElementById('calendar-days');
     const slotsContainer = document.getElementById('calendar-slots');
     const dateInput = document.getElementById('selected-date');
     const timeInput = document.getElementById('selected-time');
-
-    // Créneaux horaires disponibles par défaut
     const DEFAULT_SLOTS = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
 
-    // 5a. Initialisation du Calendrier (14 prochains jours)
     async function initCalendar() {
         if(!daysContainer) return;
-
         daysContainer.innerHTML = '';
         const today = new Date();
         let delay = 0;
@@ -351,8 +421,6 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 1; i <= 14; i++) {
             const d = new Date(today);
             d.setDate(today.getDate() + i);
-            
-            // Exclure Week-end (0=Dimanche, 6=Samedi)
             if (d.getDay() === 0 || d.getDay() === 6) continue;
 
             const dateStr = d.toISOString().split('T')[0];
@@ -369,22 +437,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="text-xl font-bold text-white my-1">${dayNum}</span>
                 <span class="text-[10px] text-slate-500">${monthName}</span>
             `;
-            
             btn.addEventListener('click', (e) => selectDate(btn, dateStr));
             daysContainer.appendChild(btn);
             delay += 50;
         }
     }
 
-    // 5b. Sélection d'une date
     async function selectDate(btn, dateStr) {
-        // UI Reset
         document.querySelectorAll('.date-btn').forEach(b => {
             b.classList.remove('bg-accent-400', 'border-accent-400');
             b.querySelector('span').classList.remove('text-dark-950'); 
         });
-        
-        // UI Active
         btn.classList.remove('bg-white/5');
         btn.classList.add('bg-accent-400', 'border-accent-400');
         const spans = btn.querySelectorAll('span');
@@ -392,28 +455,20 @@ document.addEventListener('DOMContentLoaded', () => {
             s.classList.remove('text-slate-400', 'text-white', 'text-slate-500');
             s.classList.add('text-dark-950');
         });
-
         dateInput.value = dateStr;
         timeInput.value = ""; 
-        
         await loadSlotsForDate(dateStr);
     }
 
-    // 5c. Chargement des créneaux depuis Firestore
     async function loadSlotsForDate(dateStr) {
         slotsContainer.innerHTML = '<div class="col-span-4 text-center text-accent-400"><i class="ph-duotone ph-spinner animate-spin text-2xl"></i></div>';
-        
         try {
-            // Vérifier les réservations existantes pour ce jour
             const q = query(collection(db, "bookings"), where("date", "==", dateStr));
             const querySnapshot = await getDocs(q);
             const takenSlots = [];
-            querySnapshot.forEach((doc) => {
-                takenSlots.push(doc.data().time);
-            });
+            querySnapshot.forEach((doc) => takenSlots.push(doc.data().time));
 
             slotsContainer.innerHTML = '';
-            
             if(DEFAULT_SLOTS.length === takenSlots.length) {
                 slotsContainer.innerHTML = '<div class="col-span-4 text-center text-slate-500 text-xs py-2">Complet ce jour</div>';
                 return;
@@ -441,17 +496,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 slotsContainer.appendChild(btn);
             });
         } catch (err) {
-            console.error("Erreur chargement slots:", err);
+            console.error("Slots error:", err);
             slotsContainer.innerHTML = '<div class="col-span-4 text-center text-red-400 text-xs">Erreur connexion</div>';
         }
     }
 
-    // 5d. Soumission du Formulaire
     const bookingForm = document.getElementById('booking-form');
     if(bookingForm) {
         bookingForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const submitBtn = document.getElementById('submit-booking');
             const originalText = submitBtn.innerHTML;
             
@@ -460,36 +513,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // Récupération des nouvelles valeurs
+            const selectedPack = document.querySelector('input[name="project_pack"]:checked').value;
+            const hasSerenity = document.getElementById('check-serenite').checked;
+            const desc = document.getElementById('client-desc').value;
+
             try {
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="ph-bold ph-spinner animate-spin text-xl"></i> Réservation...';
+                submitBtn.innerHTML = '<i class="ph-bold ph-spinner animate-spin text-xl"></i> Envoi...';
 
-                // Envoi vers Firestore
                 await addDoc(collection(db, "bookings"), {
                     date: dateInput.value,
                     time: timeInput.value,
                     name: document.getElementById('client-name').value,
                     email: document.getElementById('client-email').value,
                     phone: document.getElementById('client-phone').value,
-                    project: document.getElementById('project-type').value,
+                    pack: selectedPack,
+                    option_serenite: hasSerenity, // Booléen
+                    description: desc,
                     created_at: new Date().toISOString(),
                     status: 'pending' 
                 });
 
-                // Succès
                 document.getElementById('booking-success').classList.remove('hidden');
                 document.getElementById('booking-success').classList.add('flex');
-                
             } catch (error) {
-                console.error("Erreur booking:", error);
-                alert("Une erreur est survenue lors de la réservation.");
+                console.error("Booking error:", error);
+                alert("Une erreur est survenue.");
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
             }
         });
     }
 
-    // Lancement du calendrier
     initCalendar();
-
 });
