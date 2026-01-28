@@ -28,6 +28,7 @@
                     animation: {
                         'blob': 'blob 7s infinite',
                         'pop-in': 'popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     },
                     keyframes: {
                         blob: {
@@ -68,11 +69,32 @@
         /* --- STYLES SELECTION PACKS --- */
         .gold-selected-card {
             border-color: #FBBF24 !important;
-            box-shadow: 0 0 30px rgba(251, 191, 36, 0.15) !important;
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.2) !important;
             background: linear-gradient(to bottom right, rgba(251, 191, 36, 0.05), rgba(30, 41, 59, 0.4)) !important;
             transform: translateY(-5px) scale(1.02);
             z-index: 10;
+            position: relative;
         }
+        
+        /* Label "Sélectionné" sur la carte */
+        .gold-selected-card::after {
+            content: "SÉLECTIONNÉ";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #FBBF24;
+            color: #020617;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            letter-spacing: 0.1em;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(5px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
         
         .serenity-selected-card {
             border-color: #60A5FA !important;
@@ -81,16 +103,46 @@
             transform: translateY(-3px) scale(1.01);
         }
 
-        /* Form Radio Buttons */
-        .pack-radio-label { cursor: pointer; transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.1); }
+        /* Form Radio Buttons (Styled as Cards in Form) */
+        .pack-radio-label { cursor: pointer; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden; }
+        
         .pack-radio-input:checked + .pack-radio-label {
-            background-color: #2DD4BF; color: #020617; border-color: #2DD4BF; font-weight: bold;
-            box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
+            font-weight: bold;
+            transform: translateY(-2px);
         }
 
-        .mobile-active .iframe-overlay { backdrop-filter: blur(0) !important; background-color: transparent !important; }
-        .mobile-active .project-iframe { filter: grayscale(0) !important; }
-        .mobile-active .hint-overlay { opacity: 0 !important; }
+        /* Couleurs spécifiques quand sélectionné dans le formulaire */
+        .pack-radio-input[value="Essentiel"]:checked + .pack-radio-label {
+            background-color: #2DD4BF; color: #020617; border-color: #2DD4BF;
+            box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
+        }
+        .pack-radio-input[value="Vitrine"]:checked + .pack-radio-label {
+            background-color: #2DD4BF; color: #020617; border-color: #2DD4BF;
+            box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
+        }
+        /* PREMIUM = VIOLET */
+        .pack-radio-input[value="Premium"]:checked + .pack-radio-label {
+            background-color: #A855F7; color: #fff; border-color: #A855F7;
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+        }
+
+        /* Bouton Sérénité Formulaire */
+        .serenity-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            background: rgba(59, 130, 246, 0.05);
+        }
+        .serenity-btn.active {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3B82F6;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Mobile Project Interaction */
+        .project-frame-container.mobile-active .iframe-overlay { opacity: 0 !important; pointer-events: none; }
+        .project-frame-container.mobile-active .project-iframe iframe { pointer-events: auto !important; }
+        .project-frame-container.mobile-active .project-iframe { filter: grayscale(0) !important; }
+        .project-frame-container.mobile-active .hint-overlay { display: none !important; }
 
         .form-section-title {
             color: #2DD4BF; font-size: 0.8rem; text-transform: uppercase;
@@ -102,6 +154,7 @@
         .date-btn.active-date {
             background-color: #2DD4BF !important;
             border-color: #2DD4BF !important;
+            transform: scale(1.05);
         }
         .date-btn.active-date span {
             color: #020617 !important;
@@ -110,21 +163,21 @@
         @media (hover: none) {
             .pricing-card a:hover { background-color: inherit; color: inherit; border-color: rgba(255, 255, 255, 0.1); }
         }
-		
-		/* Hébergement Accordéon */
-		#hosting-content {
-			transition: max-height 0.5s ease-out, opacity 0.4s ease-out;
-			max-height: 0; /* Fermé par défaut */
-			opacity: 0;
-			overflow: hidden;
-		}
-		#hosting-content.open {
-			max-height: 1000px; /* Suffisant pour tout afficher */
-			opacity: 1;
-		}
-		.rotate-chevron {
-			transform: rotate(180deg);
-		}
+        
+        /* Hébergement Accordéon */
+        #hosting-content {
+            transition: max-height 0.5s ease-out, opacity 0.4s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        #hosting-content.open {
+            max-height: 1000px;
+            opacity: 1;
+        }
+        .rotate-chevron {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 <body class="selection:bg-accent-400/30 selection:text-white bg-dark-950">
@@ -395,6 +448,9 @@
                 <p class="text-slate-400 max-w-xl mx-auto">
                     La propriété est à vous. Pas d'abonnement caché pour la création.
                 </p>
+                <div class="mt-4 text-xs text-slate-500 uppercase tracking-widest font-bold">
+                    TVA non applicable – article 293B du CGI (Prix Finaux)
+                </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
@@ -407,20 +463,17 @@
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Optimisation mobile & performance</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Intégration des contenus fournis</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne clé en main</li>
-                        <li class="flex items-center gap-2 group cursor-pointer" onclick="toggleHosting(true)">
-                            <i class="ph-bold ph-info text-slate-500 group-hover:text-accent-400 transition-colors"></i>
-                            <li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
-							  <i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-accent-400"></i>
-							  <span class="text-slate-200">
-								Hébergement OVH<br>
-								<strong class="text-accent-400 text-xs">
-								  14,26€ (hébergement) + 7,79€/an (domaine)
-								</strong>
-								<span class="block text-xs text-slate-400">
-								  1ère année offerte
-								</span>
-							  </span>
-							</li>
+                        <li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
+                            <i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-accent-400"></i>
+                            <span class="text-slate-200">
+                                Hébergement OVH<br>
+                                <strong class="text-accent-400 text-xs hover:underline">
+                                    ~22€/an (Détails)
+                                </strong>
+                                <span class="block text-xs text-slate-400">
+                                    1ère année offerte
+                                </span>
+                            </span>
                         </li>
                     </ul>
                     <a href="#contact" onclick="selectOffer('Essentiel', 900)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-colors font-medium relative z-10">Choisir</a>
@@ -437,18 +490,17 @@
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Formulaire de contact intégré</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne et responsive mobile & tablette</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne et configuration technique</li>
-                        <li class="flex items-center gap-2 group cursor-pointer" onclick="toggleHosting(true)">
-                            <i class="ph-bold ph-info text-slate-500 group-hover:text-accent-400 transition-colors"></i>
-							  <span class="text-slate-200">
-								Hébergement OVH<br>
-								<strong class="text-accent-400 text-xs">
-								  14,26€ (hébergement) + 7,79€/an (domaine)
-								</strong>
-								<span class="block text-xs text-slate-400">
-								  1ère année offerte
-								</span>
-							  </span>
-							</li>
+                        <li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
+                             <i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-accent-400"></i>
+                            <span class="text-slate-200">
+                                Hébergement OVH<br>
+                                <strong class="text-accent-400 text-xs hover:underline">
+                                    ~22€/an (Détails)
+                                </strong>
+                                <span class="block text-xs text-slate-400">
+                                    1ère année offerte
+                                </span>
+                            </span>
                         </li>
                     </ul>
                     <a href="#contact" onclick="selectOffer('Vitrine', 1700)" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10">Choisir</a>
@@ -464,28 +516,25 @@
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Statistiques & suivi de performance pour mesurer vos résultats</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Site responsive mobile & tablette</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Mise en ligne et configuration technique</li>
-                        <li class="flex items-center gap-2 group cursor-pointer" onclick="toggleHosting(true)">
-                            <i class="ph-bold ph-info text-slate-500 group-hover:text-purple-400 transition-colors"></i>
-							  <span class="text-slate-200">
-								Hébergement OVH<br>
-								<strong class="text-accent-400 text-xs">
-								  47€ (hébergement) + 7,79€/an (domaine)
-								</strong>
-								<span class="block text-xs text-slate-400">
-								  1ère année offerte
-								</span>
-							  </span>
-							</li>
+                        <li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
+                            <i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-purple-400"></i>
+                            <span class="text-slate-200">
+                                Hébergement OVH<br>
+                                <strong class="text-purple-400 text-xs hover:underline">
+                                    ~55€/an (Détails)
+                                </strong>
+                                <span class="block text-xs text-slate-400">
+                                    1ère année offerte
+                                </span>
+                            </span>
                         </li>
                     </ul>
                     <a href="#contact" onclick="selectOffer('Premium', 2500)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10">Choisir</a>
                 </div>
             </div>
-			
-			<!-- OVH Explanation Block (Accordion) -->
+            
             <div class="mb-16 reveal" id="hosting-section">
                 <div class="glass-card rounded-3xl border border-white/10 bg-dark-900/50 overflow-hidden">
-                    <!-- Header Accordion -->
                     <div class="p-6 md:p-8 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors" onclick="toggleHosting()">
                         <h3 class="text-xl font-display font-bold text-white flex items-center gap-2">
                             <i class="ph-duotone ph-cloud text-accent-400"></i> Pourquoi payer l'hébergement à part ?
@@ -493,7 +542,6 @@
                         <i id="hosting-chevron" class="ph-bold ph-caret-down text-white text-xl transition-transform duration-300"></i>
                     </div>
 
-                    <!-- Content Accordion -->
                     <div id="hosting-content">
                         <div class="p-6 md:p-8 pt-0">
                             <p class="text-slate-400 text-sm mb-6 max-w-3xl">
@@ -501,32 +549,29 @@
                             </p>
                             
                             <div class="grid md:grid-cols-2 gap-6">
-                                <!-- Pack Starter -->
                                 <div class="p-4 rounded-xl bg-white/5 border border-white/5">
                                     <div class="flex justify-between items-start mb-2">
                                         <h4 class="font-bold text-white text-sm">Pour packs "Essentiel" & "Vitrine"</h4>
-                                        <span class="text-accent-400 font-bold text-sm">~14.26€ <span class="text-xs font-normal text-slate-400">/an</span></span>
+                                        <span class="text-accent-400 font-bold text-sm">22.05€ <span class="text-xs font-normal text-slate-400">/an</span></span>
                                     </div>
                                     <p class="text-xs text-slate-500 mb-3">Offre OVH "Starter" (Idéal vitrine)</p>
                                     <ul class="text-xs text-slate-300 space-y-1">
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 1 Nom de domaine offert la 1ère année</li>
+                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> Hébergement (14,26€ TTC)</li>
+                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> Nom de domaine (7,79€ TTC)</li>
                                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 1 Go d'espace disque</li>
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 2 adresses e-mail professionnelles</li>
                                     </ul>
                                 </div>
 
-                                <!-- Pack Perso -->
                                 <div class="p-4 rounded-xl bg-white/5 border border-white/5">
                                     <div class="flex justify-between items-start mb-2">
                                         <h4 class="font-bold text-white text-sm">Pour pack "Premium"</h4>
-                                        <span class="text-purple-400 font-bold text-sm">~47.38€ <span class="text-xs font-normal text-slate-400">/an</span></span>
+                                        <span class="text-purple-400 font-bold text-sm">54.79€ <span class="text-xs font-normal text-slate-400">/an</span></span>
                                     </div>
                                     <p class="text-xs text-slate-500 mb-3">Offre OVH "Perso" (Plus de puissance)</p>
                                     <ul class="text-xs text-slate-300 space-y-1">
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 1 Nom de domaine offert la 1ère année</li>
+                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Hébergement (47€ TTC)</li>
+                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Nom de domaine (7,79€ TTC)</li>
                                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 100 Go d'espace disque</li>
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 10 adresses e-mail professionnelles</li>
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Base de données & Modules en 1-clic</li>
                                     </ul>
                                 </div>
                             </div>
@@ -566,7 +611,7 @@
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-sm text-slate-300">Complexe (Fonctionnalité)</span>
-                            <span class="font-bold text-white">300€ +</span>
+                            <span class="font-bold text-white">300€</span>
                         </div>
                     </div>
                 </div>
@@ -592,6 +637,9 @@
                             <span class="text-slate-300 text-sm sm:text-base">74500 Évian-les-Bains / Lausanne</span>
                         </div>
                     </div>
+                    <div class="text-xs text-slate-500 border-t border-white/5 pt-4">
+                         TVA non applicable – article 293B du CGI
+                    </div>
                 </div>
 
                 <div class="glass-card p-6 md:p-8 rounded-3xl border border-white/10 w-full">
@@ -600,9 +648,19 @@
                             <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
                                 <i class="ph-fill ph-check-circle text-4xl text-green-500"></i>
                             </div>
-                            <h4 class="text-xl font-bold text-white mb-2">Demande reçue !</h4>
-                            <p class="text-slate-400 text-sm mb-6">Je vous recontacterai rapidement.</p>
-                            <button type="button" onclick="location.reload()" class="px-6 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white text-sm transition-colors">Nouvelle demande</button>
+                            <h4 class="text-xl font-bold text-white mb-2">Rendez-vous confirmé !</h4>
+                            <p id="success-message-date" class="text-accent-400 font-bold text-lg mb-1"></p>
+                            <p class="text-slate-400 text-sm mb-6">Je vous appellerai à ce moment précis.</p>
+                            
+                            <div class="flex gap-2 w-full max-w-xs">
+                                <a id="btn-google-calendar" target="_blank" href="#" class="flex-1 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-colors flex items-center justify-center gap-2">
+                                    <i class="ph-bold ph-google-logo"></i> Google
+                                </a>
+                                <button type="button" id="btn-download-ics" class="flex-1 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-colors flex items-center justify-center gap-2">
+                                    <i class="ph-bold ph-download"></i> Outlook/Apple
+                                </button>
+                            </div>
+                            <button type="button" onclick="location.reload()" class="mt-4 text-slate-500 hover:text-white text-xs underline">Nouvelle demande</button>
                         </div>
 
                         <div class="space-y-4">
@@ -614,11 +672,11 @@
                                 </div>
                             </div>
                             
-                            <div class="grid grid-cols-4 sm:flex sm:space-x-3 gap-2 overflow-x-auto pb-2 scrollbar-hide" id="calendar-days">
+                            <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2 pb-2" id="calendar-days">
                                 </div>
                             
-                            <div id="calendar-slots" class="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                                <div class="text-xs text-slate-500 italic col-span-3">Sélectionnez un jour...</div>
+                            <div id="calendar-slots" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <div class="text-xs text-slate-500 italic col-span-2">Sélectionnez un jour...</div>
                             </div>
                             <input type="hidden" id="selected-date" name="date" required>
                             <input type="hidden" id="selected-time" name="time" required>
@@ -629,17 +687,21 @@
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="space-y-1">
-                                    <label class="text-xs text-slate-400 uppercase font-bold ml-1">Nom complet</label>
-                                    <input type="text" id="client-name" required placeholder="Votre nom" 
+                                    <label class="text-xs text-slate-400 uppercase font-bold ml-1">Nom</label>
+                                    <input type="text" id="client-lastname" required placeholder="Votre nom" 
                                         class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
                                 </div>
                                 <div class="space-y-1">
-                                    <label class="text-xs text-slate-400 uppercase font-bold ml-1">Email</label>
-                                    <input type="email" id="client-email" required placeholder="votre@email.com" 
+                                    <label class="text-xs text-slate-400 uppercase font-bold ml-1">Prénom</label>
+                                    <input type="text" id="client-firstname" required placeholder="Votre prénom" 
                                         class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
                                 </div>
                             </div>
-                            
+                            <div class="space-y-1">
+                                <label class="text-xs text-slate-400 uppercase font-bold ml-1">Email</label>
+                                <input type="email" id="client-email" required placeholder="votre@email.com" 
+                                    class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
+                            </div>
                             <div class="space-y-1">
                                 <label class="text-xs text-slate-400 uppercase font-bold ml-1">Téléphone</label>
                                 <input type="tel" id="client-phone" required placeholder="06 12 34 56 78" 
@@ -664,12 +726,18 @@
                                 </div>
                             </div>
 
-                            <div class="flex items-center justify-between p-3 rounded-xl bg-blue-500/5 border border-blue-500/20">
-                                <div class="flex items-center gap-2">
-                                    <input type="checkbox" id="check-serenite" class="w-4 h-4 rounded text-blue-500 focus:ring-blue-500 bg-dark-950 border-white/20">
-                                    <label for="check-serenite" class="text-sm text-slate-300 font-medium cursor-pointer select-none">Ajouter Pack Sérénité</label>
+                            <div id="serenite-toggle-btn" class="serenity-btn cursor-pointer flex items-center justify-between p-3 rounded-xl gap-4 group select-none" onclick="toggleSerenityForm()">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-5 h-5 rounded border border-blue-400/50 flex items-center justify-center transition-colors group-hover:border-blue-400 bg-dark-900" id="serenite-fake-checkbox">
+                                        <i class="ph-bold ph-check text-blue-400 opacity-0 transform scale-50 transition-all" id="serenite-check-icon"></i>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="text-sm text-slate-300 font-bold group-hover:text-white transition-colors">Ajouter Pack Sérénité</span>
+                                        <span class="text-[10px] text-slate-500">Maintenance & Sécurité mensuelle</span>
+                                    </div>
                                 </div>
-                                <span class="text-xs text-blue-400 font-bold">+600€</span>
+                                <span class="text-xs text-blue-400 font-bold bg-blue-400/10 px-2 py-1 rounded">+600€</span>
+                                <input type="checkbox" id="check-serenite" class="hidden">
                             </div>
 
                             <div class="flex justify-between items-center px-4 py-3 bg-white/5 rounded-xl border border-white/10">
@@ -740,7 +808,6 @@
         </div>
     </footer>
 
-    <script src="availability.js"></script>
     <script type="module" src="script.js"></script>
 </body>
 </html>
