@@ -1,5 +1,5 @@
 // ============================================================
-// IMPORTS FIREBASE (AUTH + FIRESTORE)
+// IMPORTS FIREBASE
 // ============================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -24,7 +24,7 @@ const db = getFirestore(app);
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==============================================
-    // 2. GESTION DES PROJETS (DATA & RENDERING)
+    // 2. GESTION DES PROJETS
     // ==============================================
     const projectsData = [
         {
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==============================================
-    // 3. ADMIN & AUTH
+    // 3. AUTH & ADMIN
     // ==============================================
     const adminModal = document.getElementById('admin-modal');
     const adminContent = document.getElementById('admin-content');
@@ -128,22 +128,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginError = document.getElementById('login-error');
     const shieldIcon = document.getElementById('header-shield-icon');
 
-    // Listener d'état de connexion pour mettre à jour le bouclier
     onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // User connecté : Bouclier Vert ou allumé
-            if(shieldIcon) {
-                shieldIcon.classList.remove('text-slate-600');
-                shieldIcon.classList.add('text-green-400');
-                shieldIcon.parentElement.classList.add('animate-pulse'); // Effet subtil
-            }
-        } else {
-            // User déconnecté
-            if(shieldIcon) {
-                shieldIcon.classList.add('text-slate-600');
-                shieldIcon.classList.remove('text-green-400');
-                shieldIcon.parentElement.classList.remove('animate-pulse');
-            }
+        if (user && shieldIcon) {
+            shieldIcon.classList.remove('text-slate-600');
+            shieldIcon.classList.add('text-green-400');
+            shieldIcon.parentElement.classList.add('animate-pulse');
+        } else if(shieldIcon) {
+            shieldIcon.classList.add('text-slate-600');
+            shieldIcon.classList.remove('text-green-400');
+            shieldIcon.parentElement.classList.remove('animate-pulse');
         }
     });
 
@@ -155,11 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 adminContent.classList.remove('scale-95');
                 adminContent.classList.add('scale-100');
             }, 10);
-            
-            // Vérif auto si déjà connecté
             if(auth.currentUser) showDashboard();
             else showLogin();
-
         } else {
             adminModal.classList.add('opacity-0');
             adminContent.classList.remove('scale-100');
@@ -213,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 showDashboard();
             })
             .catch((error) => {
-                console.error("Auth error:", error);
                 loginError.classList.remove('hidden');
                 adminContent.classList.add('animate-pulse');
                 setTimeout(() => adminContent.classList.remove('animate-pulse'), 500);
@@ -221,9 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.logout = function() {
-        signOut(auth).then(() => {
-            showLogin();
-        }).catch((error) => console.error("Logout error", error));
+        signOut(auth).then(() => showLogin()).catch((error) => console.error(error));
     };
 
     const adminActions = [
@@ -260,21 +247,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==============================================
-    // 4. ANIMATIONS & UI (SKILLS & ABOUT)
+    // 4. ANIMATIONS & UI (TECH & ABOUT) - CORRIGÉ
     // ==============================================
-    
-    // --- TECH DESCRIPTION ---
     const techDescriptions = {
-        'html': { title: 'Structure HTML5 Sémantique', text: 'Respect des standards W3C.', icon: 'ph-file-html', color: 'text-orange-500' },
-        'css': { title: 'Design CSS3 Moderne', text: 'Animations fluides et layouts Flexbox/Grid.', icon: 'ph-file-css', color: 'text-blue-500' },
-        'js': { title: 'JavaScript Dynamique', text: 'Fonctionnalités sur-mesure sans lourdeur.', icon: 'ph-file-js', color: 'text-yellow-400' },
-        'tailwind': { title: 'Tailwind CSS', text: 'Interfaces uniques et légères.', icon: 'ph-paint-brush-broad', color: 'text-cyan-400' },
-        'git': { title: 'Versionning Git', text: 'Sécurité et historique.', icon: 'ph-git-branch', color: 'text-red-500' },
-        'responsive': { title: 'Mobile First', text: 'Pensé pour smartphone avant tout.', icon: 'ph-device-mobile', color: 'text-purple-400' },
-        'firebase': { title: 'Google Firebase', text: 'Base de données temps réel.', icon: 'ph-fire', color: 'text-orange-400' },
-        'seo': { title: 'SEO & Performance', text: 'Optimisé pour Google.', icon: 'ph-magnifying-glass', color: 'text-green-500' }
+        'html': { title: 'Structure HTML5 Sémantique', text: 'Respect des standards W3C pour un code propre et accessible.', icon: 'ph-file-html', color: 'text-orange-500' },
+        'css': { title: 'Design CSS3 Moderne', text: 'Animations fluides et layouts Flexbox/Grid responsives.', icon: 'ph-file-css', color: 'text-blue-500' },
+        'js': { title: 'JavaScript Dynamique', text: 'Fonctionnalités sur-mesure sans alourdir le site.', icon: 'ph-file-js', color: 'text-yellow-400' },
+        'tailwind': { title: 'Tailwind CSS', text: 'Développement rapide d\'interfaces uniques et légères.', icon: 'ph-paint-brush-broad', color: 'text-cyan-400' },
+        'git': { title: 'Versionning Git', text: 'Sécurité du code et historique des modifications.', icon: 'ph-git-branch', color: 'text-red-500' },
+        'responsive': { title: 'Mobile First', text: 'Conception pensée pour les smartphones en priorité.', icon: 'ph-device-mobile', color: 'text-purple-400' },
+        'firebase': { title: 'Google Firebase', text: 'Base de données temps réel et authentification sécurisée.', icon: 'ph-fire', color: 'text-orange-400' },
+        'seo': { title: 'SEO & Performance', text: 'Optimisation technique pour un meilleur référencement Google.', icon: 'ph-magnifying-glass', color: 'text-green-500' }
     };
 
+    const aboutDescriptions = {
+        'diplome': { title: "Ingénieur Diplômé CTI", text: "Un label de qualité reconnu par l'État, garantissant une rigueur scientifique.", color: 'text-orange-400' },
+        'expert': { title: "14 ans d'expérience", text: "Une séniorité qui me permet d'éviter les pièges et livrer vite et bien.", color: 'text-pink-400' },
+        'comptes': { title: "Grands Comptes (EDF / ELCA)", text: "3 ans chez EDF et 9 ans chez ELCA (Suisse). J'applique ces standards d'excellence.", color: 'text-purple-400' },
+        'partenaire': { title: "Partenaire de confiance", text: "'We make it work'. Je ne vous lâche pas tant que ça ne marche pas parfaitement.", color: 'text-emerald-400' }
+    };
+
+    // Initialisation Tech (Premier item)
+    setTimeout(() => {
+        const firstTech = document.querySelector('[data-tech="html"]');
+        if(firstTech) updateDescriptionBox('tech', firstTech, techDescriptions['html']);
+    }, 1000);
+
+    // Event Listeners Tech
     document.querySelectorAll('.tech-item').forEach(item => {
         item.addEventListener('click', () => {
             const techKey = item.getAttribute('data-tech');
@@ -282,14 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- ABOUT DESCRIPTION (NOUVEAU) ---
-    const aboutDescriptions = {
-        'diplome': { title: "Ingénieur Diplômé CTI", text: "Un label de qualité reconnu par l'État, garantissant une rigueur scientifique, une capacité d'analyse complexe et une méthodologie éprouvée.", color: 'text-orange-400' },
-        'expert': { title: "14 ans d'expérience", text: "J'ai vu le web évoluer. Cette séniorité me permet d'éviter les pièges classiques, d'anticiper les problèmes techniques et de livrer vite et bien.", color: 'text-pink-400' },
-        'comptes': { title: "Grands Comptes (EDF / ELCA)", text: "3 ans chez EDF (Rigueur industrielle) et 9 ans chez ELCA (Leader Suisse de l'IT). J'applique ces standards d'excellence à vos projets.", color: 'text-purple-400' },
-        'partenaire': { title: "Partenaire de confiance", text: "Chez ELCA, le slogan était 'We make it work'. C'est ancré en moi : je ne vous lâche pas tant que ça ne marche pas parfaitement.", color: 'text-emerald-400' }
-    };
-
+    // Event Listeners About
     document.querySelectorAll('.about-badge').forEach(badge => {
         badge.addEventListener('click', () => {
             const key = badge.getAttribute('data-about');
@@ -297,31 +289,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Fonction générique pour mettre à jour une boite de description
     function updateDescriptionBox(type, element, data) {
-        // Reset styles selection
+        if(!data) return;
+
+        // Reset Styles
         const selector = type === 'tech' ? '.tech-item' : '.about-badge';
         document.querySelectorAll(selector).forEach(el => {
             el.classList.remove('border-accent-400', 'bg-white/10');
-            el.classList.add('border-white/5', 'bg-dark-900', 'bg-white/5'); // Reset générique
+            el.classList.add('border-white/5', 'bg-dark-900', 'bg-white/5');
         });
         
-        // Active style
+        // Active Style
         element.classList.remove('border-white/5', 'bg-dark-900');
         element.classList.add('border-accent-400', 'bg-white/10');
 
-        const box = document.getElementById(`${type}-desc-box`);
+        const box = document.getElementById(`${type}-description-box`) || document.getElementById(`${type}-desc-box`);
         const title = document.getElementById(`${type}-title`);
         const text = document.getElementById(`${type}-text`);
-        const icon = document.getElementById(`${type}-bg-icon`); // Uniquement pour tech
+        const icon = document.getElementById(`${type}-bg-icon`);
 
-        if (data && box) {
+        if (box) {
             box.classList.remove('opacity-100', 'translate-y-0');
             box.classList.add('opacity-0', 'translate-y-4');
             setTimeout(() => {
                 title.textContent = data.title;
                 text.textContent = data.text;
-                if(icon) icon.className = `ph-duotone ${data.icon} text-6xl absolute top-4 right-4 opacity-10 transition-colors duration-300 ${data.color}`;
+                if(icon && data.icon) {
+                    icon.className = `ph-duotone ${data.icon} text-6xl absolute top-4 right-4 opacity-10 transition-colors duration-300 ${data.color}`;
+                }
                 box.classList.remove('opacity-0', 'translate-y-4');
                 box.classList.add('opacity-100', 'translate-y-0');
             }, 300);
@@ -337,39 +332,37 @@ document.addEventListener('DOMContentLoaded', () => {
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
     // ==============================================
-    // 5. GESTION OFFRES & SELECTION (GOLD & FORM)
+    // 5. SELECTION OFFRES & CALCULATEUR
     // ==============================================
     
-    // Fonction appelée par les boutons "Choisir" des cartes
-    window.selectOffer = function(offerName) {
-        // 1. Scroll vers contact
+    // Fonction appelée par les boutons "Choisir"
+    window.selectOffer = function(offerName, price) {
         document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
         
-        // 2. Selectionner le bon radio button
+        // Cocher le radio correspondant
         const radioToSelect = document.querySelector(`input[name="project_pack"][value="${offerName}"]`);
         if(radioToSelect) {
             radioToSelect.checked = true;
-            // Déclencher l'update visuel
-            window.updateCardSelection(offerName); 
+            window.updateCardSelection(offerName, price); 
         }
     };
 
-    // Fonction appelée par le bouton "Ajouter au devis" du pack sérénité
+    // Fonction toggle pour le switch Sérénité
     window.toggleSerenityOption = function() {
         document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
         const checkSerenity = document.getElementById('check-serenite');
         if(checkSerenity) {
             checkSerenity.checked = !checkSerenity.checked;
-            // Update visuel carte sérénité
             updateSerenityCard(checkSerenity.checked);
+            updateTotal();
         }
     };
 
-    // Update visuel de la carte sérénité quand checkbox change
     const checkSerenity = document.getElementById('check-serenite');
     if(checkSerenity) {
         checkSerenity.addEventListener('change', (e) => {
             updateSerenityCard(e.target.checked);
+            updateTotal();
         });
     }
 
@@ -381,15 +374,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Gestion du contour doré sur les cartes de prix
-    window.updateCardSelection = function(selectedVal) {
+    // Gestion contour doré + Calcul Total
+    window.updateCardSelection = function(selectedVal, price) {
         // Reset classes
         ['card-essentiel', 'card-vitrine', 'card-premium'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.classList.remove('gold-selected-card');
         });
 
-        // Add class to selected
+        // Add class
         let targetId = '';
         if(selectedVal === 'Essentiel') targetId = 'card-essentiel';
         if(selectedVal === 'Vitrine') targetId = 'card-vitrine';
@@ -397,14 +390,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const targetEl = document.getElementById(targetId);
         if(targetEl) targetEl.classList.add('gold-selected-card');
+
+        updateTotal();
     };
 
-    // Initialisation au chargement (Vitrine par défaut)
-    window.updateCardSelection('Vitrine');
+    function updateTotal() {
+        const packRadio = document.querySelector('input[name="project_pack"]:checked');
+        const packPrice = packRadio ? parseInt(packRadio.getAttribute('data-price')) : 0;
+        const serenityPrice = document.getElementById('check-serenite').checked ? 600 : 0;
+        
+        const total = packPrice + serenityPrice;
+        
+        const display = document.getElementById('total-price-display');
+        if(display) {
+            display.textContent = total.toLocaleString('fr-FR') + ' €';
+        }
+    }
+
+    // Init défaut
+    window.updateCardSelection('Vitrine', 1700);
 
 
     // ==============================================
-    // 6. CALENDRIER & FORMULAIRE DEVIS
+    // 6. CALENDRIER (PAGINATION 30 JOURS)
     // ==============================================
     const daysContainer = document.getElementById('calendar-days');
     const slotsContainer = document.getElementById('calendar-slots');
@@ -412,49 +420,95 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeInput = document.getElementById('selected-time');
     const DEFAULT_SLOTS = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
 
-    async function initCalendar() {
+    let calendarStartDate = new Date();
+    let currentDateOffset = 0; // Nombre de jours de décalage
+
+    // Init
+    renderCalendar();
+
+    // Boutons Pagination
+    document.getElementById('next-week')?.addEventListener('click', () => {
+        currentDateOffset += 5; 
+        renderCalendar();
+    });
+    document.getElementById('prev-week')?.addEventListener('click', () => {
+        if(currentDateOffset > 0) {
+            currentDateOffset -= 5;
+            renderCalendar();
+        }
+    });
+
+    function renderCalendar() {
         if(!daysContainer) return;
         daysContainer.innerHTML = '';
-        const today = new Date();
-        let delay = 0;
+        
+        const btnPrev = document.getElementById('prev-week');
+        if(btnPrev) btnPrev.disabled = currentDateOffset === 0;
 
-        for (let i = 1; i <= 14; i++) {
-            const d = new Date(today);
-            d.setDate(today.getDate() + i);
-            if (d.getDay() === 0 || d.getDay() === 6) continue;
+        let daysGenerated = 0;
+        let i = 1 + currentDateOffset;
 
-            const dateStr = d.toISOString().split('T')[0];
-            const dayName = d.toLocaleDateString('fr-FR', { weekday: 'short' });
-            const dayNum = d.toLocaleDateString('fr-FR', { day: 'numeric' });
-            const monthName = d.toLocaleDateString('fr-FR', { month: 'short' });
+        // Générer 5 jours à la fois (pour la pagination "semaine")
+        // Mais on boucle jusqu'à trouver 5 jours ouvrés
+        while (daysGenerated < 5) {
+            // Limite max à 30 jours
+            if (i > 30) break;
 
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = `date-btn flex-shrink-0 w-16 h-20 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 flex flex-col items-center justify-center transition-all duration-300 group focus:outline-none reveal-day`;
-            btn.style.animationDelay = `${delay}ms`;
-            btn.innerHTML = `
-                <span class="text-xs text-slate-400 uppercase font-bold group-hover:text-accent-400">${dayName}</span>
-                <span class="text-xl font-bold text-white my-1">${dayNum}</span>
-                <span class="text-[10px] text-slate-500">${monthName}</span>
-            `;
-            btn.addEventListener('click', (e) => selectDate(btn, dateStr));
-            daysContainer.appendChild(btn);
-            delay += 50;
+            const d = new Date();
+            d.setDate(d.getDate() + i);
+
+            // Exclure Week-end
+            if (d.getDay() !== 0 && d.getDay() !== 6) {
+                const dateStr = d.toISOString().split('T')[0];
+                const dayName = d.toLocaleDateString('fr-FR', { weekday: 'short' });
+                const dayNum = d.toLocaleDateString('fr-FR', { day: 'numeric' });
+                const monthName = d.toLocaleDateString('fr-FR', { month: 'short' });
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                // Classe CSS pour Responsive Grid sur Mobile (w-full au lieu de w-16 fixe)
+                btn.className = `date-btn flex-shrink-0 w-full sm:w-16 h-20 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 flex flex-col items-center justify-center transition-all duration-300 group focus:outline-none`;
+                
+                // Si c'est la date déjà sélectionnée, on la garde active
+                if(dateInput.value === dateStr) {
+                    btn.classList.add('active-date');
+                }
+
+                btn.innerHTML = `
+                    <span class="text-xs text-slate-400 uppercase font-bold group-hover:text-accent-400">${dayName}</span>
+                    <span class="text-xl font-bold text-white my-1">${dayNum}</span>
+                    <span class="text-[10px] text-slate-500">${monthName}</span>
+                `;
+                btn.addEventListener('click', () => selectDate(btn, dateStr));
+                daysContainer.appendChild(btn);
+                
+                daysGenerated++;
+            }
+            i++;
         }
     }
 
     async function selectDate(btn, dateStr) {
+        // RESET TOTAL DES STYLES (CORRECTION BUG RÉGRESSION)
         document.querySelectorAll('.date-btn').forEach(b => {
-            b.classList.remove('bg-accent-400', 'border-accent-400');
-            b.querySelector('span').classList.remove('text-dark-950'); 
+            b.classList.remove('active-date'); // Utilisation d'une classe CSS dédiée
+            b.classList.remove('bg-accent-400', 'border-accent-400'); // Au cas où
+            const spans = b.querySelectorAll('span');
+            spans[0].className = "text-xs text-slate-400 uppercase font-bold group-hover:text-accent-400";
+            spans[1].className = "text-xl font-bold text-white my-1";
+            spans[2].className = "text-[10px] text-slate-500";
         });
-        btn.classList.remove('bg-white/5');
-        btn.classList.add('bg-accent-400', 'border-accent-400');
+
+        // ACTIVER NOUVEAU
+        btn.classList.add('active-date');
+        
+        // On force les couleurs manuellement pour être sûr
         const spans = btn.querySelectorAll('span');
-        spans.forEach(s => {
-            s.classList.remove('text-slate-400', 'text-white', 'text-slate-500');
-            s.classList.add('text-dark-950');
-        });
+        spans.forEach(s => s.className = ''); // Clear
+        spans[0].className = "text-xs text-dark-950 uppercase font-bold";
+        spans[1].className = "text-xl font-bold text-dark-950 my-1";
+        spans[2].className = "text-[10px] text-dark-950";
+
         dateInput.value = dateStr;
         timeInput.value = ""; 
         await loadSlotsForDate(dateStr);
@@ -496,11 +550,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 slotsContainer.appendChild(btn);
             });
         } catch (err) {
-            console.error("Slots error:", err);
+            console.error(err);
             slotsContainer.innerHTML = '<div class="col-span-4 text-center text-red-400 text-xs">Erreur connexion</div>';
         }
     }
 
+    // FORM SUBMIT
     const bookingForm = document.getElementById('booking-form');
     if(bookingForm) {
         bookingForm.addEventListener('submit', async (e) => {
@@ -513,10 +568,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Récupération des nouvelles valeurs
             const selectedPack = document.querySelector('input[name="project_pack"]:checked').value;
             const hasSerenity = document.getElementById('check-serenite').checked;
             const desc = document.getElementById('client-desc').value;
+            // Récupération montant total pour enregistrer en base si besoin (optionnel)
+            const total = document.getElementById('total-price-display').textContent;
 
             try {
                 submitBtn.disabled = true;
@@ -529,8 +585,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     email: document.getElementById('client-email').value,
                     phone: document.getElementById('client-phone').value,
                     pack: selectedPack,
-                    option_serenite: hasSerenity, // Booléen
+                    option_serenite: hasSerenity,
                     description: desc,
+                    estimated_total: total,
                     created_at: new Date().toISOString(),
                     status: 'pending' 
                 });
@@ -545,6 +602,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    initCalendar();
 });

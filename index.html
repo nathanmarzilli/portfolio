@@ -23,11 +23,10 @@
                     colors: {
                         dark: { 950: '#020617', 900: '#0B1120', 800: '#1E293B', 850: '#0f172a' },
                         accent: { 400: '#2DD4BF', 500: '#14B8A6' },
-                        gold: { 400: '#FBBF24', 500: '#F59E0B', glow: 'rgba(251, 191, 36, 0.15)' }
+                        gold: { 400: '#FBBF24', 500: '#F59E0B' }
                     },
                     animation: {
                         'blob': 'blob 7s infinite',
-                        'send': 'sendPlane 1.5s ease-in-out forwards',
                         'pop-in': 'popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
                     },
                     keyframes: {
@@ -37,18 +36,9 @@
                             '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
                             '100%': { transform: 'translate(0px, 0px) scale(1)' },
                         },
-                        sendPlane: {
-                            '0%': { transform: 'translateX(0) translateY(0) scale(1)', opacity: 1 },
-                            '20%': { transform: 'translateX(-10px) translateY(10px) scale(0.9)', opacity: 1 },
-                            '100%': { transform: 'translateX(300px) translateY(-300px) scale(0)', opacity: 0 }
-                        },
                         popIn: {
                             '0%': { transform: 'translateX(-50%) scale(0)', opacity: 0 },
                             '100%': { transform: 'translateX(-50%) scale(1)', opacity: 1 }
-                        },
-                        fadeUp: {
-                            '0%': { transform: 'translateY(10px)', opacity: 0 },
-                            '100%': { transform: 'translateY(0)', opacity: 1 }
                         }
                     }
                 }
@@ -91,17 +81,10 @@
             transform: translateY(-3px) scale(1.01);
         }
 
-        /* Styles boutons radio formulaire */
-        .pack-radio-label {
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
+        /* Form Radio Buttons */
+        .pack-radio-label { cursor: pointer; transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.1); }
         .pack-radio-input:checked + .pack-radio-label {
-            background-color: #2DD4BF;
-            color: #020617;
-            border-color: #2DD4BF;
-            font-weight: bold;
+            background-color: #2DD4BF; color: #020617; border-color: #2DD4BF; font-weight: bold;
             box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
         }
 
@@ -115,15 +98,18 @@
             display: flex; align-items: center; gap: 0.5rem;
         }
         
-        .date-btn:hover { border-color: #2DD4BF; }
+        /* Date Button Active State */
+        .date-btn.active-date {
+            background-color: #2DD4BF !important;
+            border-color: #2DD4BF !important;
+        }
+        .date-btn.active-date span {
+            color: #020617 !important;
+        }
         
         @media (hover: none) {
             .pricing-card a:hover { background-color: inherit; color: inherit; border-color: rgba(255, 255, 255, 0.1); }
         }
-        
-        #hosting-content { transition: max-height 0.5s ease-out, opacity 0.4s ease-out; max-height: 0; opacity: 0; overflow: hidden; }
-        #hosting-content.open { max-height: 3000px; opacity: 1; }
-        .rotate-chevron { transform: rotate(180deg); }
     </style>
 </head>
 <body class="selection:bg-accent-400/30 selection:text-white bg-dark-950">
@@ -144,7 +130,6 @@
                 <button onclick="toggleAdminModal()" id="header-admin-btn" class="text-slate-600 hover:text-white transition-colors" title="Administration">
                     <i class="ph-bold ph-shield text-lg" id="header-shield-icon"></i>
                 </button>
-
                 <a href="#about" class="hover:text-white transition-colors">L'Artisan</a>
                 <a href="#skills" class="hover:text-white transition-colors">Expertise</a>
                 <a href="#projects" class="hover:text-white transition-colors">Réalisations</a>
@@ -156,7 +141,6 @@
 
             <div class="flex items-center gap-3 md:hidden z-50 shrink-0">
                 <button onclick="toggleAdminModal()" class="text-slate-600 p-1"><i class="ph-bold ph-shield"></i></button>
-
                 <a href="#contact" class="px-3 py-2 rounded-full bg-accent-400 text-dark-950 font-bold text-[10px] uppercase tracking-wider shadow-lg shadow-accent-400/20 whitespace-nowrap">Réserver</a>
                 <button id="mobile-menu-btn" class="text-white p-1"><i class="ph ph-list text-2xl"></i></button>
             </div>
@@ -254,8 +238,8 @@
                     </div>
 
                     <div id="about-desc-box" class="min-h-[80px] p-4 rounded-xl bg-gradient-to-br from-dark-950 to-dark-900 border border-white/10 relative overflow-hidden transition-all duration-300 opacity-0 transform translate-y-4">
-                         <h4 id="about-title" class="text-accent-400 font-bold text-sm mb-1">Cliquez sur un badge...</h4>
-                         <p id="about-text" class="text-slate-400 text-xs leading-relaxed">Pour découvrir le détail de mon parcours.</p>
+                         <h4 id="about-title" class="text-accent-400 font-bold text-sm mb-1"></h4>
+                         <p id="about-text" class="text-slate-400 text-xs leading-relaxed"></p>
                     </div>
                 </div>
 
@@ -331,10 +315,8 @@
                             <div class="absolute top-0 right-0 p-4 opacity-10">
                                 <i id="tech-bg-icon" class="ph-duotone ph-code text-6xl text-white"></i>
                             </div>
-                            <h4 id="tech-title" class="text-accent-400 font-bold text-lg mb-2 relative z-10">Sélectionnez une techno</h4>
-                            <p id="tech-text" class="text-slate-400 text-sm relative z-10 leading-relaxed">
-                                Cliquez sur une icône ci-dessus pour découvrir mon niveau d'expertise.
-                            </p>
+                            <h4 id="tech-title" class="text-accent-400 font-bold text-lg mb-2 relative z-10"></h4>
+                            <p id="tech-text" class="text-slate-400 text-sm relative z-10 leading-relaxed"></p>
                         </div>
                     </div>
 
@@ -342,9 +324,6 @@
                         <h3 class="text-xl font-display font-bold text-white mb-6 flex items-center gap-2">
                             <i class="ph-duotone ph-translate text-accent-400"></i> Langues parlées
                         </h3>
-                        <p class="text-sm text-slate-400 mb-6">
-                            La barrière de la langue ne doit pas être un frein.
-                        </p>
                         <div class="space-y-4">
                             <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
                                 <div class="flex items-center gap-3">
@@ -367,7 +346,7 @@
                                 </div>
                                 <span class="text-xs text-blue-400 font-medium bg-blue-400/10 px-2 py-1 rounded shrink-0 text-right">C1 - Avancé</span>
                             </div>
-                             <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-white/5 interactive-hover gap-4">
                                 <div class="flex items-center gap-3">
                                     <span class="text-lg font-display font-bold text-white bg-white/10 w-8 h-8 flex items-center justify-center rounded-full shrink-0">JP</span>
                                     <span class="text-sm font-bold text-white">Japonais</span>
@@ -408,15 +387,16 @@
                     <h3 class="text-xl font-display font-bold text-white mb-2">L'Essentiel</h3>
                     <div class="text-3xl font-bold text-accent-400 mb-6">900€</div>
                     <ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site One-Page personnalisé</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne clé en main</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site One-Page (Présentation)</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Responsive Mobile / Tablette</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Sécurisé (HTTPS) & Rapide</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Formulaire de Contact</li>
                         <li class="flex items-center gap-2 group cursor-pointer" onclick="toggleHosting(true)">
                             <i class="ph-bold ph-info text-slate-500 group-hover:text-accent-400 transition-colors"></i>
                             <span class="text-slate-200">Hébergement OVH : <br><strong class="text-accent-400 text-xs">+ 7.79€/an</strong> (1ère année offerte)</span>
                         </li>
                     </ul>
-                    <a href="#contact" onclick="selectOffer('Essentiel')" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-colors font-medium relative z-10">Choisir</a>
+                    <a href="#contact" onclick="selectOffer('Essentiel', 900)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-colors font-medium relative z-10">Choisir</a>
                 </div>
 
                 <div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover border-accent-400/30 bg-accent-400/5 relative overflow-visible pricing-card transition-all duration-300" id="card-vitrine">
@@ -424,30 +404,32 @@
                     <h3 class="text-xl font-display font-bold text-white mb-2">Vitrine Artisan</h3>
                     <div class="text-3xl font-bold text-accent-400 mb-6">1 700€</div>
                     <ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site jusqu’à 5 pages</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site Multi-pages (jusqu’à 5)</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Galerie Réalisations / Portfolio</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Optimisation SEO de base</li>
                         <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Option Multilingue incluse</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Galerie & Formulaire</li>
-                         <li class="flex items-center gap-2 group cursor-pointer" onclick="toggleHosting(true)">
+                        <li class="flex items-center gap-2 group cursor-pointer" onclick="toggleHosting(true)">
                             <i class="ph-bold ph-info text-slate-500 group-hover:text-accent-400 transition-colors"></i>
                             <span class="text-slate-200">Hébergement OVH : <br><strong class="text-accent-400 text-xs">+ 7.79€/an</strong> (1ère année offerte)</span>
                         </li>
                     </ul>
-                    <a href="#contact" onclick="selectOffer('Vitrine')" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10">Choisir</a>
+                    <a href="#contact" onclick="selectOffer('Vitrine', 1700)" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10">Choisir</a>
                 </div>
 
                 <div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-premium">
                     <h3 class="text-xl font-display font-bold text-white mb-2">Premium</h3>
                     <div class="text-3xl font-bold text-purple-400 mb-6">2500€</div>
                     <ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Design 100% sur-mesure</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Blog / Actualités</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Avis Google intégrés</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Design 100% Sur-mesure</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Blog / Actualités dynamique</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Intégration Avis Google</li>
+                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Statistiques avancées</li>
                         <li class="flex items-center gap-2 group cursor-pointer" onclick="toggleHosting(true)">
                             <i class="ph-bold ph-info text-slate-500 group-hover:text-purple-400 transition-colors"></i>
-                             <span class="text-slate-200">Hébergement OVH : <br><strong class="text-purple-400 text-xs">+ ~47€/an</strong> (Plus puissant)</span>
+                             <span class="text-slate-200">Hébergement OVH : <br><strong class="text-purple-400 text-xs">+ ~47€/an</strong> (Performance)</span>
                         </li>
                     </ul>
-                    <a href="#contact" onclick="selectOffer('Premium')" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10">Choisir</a>
+                    <a href="#contact" onclick="selectOffer('Premium', 2500)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10">Choisir</a>
                 </div>
             </div>
 
@@ -469,14 +451,22 @@
                 </div>
 
                 <div class="glass-card p-8 rounded-3xl interactive-hover">
-                    <h3 class="text-lg font-bold text-white mb-4">Transparence Hébergement</h3>
-                    <p class="text-slate-400 text-xs leading-relaxed">
-                        Vous êtes propriétaire de votre nom de domaine. Vous payez l'hébergement directement à OVH Cloud (Leader Français).
-                        <br><br>
-                        <strong class="text-accent-400">Pack Starter :</strong> 7.79€ HT / an (1ère année offerte).
-                        <br>
-                        <strong class="text-purple-400">Pack Perso :</strong> ~47€ HT / an.
-                    </p>
+                    <h3 class="text-lg font-bold text-white mb-4">Interventions Ponctuelles</h3>
+                    <p class="text-slate-500 text-xs mb-6">Sans pack maintenance, voici les tarifs à la carte pour justifier l'économie du pack :</p>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center border-b border-white/5 pb-2">
+                            <span class="text-sm text-slate-300">Simple (Texte/Photo)</span>
+                            <span class="font-bold text-white">100€</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-white/5 pb-2">
+                            <span class="text-sm text-slate-300">Moyenne (Mise en page)</span>
+                            <span class="font-bold text-white">200€</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-slate-300">Complexe (Fonctionnalité)</span>
+                            <span class="font-bold text-white">300€ +</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -514,9 +504,17 @@
                         </div>
 
                         <div class="space-y-4">
-                            <div class="form-section-title"><i class="ph-bold ph-calendar-blank"></i> Choisir un moment</div>
-                            <div class="flex space-x-3 overflow-x-auto pb-2 scrollbar-hide" id="calendar-days">
+                            <div class="flex justify-between items-end">
+                                <div class="form-section-title"><i class="ph-bold ph-calendar-blank"></i> Choisir un moment</div>
+                                <div class="flex gap-2">
+                                    <button type="button" id="prev-week" class="p-1 rounded bg-white/5 hover:bg-white/10 text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"><i class="ph-bold ph-caret-left"></i></button>
+                                    <button type="button" id="next-week" class="p-1 rounded bg-white/5 hover:bg-white/10 text-white transition-colors"><i class="ph-bold ph-caret-right"></i></button>
                                 </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-4 sm:flex sm:space-x-3 gap-2 overflow-x-auto pb-2 scrollbar-hide" id="calendar-days">
+                                </div>
+                            
                             <div id="calendar-slots" class="grid grid-cols-3 sm:grid-cols-4 gap-3">
                                 <div class="text-xs text-slate-500 italic col-span-3">Sélectionnez un jour...</div>
                             </div>
@@ -550,22 +548,16 @@
                                 <label class="text-xs text-slate-400 uppercase font-bold ml-1">Pack Sélectionné</label>
                                 <div class="grid grid-cols-3 gap-2">
                                     <div class="relative">
-                                        <input type="radio" name="project_pack" id="pack-essentiel" value="Essentiel" class="hidden pack-radio-input" onchange="updateCardSelection('Essentiel')">
-                                        <label for="pack-essentiel" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">
-                                            Essentiel
-                                        </label>
+                                        <input type="radio" name="project_pack" id="pack-essentiel" value="Essentiel" data-price="900" class="hidden pack-radio-input" onchange="updateCardSelection('Essentiel', 900)">
+                                        <label for="pack-essentiel" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Essentiel</label>
                                     </div>
                                     <div class="relative">
-                                        <input type="radio" name="project_pack" id="pack-vitrine" value="Vitrine" class="hidden pack-radio-input" checked onchange="updateCardSelection('Vitrine')">
-                                        <label for="pack-vitrine" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">
-                                            Vitrine
-                                        </label>
+                                        <input type="radio" name="project_pack" id="pack-vitrine" value="Vitrine" data-price="1700" class="hidden pack-radio-input" checked onchange="updateCardSelection('Vitrine', 1700)">
+                                        <label for="pack-vitrine" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Vitrine</label>
                                     </div>
                                     <div class="relative">
-                                        <input type="radio" name="project_pack" id="pack-premium" value="Premium" class="hidden pack-radio-input" onchange="updateCardSelection('Premium')">
-                                        <label for="pack-premium" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">
-                                            Premium
-                                        </label>
+                                        <input type="radio" name="project_pack" id="pack-premium" value="Premium" data-price="2500" class="hidden pack-radio-input" onchange="updateCardSelection('Premium', 2500)">
+                                        <label for="pack-premium" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Premium</label>
                                     </div>
                                 </div>
                             </div>
@@ -575,7 +567,12 @@
                                     <input type="checkbox" id="check-serenite" class="w-4 h-4 rounded text-blue-500 focus:ring-blue-500 bg-dark-950 border-white/20">
                                     <label for="check-serenite" class="text-sm text-slate-300 font-medium cursor-pointer select-none">Ajouter Pack Sérénité</label>
                                 </div>
-                                <span class="text-xs text-blue-400 font-bold">+600€/an</span>
+                                <span class="text-xs text-blue-400 font-bold">+600€</span>
+                            </div>
+
+                            <div class="flex justify-between items-center px-4 py-3 bg-white/5 rounded-xl border border-white/10">
+                                <span class="text-sm text-slate-400 font-bold uppercase">Total Estimé</span>
+                                <span id="total-price-display" class="text-xl font-bold text-accent-400">1 700 €</span>
                             </div>
 
                             <div class="space-y-1">
