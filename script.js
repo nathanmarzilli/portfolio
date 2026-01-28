@@ -622,6 +622,17 @@
                     const name = document.getElementById('client-lastname').value;
                     const firstname = document.getElementById('client-firstname').value;
                     const email = document.getElementById('client-email').value;
+					
+					// Calcul de l'heure de fin (+30 minutes)
+					const [hours, minutes] = timeInput.value.split(':').map(Number);
+					const dateObj = new Date();
+					dateObj.setHours(hours, minutes);
+					dateObj.setMinutes(dateObj.getMinutes() + 30);
+
+					// Formater proprement en "HH:mm" (ex: "09:00" -> "09:30")
+					const endH = String(dateObj.getHours()).padStart(2, '0');
+					const endM = String(dateObj.getMinutes()).padStart(2, '0');
+					const calculatedEndTime = `${endH}:${endM}`;
 
                     try {
                         submitBtn.disabled = true;
@@ -630,6 +641,7 @@
                         await addDoc(collection(db, "bookings"), {
                             date: dateInput.value,
                             time: timeInput.value,
+							endTime: calculatedEndTime,
                             lastname: name,
                             firstname: firstname,
                             fullname: `${firstname} ${name}`,
