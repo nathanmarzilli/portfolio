@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 	
 	// ==============================================
-    // 2. GESTION DES PROJETS (CORRIGÉ)
+    // 2. GESTION DES PROJETS (CORRIGÉ & COMPLET)
     // ==============================================
     const projectsData = [
         {
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectsGrid = document.getElementById('projects-grid');
     
     if (projectsGrid) {
-        // Simulation délai réseau pour Skeleton
+        // Simulation délai réseau pour laisser voir le Skeleton (effet de chargement)
         setTimeout(() => {
             projectsGrid.innerHTML = projectsData.map((project, index) => {
                 const featuresHtml = project.features && project.features.length > 0 ? `
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             `).join('')}
                         </div>
                         <div id="project-desc-box-${index}" class="hidden w-full">
-                            <div class="p-4 rounded-xl bg-white/5 border-l-2 border-accent-400 text-sm text-slate-300 relative animate-fade-up w-full">
+                            <div class="p-4 rounded-xl bg-white/5 border-l-2 border-accent-400 text-sm text-slate-300 relative animate-pop-in w-full">
                                 <i class="ph-duotone ph-info text-xl text-accent-400 absolute top-4 right-4 opacity-50"></i>
                                 <p id="project-desc-text-${index}" class="leading-relaxed pr-8"></p>
                             </div>
@@ -130,19 +130,56 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }).join('');
 
-            // --- FIX CRITIQUE : RE-DECLENCHEMENT DE L'OBSERVER ---
-            // On récupère l'observer défini plus bas (il est accessible ici grâce à la portée des variables)
-            // ou on en crée un temporaire si nécessaire, mais ici on force l'ajout de la classe 'active'
-            // pour être sûr que ça s'affiche.
-            const newProjectElements = document.querySelectorAll('#projects-grid .reveal');
-            
-            // Option 1 : Forcer l'affichage directement (plus sûr)
+            // FORCE L'AFFICHAGE (Correction du bug "invisible")
             setTimeout(() => {
+                const newProjectElements = document.querySelectorAll('#projects-grid .reveal');
                 newProjectElements.forEach(el => el.classList.add('active'));
             }, 50);
 
         }, 500);
     }
+
+    // --- FONCTIONS D'INTERACTIVITÉ (ESSENTIELLES POUR NEWS/BLOG/FRISE) ---
+
+    // 1. Gestion de l'affichage des descriptions (News, Frise, etc.)
+    window.showProjectDesc = function(projectIndex, btnIndex) {
+        if(window.vibrate) window.vibrate(); // Feedback tactile
+        
+        // Reset de tous les boutons de ce projet
+        document.querySelectorAll(`.proj-btn-${projectIndex}`).forEach(btn => {
+            btn.classList.remove('bg-white/10', 'border-accent-400', 'text-white');
+            btn.classList.add('bg-dark-900', 'border-white/10', 'text-slate-300');
+        });
+
+        // Activation du bouton cliqué
+        const clickedBtn = document.querySelectorAll(`.proj-btn-${projectIndex}`)[btnIndex];
+        if(clickedBtn) {
+            clickedBtn.classList.remove('bg-dark-900', 'border-white/10', 'text-slate-300');
+            clickedBtn.classList.add('bg-white/10', 'border-accent-400', 'text-white');
+            
+            // Affichage de la boîte de description
+            const box = document.getElementById(`project-desc-box-${projectIndex}`);
+            const text = document.getElementById(`project-desc-text-${projectIndex}`);
+            
+            if(box && text) {
+                box.classList.remove('hidden');
+                text.textContent = clickedBtn.getAttribute('data-desc');
+            }
+        }
+    };
+
+    // 2. Fonction Globale pour le fix mobile (Aperçu site)
+    window.toggleMobilePreview = function(element) {
+        if(window.vibrate) window.vibrate();
+        if (window.innerWidth < 768) {
+            if (element.classList.contains('mobile-active')) {
+                element.classList.remove('mobile-active');
+            } else {
+                document.querySelectorAll('.project-frame-container').forEach(el => el.classList.remove('mobile-active'));
+                element.classList.add('mobile-active');
+            }
+        }
+    };
 
     // ==============================================
     // 3. AUTH & ADMIN
