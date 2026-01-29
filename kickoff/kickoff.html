@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Préparation RDV Projet | Nathan Marzilli</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] },
+                    colors: {
+                        dark: { 950: '#020617', 900: '#0B1120', 800: '#1E293B' },
+                        accent: { 400: '#2DD4BF', 500: '#14B8A6' }
+                    },
+                    animation: {
+                        blob: "blob 7s infinite",
+                    },
+                    keyframes: {
+                        blob: {
+                            "0%": { transform: "translate(0px, 0px) scale(1)" },
+                            "33%": { transform: "translate(30px, -50px) scale(1.1)" },
+                            "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+                            "100%": { transform: "translate(0px, 0px) scale(1)" },
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- UI APPLICATION (MODE SOMBRE) --- */
+        body { background-color: #020617; color: #E2E8F0; overflow-x: hidden; }
+        
+        /* Background Blobs */
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+
+        /* Glass Cards */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border-radius: 1.5rem;
+        }
+
+        /* Inputs Styling */
+        .input-premium, .textarea-premium, .select-premium {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .input-premium:focus, .textarea-premium:focus, .select-premium:focus {
+            border-color: #2DD4BF;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.1);
+            background: rgba(15, 23, 42, 0.8);
+        }
+        
+        /* Labels */
+        .label-premium {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #94A3B8;
+            margin-bottom: 0.35rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .section-title i { color: #2DD4BF; }
+
+        /* Checkboxes */
+        .chk-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            border: 1px solid transparent;
+        }
+        .chk-label:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.05); }
+        .chk-input {
+            accent-color: #2DD4BF;
+            width: 1.1rem;
+            height: 1.1rem;
+            margin-top: 2px;
+        }
+
+        /* Floating Action Bar */
+        .sticky-action-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            padding: 1.5rem;
+            background: rgba(2, 6, 23, 0.90);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 50;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+    </style>    
+</head>
+<body class="selection:bg-accent-400/30 selection:text-white pb-32">
+
+    <!-- Background Effects -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
+        <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[100px] mix-blend-screen animate-blob"></div>
+        <div class="absolute top-[20%] right-[-10%] w-[400px] h-[400px] bg-accent-400/10 rounded-full blur-[100px] mix-blend-screen animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-[-10%] left-[20%] w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[100px] mix-blend-screen animate-blob animation-delay-4000"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="w-full border-b border-white/5 bg-dark-950/50 backdrop-blur-md sticky top-0 z-40">
+        <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-400 to-blue-600 flex items-center justify-center text-dark-950 font-bold">
+                    <i class="ph-bold ph-rocket-launch"></i>
+                </div>
+                <span class="font-display font-bold text-lg tracking-wide text-white">Project<span class="text-accent-400">Kickoff</span></span>
+            </div>
+            <div class="text-xs font-medium text-slate-400 bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
+                Préparation RDV
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto p-4 lg:p-8">
+        
+        <!-- Intro Header -->
+        <div class="text-center mb-10 fade-in">
+            <h1 class="font-display text-3xl lg:text-4xl font-bold text-white mb-4">Préparons votre succès</h1>
+            <p class="text-slate-400 max-w-xl mx-auto">
+                Pour optimiser notre RDV de lancement, merci de compléter ce formulaire. Cela me permettra de cadrer techniquement et graphiquement votre projet.
+            </p>
+        </div>
+
+        <form id="projectForm" class="space-y-6 fade-in" style="animation-delay: 0.2s;">
+
+            <!-- PACK SELECTION -->
+            <div class="glass-card p-6 border-accent-400/30 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-accent-400/10 blur-2xl rounded-full"></div>
+                <label class="label-premium text-accent-400 mb-2">Pack Choisi</label>
+                <select id="packChoice" class="select-premium text-lg font-bold">
+                    <option value="L'Essentiel">⚡ Pack L'Essentiel (One-Page)</option>
+                    <option value="Vitrine Artisan" selected>🛠️ Pack Vitrine Artisan (Populaire)</option>
+                    <option value="Premium">💎 Pack Premium (Sur-mesure)</option>
+                </select>
+            </div>
+
+            <!-- 1. INFO GENERALES -->
+            <div class="glass-card p-6 lg:p-8">
+                <div class="section-title mt-0"><i class="ph-duotone ph-identification-card"></i> 1. Informations Générales</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="label-premium">Nom de l'entreprise / Projet</label>
+                        <input type="text" id="companyName" placeholder="Ex: Menuiserie Dupont" class="input-premium">
+                    </div>
+                    <div>
+                        <label class="label-premium">Votre Nom & Prénom</label>
+                        <input type="text" id="contactName" placeholder="Votre nom complet" class="input-premium">
+                    </div>
+                    <div>
+                        <label class="label-premium">Site actuel (si existant)</label>
+                        <input type="url" id="currentUrl" placeholder="https://..." class="input-premium">
+                    </div>
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="label-premium">Activité & Zone Géographique</label>
+                        <textarea id="activityDesc" rows="2" placeholder="Que faites-vous et où ? (Ex: Plombier à Lyon et alentours...)" class="textarea-premium"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. OBJECTIFS & CIBLE -->
+            <div class="glass-card p-6 lg:p-8">
+                <div class="section-title"><i class="ph-duotone ph-target"></i> 2. Objectifs & Clients</div>
+                
+                <div class="mb-6">
+                    <label class="label-premium mb-3">Pourquoi refaire/créer ce site maintenant ?</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <label class="chk-label"><input type="checkbox" name="goals" value="Plus de visibilité" class="chk-input"> <span class="text-sm text-slate-300">Gagner en visibilité</span></label>
+                        <label class="chk-label"><input type="checkbox" name="goals" value="Image trop vieille" class="chk-input"> <span class="text-sm text-slate-300">Moderniser l'image</span></label>
+                        <label class="chk-label"><input type="checkbox" name="goals" value="Générer des contacts" class="chk-input"> <span class="text-sm text-slate-300">Générer des leads/appels</span></label>
+                        <label class="chk-label"><input type="checkbox" name="goals" value="Vendre en ligne" class="chk-input"> <span class="text-sm text-slate-300">Vendre des produits</span></label>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="label-premium">Qui est votre client idéal ?</label>
+                        <input type="text" id="targetAudience" placeholder="Ex: Particuliers 30-50 ans propriétaires..." class="input-premium">
+                    </div>
+                    <div>
+                        <label class="label-premium">Quelle action principale attendez-vous du visiteur ?</label>
+                        <select id="mainCta" class="select-premium">
+                            <option>M'appeler par téléphone</option>
+                            <option>Remplir un formulaire de devis</option>
+                            <option>Prendre RDV en ligne</option>
+                            <option>Acheter un produit</option>
+                            <option>S'inscrire à une newsletter</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. IDENTITÉ & CONTENU -->
+            <div class="glass-card p-6 lg:p-8">
+                <div class="section-title"><i class="ph-duotone ph-paint-brush"></i> 3. Design & Contenus</div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="label-premium">Avez-vous un logo ?</label>
+                        <select id="hasLogo" class="select-premium">
+                            <option>Oui, fichiers vectoriels dispos</option>
+                            <option>Oui, mais mauvaise qualité</option>
+                            <option>Non, à créer (hors devis)</option>
+                            <option>Non, simple texte suffira</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label-premium">Ambiance souhaitée</label>
+                        <select id="designVibe" class="select-premium">
+                            <option>Moderne & Minimaliste</option>
+                            <option>Premium & Haut de gamme</option>
+                            <option>Chaleureux & Artisanal</option>
+                            <option>Dynamique & Coloré</option>
+                            <option>Institutionnel & Sérieux</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="label-premium">Disponibilité des textes & images</label>
+                    <div class="grid grid-cols-1 gap-2">
+                        <label class="chk-label bg-white/5 rounded-lg">
+                            <input type="radio" name="contentReady" value="Tout est prêt" class="chk-input">
+                            <div class="text-sm">
+                                <span class="block text-white font-medium">J'ai déjà tout le contenu</span>
+                                <span class="text-slate-400 text-xs">Textes rédigés et photos sélectionnées.</span>
+                            </div>
+                        </label>
+                        <label class="chk-label bg-white/5 rounded-lg">
+                            <input type="radio" name="contentReady" value="En cours de rédaction" class="chk-input" checked>
+                            <div class="text-sm">
+                                <span class="block text-white font-medium">C'est en cours</span>
+                                <span class="text-slate-400 text-xs">Je prépare ça pour le lancement.</span>
+                            </div>
+                        </label>
+                        <label class="chk-label bg-white/5 rounded-lg">
+                            <input type="radio" name="contentReady" value="Besoin d'aide" class="chk-input">
+                            <div class="text-sm">
+                                <span class="block text-white font-medium">J'ai besoin d'aide / Je n'ai rien</span>
+                                <span class="text-slate-400 text-xs">Nous devrons voir cela ensemble (peut impacter le devis).</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <label class="label-premium">Sites inspirants (Liens)</label>
+                    <input type="text" id="inspirationLinks" placeholder="Collez ici 1 ou 2 liens de sites que vous aimez" class="input-premium">
+                </div>
+            </div>
+
+            <!-- 4. TECHNIQUE & ACCES -->
+            <div class="glass-card p-6 lg:p-8">
+                <div class="section-title"><i class="ph-duotone ph-wrench"></i> 4. Technique & Accès</div>
+
+                <div class="mb-6">
+                    <label class="label-premium mb-2">Fonctionnalités spécifiques souhaitées</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="chk-label"><input type="checkbox" name="features" value="Blog/Actus" class="chk-input"> <span class="text-sm text-slate-300">Blog / Actualités</span></label>
+                        <label class="chk-label"><input type="checkbox" name="features" value="Avis Google" class="chk-input"> <span class="text-sm text-slate-300">Intégration Avis Google</span></label>
+                        <label class="chk-label"><input type="checkbox" name="features" value="Prise RDV" class="chk-input"> <span class="text-sm text-slate-300">Module Prise de RDV</span></label>
+                        <label class="chk-label"><input type="checkbox" name="features" value="Multilingue" class="chk-input"> <span class="text-sm text-slate-300">Site Multilingue</span></label>
+                        <label class="chk-label"><input type="checkbox" name="features" value="Newsletter" class="chk-input"> <span class="text-sm text-slate-300">Inscription Newsletter</span></label>
+                        <label class="chk-label"><input type="checkbox" name="features" value="Portfolio" class="chk-input"> <span class="text-sm text-slate-300">Galerie / Portfolio</span></label>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/20 mb-4">
+                    <div class="flex gap-3">
+                        <i class="ph-fill ph-lock-key text-yellow-500 text-xl"></i>
+                        <div>
+                            <h4 class="text-sm font-bold text-yellow-500 mb-1">Sécurité des accès</h4>
+                            <p class="text-xs text-yellow-200/80">Ne m'envoyez <strong>jamais</strong> de mots de passe via ce formulaire. Nous utiliserons un canal sécurisé ou vous me créerez un accès délégué.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="label-premium">Nom de domaine (adresse .fr/.com)</label>
+                        <select id="domainStatus" class="select-premium">
+                            <option>Je ne l'ai pas encore acheté</option>
+                            <option>Je l'ai déjà (OVH, Ionos...)</option>
+                            <option>Je veux que tu t'en occupes</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label-premium">Hébergeur (si existant)</label>
+                        <input type="text" id="hostProvider" placeholder="Ex: OVH, Hostinger..." class="input-premium">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. CONCLUSION -->
+            <div class="glass-card p-6 lg:p-8">
+                <div class="section-title"><i class="ph-duotone ph-calendar-check"></i> 5. Organisation</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="label-premium">Date de mise en ligne souhaitée</label>
+                        <input type="date" id="deadline" class="input-premium">
+                    </div>
+                    <div>
+                        <label class="label-premium">Budget approximatif (si hors Pack)</label>
+                        <input type="text" id="budget" placeholder="Si demande spécifique..." class="input-premium">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="label-premium text-accent-400">La Question Magique ✨</label>
+                    <p class="text-xs text-slate-400 mb-2">Y a-t-il quelque chose d'important que vous voulez absolument voir et que je n'ai pas demandé ?</p>
+                    <textarea id="magicQuestion" rows="3" class="textarea-premium" placeholder="Ex: Je déteste le vert, j'adore les coins arrondis, je veux que ma grand-mère puisse lire sans lunettes..."></textarea>
+                </div>
+            </div>
+
+            <!-- Espace vide pour le footer sticky -->
+            <div class="h-24"></div>
+
+        </form>
+
+    </main>
+
+    <!-- Sticky Action Bar -->
+    <div class="sticky-action-bar">
+        <button onclick="sendMail()" class="bg-gradient-to-r from-accent-500 to-blue-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-accent-500/25 hover:scale-105 transition-all flex items-center gap-2">
+            <span>Envoyer mes réponses</span>
+            <i class="ph-bold ph-paper-plane-right"></i>
+        </button>
+        <button onclick="copyContent()" class="bg-white/10 text-slate-300 font-bold py-3 px-4 rounded-xl hover:bg-white/20 transition-all" title="Copier le texte si le mail ne s'ouvre pas">
+            <i class="ph-bold ph-copy"></i>
+        </button>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-dark-900 border border-accent-400 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300 z-50">
+        <i class="ph-fill ph-check-circle text-accent-400 text-xl"></i>
+        <span class="font-medium text-sm">Contenu copié ! Collez-le dans votre mail.</span>
+    </div>
+
+    <script>
+        function getVal(id) {
+            const el = document.getElementById(id);
+            return el ? el.value : '';
+        }
+
+        function getChecks(name) {
+            const checks = document.querySelectorAll(`input[name="${name}"]:checked`);
+            return Array.from(checks).map(c => c.value).join(', ');
+        }
+
+        function getRadio(name) {
+            const radio = document.querySelector(`input[name="${name}"]:checked`);
+            return radio ? radio.value : '';
+        }
+
+        function buildMessage() {
+            const pack = getVal('packChoice');
+            const company = getVal('companyName');
+            const contact = getVal('contactName');
+            
+            // Construction du corps du mail (Format Markdown simplifié pour lisibilité)
+            let body = `Bonjour Nathan,\n\nVoici les informations pour préparer le lancement de mon projet WEB.\n\n`;
+            
+            body += `📦 PACK CHOISI : ${pack.toUpperCase()}\n`;
+            body += `----------------------------------\n`;
+            body += `🏢 PROJET : ${company}\n`;
+            body += `👤 CONTACT : ${contact}\n`;
+            body += `🌐 SITE ACTUEL : ${getVal('currentUrl') || 'Aucun'}\n`;
+            body += `📍 ACTIVITÉ : ${getVal('activityDesc')}\n\n`;
+
+            body += `🎯 OBJECTIFS\n`;
+            body += `- Raisons : ${getChecks('goals') || 'Non précisé'}\n`;
+            body += `- Cible : ${getVal('targetAudience')}\n`;
+            body += `- Action attendue (CTA) : ${getVal('mainCta')}\n\n`;
+
+            body += `🎨 DESIGN & CONTENU\n`;
+            body += `- Logo : ${getVal('hasLogo')}\n`;
+            body += `- Style : ${getVal('designVibe')}\n`;
+            body += `- Contenus : ${getRadio('contentReady')}\n`;
+            body += `- Inspiration : ${getVal('inspirationLinks')}\n\n`;
+
+            body += `🔧 TECHNIQUE\n`;
+            body += `- Options : ${getChecks('features') || 'Aucune'}\n`;
+            body += `- Domaine : ${getVal('domainStatus')}\n`;
+            body += `- Hébergeur : ${getVal('hostProvider')}\n\n`;
+
+            body += `📅 ORGANISATION\n`;
+            body += `- Deadline : ${getVal('deadline')}\n`;
+            body += `- Budget Extra : ${getVal('budget')}\n\n`;
+            
+            body += `✨ NOTE IMPORTANTE :\n${getVal('magicQuestion') || 'Rien à signaler'}\n`;
+
+            return body;
+        }
+
+        function sendMail() {
+            const company = getVal('companyName') || 'Projet Web';
+            const subject = `🚀 Lancement Projet : ${company}`;
+            const body = buildMessage();
+            
+            // Mailto link
+            window.location.href = `mailto:nathan.marzilli@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+
+        function copyContent() {
+            const content = buildMessage();
+            navigator.clipboard.writeText(content).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                setTimeout(() => {
+                    toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                }, 3000);
+            });
+        }
+    </script>
+</body>
+</html>
