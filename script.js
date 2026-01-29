@@ -48,9 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
             progressBar.style.width = `${scrollPercent}%`;
         }
     });
-
-    // ==============================================
-    // 2. GESTION DES PROJETS (AVEC FIX MOBILE)
+	
+	// ==============================================
+    // 2. GESTION DES PROJETS (CORRIGÉ)
     // ==============================================
     const projectsData = [
         {
@@ -72,10 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const projectsGrid = document.getElementById('projects-grid');
     
-    // Note: Le HTML contient déjà un Skeleton Screen.
-    // L'assignation ci-dessous va remplacer le Skeleton par le vrai contenu.
     if (projectsGrid) {
-        // Simulation rapide d'un délai réseau pour voir le Skeleton (optionnel, pour l'effet)
+        // Simulation délai réseau pour Skeleton
         setTimeout(() => {
             projectsGrid.innerHTML = projectsData.map((project, index) => {
                 const featuresHtml = project.features && project.features.length > 0 ? `
@@ -99,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 ` : '';
 
-                // Ajout onclick="toggleMobilePreview(this)" pour le fix mobile
                 return `
                 <article class="flex flex-col md:flex-row gap-8 items-stretch min-h-[400px] reveal group" style="transition-delay: ${index * 100}ms">
                     <div class="md:w-1/3 flex flex-col justify-center order-2 md:order-1 min-w-0">
@@ -132,39 +129,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-16 last:hidden"></div>
                 `;
             }).join('');
+
+            // --- FIX CRITIQUE : RE-DECLENCHEMENT DE L'OBSERVER ---
+            // On récupère l'observer défini plus bas (il est accessible ici grâce à la portée des variables)
+            // ou on en crée un temporaire si nécessaire, mais ici on force l'ajout de la classe 'active'
+            // pour être sûr que ça s'affiche.
+            const newProjectElements = document.querySelectorAll('#projects-grid .reveal');
+            
+            // Option 1 : Forcer l'affichage directement (plus sûr)
+            setTimeout(() => {
+                newProjectElements.forEach(el => el.classList.add('active'));
+            }, 50);
+
         }, 500);
     }
-
-    // Fonction Globale pour le fix mobile
-    window.toggleMobilePreview = function(element) {
-        window.vibrate(); // Haptic
-        // Si on est sur un petit écran (check CSS ou window width)
-        if (window.innerWidth < 768) {
-            // Toggle la classe qui retire le filtre gris et l'overlay
-            if (element.classList.contains('mobile-active')) {
-                element.classList.remove('mobile-active');
-            } else {
-                // Enlever l'actif sur les autres
-                document.querySelectorAll('.project-frame-container').forEach(el => el.classList.remove('mobile-active'));
-                element.classList.add('mobile-active');
-            }
-        }
-    };
-
-    window.showProjectDesc = function(projectIndex, btnIndex) {
-        window.vibrate(); // Haptic
-        document.querySelectorAll(`.proj-btn-${projectIndex}`).forEach(btn => {
-            btn.classList.remove('bg-white/10', 'border-accent-400', 'text-white');
-            btn.classList.add('bg-dark-900', 'border-white/10', 'text-slate-300');
-        });
-        const clickedBtn = document.querySelectorAll(`.proj-btn-${projectIndex}`)[btnIndex];
-        clickedBtn.classList.remove('bg-dark-900', 'border-white/10', 'text-slate-300');
-        clickedBtn.classList.add('bg-white/10', 'border-accent-400', 'text-white');
-        const box = document.getElementById(`project-desc-box-${projectIndex}`);
-        const text = document.getElementById(`project-desc-text-${projectIndex}`);
-        box.classList.remove('hidden');
-        text.textContent = clickedBtn.getAttribute('data-desc');
-    };
 
     // ==============================================
     // 3. AUTH & ADMIN
