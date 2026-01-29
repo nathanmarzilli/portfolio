@@ -1,0 +1,37 @@
+Pour utiliser ce formulaire avec Formspree, c'est très simple car le code est déjà entièrement configuré pour cela. Vous n'avez pas besoin de recréer manuellement chaque champ (Nom, Pack, etc.) sur le site de Formspree : l'outil détectera automatiquement les informations lors du premier envoi.
+
+Voici la marche à suivre pour le rendre fonctionnel :
+
+Créez le formulaire :
+
+Allez sur Formspree.io et créez un compte (gratuit).
+
+Cliquez sur "New Form".
+
+Donnez-lui un nom (ex: "Brief Projet Web").
+
+Laissez les réglages par défaut et validez.
+
+Récupérez votre ID :
+
+Formspree vous donnera une URL de type https://formspree.io/f/xvazzbqz.
+
+Copiez la partie finale (le code xvazzbqz).
+
+Intégrez-le dans votre code :
+
+Dans le fichier formulaire_projet_v2.html, repérez la ligne :
+
+HTML
+<form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" ...>
+Remplacez YOUR_FORM_ID par votre code.
+
+Pourquoi ça marche tout seul ? Dans le code que j'ai généré, j'ai déjà attribué des étiquettes spécifiques (name="...") à chaque champ, que Formspree comprendra immédiatement :
+
+name="_replyto" sur le champ Email : Cela vous permettra de faire "Répondre" directement depuis votre boîte mail pour écrire au client.
+
+name="project_pack" : Pour savoir quel bouton (Essentiel/Vitrine/Premium) a été coché.
+
+name="_subject" : J'ai inclus un champ caché pour que l'objet du mail que vous recevez soit propre ("🚀 Nouveau Brief Projet Web !").
+
+Une fois l'ID remplacé, faites un test d'envoi. Vous verrez apparaître toutes les réponses (Pack sélectionné, Objectifs, etc.) proprement dans votre tableau de bord Formspree et dans votre boîte mail.
