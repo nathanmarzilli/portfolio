@@ -6,6 +6,12 @@
     <title>Nathan Marzilli | Expert Web & Ingénieur - France / Suisse</title>
     <meta name="description" content="Ingénieur développeur web (14 ans d'expérience). Création de sites sur-mesure entre Évian et Lausanne.">
     
+    <meta property="og:title" content="Nathan Marzilli | Expert Web & Ingénieur">
+    <meta property="og:description" content="Ingénieur développeur web (14 ans d'expérience). Sites sur-mesure, performants et design. Disponibilité immédiate.">
+    <meta property="og:image" content="https://nathanmarzilli.com/images/og-share.jpg"> <meta property="og:url" content="https://nathanmarzilli.com">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="fr_FR">
+
     <script src="https://cdn.tailwindcss.com"></script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,7 +54,36 @@
     </script>
 
     <style>
-        body { background-color: #020617; color: #E2E8F0; overflow-x: hidden; width: 100%; }
+        body { background-color: #020617; color: #E2E8F0; overflow-x: hidden; width: 100%; position: relative; }
+        
+        /* --- CUSTOM SCROLLBAR (DESIGN) --- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; border: 2px solid #020617; }
+        ::-webkit-scrollbar-thumb:hover { background: #2DD4BF; }
+
+        /* --- NOISE TEXTURE (DESIGN) --- */
+        .noise-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 40; opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* --- SPOTLIGHT CURSOR (DESIGN) --- */
+        .spotlight-overlay {
+            pointer-events: none; position: fixed; inset: 0; z-index: 30;
+            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(45, 212, 191, 0.04), transparent 40%);
+            opacity: 0; transition: opacity 0.5s ease;
+        }
+        @media (hover: hover) { .spotlight-overlay { opacity: 1; } }
+
+        /* --- SCROLL PROGRESS (UX) --- */
+        .scroll-progress {
+            position: fixed; top: 0; left: 0; height: 3px; background: #2DD4BF;
+            z-index: 100; width: 0%; transition: width 0.1s;
+            box-shadow: 0 0 10px rgba(45, 212, 191, 0.5);
+        }
+
         .nav-glass { background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
         .reveal { opacity: 0; transform: translateY(20px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
@@ -178,9 +213,24 @@
         .rotate-chevron {
             transform: rotate(180deg);
         }
+
+        /* SKELETON ANIMATION */
+        .skeleton {
+            background: rgba(255,255,255,0.05);
+            animation: pulse-skeleton 1.5s infinite ease-in-out;
+        }
+        @keyframes pulse-skeleton {
+            0% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.4; }
+        }
     </style>
 </head>
 <body class="selection:bg-accent-400/30 selection:text-white bg-dark-950">
+
+    <div id="scroll-progress" class="scroll-progress"></div>
+    <div class="noise-overlay"></div>
+    <div class="spotlight-overlay"></div>
 
     <nav class="fixed w-full z-50 nav-glass transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 md:px-6 h-20 flex justify-between items-center">
@@ -437,7 +487,21 @@
                 </p>
             </div>
             <div id="projects-grid" class="flex flex-col gap-16">
+                <div class="flex flex-col md:flex-row gap-8 items-stretch min-h-[400px]">
+                     <div class="md:w-1/3 flex flex-col justify-center gap-4">
+                         <div class="h-4 w-24 skeleton rounded"></div>
+                         <div class="h-10 w-3/4 skeleton rounded"></div>
+                         <div class="h-4 w-1/2 skeleton rounded mb-4"></div>
+                         <div class="h-20 w-full skeleton rounded"></div>
+                         <div class="flex gap-2 flex-wrap">
+                             <div class="h-8 w-20 skeleton rounded-lg"></div>
+                             <div class="h-8 w-24 skeleton rounded-lg"></div>
+                             <div class="h-8 w-20 skeleton rounded-lg"></div>
+                         </div>
+                     </div>
+                     <div class="md:w-2/3 h-[300px] md:h-auto skeleton rounded-3xl"></div>
                 </div>
+            </div>
         </div>
     </section>
 
