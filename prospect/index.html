@@ -35,7 +35,7 @@
         ::-webkit-scrollbar-thumb:hover { background: #2DD4BF; }
     </style>
 </head>
-<body x-data="leadApp()" class="h-screen flex flex-col overflow-hidden bg-dark-950 font-sans selection:bg-accent-400/30">
+<body x-data="leadApp()" x-init="init()" class="h-screen flex flex-col overflow-hidden bg-dark-950 font-sans selection:bg-accent-400/30">
 
     <header class="h-16 glass-header flex items-center justify-between px-6 shrink-0 z-20">
         <div class="flex items-center gap-3">
@@ -166,7 +166,7 @@
                                         <span class="px-2 py-1 rounded-full bg-red-500/10 text-red-400 text-xs border border-red-500/20" x-text="lead.mainIssue"></span>
                                     </td>
                                     <td class="p-4">
-                                        <select x-model="lead.status" class="bg-dark-950 border border-white/10 rounded-lg px-2 py-1 text-xs text-white focus:border-accent-400 outline-none">
+                                        <select x-model="lead.status" @change="updateStatus(lead)" class="bg-dark-950 border border-white/10 rounded-lg px-2 py-1 text-xs text-white focus:border-accent-400 outline-none">
                                             <option value="To Contact">À contacter</option>
                                             <option value="Contacted">Contacté</option>
                                             <option value="Replied">Répondu</option>
