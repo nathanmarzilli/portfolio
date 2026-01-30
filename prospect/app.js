@@ -1,54 +1,106 @@
 function leadApp() {
     return {
+        // --- ETAT DE L'APPLICATION ---
         currentTab: 'search',
         searchQuery: '',
         searchLocation: '',
         isLoading: false,
         searchResults: [],
-        leads: [], 
-        showEmailModal: false,
+        leads: [],
+        expandedEmail: null, // ID du prospect dont l'email est ouvert
         generatedEmail: { subject: '', body: '' },
+        dailyGoal: 12, // Objectif quotidien pour atteindre 8 projets/mois
+
+        // --- INTELLIGENCE COMMERCIALE (Les cibles rentables) ---
+        topNiches: [
+            "Rénovation", "Plombier", "Électricien", "Couvreur", "Paysagiste",
+            "Avocat", "Notaire", "Comptable", "Architecte",
+            "Restaurant", "Traiteur", "Hôtel", "Gîte",
+            "Dentiste", "Ostéopathe", "Clinique Vétérinaire",
+            "Garage Automobile", "Salle de Sport", "Agence Immobilière", "Boutique de Mode"
+        ],
+
+        // --- STRATÉGIE GÉOGRAPHIQUE ---
+        targetCities: [
+            { name: "Thonon-les-Bains" },
+            { name: "Évian-les-Bains" },
+            { name: "Annemasse" },
+            { name: "Annecy" },
+            { name: "Lausanne" },
+            { name: "Genève" },
+            { name: "Chambéry" },
+            { name: "Lyon" }
+        ],
 
         // --- DÉMARRAGE ---
         init() {
             this.loadLeadsFromServer();
         },
 
-        // Charger les données depuis le fichier JSON via PHP
-        async loadLeadsFromServer() {
-            try {
-                const res = await fetch('proxy.php?action=get_leads');
-                const data = await res.json();
-                if (data.error) console.error(data.error);
-                if (Array.isArray(data)) {
-                    this.leads = data.reverse(); // Les plus récents en haut
-                }
-            } catch (e) {
-                console.error("Impossible de charger le CRM", e);
-            }
+        // --- CALCULS MOTIVATION (Dashboard) ---
+        get todayCount() {
+            const today = new Date().toISOString().slice(0, 10);
+            return this.leads.filter(l => l.lastContactDate && l.lastContactDate.startsWith(today)).length;
         },
 
-        get contactedCount() {
-            return this.leads.filter(l => l.status !== 'To Contact').length;
+        get followUpCount() {
+            return this.leads.filter(l => this.needsRelance(l)).length;
         },
 
-        // --- RECHERCHE GOOGLE ---
+        get motivationText() {
+            const pct = (this.todayCount / this.dailyGoal) * 100;
+            if (pct === 0) return "La journée commence ! Objectif : 12 contacts.";
+            if (pct < 50) return "C'est bien, continue ! Le prochain client t'attend.";
+            if (pct < 100) return "Presque là ! Encore quelques efforts pour tes 8 projets.";
+            return "🔥 EXCELLENT ! Objectif atteint. Repose-toi ou prends de l'avance.";
+        },
+
+        // --- LOGIQUE MÉTIER ---
+        
+        // Faut-il relancer ce prospect ? (Si contacté il y a > 3 jours)
+        needsRelance(lead) {
+            if (lead.status !== 'Contacted') return false;
+            if (!lead.lastContactDate) return false;
+            
+            const lastContact = new Date(lead.lastContactDate);
+            const now = new Date();
+            const diffTime = Math.abs(now - lastContact);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            
+            return diffDays >= 3; 
+        },
+
+        formatDate(dateStr) {
+            if (!dateStr) return '-';
+            return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+        },
+
+        isInCRM(id) {
+            return this.leads.some(l => l.id === id);
+        },
+
+        // --- MOTEUR DE RECHERCHE ---
         async performRealSearch() {
-            if (!this.searchQuery || !this.searchLocation) return alert('Veuillez remplir l\'activité et la ville.');
+            // Si pas de mot clé, on met "Entreprise" par défaut
+            let query = this.searchQuery;
+            if (!query) query = "Entreprise"; 
+
+            if (!this.searchLocation) return alert('Indiquez une ville !');
             
             this.isLoading = true;
             this.searchResults = [];
+            this.expandedEmail = null;
 
             try {
-                // Appel au proxy PHP qui appelle Google
-                const url = `proxy.php?action=search&q=${encodeURIComponent(this.searchQuery)}&loc=${encodeURIComponent(this.searchLocation)}`;
+                // Appel Proxy (Serveur)
+                const url = `proxy.php?action=search&q=${encodeURIComponent(query)}&loc=${encodeURIComponent(this.searchLocation)}`;
                 const response = await fetch(url);
                 const data = await response.json();
 
                 if (data.error) throw new Error(data.error);
-                if (!data.places || data.places.length === 0) throw new Error("Aucun résultat trouvé dans cette zone.");
+                if (!data.places || data.places.length === 0) throw new Error("Aucun résultat trouvé. Changez de ville ou d'activité.");
 
-                // Transformation des données Google -> Format LeadMachine
+                // Mapping des données
                 for (let place of data.places) {
                     let lead = {
                         id: place.id,
@@ -59,14 +111,18 @@ function leadApp() {
                         hasWebsite: !!place.websiteUri,
                         tech: 'Inconnu',
                         isOld: false,
-                        score: !!place.websiteUri ? 50 : 0, // Score bas = Bonne opportunité
+                        // Score par défaut : 50 (Moyen). Si pas de site : 0 (Prioritaire)
+                        score: !!place.websiteUri ? 50 : 0, 
                         issues: !place.websiteUri ? ['Pas de site web'] : [],
                         analyzed: false
                     };
                     this.searchResults.push(lead);
                 }
 
-                // Lancer l'analyse des sites en arrière-plan
+                // TRI INITIAL : Les "Pas de site" en premier
+                this.searchResults.sort((a, b) => a.score - b.score);
+
+                // Lancer l'analyse technique des sites existants
                 this.analyzeWebsitesInResults();
 
             } catch (err) {
@@ -76,19 +132,19 @@ function leadApp() {
             }
         },
 
-        // --- ANALYSE DE SITE ---
         async analyzeWebsitesInResults() {
             for (let lead of this.searchResults) {
-                // On n'analyse que ceux qui ont un site et qui ne sont pas déjà faits
+                // On analyse seulement s'il a un site et pas encore analysé
                 if (lead.hasWebsite && !lead.analyzed) {
                     try {
                         const res = await fetch(`proxy.php?action=analyze&url=${encodeURIComponent(lead.website)}`);
                         const analysis = await res.json();
                         
                         if (!analysis.error) {
+                            // Détection problème Mobile
                             if (!analysis.mobile) {
-                                lead.issues.push("Pas responsive (Mobile)");
-                                lead.score -= 20;
+                                lead.issues.push("Pas responsive");
+                                lead.score -= 20; // Le score baisse = Priorité augmente
                                 lead.isOld = true;
                             }
                             if (analysis.tech !== 'HTML/Autre') {
@@ -96,115 +152,148 @@ function leadApp() {
                             }
                         }
                         lead.analyzed = true;
-                    } catch (e) {
-                        console.log("Erreur analyse", e);
-                    }
+                    } catch (e) { console.log(e); }
                 }
             }
+            // TRI SECONDAIRE : On remonte les sites vétustes analysés
+            this.searchResults.sort((a, b) => a.score - b.score);
         },
 
         getScoreColor(score) {
-            if (score <= 20) return 'border-red-500 bg-red-500/10 text-red-500'; 
-            if (score <= 60) return 'border-orange-500 bg-orange-500/10 text-orange-500';
-            return 'border-green-500 bg-green-500/10 text-green-500';
+            // Code couleur : Rouge = Opportunité en or, Vert = Site probablement OK
+            if (score <= 20) return 'border-danger-500 bg-danger-500/10 text-danger-500';
+            if (score <= 40) return 'border-warning-500 bg-warning-500/10 text-warning-500';
+            return 'border-accent-500 bg-accent-500/10 text-accent-500';
         },
 
-        // --- GESTION CRM (CRUD) ---
-        
-        // Ajouter un prospect
+        // --- ACTIONS CRM & EMAIL ---
+
         async addToCRM(result) {
             const newLead = {
                 id: result.id,
                 name: result.name,
                 city: this.searchLocation,
-                email: '', // À remplir manuellement après visite du site
+                email: '', // Sera rempli manuellement
                 phone: result.phone,
                 website: result.website,
-                mainIssue: result.issues[0] || 'Modernisation',
                 status: 'To Contact',
                 tech: result.tech || 'Inconnu',
+                lastContactDate: null,
                 addedAt: new Date().toISOString()
             };
             
-            if(this.leads.some(l => l.id === newLead.id)) {
-                return alert("Ce prospect est déjà dans votre CRM !");
-            }
+            if(this.isInCRM(newLead.id)) return;
 
-            // Ajout visuel immédiat (UX rapide)
             this.leads.unshift(newLead);
-            this.currentTab = 'crm';
-
-            // Sauvegarde serveur
             await this.saveLeadToServer(newLead);
         },
 
-        // Mise à jour (ex: changement de statut)
-        async updateStatus(lead) {
-            await this.saveLeadToServer(lead);
-        },
-
-        // Fonction technique pour sauvegarder
-        async saveLeadToServer(leadData) {
-            await fetch('proxy.php?action=save_lead', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(leadData)
-            });
-        },
-
-        // Supprimer un prospect
-        async removeLead(id) {
-            if(confirm('Supprimer ce prospect définitivement ?')) {
-                // Suppression visuelle
-                this.leads = this.leads.filter(l => l.id !== id);
-                // Suppression serveur
-                await fetch(`proxy.php?action=delete_lead&id=${id}`);
+        // Affiche/Masque le panneau d'email sous la fiche (No Popup)
+        toggleEmailPanel(result) {
+            if (this.expandedEmail === result.id) {
+                this.expandedEmail = null;
+                return;
+            }
+            
+            this.expandedEmail = result.id;
+            this.generateEmailContent(result);
+            
+            // Auto-Add to CRM
+            if (!this.isInCRM(result.id)) {
+                this.addToCRM(result);
             }
         },
 
-        // --- EMAILING ---
-        generateEmail(result) {
-            const isNoSite = !result.website; // Attention: vérifier la propriété 'website' ou 'hasWebsite'
+        generateEmailContent(result) {
+            const isNoSite = !result.website;
+            const isOld = result.issues.includes('Pas responsive');
             
+            // Sujet
             this.generatedEmail.subject = isNoSite 
-                ? `Visibilité internet pour ${result.name}` 
-                : `Optimisation du site de ${result.name}`;
+                ? `Question visibilité pour ${result.name}` 
+                : `Optimisation mobile pour ${result.name}`;
 
-            this.generatedEmail.body = `Bonjour,\n\nJe suis Nathan Marzilli, développeur web indépendant.\n\nEn effectuant des recherches sur votre secteur à ${this.searchLocation}, j'ai remarqué votre activité.\n\n${isNoSite 
-? "Sauf erreur de ma part, vous n'avez pas encore de site internet visible sur Google. C'est un manque à gagner important car vos clients cherchent majoritairement sur mobile aujourd'hui." 
-: "J'ai visité votre site web ("+result.website+") et j'ai relevé quelques points techniques qui pourraient être modernisés pour attirer plus de clients."}\n\nJe serais ravi de vous proposer une maquette gratuite, sans aucun engagement de votre part.\n\nÊtes-vous disponible pour un court échange ?\n\nCordialement,\nNathan Marzilli\n(Votre Portfolio)`;
+            // Contenu (Copywriting AIDA)
+            let body = `Bonjour,\n\n`;
+            body += `Je suis Nathan Marzilli, développeur web indépendant dans la région.\n`;
+            body += `En cherchant les ${this.searchQuery || 'entreprises'} à ${this.searchLocation}, je suis tombé sur votre activité.\n\n`;
+            
+            if (isNoSite) {
+                body += `J'ai vu que vous n'aviez pas de site internet. Aujourd'hui, 80% des clients cherchent sur Google Maps avant de se déplacer. Ne pas y être, c'est laisser ces clients à vos concurrents.\n`;
+            } else if (isOld) {
+                body += `J'ai visité votre site (${result.website}) et j'ai vu qu'il s'affichait mal sur les téléphones récents (pas responsive). Cela peut frustrer vos visiteurs.\n`;
+            } else {
+                body += `Votre site existe, mais il pourrait être modernisé pour attirer plus de clients.\n`;
+            }
 
-            this.showEmailModal = true;
+            body += `\nJe crée des sites modernes et rapides. Voici mon portfolio : https://www.nathan-marzilli.fr\n\n`;
+            body += `Je peux vous faire une maquette démo gratuite. Dispo pour un court échange ?\n\n`;
+            body += `Cordialement,\nNathan Marzilli\n06 XX XX XX XX`;
+
+            this.generatedEmail.body = body;
         },
 
+        // Marque comme "Contacté" quand on clique sur ouvrir Gmail
+        async markAsContacted(leadData) {
+            const lead = this.leads.find(l => l.id === leadData.id);
+            if (lead) {
+                lead.status = 'Contacted';
+                lead.lastContactDate = new Date().toISOString(); // Date du jour
+                await this.saveLeadToServer(lead);
+            }
+        },
+
+        // Gestion de la relance
+        async markAsRelanced(lead) {
+            lead.status = 'Relance';
+            lead.lastContactDate = new Date().toISOString(); // Reset le compteur
+            await this.saveLeadToServer(lead);
+        },
+
+        // --- ECHANGES AVEC LE SERVEUR ---
+        async loadLeadsFromServer() {
+            try {
+                const res = await fetch('proxy.php?action=get_leads');
+                const data = await res.json();
+                if (Array.isArray(data)) this.leads = data.reverse();
+            } catch (e) { console.error(e); }
+        },
+        async saveLeadToServer(lead) {
+            await fetch('proxy.php?action=save_lead', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(lead)
+            });
+        },
+        async removeLead(id) {
+            if(confirm('Supprimer définitivement ?')) {
+                this.leads = this.leads.filter(l => l.id !== id);
+                await fetch(`proxy.php?action=delete_lead&id=${id}`);
+            }
+        },
+        async updateStatus(lead) {
+            if (lead.status === 'Contacted' && !lead.lastContactDate) {
+                lead.lastContactDate = new Date().toISOString();
+            }
+            await this.saveLeadToServer(lead);
+        },
+
+        // --- OUTILS ---
         copyEmail() {
             navigator.clipboard.writeText(this.generatedEmail.body);
-            alert('Email copié !');
+            alert("Texte copié !");
         },
-
-        // --- EXPORT CSV (Réintégré) ---
+        
         exportCSV() {
-            // En-tête du CSV
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Nom,Ville,Téléphone,Site Web,Techno,Problème,Statut\n";
-            
-            // Lignes
-            this.leads.forEach(row => {
-                // On nettoie les champs pour éviter de casser le CSV avec des virgules
-                const cleanName = (row.name || '').replace(/,/g, '');
-                const cleanIssue = (row.mainIssue || '').replace(/,/g, '');
-                
-                csvContent += `${cleanName},${row.city},${row.phone},${row.website || ''},${row.tech || ''},${cleanIssue},${row.status}\n`;
+            let csv = "Nom,Ville,Tel,Status,Dernier Contact\n";
+            this.leads.forEach(l => {
+                const cleanName = (l.name || '').replace(/,/g, '');
+                csv += `${cleanName},${l.city},${l.phone},${l.status},${l.lastContactDate || ''}\n`;
             });
-
-            // Création du lien de téléchargement
-            const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "mes_prospects_" + new Date().toISOString().slice(0,10) + ".csv");
-            document.body.appendChild(link);
+            link.href = encodeURI("data:text/csv;charset=utf-8," + csv);
+            link.download = "prospects_" + new Date().toISOString().slice(0,10) + ".csv";
             link.click();
-            document.body.removeChild(link);
         }
     }
 }

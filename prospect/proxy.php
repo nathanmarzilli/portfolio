@@ -1,29 +1,29 @@
 <?php
-// proxy.php - Version Finale Complète
-// Gère : API Google + Analyse de site + Base de données JSON (CRM)
+// proxy.php - VERSION FINALE SÉCURISÉE
+// Inclus : API Google + Scraping + Base de Données + SÉCURITÉ BUDGET
 
-// Configuration des erreurs (Masquer le HTML, afficher le JSON)
+// 1. Configuration système
 error_reporting(E_ALL);
-ini_set('display_errors', 0); 
-
-// Headers pour autoriser l'accès depuis le JS
+ini_set('display_errors', 0); // On cache les erreurs HTML pour ne pas casser le JSON
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json; charset=UTF-8");
 
-// --- VOS CONFIGURATIONS ---
-$API_KEY = "VOTRE_CLE_API_GOOGLE_ICI"; // ⚠️ Collez votre clé AIza... ici
+// --- 2. VOS CONFIGURATIONS ---
+$API_KEY = ""; // ⚠️ VOTRE CLÉ ICI
 $DB_FILE = 'database_crm.json';        // Fichier de stockage des clients
-$MAX_DAILY_REQUESTS = 150;             // Sécurité budget
-// --------------------------
+$QUOTA_FILE = 'cache_quota.json';      // Fichier de comptage pour sécurité
+$MAX_DAILY_REQUESTS = 150;             // Limite stricte pour rester gratuit
+// -----------------------------
 
-// Fonctions utilitaires
+// 3. Fonctions Utilitaires
 function sendError($msg) { 
     echo json_encode(['error' => $msg]); 
     exit; 
 }
 
+// Gestion Base de données CRM
 function getDB() { 
     global $DB_FILE; 
     return file_exists($DB_FILE) ? json_decode(file_get_contents($DB_FILE), true) : []; 
@@ -34,42 +34,62 @@ function saveDB($data) {
     file_put_contents($DB_FILE, json_encode($data, JSON_PRETTY_PRINT)); 
 }
 
-// Vérification pré-requis
+// Gestion Sécurité Quota (Réintégré !)
+function checkQuota($file, $limit) {
+    if (!file_exists($file)) file_put_contents($file, json_encode(['date' => date('Y-m-d'), 'count' => 0]));
+    $data = json_decode(file_get_contents($file), true);
+    
+    // Reset quotidien
+    if ($data['date'] !== date('Y-m-d')) {
+        $data = ['date' => date('Y-m-d'), 'count' => 0];
+    }
+    
+    if ($data['count'] >= $limit) return false; // Bloque si trop de requêtes
+    
+    $data['count']++;
+    file_put_contents($file, json_encode($data));
+    return true;
+}
+
+// Vérification technique
 if (!function_exists('curl_init')) {
     sendError("L'extension PHP 'cURL' n'est pas activée. Vérifiez votre php.ini.");
 }
 
-// Récupération de l'action demandée
 $action = $_GET['action'] ?? '';
 
 try {
     // ==========================================
-    // 1. RECHERCHE GOOGLE (SEARCH)
+    // ACTION 1 : RECHERCHE GOOGLE (Avec Sécurité)
     // ==========================================
     if ($action === 'search') {
-        // (Ici on pourrait ajouter la vérification de quota journalier)
+        // 1. Vérification Quota
+        if (!checkQuota($QUOTA_FILE, $MAX_DAILY_REQUESTS)) {
+            sendError("🛑 SÉCURITÉ : Quota journalier atteint (150 recherches). Revenez demain !");
+        }
+
+        // 2. Préparation requête
+        if(empty($_GET['loc'])) sendError("Ville manquante");
+        $q = empty($_GET['q']) ? "Entreprise" : $_GET['q']; // Recherche large par défaut
         
-        if(empty($_GET['q']) || empty($_GET['loc'])) sendError("Paramètres manquants");
-
         $url = "https://places.googleapis.com/v1/places:searchText";
-        $postData = json_encode(["textQuery" => $_GET['q'] . " in " . $_GET['loc']]);
+        $postData = json_encode(["textQuery" => $q . " in " . $_GET['loc']]);
 
+        // 3. Appel Google
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-        // SSL options pour local (à retirer en prod si nécessaire, mais sans danger ici)
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0); 
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0); // Fix local
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0); // Fix local
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             "Content-Type: application/json",
             "X-Goog-Api-Key: " . $API_KEY,
-            // Optimisation des coûts : on ne demande que l'essentiel
             "X-Goog-FieldMask: places.id,places.displayName,places.formattedAddress,places.websiteUri,places.internationalPhoneNumber"
         ]);
 
         $response = curl_exec($ch);
-        if ($response === false) sendError('Erreur cURL Google: ' + curl_error($ch));
+        if ($response === false) sendError('Erreur cURL Google: ' . curl_error($ch));
         curl_close($ch);
         
         echo $response;
@@ -77,7 +97,7 @@ try {
     }
 
     // ==========================================
-    // 2. ANALYSE DE SITE (SCRAPING)
+    // ACTION 2 : ANALYSE DE SITE (Scraping)
     // ==========================================
     if ($action === 'analyze') {
         $url = $_GET['url'] ?? '';
@@ -86,7 +106,7 @@ try {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10); // Max 10s d'attente
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10); // Max 10s
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
@@ -96,10 +116,10 @@ try {
         curl_close($ch);
 
         if($html) {
-            // Logique de détection simple
+            // Analyse basique
             $isWp = stripos($html, 'wp-content') !== false;
             $isWix = stripos($html, 'wix.com') !== false;
-            $hasMeta = stripos($html, 'viewport') !== false; // Indice de responsive
+            $hasMeta = stripos($html, 'viewport') !== false;
             
             echo json_encode([
                 'status' => $info['http_code'],
@@ -113,10 +133,10 @@ try {
     }
 
     // ==========================================
-    // 3. CRM : GESTION DONNÉES (JSON)
+    // ACTION 3 : CRM (Base de données)
     // ==========================================
     
-    // Lire la base
+    // Lire
     if ($action === 'get_leads') {
         echo json_encode(getDB());
         exit;
@@ -124,24 +144,20 @@ try {
 
     // Sauvegarder (Ajout ou Modif)
     if ($action === 'save_lead') {
-        // Récupérer le JSON envoyé par le JS
-        $inputJSON = file_get_contents('php://input');
-        $input = json_decode($inputJSON, true);
-        
+        $input = json_decode(file_get_contents('php://input'), true);
         if (!$input || !isset($input['id'])) sendError('Données invalides');
         
         $db = getDB();
         $found = false;
         
-        // Mise à jour si existe, sinon ajout
         foreach ($db as &$lead) {
             if ($lead['id'] === $input['id']) {
-                $lead = $input;
+                $lead = $input; // Mise à jour
                 $found = true;
                 break;
             }
         }
-        if (!$found) $db[] = $input; // Ajout en fin de tableau
+        if (!$found) $db[] = $input; // Nouvel ajout
         
         saveDB($db);
         echo json_encode(['success' => true]);
@@ -152,16 +168,19 @@ try {
     if ($action === 'delete_lead') {
         $id = $_GET['id'] ?? '';
         $db = getDB();
-        // On filtre pour garder tout sauf celui qu'on veut supprimer
-        $newDb = array_values(array_filter($db, function($lead) use ($id) {
-            return $lead['id'] !== $id;
-        }));
+        // Syntaxe compatible vieux PHP pour OVH
+        $newDb = [];
+        foreach($db as $lead) {
+            if($lead['id'] !== $id) {
+                $newDb[] = $lead;
+            }
+        }
         saveDB($newDb);
         echo json_encode(['success' => true]);
         exit;
     }
 
-    sendError("Action inconnue : " . htmlspecialchars($action));
+    sendError("Action inconnue");
 
 } catch (Exception $e) {
     sendError("Erreur Serveur: " . $e->getMessage());

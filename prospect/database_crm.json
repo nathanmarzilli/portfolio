@@ -1,0 +1,50 @@
+[
+    {
+        "id": "ChIJdRLhwS_F9EcRrpgQk0dtDk0",
+        "name": "Les P\u00e2tisseries d'Amandine",
+        "city": "Mions",
+        "email": "",
+        "phone": "+33 6 68 37 44 34",
+        "website": null,
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": null,
+        "addedAt": "2026-01-30T21:24:37.191Z"
+    },
+    {
+        "id": "ChIJPUqgDYHD9EcR-Q4NLnAHjUA",
+        "name": "Aquathermic",
+        "city": "saint priest",
+        "email": "",
+        "phone": "+33 4 78 20 75 84",
+        "website": null,
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": null,
+        "addedAt": "2026-01-30T21:26:06.030Z"
+    },
+    {
+        "id": "ChIJa3QAlNLD9EcRXHNkp9VxtdE",
+        "name": "RFT Plomberie",
+        "city": "saint priest",
+        "email": "",
+        "phone": "+33 6 16 90 51 39",
+        "website": null,
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": "2026-01-30T21:28:17.356Z",
+        "addedAt": "2026-01-30T21:26:23.470Z"
+    },
+    {
+        "id": "ChIJN-rBhg0TUkwRgjrehtXdBmw",
+        "name": "AT PRO Electricit\u00e9 Alarme Vid\u00e9osurveillance",
+        "city": "saint priest",
+        "email": "",
+        "phone": "+33 4 69 67 00 34",
+        "website": "http:\/\/www.atprogroup.fr\/",
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": "2026-01-30T21:28:11.460Z",
+        "addedAt": "2026-01-30T21:26:44.178Z"
+    }
+]

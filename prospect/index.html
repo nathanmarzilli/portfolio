@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LeadMachine | Nathan Marzilli</title>
+    <title>LeadMachine V2 | Nathan Marzilli</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -17,7 +17,8 @@
                     colors: {
                         dark: { 950: '#020617', 900: '#0B1120', 800: '#1E293B' },
                         accent: { 400: '#2DD4BF', 500: '#14B8A6' },
-                        gold: { 400: '#FBBF24' }
+                        danger: { 500: '#EF4444' },
+                        warning: { 500: '#F59E0B' }
                     }
                 }
             }
@@ -25,44 +26,77 @@
     </script>
     <style>
         body { background-color: #020617; color: #E2E8F0; }
-        .glass-panel { background: rgba(30, 41, 59, 0.3); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .glass-header { background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-        
-        /* Scrollbar fine */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #020617; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #2DD4BF; }
+        .glass-panel { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-header { background: rgba(2, 6, 23, 0.9); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .progress-bar { transition: width 1s ease-in-out; }
+        [x-cloak] { display: none !important; }
     </style>
 </head>
 <body x-data="leadApp()" x-init="init()" class="h-screen flex flex-col overflow-hidden bg-dark-950 font-sans selection:bg-accent-400/30">
 
-    <header class="h-16 glass-header flex items-center justify-between px-6 shrink-0 z-20">
-        <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-accent-400 flex items-center justify-center text-dark-950 font-bold font-display">N</div>
-            <span class="font-display font-bold text-white tracking-wide">LeadMachine <span class="text-xs text-accent-400 font-normal uppercase px-2 py-0.5 rounded bg-accent-400/10 ml-2">Bêta</span></span>
+    <header class="glass-header shrink-0 z-20">
+        <div class="h-16 flex items-center justify-between px-6 border-b border-white/5">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-accent-400 flex items-center justify-center text-dark-950 font-bold font-display">N</div>
+                <span class="font-display font-bold text-white tracking-wide">LeadMachine <span class="text-xs text-accent-400">V2</span></span>
+            </div>
+            
+            <div class="flex items-center gap-6 text-sm">
+                <div class="flex flex-col items-end">
+                    <span class="text-slate-400 text-xs uppercase font-bold">Objectif Jour</span>
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-white" x-text="todayCount + ' / ' + dailyGoal"></span>
+                        <div class="w-24 h-2 bg-dark-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-accent-400 progress-bar" :style="`width: ${(todayCount / dailyGoal) * 100}%`"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:flex flex-col items-end">
+                    <span class="text-slate-400 text-xs uppercase font-bold">Relances à faire</span>
+                    <span class="font-bold" :class="followUpCount > 0 ? 'text-warning-500' : 'text-slate-600'" x-text="followUpCount"></span>
+                </div>
+            </div>
         </div>
-        <div class="flex items-center gap-4 text-sm font-medium text-slate-400">
-            <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5">
-                <i class="ph-bold ph-target text-accent-400"></i>
-                <span x-text="leads.length + ' Prospects'"></span>
-            </div>
-            <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5">
-                <i class="ph-bold ph-envelope-simple text-purple-400"></i>
-                <span x-text="contactedCount + ' Contactés'"></span>
-            </div>
+        
+        <div class="bg-accent-400/5 py-2 px-6 text-center border-b border-accent-400/10">
+            <p class="text-xs font-medium text-accent-400">
+                🚀 <span x-text="motivationText"></span>
+            </p>
         </div>
     </header>
 
     <div class="flex flex-1 overflow-hidden">
         
-        <aside class="w-64 glass-panel border-r border-white/5 flex flex-col p-4 gap-2 shrink-0 z-10 hidden md:flex">
+        <aside class="w-64 glass-panel border-r border-white/5 flex flex-col p-4 gap-2 shrink-0 z-10 hidden md:flex overflow-y-auto">
             <button @click="currentTab = 'search'" :class="currentTab === 'search' ? 'bg-accent-400 text-dark-950 font-bold shadow-lg shadow-accent-400/20' : 'text-slate-400 hover:bg-white/5 hover:text-white'" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm">
-                <i class="ph-bold ph-magnifying-glass text-lg"></i> Recherche
+                <i class="ph-bold ph-magnifying-glass text-lg"></i> Prospection
             </button>
-            <button @click="currentTab = 'crm'" :class="currentTab === 'crm' ? 'bg-accent-400 text-dark-950 font-bold shadow-lg shadow-accent-400/20' : 'text-slate-400 hover:bg-white/5 hover:text-white'" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm">
+            <button @click="currentTab = 'crm'" :class="currentTab === 'crm' ? 'bg-accent-400 text-dark-950 font-bold shadow-lg shadow-accent-400/20' : 'text-slate-400 hover:bg-white/5 hover:text-white'" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm relative">
                 <i class="ph-bold ph-kanban text-lg"></i> Pipeline CRM
+                <span x-show="followUpCount > 0" class="absolute right-3 top-3 w-2 h-2 rounded-full bg-warning-500 animate-pulse"></span>
             </button>
+            
+            <div class="mt-6">
+                <h3 class="px-4 text-xs font-bold text-slate-500 uppercase mb-2">Top Niches</h3>
+                <div class="flex flex-wrap gap-2 px-2">
+                    <template x-for="niche in topNiches.slice(0, 5)">
+                        <button @click="searchQuery = niche" class="px-3 py-1 rounded-full border border-white/10 text-xs text-slate-400 hover:text-white hover:border-accent-400 hover:bg-accent-400/10 transition-colors" x-text="niche"></button>
+                    </template>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <h3 class="px-4 text-xs font-bold text-slate-500 uppercase mb-2">Villes Cibles</h3>
+                <div class="space-y-1 px-2">
+                    <template x-for="city in targetCities">
+                        <button @click="searchLocation = city.name" class="w-full text-left px-3 py-2 rounded text-xs text-slate-400 hover:text-white hover:bg-white/5 flex justify-between group">
+                            <span x-text="city.name"></span>
+                            <i class="ph-bold ph-arrow-right opacity-0 group-hover:opacity-100"></i>
+                        </button>
+                    </template>
+                </div>
+            </div>
+
             <div class="mt-auto pt-4 border-t border-white/5">
                 <button @click="exportCSV()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 w-full text-sm transition-colors">
                     <i class="ph-bold ph-download-simple"></i> Exporter CSV
@@ -70,157 +104,173 @@
             </div>
         </aside>
 
-        <main class="flex-1 overflow-y-auto relative p-6 md:p-10">
+        <main class="flex-1 overflow-y-auto relative p-4 md:p-8 scroll-smooth">
             
-            <div x-show="currentTab === 'search'" class="max-w-5xl mx-auto space-y-8 animate-fade-up">
-                <div class="text-center mb-10">
-                    <h2 class="font-display text-3xl font-bold text-white mb-2">Chasseur de Sites Vétustes</h2>
-                    <p class="text-slate-400">Ciblez une zone, trouvez les sites obsolètes, générez le pitch parfait.</p>
-                </div>
-
-                <div class="glass-panel p-6 rounded-2xl flex flex-col md:flex-row gap-4 items-end md:items-center shadow-2xl shadow-black/50">
+            <div x-show="currentTab === 'search'" class="max-w-5xl mx-auto space-y-6 animate-fade-up">
+                
+                <div class="glass-panel p-6 rounded-2xl flex flex-col md:flex-row gap-4 items-end shadow-2xl">
                     <div class="flex-1 w-full space-y-1">
-                        <label class="text-xs font-bold text-accent-400 uppercase ml-1">Activité (ex: Plombier, Avocat)</label>
+                        <label class="text-xs font-bold text-accent-400 uppercase ml-1">Activité</label>
                         <div class="relative">
-                            <i class="ph-bold ph-briefcase absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                            <input x-model="searchQuery" type="text" class="w-full bg-dark-900 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors" placeholder="Mot clé...">
+                            <input list="nichesList" x-model="searchQuery" type="text" class="w-full bg-dark-900 border border-white/10 rounded-xl pl-4 pr-4 py-3 text-white focus:border-accent-400 focus:outline-none" placeholder="Ex: Rénovation, Avocat...">
+                            <datalist id="nichesList">
+                                <template x-for="n in topNiches"><option :value="n"></option></template>
+                            </datalist>
                         </div>
                     </div>
                     <div class="flex-1 w-full space-y-1">
-                        <label class="text-xs font-bold text-accent-400 uppercase ml-1">Ville / Zone</label>
-                        <div class="relative">
-                            <i class="ph-bold ph-map-pin absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                            <input x-model="searchLocation" type="text" class="w-full bg-dark-900 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors" placeholder="Évian, Lausanne...">
-                        </div>
+                        <label class="text-xs font-bold text-accent-400 uppercase ml-1">Ville</label>
+                        <input x-model="searchLocation" type="text" class="w-full bg-dark-900 border border-white/10 rounded-xl pl-4 pr-4 py-3 text-white focus:border-accent-400 focus:outline-none" placeholder="Ville...">
                     </div>
-                    <button @click="performRealSearch()" :disabled="isLoading" class="w-full md:w-auto px-6 py-3 rounded-xl bg-accent-400 text-dark-950 font-bold hover:bg-white transition-all flex items-center justify-center gap-2 disabled:opacity-50">
-                        <i x-show="!isLoading" class="ph-bold ph-rocket-launch text-lg"></i>
-                        <i x-show="isLoading" class="ph-bold ph-spinner animate-spin text-lg"></i>
-                        <span x-text="isLoading ? 'Analyse en cours...' : 'Lancer le Scan'"></span>
+                    <button @click="performRealSearch()" :disabled="isLoading" class="px-6 py-3 rounded-xl bg-accent-400 text-dark-950 font-bold hover:bg-white transition-all flex items-center gap-2 disabled:opacity-50">
+                        <i x-show="isLoading" class="ph-bold ph-spinner animate-spin"></i>
+                        <span x-text="isLoading ? 'Scan...' : 'Scanner'"></span>
                     </button>
                 </div>
 
-                <div class="grid gap-4" x-show="searchResults.length > 0">
+                <div class="space-y-4" x-show="searchResults.length > 0">
+                    <h3 class="text-white font-bold text-lg flex items-center gap-2">
+                        Résultats triés par potentiel
+                        <span class="text-xs font-normal text-slate-500 bg-dark-800 px-2 py-1 rounded" x-text="searchResults.length"></span>
+                    </h3>
+                    
                     <template x-for="result in searchResults" :key="result.id">
-                        <div class="glass-panel p-5 rounded-xl border border-white/5 hover:border-accent-400/30 transition-all flex flex-col md:flex-row gap-6 items-start md:items-center group">
-                            
-                            <div class="w-16 h-16 rounded-full flex flex-col items-center justify-center border-2 shrink-0 relative"
-                                 :class="getScoreColor(result.score)">
-                                <span class="text-xl font-bold text-white" x-text="result.score"></span>
-                                <span class="text-[9px] uppercase font-bold text-slate-400">Score</span>
+                        <div class="glass-panel p-5 rounded-xl border border-white/5 hover:border-accent-400/30 transition-all group relative">
+                            <div class="flex flex-col md:flex-row gap-6 items-start md:items-center">
+                                <div class="w-14 h-14 rounded-xl flex flex-col items-center justify-center border shrink-0"
+                                     :class="getScoreColor(result.score)">
+                                    <span class="text-xl font-bold" x-text="result.score"></span>
+                                    <span class="text-[9px] uppercase font-bold opacity-70">Potentiel</span>
+                                </div>
+
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <h3 class="font-bold text-white text-lg truncate" x-text="result.name"></h3>
+                                        <span x-show="!result.hasWebsite" class="px-2 py-0.5 rounded text-[10px] bg-red-500/20 text-red-400 font-bold uppercase border border-red-500/20">Pas de site</span>
+                                        <span x-show="result.isOld" class="px-2 py-0.5 rounded text-[10px] bg-warning-500/20 text-warning-500 font-bold uppercase border border-warning-500/20">Vétuste</span>
+                                    </div>
+                                    <div class="text-sm text-slate-400 flex items-center gap-3">
+                                        <span x-text="result.address" class="truncate max-w-[200px]"></span>
+                                        <span class="w-1 h-1 rounded-full bg-slate-600"></span>
+                                        <a x-show="result.website" :href="result.website" target="_blank" class="text-accent-400 hover:underline flex items-center gap-1">
+                                            <i class="ph-bold ph-link"></i> Visiter
+                                        </a>
+                                    </div>
+                                    <div class="flex gap-2 mt-2">
+                                        <template x-for="issue in result.issues">
+                                            <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] text-slate-300" x-text="issue"></span>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-2 shrink-0">
+                                    <button @click="addToCRM(result)" x-show="!isInCRM(result.id)" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white text-sm font-medium border border-white/10 transition-colors">
+                                        + CRM
+                                    </button>
+                                    <span x-show="isInCRM(result.id)" class="px-4 py-2 text-sm text-green-400 flex items-center gap-1">
+                                        <i class="ph-bold ph-check"></i> Enregistré
+                                    </span>
+                                    <button @click="toggleEmailPanel(result)" class="px-4 py-2 rounded-lg bg-accent-400 text-dark-950 text-sm font-bold hover:bg-white transition-colors flex items-center gap-2">
+                                        <i class="ph-bold ph-envelope-simple"></i> Contacter
+                                    </button>
+                                </div>
                             </div>
 
-                            <div class="flex-1 min-w-0">
-                                <h3 class="font-display font-bold text-white text-lg flex items-center gap-2">
-                                    <span x-text="result.name"></span>
-                                    <span x-show="!result.hasWebsite" class="px-2 py-0.5 rounded text-[10px] bg-red-500/20 text-red-400 font-bold uppercase">Pas de site</span>
-                                    <span x-show="result.isOld" class="px-2 py-0.5 rounded text-[10px] bg-orange-500/20 text-orange-400 font-bold uppercase">Vétuste</span>
-                                </h3>
-                                <div class="text-sm text-slate-400 flex items-center gap-4 mt-1">
-                                    <span x-text="result.address" class="truncate"></span>
-                                    <a x-show="result.website" :href="result.website" target="_blank" class="text-accent-400 hover:underline flex items-center gap-1">
-                                        <i class="ph-bold ph-link"></i> Voir le site
-                                    </a>
+                            <div x-show="expandedEmail === result.id" x-collapse class="mt-4 pt-4 border-t border-white/10 bg-dark-900/50 -mx-5 px-5 -mb-5 pb-5 rounded-b-xl">
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-[10px] font-bold text-slate-500 uppercase">Sujet</label>
+                                        <input type="text" x-model="generatedEmail.subject" class="w-full bg-dark-950 border border-white/10 rounded-lg px-3 py-2 text-white text-sm">
+                                        
+                                        <div class="mt-2 flex gap-2">
+                                            <a :href="`mailto:?subject=${encodeURIComponent(generatedEmail.subject)}&body=${encodeURIComponent(generatedEmail.body)}`" 
+                                               @click="markAsContacted(result)"
+                                               target="_blank"
+                                               class="flex-1 py-2 rounded-lg bg-accent-400 text-dark-950 font-bold text-center text-sm hover:bg-white transition-colors">
+                                                Ouvrir Gmail
+                                            </a>
+                                            <button @click="copyEmail()" class="px-3 py-2 rounded-lg border border-white/10 text-white hover:bg-white/5">
+                                                <i class="ph-bold ph-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] font-bold text-slate-500 uppercase">Message (Personnalisé)</label>
+                                        <textarea x-model="generatedEmail.body" rows="6" class="w-full bg-dark-950 border border-white/10 rounded-lg px-3 py-2 text-white text-xs font-mono leading-relaxed"></textarea>
+                                    </div>
                                 </div>
-                                <div class="flex gap-2 mt-3">
-                                    <template x-for="tag in result.issues">
-                                        <span class="px-2 py-1 rounded bg-white/5 border border-white/10 text-xs text-slate-300" x-text="tag"></span>
-                                    </template>
-                                </div>
-                            </div>
-
-                            <div class="flex flex-col gap-2 w-full md:w-auto shrink-0">
-                                <button @click="addToCRM(result)" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-accent-400 hover:text-dark-950 text-white text-sm font-bold transition-all flex items-center justify-center gap-2">
-                                    <i class="ph-bold ph-plus"></i> Ajouter au CRM
-                                </button>
-                                <button @click="generateEmail(result)" class="px-4 py-2 rounded-lg border border-white/10 hover:bg-white/5 text-slate-300 hover:text-white text-sm font-medium transition-all flex items-center justify-center gap-2">
-                                    <i class="ph-bold ph-envelope-simple"></i> Générer Email
-                                </button>
                             </div>
                         </div>
                     </template>
                 </div>
             </div>
 
-            <div x-show="currentTab === 'crm'" class="max-w-6xl mx-auto animate-fade-up">
-                <h2 class="font-display text-3xl font-bold text-white mb-8">Pipeline de Prospection</h2>
+            <div x-show="currentTab === 'crm'" class="max-w-7xl mx-auto animate-fade-up">
+                <h2 class="font-display text-3xl font-bold text-white mb-6 flex items-center gap-3">
+                    Pipeline 
+                    <span class="text-sm font-normal text-slate-500 bg-dark-800 px-3 py-1 rounded-full border border-white/5" x-text="leads.length + ' prospects'"></span>
+                </h2>
                 
-                <div class="overflow-x-auto rounded-2xl border border-white/10">
+                <div class="overflow-x-auto rounded-2xl border border-white/10 bg-dark-900/30">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-white/5 border-b border-white/10 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                                <th class="p-4">Entreprise</th>
-                                <th class="p-4">Problème principal</th>
-                                <th class="p-4">Statut</th>
-                                <th class="p-4">Actions</th>
+                                <th class="p-4">Détails Entreprise</th>
+                                <th class="p-4">Dernier Contact</th>
+                                <th class="p-4">Statut & Actions</th>
+                                <th class="p-4 w-10"></th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-white/5 bg-dark-900/50">
+                        <tbody class="divide-y divide-white/5">
                             <template x-for="lead in leads" :key="lead.id">
-                                <tr class="hover:bg-white/5 transition-colors group">
+                                <tr class="hover:bg-white/5 transition-colors group" :class="needsRelance(lead) ? 'bg-warning-500/5' : ''">
                                     <td class="p-4">
                                         <div class="font-bold text-white" x-text="lead.name"></div>
-                                        <div class="text-xs text-slate-500" x-text="lead.city"></div>
+                                        <div class="text-xs text-slate-500 flex gap-2 items-center">
+                                            <span x-text="lead.city"></span>
+                                            <span class="w-1 h-1 rounded-full bg-slate-600"></span>
+                                            <span class="text-accent-400" x-text="lead.tech"></span>
+                                        </div>
                                     </td>
                                     <td class="p-4">
-                                        <span class="px-2 py-1 rounded-full bg-red-500/10 text-red-400 text-xs border border-red-500/20" x-text="lead.mainIssue"></span>
+                                        <div class="text-xs text-slate-300" x-text="formatDate(lead.lastContactDate)"></div>
+                                        <div x-show="needsRelance(lead)" class="mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-warning-500/20 text-warning-500 text-[10px] font-bold uppercase border border-warning-500/20">
+                                            <i class="ph-bold ph-alarm"></i> Relancer (J+3)
+                                        </div>
                                     </td>
                                     <td class="p-4">
-                                        <select x-model="lead.status" @change="updateStatus(lead)" class="bg-dark-950 border border-white/10 rounded-lg px-2 py-1 text-xs text-white focus:border-accent-400 outline-none">
-                                            <option value="To Contact">À contacter</option>
-                                            <option value="Contacted">Contacté</option>
-                                            <option value="Replied">Répondu</option>
-                                            <option value="Won">Gagné 🚀</option>
-                                        </select>
+                                        <div class="flex items-center gap-2">
+                                            <select x-model="lead.status" @change="updateStatus(lead)" 
+                                                class="bg-dark-950 border border-white/10 rounded-lg px-2 py-1 text-xs text-white focus:border-accent-400 outline-none cursor-pointer">
+                                                <option value="To Contact">À contacter</option>
+                                                <option value="Contacted">Premier Mail</option>
+                                                <option value="Relance">Relance faite</option>
+                                                <option value="Replied">A répondu</option>
+                                                <option value="Won">Gagné 🚀</option>
+                                                <option value="Lost">Refus</option>
+                                            </select>
+                                            
+                                            <a :href="'mailto:' + lead.email + '?subject=Relance : Votre site web&body=Bonjour, je me permets de vous relancer...'" 
+                                               x-show="needsRelance(lead)"
+                                               @click="markAsRelanced(lead)"
+                                               target="_blank"
+                                               class="p-1.5 rounded bg-warning-500 text-dark-950 hover:bg-white transition-colors" title="Envoyer Relance">
+                                                <i class="ph-bold ph-arrow-u-up-left"></i>
+                                            </a>
+                                        </div>
                                     </td>
-                                    <td class="p-4 flex gap-2">
-                                        <a :href="'mailto:' + lead.email + '?subject=Question site web&body=' + lead.emailBody" target="_blank" class="p-2 rounded bg-accent-400 text-dark-950 hover:bg-white transition-colors" title="Envoyer Email">
-                                            <i class="ph-bold ph-paper-plane-tilt"></i>
-                                        </a>
-                                        <button @click="removeLead(lead.id)" class="p-2 rounded bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-colors">
+                                    <td class="p-4 text-right">
+                                        <button @click="removeLead(lead.id)" class="text-slate-600 hover:text-red-400 transition-colors">
                                             <i class="ph-bold ph-trash"></i>
                                         </button>
                                     </td>
                                 </tr>
                             </template>
-                            <tr x-show="leads.length === 0">
-                                <td colspan="4" class="p-8 text-center text-slate-500 italic">
-                                    Aucun prospect pour le moment. Lancez une recherche !
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
         </main>
-    </div>
-
-    <div x-show="showEmailModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-950/80 backdrop-blur-sm" x-transition>
-        <div class="glass-panel w-full max-w-2xl p-6 rounded-2xl border border-white/10 bg-dark-900 shadow-2xl relative">
-            <button @click="showEmailModal = false" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="ph-bold ph-x text-xl"></i></button>
-            
-            <h3 class="font-display font-bold text-white text-xl mb-4">Prévisualisation Email</h3>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="text-xs font-bold text-slate-500 uppercase">Sujet</label>
-                    <input type="text" x-model="generatedEmail.subject" class="w-full bg-dark-950 border border-white/10 rounded-lg px-3 py-2 text-white text-sm mt-1">
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-slate-500 uppercase">Corps du message</label>
-                    <textarea x-model="generatedEmail.body" rows="8" class="w-full bg-dark-950 border border-white/10 rounded-lg px-3 py-2 text-white text-sm mt-1 leading-relaxed font-mono"></textarea>
-                </div>
-                <div class="flex gap-3 pt-2">
-                    <a :href="`mailto:?subject=${encodeURIComponent(generatedEmail.subject)}&body=${encodeURIComponent(generatedEmail.body)}`" class="flex-1 py-3 rounded-xl bg-accent-400 text-dark-950 font-bold text-center hover:bg-white transition-colors">
-                        Ouvrir dans Gmail/Outlook
-                    </a>
-                    <button @click="copyEmail()" class="px-6 py-3 rounded-xl border border-white/10 text-white hover:bg-white/5 font-bold transition-colors">
-                        Copier
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script src="app.js"></script>
