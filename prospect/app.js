@@ -13,54 +13,100 @@ function leadApp() {
             return this.leads.filter(l => l.status !== 'To Contact').length;
         },
 
-        // Sauvegarde auto
         saveLeads() {
             localStorage.setItem('myLeads', JSON.stringify(this.leads));
         },
 
-        // Simulation intelligente de recherche (Mockup pour la démo)
-        // Pour la prod : il faudrait appeler ton proxy.php qui ferait un appel à une API (ex: Google Places)
-        simulateSearch() {
-            if (!this.searchQuery || !this.searchLocation) return alert('Remplissez les champs !');
+        // --- C'EST ICI QUE LA MAGIE OPÈRE AVEC L'API ---
+        async performRealSearch() {
+            if (!this.searchQuery || !this.searchLocation) return alert('Veuillez remplir l\'activité et la ville.');
             
             this.isLoading = true;
             this.searchResults = [];
 
-            // Simulation de délai réseau
-            setTimeout(() => {
-                // Génération de faux résultats réalistes pour tester l'UI
-                const mockTypes = ['Artisan', 'Cabinet', 'Restaurant'];
-                const issues = ['Non Responsive', 'Pas de HTTPS', 'Design 2010', 'Lent', 'Erreur 404'];
-                
-                for(let i=0; i<5; i++) {
-                    const hasSite = Math.random() > 0.3;
-                    const isOld = hasSite && Math.random() > 0.5;
-                    const issueList = [];
-                    if(!hasSite) issueList.push('Pas de site web');
-                    else if(isOld) {
-                        issueList.push(issues[Math.floor(Math.random() * issues.length)]);
-                        issueList.push('Score Mobile Faible');
+            try {
+                // 1. Appel à TON proxy (qui appelle Google)
+                const response = await fetch(`proxy.php?action=search&q=${encodeURIComponent(this.searchQuery)}&loc=${encodeURIComponent(this.searchLocation)}`);
+                const data = await response.json();
+
+                if (data.error) throw new Error(data.error);
+                if (!data.places || data.places.length === 0) throw new Error("Aucun résultat trouvé dans cette zone.");
+
+                // 2. Traitement des résultats Google
+                // On transforme les données Google en format "LeadMachine"
+                for (let place of data.places) {
+                    
+                    let lead = {
+                        id: place.id,
+                        name: place.displayName.text,
+                        address: place.formattedAddress,
+                        phone: place.internationalPhoneNumber || 'Non renseigné',
+                        website: place.websiteUri || null,
+                        hasWebsite: !!place.websiteUri,
+                        isOld: false, // Sera déterminé par l'analyse
+                        score: 0,
+                        issues: [],
+                        analyzed: false
+                    };
+
+                    // Calcul préliminaire du score (si pas de site = Jackpot)
+                    if (!lead.hasWebsite) {
+                        lead.issues.push('Pas de site web');
+                        lead.score = 0; // Score très bas = Très bonne opportunité
+                        lead.analyzed = true; 
+                    } else {
+                        // Si site existe, on le marque comme "à analyser"
+                        lead.score = 50; 
                     }
 
-                    this.searchResults.push({
-                        id: Date.now() + i,
-                        name: `${this.searchQuery} ${['Durand', 'Martin', 'Léman', 'Savoie'][i%4]}`,
-                        address: `${Math.floor(Math.random()*100)} Rue du Lac, ${this.searchLocation}`,
-                        hasWebsite: hasSite,
-                        website: hasSite ? 'http://www.exemple-vieux-site.fr' : null,
-                        isOld: isOld,
-                        issues: issueList,
-                        score: hasSite ? (isOld ? Math.floor(Math.random() * 40) + 10 : 85) : 0
-                    });
+                    this.searchResults.push(lead);
                 }
+
+                // 3. (Optionnel) Analyse automatique des sites trouvés
+                // Pour éviter d'attendre trop longtemps, on lance l'analyse en arrière-plan
+                this.analyzeWebsitesInResults();
+
+            } catch (err) {
+                alert("Erreur : " + err.message);
+            } finally {
                 this.isLoading = false;
-            }, 1500);
+            }
         },
 
+        // Fonction qui parcourt les résultats et analyse les sites un par un
+        async analyzeWebsitesInResults() {
+            for (let lead of this.searchResults) {
+                if (lead.hasWebsite && !lead.analyzed) {
+                    try {
+                        const res = await fetch(`proxy.php?action=analyze&url=${encodeURIComponent(lead.website)}`);
+                        const analysis = await res.json();
+                        
+                        if (analysis.issues) {
+                            lead.issues = analysis.issues;
+                            lead.tech = analysis.tech;
+                            
+                            // Logique de scoring "Maison"
+                            if (analysis.issues.length > 0) {
+                                lead.isOld = true;
+                                lead.score = 30; // Site avec problèmes
+                            } else {
+                                lead.score = 90; // Site sain
+                            }
+                        }
+                    } catch (e) {
+                        lead.issues.push("Site inaccessible");
+                        lead.score = 20;
+                    }
+                    lead.analyzed = true;
+                }
+            }
+        },
+        // -----------------------------------------------
+
         getScoreColor(score) {
-            if (score === 0) return 'border-red-500 bg-red-500/10 text-red-500'; // Pas de site (Opportunité MAX)
-            if (score < 50) return 'border-orange-500 bg-orange-500/10 text-orange-500'; // Site pourri
-            return 'border-green-500 bg-green-500/10 text-green-500'; // Bon site
+            if (score <= 20) return 'border-red-500 bg-red-500/10 text-red-500'; 
+            if (score <= 60) return 'border-orange-500 bg-orange-500/10 text-orange-500';
+            return 'border-green-500 bg-green-500/10 text-green-500';
         },
 
         addToCRM(result) {
@@ -68,20 +114,22 @@ function leadApp() {
                 id: result.id,
                 name: result.name,
                 city: this.searchLocation,
-                email: 'contact@exemple.com', // À scrapper idéalement
+                email: '', // L'API Google ne donne PAS les emails (RGPD), il faut les chercher sur le site
+                phone: result.phone,
+                website: result.website,
                 mainIssue: result.issues[0] || 'Modernisation',
                 status: 'To Contact',
                 emailBody: '',
                 addedAt: new Date().toISOString()
             };
             
-            // Éviter doublons
             if(!this.leads.some(l => l.id === newLead.id)) {
                 this.leads.unshift(newLead);
                 this.saveLeads();
-                // Petite vibration/notif
                 if(navigator.vibrate) navigator.vibrate(50);
                 this.currentTab = 'crm';
+            } else {
+                alert("Déjà dans le CRM !");
             }
         },
 
@@ -101,17 +149,18 @@ function leadApp() {
 
             this.generatedEmail.body = `Bonjour,
 
-Je suis Nathan Marzilli, développeur web basé à Évian.
+Je suis Nathan Marzilli, développeur web basé près de chez vous.
 
-En faisant des recherches sur les ${this.searchQuery.toLowerCase()}s à ${this.searchLocation}, je suis tombé sur votre activité.
+En faisant des recherches sur les ${this.searchQuery}s à ${this.searchLocation}, je suis tombé sur votre activité.
 ${isNoSite 
-? "J'ai remarqué que vous n'aviez pas encore de site internet, ce qui vous prive d'une grande partie de votre clientèle locale qui cherche sur Google." 
-: "J'ai visité votre site web et j'ai remarqué qu'il n'était pas parfaitement adapté aux mobiles d'aujourd'hui (affichage difficile sur smartphone)."}
+? "J'ai remarqué que vous n'aviez pas encore de site internet visible sur Google Maps. C'est dommage car beaucoup de clients cherchent aujourd'hui uniquement sur leur téléphone." 
+: "J'ai visité votre site ("+result.website+") et j'ai noté quelques points techniques qui pourraient être améliorés pour vous apporter plus de clients (notamment sur mobile)."}
 
-Je crée des sites ultra-rapides et modernes pour les pros du coin. 
-Je serais ravi de vous montrer une maquette gratuite de ce à quoi votre futur site pourrait ressembler.
+Je crée des sites modernes pour les artisans et commerçants. 
+Je serais ravi de vous montrer une maquette gratuite, sans engagement.
 
-Dispo pour un court échange ?
+Êtes-vous disponible pour un court échange téléphonique ?
+Mon numéro : [TON NUMERO]
 
 Cordialement,
 Nathan Marzilli
@@ -122,14 +171,14 @@ nathanmarzilli.com`;
 
         copyEmail() {
             navigator.clipboard.writeText(this.generatedEmail.body);
-            alert('Copié !');
+            alert('Email copié dans le presse-papier !');
         },
 
         exportCSV() {
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Nom,Ville,Problème,Statut\n";
+            csvContent += "Nom,Ville,Téléphone,Site Web,Problème,Statut\n";
             this.leads.forEach(row => {
-                csvContent += `${row.name},${row.city},${row.mainIssue},${row.status}\n`;
+                csvContent += `"${row.name}","${row.city}","${row.phone}","${row.website || ''}","${row.mainIssue}","${row.status}"\n`;
             });
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
