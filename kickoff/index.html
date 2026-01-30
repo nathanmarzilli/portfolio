@@ -249,7 +249,8 @@
                     <!-- Ajout Email pour contact Formspree -->
                     <div class="col-span-1 md:col-span-2">
                         <label class="label-premium">Votre Email (pour le retour)</label>
-                        <input type="email" name="_replyto" id="contactEmail" placeholder="votre@email.com" class="input-premium" required>
+                        <!-- CHANGEMENT: name="_replyto" remplacé par name="email" pour correspondre à l'exemple Formspree -->
+                        <input type="email" name="email" id="contactEmail" placeholder="votre@email.com" class="input-premium" required>
                     </div>
                 </div>
             </div>
@@ -472,10 +473,61 @@
             const content = buildMessage();
             navigator.clipboard.writeText(content).then(() => {
                 const toast = document.getElementById('toast');
+                toast.innerHTML = '<i class="ph-fill ph-check-circle text-accent-400 text-xl"></i><span class="font-medium text-sm">Contenu copié dans le presse-papier !</span>';
                 toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
                 setTimeout(() => toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4'), 3000);
             });
         }
+        
+        // --- GESTION DE L'ENVOI SANS REDIRECTION (AJAX) ---
+        const form = document.getElementById("projectForm");
+        
+        async function handleSubmit(event) {
+            event.preventDefault(); // On empêche le rechargement/redirection
+            const btn = form.querySelector('button[type="submit"]');
+            const originalContent = btn.innerHTML;
+            
+            // Feedback visuel sur le bouton
+            btn.innerHTML = '<span>Envoi en cours...</span> <i class="ph-bold ph-spinner animate-spin"></i>';
+            btn.disabled = true;
+
+            const data = new FormData(event.target);
+            
+            try {
+                const response = await fetch(event.target.action, {
+                    method: form.method,
+                    body: data,
+                    headers: {
+                        'Accept': 'application/json' // Demande à Formspree de répondre en JSON au lieu de rediriger
+                    }
+                });
+                
+                if (response.ok) {
+                    // SUCCÈS : On affiche le toast de réussite
+                    const toast = document.getElementById('toast');
+                    toast.innerHTML = '<i class="ph-fill ph-check-circle text-accent-400 text-xl"></i><span class="font-medium text-sm">Bien reçu ! Je reviens vers vous vite.</span>';
+                    toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    setTimeout(() => toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4'), 5000);
+                    form.reset();
+                } else {
+                    // ERREUR FORMSPREE
+                    const data = await response.json();
+                    if (Object.hasOwn(data, 'errors')) {
+                        alert("Erreur: " + data["errors"].map(error => error["message"]).join(", "));
+                    } else {
+                        alert("Oups ! Une erreur est survenue lors de l'envoi.");
+                    }
+                }
+            } catch (error) {
+                alert("Erreur réseau. Veuillez réessayer.");
+            } finally {
+                // On remet le bouton à l'état initial
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+            }
+        }
+        
+        form.addEventListener("submit", handleSubmit);
     </script>
 </body>
 </html>
