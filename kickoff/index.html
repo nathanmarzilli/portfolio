@@ -529,5 +529,42 @@
         
         form.addEventListener("submit", handleSubmit);
     </script>
+	
+	<script>
+	// Conservation des données envoyé depuis index.html de base
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Récupérer les paramètres dans l'URL
+        const params = new URLSearchParams(window.location.search);
+        
+        // 2. Fonction pour remplir un champ s'il existe
+        const fillField = (id, value) => {
+            const element = document.getElementById(id);
+            if (element && value) {
+                element.value = value;
+                // Si c'est un champ select (pour le pack), on déclenche l'événement change si nécessaire
+                if(element.tagName === 'SELECT') {
+                    element.dispatchEvent(new Event('change'));
+                }
+            }
+        };
+
+        // 3. Remplissage automatique
+        // Assure-toi que les ID de tes inputs dans le formulaire correspondent à 'nom', 'email', 'pack'
+        if(params.has('name')) fillField('nom', params.get('name')); // Cherche un input id="nom"
+        if(params.has('email')) fillField('email', params.get('email')); // Cherche un input id="email"
+        
+        // Pour le pack, c'est souvent un select ou des radios
+        if(params.has('pack')) {
+            const packValue = params.get('pack');
+            
+            // Cas 1 : C'est un champ <select id="pack">
+            fillField('pack', packValue);
+            
+            // Cas 2 : Ce sont des boutons radio <input type="radio" name="pack" value="...">
+            const radio = document.querySelector(`input[name="pack"][value="${packValue}"]`);
+            if (radio) radio.checked = true;
+        }
+    });
+</script>
 </body>
 </html>

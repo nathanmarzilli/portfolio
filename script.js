@@ -727,6 +727,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 const dateStr = dateObjFormatted.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
                 document.getElementById('success-message-date').textContent = `Le ${dateStr} à ${timeInput.value}`;
 
+                // --- MODIFICATION : Génération du lien intelligent vers Kickoff ---
+                const kickoffBtn = document.querySelector('#booking-success a[href*="kickoff"]');
+                if (kickoffBtn) {
+                    // On prépare les données à envoyer dans l'URL
+                    const params = new URLSearchParams({
+                        pack: selectedPack,              // ex: "Vitrine"
+                        name: `${firstname} ${name}`,    // ex: "Jean Dupont"
+                        email: email,                    // ex: "jean@mail.com"
+                        date: dateStr + ' à ' + timeInput.value // Pour rappel
+                    });
+                    // On met à jour le lien du bouton
+                    kickoffBtn.href = `/portfolio/kickoff/?${params.toString()}`;
+                }
+                // ------------------------------------------------------------------
+
                 // Affichage Overlay
                 document.getElementById('booking-success').classList.remove('hidden');
                 document.getElementById('booking-success').classList.add('flex');
