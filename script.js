@@ -286,7 +286,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminActions = [
         { label: "Créer Devis / Facture", icon: "ph-file-text", color: "text-blue-400", link: "/portfolio/contrat/devis&contrat/" },
         { label: "Quittance de Loyer", icon: "ph-house-line", color: "text-green-400", link: "/portfolio/contrat/quittance/" },
-        { label: "Bail Location Meublée", icon: "ph-key", color: "text-purple-400", link: "/portfolio/contrat/bail/" }
+        { label: "Bail Location Meublée", icon: "ph-key", color: "text-purple-400", link: "/portfolio/contrat/bail/" },
+        { label: "Prospecter", icon: "ph-key", color: "text-purple-400", link: "/portfolio/prospect/" }
     ];
 
     function renderAdminButtons() {
