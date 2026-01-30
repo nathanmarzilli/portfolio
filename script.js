@@ -21,7 +21,7 @@ const db = getFirestore(app);
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==============================================
-    // 0. UX & DESIGN ENHANCEMENTS (NOUVEAU)
+    // 0. UX & DESIGN ENHANCEMENTS
     // ==============================================
     
     // Fonction Helper Vibration (Mobile tactile)
@@ -48,24 +48,24 @@ document.addEventListener('DOMContentLoaded', () => {
             progressBar.style.width = `${scrollPercent}%`;
         }
     });
-	
-	// ==============================================
-    // 2. GESTION DES PROJETS (CORRIGÉ & COMPLET)
+    
+    // ==============================================
+    // 2. GESTION DES PROJETS (OPTIMISÉ SEO & ALIGNEMENT)
     // ==============================================
     const projectsData = [
         {
-            title: "Bad Evian",
+            title: "Badminton Club Évian",
             subtitle: "La transformation associative",
-            story: "En modernisant l’identité du club, j’ai donné une image plus soignée et rassurante, qui inspire confiance aux adhérents.",
+            story: "En modernisant l’identité du club, j’ai donné une image plus soignée et rassurante, qui inspire confiance aux adhérents du Chablais.",
             url: "https://www.badminton-evian.fr", 
             type: "Site Club Sportif",
             features: [
-                { icon: "ph-clock-counter-clockwise", text: "Frise Chrono", desc: "Une navigation temporelle interactive permettant de redécouvrir l'histoire du club année par année." },
-                { icon: "ph-newspaper", text: "News & Blog", desc: "Interface d'administration simplifiée permettant au bureau de publier des articles sans compétences techniques." },
-                { icon: "ph-lightning", text: "Live Score", desc: "Connexion API temps réel pour afficher les résultats des tournois instantanément." },
-                { icon: "ph-images", text: "Galerie", desc: "Optimisation WebP et Lazy Loading pour un chargement instantané des photos." },
-                { icon: "ph-envelope-simple", text: "Contact", desc: "Formulaire sécurisé anti-spam avec validation côté serveur." },
-                { icon: "ph-users", text: "Avis", desc: "Intégration automatique des avis Google pour la preuve sociale." }
+                { icon: "ph-clock-counter-clockwise", text: "Histoire Chablais", desc: "Une navigation temporelle interactive retraçant l'évolution du club en Haute-Savoie." },
+                { icon: "ph-newspaper", text: "Actualités 74", desc: "Interface d'administration simplifiée pour publier les news du club d'Évian sans compétences techniques." },
+                { icon: "ph-lightning", text: "Résultats Live", desc: "Connexion API temps réel pour afficher les scores des compétitions départementales." },
+                { icon: "ph-images", text: "Galerie HD", desc: "Optimisation WebP et Lazy Loading pour un chargement instantané des photos de tournois." },
+                { icon: "ph-envelope-simple", text: "Contact Asso", desc: "Formulaire sécurisé pour les demandes d'inscription et renseignements." },
+                { icon: "ph-users", text: "Avis Adhérents", desc: "Intégration automatique des avis Google pour la preuve sociale locale." }
             ]
         }
     ];
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             projectsGrid.innerHTML = projectsData.map((project, index) => {
                 const featuresHtml = project.features && project.features.length > 0 ? `
-                    <div class="w-full mb-6 mt-4 block">
+                    <div class="w-full mb-6 mt-4 block relative">
                         <div class="flex flex-wrap gap-2 mb-4">
                             ${project.features.map((f, i) => `
                                 <button onclick="window.showProjectDesc(${index}, ${i})" 
@@ -88,11 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
                                 </button>
                             `).join('')}
                         </div>
-                        <div id="project-desc-box-${index}" class="hidden w-full">
-                            <div class="p-4 rounded-xl bg-white/5 border-l-2 border-accent-400 text-sm text-slate-300 relative animate-pop-in w-full">
-                                <i class="ph-duotone ph-info text-xl text-accent-400 absolute top-4 right-4 opacity-50"></i>
-                                <p id="project-desc-text-${index}" class="leading-relaxed pr-8"></p>
-                            </div>
+                        <div id="project-desc-box-${index}" class="hidden w-full bg-white/5 border-l-2 border-accent-400 p-4 rounded-xl text-sm text-slate-300 animate-pop-in relative">
+                            <i class="ph-duotone ph-info text-xl text-accent-400 absolute top-4 right-4 opacity-50"></i>
+                            <p id="project-desc-text-${index}" class="leading-relaxed pr-8"></p>
                         </div>
                     </div>
                 ` : '';
@@ -120,7 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
                              <iframe src="${project.url}" class="w-[200%] h-[200%] border-0 transform scale-50 origin-top-left pointer-events-none" loading="lazy"></iframe>
                             <div class="absolute inset-0 bg-dark-950/10 backdrop-blur-[2px] group-hover/frame:backdrop-blur-0 transition-all duration-500 iframe-overlay"></div>
                             <div class="absolute inset-0 flex items-center justify-center opacity-100 group-hover/frame:opacity-0 transition-opacity duration-300 pointer-events-none hint-overlay">
-                                <span class="px-4 py-2 bg-dark-950/80 rounded-full text-xs text-white backdrop-blur-md border border-white/10">Survoler (ou cliquer) pour aperçu</span>
+                                <span class="px-4 py-2 bg-dark-950/80 rounded-full text-xs text-white backdrop-blur-md border border-white/10 flex items-center gap-2">
+                                    <i class="ph-bold ph-hand-tap md:hidden"></i>
+                                    <span class="md:hidden">Touchez pour aperçu</span>
+                                    <span class="hidden md:inline">Survoler pour aperçu</span>
+                                </span>
                             </div>
                         </div>
                         <a href="${project.url}" target="_blank" class="absolute inset-0 z-30 md:hidden pointer-events-none"></a>
@@ -139,9 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500);
     }
 
-    // --- FONCTIONS D'INTERACTIVITÉ (ESSENTIELLES POUR NEWS/BLOG/FRISE) ---
+    // --- FONCTIONS D'INTERACTIVITÉ ---
 
-    // 1. Gestion de l'affichage des descriptions (News, Frise, etc.)
+    // 1. Gestion de l'affichage des descriptions
     window.showProjectDesc = function(projectIndex, btnIndex) {
         if(window.vibrate) window.vibrate(); // Feedback tactile
         
@@ -325,7 +327,9 @@ document.addEventListener('DOMContentLoaded', () => {
         'git': { title: 'Versionning Git', text: 'Sécurité du code et historique des modifications. Votre projet est sauvegardé étape par étape, zéro risque de perte.', icon: 'ph-git-branch', color: 'text-red-500' },
         'responsive': { title: 'Mobile First', text: 'Votre site est pensé pour les smartphones en priorité, car c\'est là que vos clients se trouvent aujourd\'hui.', icon: 'ph-device-mobile', color: 'text-purple-400' },
         'firebase': { title: 'Google Firebase', text: 'Base de données temps réel et authentification sécurisée par Google. Performance et fiabilité industrielle.', icon: 'ph-fire', color: 'text-orange-400' },
-        'seo': { title: 'SEO & Performance', text: 'Optimisation technique avancée (Core Web Vitals) pour plaire à Google et faire monter votre site dans les résultats.', icon: 'ph-magnifying-glass', color: 'text-green-500' }
+        'seo': { title: 'SEO & Performance', text: 'Optimisation technique avancée (Core Web Vitals) pour plaire à Google et faire monter votre site dans les résultats.', icon: 'ph-magnifying-glass', color: 'text-green-500' },
+        // AJOUT FORMSPREE
+        'formspree': { title: 'Formspree', text: 'Gestion fiable et instantanée des formulaires de contact. Réception des e-mails en temps réel avec protection anti-spam intégrée.', icon: 'ph-paper-plane-tilt', color: 'text-red-500' }
     };
 
     const aboutDescriptions = {
@@ -402,7 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
     // ==============================================
-    // 5. SELECTION OFFRES & CALCULATEUR (Modifié)
+    // 5. SELECTION OFFRES & CALCULATEUR
     // ==============================================
     
     // Fonction appelée par les boutons "Choisir"
@@ -492,7 +496,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateTotal();
     };
     
-    // Écouter les changements directs sur les radios (pour le fond violet Premium)
+    // Écouter les changements directs sur les radios
     document.querySelectorAll('input[name="project_pack"]').forEach(radio => {
         radio.addEventListener('change', (e) => {
              window.vibrate();
@@ -520,7 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==============================================
-    // 6. CALENDRIER (Modifié)
+    // 6. CALENDRIER
     // ==============================================
     const daysContainer = document.getElementById('calendar-days');
     const slotsContainer = document.getElementById('calendar-slots');
@@ -532,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let calendarStartDate = new Date();
     let currentDateOffset = 0;
-    const DAYS_TO_SHOW = 12; // Affiche assez de jours pour remplir les grilles (4x3 sur mobile, 6x2 desktop)
+    const DAYS_TO_SHOW = 12;
 
     // Init
     renderCalendar();
@@ -562,9 +566,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let daysGenerated = 0;
         let i = 1 + currentDateOffset;
 
-        // On génère jusqu'à remplir la grille définie par DAYS_TO_SHOW
         while (daysGenerated < DAYS_TO_SHOW) {
-            if (i > 60) break; // Limite de sécurité (2 mois)
+            if (i > 60) break; // Limite de sécurité
 
             const d = new Date();
             d.setDate(d.getDate() + i);
@@ -694,7 +697,6 @@ document.addEventListener('DOMContentLoaded', () => {
             dateObj.setHours(hours, minutes);
             dateObj.setMinutes(dateObj.getMinutes() + 30);
 
-            // Formater proprement en "HH:mm" (ex: "09:00" -> "09:30")
             const endH = String(dateObj.getHours()).padStart(2, '0');
             const endM = String(dateObj.getMinutes()).padStart(2, '0');
             const calculatedEndTime = `${endH}:${endM}`;
@@ -720,46 +722,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     status: 'pending' 
                 });
 
-                // Configuration Message Succès & Calendrier
+                // Configuration Message Succès (AVEC REDIRECTION KICKOFF)
                 const dateObjFormatted = new Date(dateInput.value);
                 const dateStr = dateObjFormatted.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
                 document.getElementById('success-message-date').textContent = `Le ${dateStr} à ${timeInput.value}`;
 
-                // Génération lien Google Calendar
-                // Format: YYYYMMDDTHHMMSSZ
-                const [h, m] = timeInput.value.split(':');
-                const start = new Date(dateInput.value);
-                start.setHours(h, m, 0);
-                const end = new Date(start);
-                end.setMinutes(end.getMinutes() + 30); // Durée 30min
-
-                const formatGCal = (date) => date.toISOString().replace(/-|:|\.\d\d\d/g, "");
-                const gCalLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=RDV+Projet+Web+-+Nathan+Marzilli&dates=${formatGCal(start)}/${formatGCal(end)}&details=Discussion+projet+web.&location=Appel+Téléphonique&sf=true&output=xml`;
-                document.getElementById('btn-google-calendar').href = gCalLink;
-
-                // Bouton Download ICS
-                document.getElementById('btn-download-ics').onclick = () => {
-                    const icsContent = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Nathan Marzilli//Portfolio//FR
-BEGIN:VEVENT
-UID:${Date.now()}@nathanmarzilli.com
-DTSTAMP:${formatGCal(new Date())}
-DTSTART:${formatGCal(start)}
-DTEND:${formatGCal(end)}
-SUMMARY:RDV Projet Web - Nathan Marzilli
-DESCRIPTION:Discussion concernant votre projet web.
-LOCATION:Appel Téléphonique
-END:VEVENT
-END:VCALENDAR`;
-                    const blob = new Blob([icsContent], { type: 'text/calendar' });
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'rdv-nathan-marzilli.ics';
-                    a.click();
-                };
-
+                // Affichage Overlay
                 document.getElementById('booking-success').classList.remove('hidden');
                 document.getElementById('booking-success').classList.add('flex');
             } catch (error) {
