@@ -166,5 +166,29 @@
         "tech": "WordPress",
         "lastContactDate": "2026-02-01T22:01:19.382Z",
         "addedAt": "2026-02-01T22:01:14.668Z"
+    },
+    {
+        "id": "ChIJAxU0YKk8jEcRLBuf8D-SFD4",
+        "name": "SAEME - Si\u00e8ge social",
+        "city": "evian",
+        "email": "",
+        "phone": "Non renseign\u00e9",
+        "website": null,
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": null,
+        "addedAt": "2026-02-01T22:27:20.194Z"
+    },
+    {
+        "id": "ChIJL0aZqTw9jEcR6ma6GNI_CxU",
+        "name": "SAS Rvelec",
+        "city": "evian",
+        "email": "h.lebas@rvelec.fr",
+        "phone": "+33 6 61 76 17 06",
+        "website": "http:\/\/rvelec.fr\/",
+        "status": "To Contact",
+        "tech": "WordPress",
+        "lastContactDate": null,
+        "addedAt": "2026-02-01T22:36:47.351Z"
     }
 ]

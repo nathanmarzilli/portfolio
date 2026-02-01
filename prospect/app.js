@@ -4,24 +4,28 @@ function leadApp() {
         currentTab: 'search',
         searchQuery: '',
         searchLocation: '',
+        searchRadius: 5, // Par défaut 5km
         isLoading: false,
+        isSending: false, // Etat chargement envoi mail
         searchResults: [],
-        leads: [],
-        expandedEmail: null, // ID du prospect dont on rédige le mail
-        generatedEmail: { subject: '', body: '' },
-        dailyGoal: 12, // Objectif : 12 mails par jour
+        leads: [], // Données CRM locales
+        expandedEmail: null, // ID du prospect en cours de rédaction
+        generatedEmail: { subject: '', body: '', to: '' },
+        dailyGoal: 12,
+        monthlyGoal: 300, // Nouvel objectif mensuel
 
-        // --- INTELLIGENCE COMMERCIALE (Niches qui paient) ---
-        topNiches: [
-            "Rénovation", "Plombier", "Électricien", "Couvreur", "Charpentier",
-            "Paysagiste", "Pisciniste", "Menuisier", "Serrurier",
-            "Avocat", "Notaire", "Expert Comptable", "Cabinet Infirmier",
-            "Restaurant", "Traiteur", "Hôtel", "Chambres d'hôtes",
-            "Garage Automobile", "Concessionnaire", "Agence Immobilière"
-        ],
+        // --- INTELLIGENCE COMMERCIALE (Niches Catégorisées) ---
+        // Liste complète réorganisée pour affichage moderne
+        nichesCategories: {
+            "🔥 TOP Business": ["Rénovation", "Plombier", "Électricien", "Couvreur", "Charpentier", "Maçon", "Peintre", "Menuisier", "Serrurier"],
+            "🧑‍⚕️ Santé": ["Kiné", "Ostéopathe", "Dentiste", "Infirmier libéral", "Psychologue"],
+            "🍽️ Food": ["Restaurant", "Pizzeria", "Snack", "Traiteur", "Food Truck"],
+            "🏨 Tourisme": ["Gîte", "Chambre d'hôtes", "Camping", "Hôtel", "Activités touristiques"],
+            "💇‍♀️ Beauté": ["Coiffeur", "Institut de beauté", "Barbier", "Esthéticienne", "Masseur"]
+        },
 
-        // --- STRATÉGIE "VILLES MOYENNES" (10k-200k hab - Potentiel Max) ---
-        // Liste exhaustive pour ne jamais manquer d'idées
+        // --- VILLES CIBLES (Liste Exhaustive 10k-200k hab) ---
+        // J'ai remis la liste COMPLETE que tu avais avant
         targetCities: [
             // Auvergne-Rhône-Alpes
             "Thonon-les-Bains", "Annemasse", "Annecy", "Chambéry", "Aix-les-Bains", 
@@ -48,23 +52,32 @@ function leadApp() {
             this.loadLeadsFromServer();
         },
 
-        // --- CALCULS MOTIVATION (Dashboard) ---
-        // Calcul corrigé : Compte les prospects contactés AUJOURD'HUI qui ne sont PAS en "A contacter"
+        // --- DASHBOARD & OBJECTIFS ---
+        // Compte les prospects contactés aujourd'hui (hors statut "A contacter")
         get todayCount() {
             const today = new Date().toISOString().slice(0, 10);
             return this.leads.filter(l => 
-                l.status !== 'To Contact' && // Important : si on le remet en "A contacter", il ne compte plus
+                l.status !== 'To Contact' && 
                 l.lastContactDate && 
                 l.lastContactDate.startsWith(today)
             ).length;
         },
+        
+        // Compte les prospects contactés ce mois-ci
+        get monthCount() {
+            const currentMonth = new Date().toISOString().slice(0, 7); // Format "YYYY-MM"
+            return this.leads.filter(l => 
+                l.status !== 'To Contact' && 
+                l.lastContactDate && 
+                l.lastContactDate.startsWith(currentMonth)
+            ).length;
+        },
 
-        // Compte les relances à faire (Contacté il y a + de 3 jours)
+        // Compte les relances à faire (+3 jours)
         get followUpCount() {
             return this.leads.filter(l => this.needsRelance(l)).length;
         },
 
-        // Texte motivant dynamique
         get motivationText() {
             const pct = (this.todayCount / this.dailyGoal) * 100;
             if (pct === 0) return "Journée vierge. Va chercher tes 12 prospects !";
@@ -74,10 +87,8 @@ function leadApp() {
         },
 
         // --- LOGIQUE METIER ---
-        
-        // Vérifie si une relance est nécessaire
         needsRelance(lead) {
-            if (lead.status !== 'Contacted') return false; // On ne relance que ceux qu'on a contactés
+            if (lead.status !== 'Contacted') return false; 
             if (!lead.lastContactDate) return false;
             
             const lastContact = new Date(lead.lastContactDate);
@@ -85,7 +96,7 @@ function leadApp() {
             const diffTime = Math.abs(now - lastContact);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
             
-            return diffDays >= 3; // Vrai si >= 3 jours
+            return diffDays >= 3; // Relance si >= 3 jours
         },
 
         formatDate(dateStr) {
@@ -93,13 +104,13 @@ function leadApp() {
             return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
         },
 
-        isInCRM(id) {
-            return this.leads.some(l => l.id === id);
+        // Vérifie si un prospect est déjà dans le CRM local
+        getExistingLead(id) {
+            return this.leads.find(l => l.id === id);
         },
 
         // --- MOTEUR DE RECHERCHE ---
         async performRealSearch() {
-            // Si pas de mot clé, on met "Entreprise" pour chercher large
             let query = this.searchQuery;
             if (!query) query = "Entreprise"; 
 
@@ -110,16 +121,22 @@ function leadApp() {
             this.expandedEmail = null;
 
             try {
-                // Appel au Proxy PHP
+                // On inclut le rayon (radius) dans la logique visuelle ou contextuelle
+                // Note : L'API "Text Search" utilise la requête en langage naturel.
+                // On pourrait ajouter "within X km" à la query, mais Google gère mieux "Ville".
                 const url = `proxy.php?action=search&q=${encodeURIComponent(query)}&loc=${encodeURIComponent(this.searchLocation)}`;
                 const response = await fetch(url);
                 const data = await response.json();
 
                 if (data.error) throw new Error(data.error);
-                if (!data.places || data.places.length === 0) throw new Error("Zone vide. Passe à la ville suivante !");
+                if (!data.places || data.places.length === 0) throw new Error("Aucun résultat. Essaie une autre ville.");
 
                 // Traitement des résultats
                 for (let place of data.places) {
+                    
+                    // Vérification si le lead existe déjà dans le CRM
+                    let existing = this.getExistingLead(place.id);
+
                     let lead = {
                         id: place.id,
                         name: place.displayName.text,
@@ -127,22 +144,28 @@ function leadApp() {
                         phone: place.internationalPhoneNumber || 'Non renseigné',
                         website: place.websiteUri || null,
                         hasWebsite: !!place.websiteUri,
-                        tech: 'Inconnu',
-                        https: true, // On suppose oui par défaut
+                        
+                        // Si existe, on garde les infos déjà connues (Tech, Email, Status)
+                        tech: existing ? existing.tech : 'Inconnu',
+                        email: existing ? existing.email : null,
+                        crmStatus: existing ? existing.status : null,
+                        lastContactDate: existing ? existing.lastContactDate : null,
+                        
+                        // Scoring initial
+                        https: true,
                         speed: 0,
-                        isOld: false,
-                        // SCORING : Pas de site = 0 (Prioritaire), Site existant = 50
                         score: !!place.websiteUri ? 50 : 0, 
                         issues: !place.websiteUri ? ['Pas de site web'] : [],
-                        analyzed: false
+                        analyzed: !!existing && existing.tech !== 'Inconnu' // Si déjà en base avec tech connue, on évite le re-scraping
                     };
+                    
                     this.searchResults.push(lead);
                 }
 
-                // TRI 1 : Les "Sans Site" d'abord
+                // TRI 1 : Score (Les sans sites en premier)
                 this.searchResults.sort((a, b) => a.score - b.score);
 
-                // Lancer l'analyse technique des sites (en arrière-plan)
+                // Lancer l'analyse technique (Scraping)
                 this.analyzeWebsitesInResults();
 
             } catch (err) {
@@ -152,10 +175,10 @@ function leadApp() {
             }
         },
 
-        // Analyse technique site par site via le Proxy PHP
+        // Analyse technique site par site + SCRAPING EMAIL/TEL
         async analyzeWebsitesInResults() {
             for (let lead of this.searchResults) {
-                // On n'analyse que ceux qui ont un site et qui ne sont pas déjà faits
+                // On n'analyse que ceux qui ont un site, qui ne sont pas déjà analysés
                 if (lead.hasWebsite && !lead.analyzed) {
                     try {
                         const res = await fetch(`proxy.php?action=analyze&url=${encodeURIComponent(lead.website)}`);
@@ -165,17 +188,24 @@ function leadApp() {
                             lead.https = analysis.https;
                             lead.speed = analysis.speed;
                             
-                            // LOGIQUE DE SCORING AVANCÉE (Le cœur de la machine)
+                            // 1. Récupération Email & Tel scrapés
+                            if(analysis.scraped_email) {
+                                lead.email = analysis.scraped_email;
+                            }
+                            if(analysis.scraped_phone && lead.phone === 'Non renseigné') {
+                                lead.phone = analysis.scraped_phone;
+                            }
+
+                            // 2. LOGIQUE DE SCORING (Pourquoi contacter ?)
                             if (!analysis.mobile) {
                                 lead.issues.push("Pas Responsive");
-                                lead.score -= 20; // Très grave -> Score baisse -> Priorité monte
-                                lead.isOld = true;
+                                lead.score -= 20; // Gros problème
                             }
                             if (!analysis.https) {
                                 lead.issues.push("Non Sécurisé");
                                 lead.score -= 10;
                             }
-                            if (analysis.speed > 3) { // Site lent (> 3 secondes)
+                            if (analysis.speed > 3) { // Site lent
                                 lead.issues.push("Lent (" + analysis.speed.toFixed(1) + "s)");
                                 lead.score -= 5;
                             }
@@ -187,112 +217,164 @@ function leadApp() {
                     } catch (e) { console.log(e); }
                 }
             }
-            // TRI 2 : On remonte les pires élèves en haut de la liste
+            // TRI 2 : Mise à jour du tri après analyse
             this.searchResults.sort((a, b) => a.score - b.score);
         },
 
         getScoreColor(score) {
-            // Rouge = Jackpot potentiel (Site pourri ou inexistant)
+            // Rouge = À contacter absolument
             if (score <= 15) return 'border-danger-500 bg-danger-500/10 text-danger-500'; 
-            // Orange = A améliorer
+            // Orange = Potentiel
             if (score <= 40) return 'border-warning-500 bg-warning-500/10 text-warning-500';
-            // Vert = Difficile à vendre
+            // Vert = Site probablement déjà bon
             return 'border-accent-500 bg-accent-500/10 text-accent-500';
         },
 
         // --- ACTIONS CRM & EMAIL ---
 
-        // Ajouter au CRM (sauvegarde automatique)
+        // Ajouter au CRM (auto)
         async addToCRM(result) {
             const newLead = {
                 id: result.id,
                 name: result.name,
                 city: this.searchLocation,
-                email: '', 
+                email: result.email || '', 
                 phone: result.phone,
                 website: result.website,
                 status: 'To Contact',
                 tech: result.tech || 'Inconnu',
                 lastContactDate: null,
                 addedAt: new Date().toISOString(),
-                confirmDelete: false // Etat local pour le bouton suppression
+                confirmDelete: false 
             };
             
-            if(this.isInCRM(newLead.id)) return;
+            if(this.getExistingLead(newLead.id)) return; // Évite doublons
 
             this.leads.unshift(newLead);
             await this.saveLeadToServer(newLead);
         },
 
-        // Affiche l'email SOUS la carte (Pas de popup)
+        // Affiche le panneau Email
         toggleEmailPanel(result) {
             if (this.expandedEmail === result.id) {
-                this.expandedEmail = null; // Fermer si déjà ouvert
+                this.expandedEmail = null; 
                 return;
             }
             this.expandedEmail = result.id;
+            
+            // On génère le contenu
             this.generateEmailContent(result);
             
-            // On ajoute au CRM dès qu'on commence à rédiger
-            if (!this.isInCRM(result.id)) this.addToCRM(result);
+            // On l'ajoute au CRM si pas déjà fait
+            if (!this.getExistingLead(result.id)) {
+                this.addToCRM(result);
+            }
         },
 
-        // GÉNÉRATEUR D'EMAIL PERSUASIF
+        // GÉNÉRATEUR D'EMAIL (CONTENU EXACT DEMANDÉ)
         generateEmailContent(result) {
-            const isNoSite = !result.website;
-            const isNonResp = result.issues.includes('Pas Responsive');
-            const isNotSecure = result.issues.includes('Non Sécurisé');
-            const isSlow = result.issues.some(i => i.includes('Lent'));
-            
-            // OBJET : Doit donner envie d'ouvrir (Curiosité)
-            this.generatedEmail.subject = isNoSite 
-                ? `Visibilité de ${result.name} sur Google` 
-                : `Petit problème d'affichage sur ${result.name}`;
+            // Tentative de remplissage auto de l'email destinataire
+            this.generatedEmail.to = result.email || ''; 
 
-            // CORPS DU MAIL (Technique AIDA)
+            const isNoSite = !result.website;
+            
+            // OBJET
+            this.generatedEmail.subject = `Améliorer votre visibilité en ligne – accompagnement site internet clé en main`;
+
+            // CORPS DU MAIL
             let body = `Bonjour,\n\n`;
             
-            // 1. CONTEXTE (Rassure le client, je ne suis pas un robot)
-            body += `Je suis Nathan, développeur web indépendant. Je faisais le tour des entreprises de ${this.searchQuery || 'votre secteur'} à ${this.searchLocation} et je suis tombé sur votre fiche.\n\n`;
-            
-            // 2. LE PROBLÈME (Créer le besoin)
+            // Intro Contextuelle
+            body += `Je me permets de vous contacter car j’accompagne des artisans et professionnels locaux (comme ${result.name}) dans la création et la modernisation de leur site internet, avec un objectif simple : vous aider à être visible, crédible et facilement contactable par vos futurs clients.\n\n`;
+
+            // Problème (Personnalisation légère)
             if (isNoSite) {
-                body += `Honnêtement, j'ai failli passer à côté. Vous n'avez pas de site web relié à votre fiche Google. C'est dommage car aujourd'hui, 80% des clients (moi le premier) regardent le site avant d'appeler.\n`;
-                body += `S'ils ne voient rien, ils cliquent malheureusement chez le concurrent juste en dessous.\n`;
-            } else if (isNonResp) {
-                body += `Je suis allé sur votre site (${result.website}) depuis mon téléphone, et j'ai eu du mal à naviguer. Le texte est petit, il faut zoomer...\n`;
-                body += `Google pénalise ça, et les clients impatients quittent la page en 3 secondes.\n`;
-            } else if (isNotSecure) {
-                body += `Votre site s'affiche comme "Non Sécurisé" (pas de cadenas) sur mon navigateur. Ça envoie un signal de danger à vos visiteurs, même si vous êtes une entreprise de confiance.\n`;
+                body += `Aujourd’hui, beaucoup d’entreprises perdent des opportunités faute d’un site internet. Les clients cherchent sur Google, et s'ils ne trouvent rien, ils vont chez le concurrent.\n`;
+            } else if (result.issues.includes('Pas Responsive')) {
+                body += `J'ai remarqué que votre site actuel n'était pas adapté aux mobiles. Aujourd'hui, beaucoup de clients cherchent depuis leur téléphone et quittent un site s'il est difficile à lire.\n`;
             } else {
-                body += `Votre site est en ligne, c'est bien. Mais il a un design qui ne reflète pas la qualité de votre travail actuel. On pourrait le rendre beaucoup plus vendeur.\n`;
+                body += `Aujourd’hui, beaucoup d’entreprises perdent des opportunités faute d’un site clair, à jour et rapide. Mon rôle est justement de vous éviter cela.\n`;
             }
 
-            // 3. LA SOLUTION (Preuve d'autorité)
-            body += `\nJe ne suis pas une agence qui facture des fortunes. Je crée des sites modernes, rapides et qui inspirent confiance immédiatement.\n`;
-            body += `Vous pouvez voir mes réalisations ici : https://www.nathan-marzilli.fr\n\n`;
+            // Solution (Offre Nathan)
+            body += `\nConcrètement, je propose une solution clé en main, sans contrainte technique pour vous :\n\n`;
+            body += `👉 La création ou la refonte complète de votre site internet (design moderne, adapté mobile, clair pour vos clients)\n`;
+            body += `   Prix : 990 € (paiement unique)\n\n`;
+            body += `👉 Un accompagnement mensuel à 50 € / mois comprenant :\n`;
+            body += `   - l’hébergement du site\n`;
+            body += `   - la maintenance technique\n`;
+            body += `   - les mises à jour et améliorations\n`;
+            body += `   - la mise au goût du jour du contenu si besoin\n`;
+            body += `   - un suivi régulier, avec un interlocuteur unique : moi\n\n`;
 
-            // 4. APPEL À L'ACTION (Faible engagement)
-            body += `Je vous ai préparé une petite idée de ce qu'on pourrait faire pour ${result.name}. Je peux vous envoyer la maquette ?\n\n`;
-            body += `Bien à vous,\nNathan Marzilli\n06 XX XX XX XX`;
+            body += `Mon approche est volontairement humaine et durable : je travaille avec un nombre limité de clients afin d’assurer un vrai suivi.\n\n`;
+
+            // Appel à l'action
+            body += `Si vous le souhaitez, je vous propose un échange gratuit et sans engagement, simplement pour faire un point sur votre présence actuelle en ligne.\n\n`;
+            body += `👉 Vous pouvez répondre directement à ce mail,\n`;
+            body += `ou, si c’est plus simple pour vous, prendre rendez-vous en ligne via mon portfolio (https://nathanmarzilli.github.io/portfolio/) afin de consulter mes disponibilités.\n\n`;
+
+            body += `Je reste bien entendu à votre disposition.\n\n`;
+            body += `Bien cordialement,\nNathan Marzilli\n06 XX XX XX XX`; // Pense à mettre ton vrai tel ici si tu veux
 
             this.generatedEmail.body = body;
         },
 
-        // Quand on clique sur "Ouvrir Gmail"
+        // ENVOYER LE MAIL (Action)
+        async sendEmailDirectly(result) {
+            if(!this.generatedEmail.to) return alert("Je n'ai pas trouvé l'adresse email de ce client.\n\nTu dois la chercher manuellement (Google, Facebook, PagesJaunes) et la coller dans le champ 'Destinataire'.");
+            
+            this.isSending = true;
+            try {
+                // Envoi via PHP
+                const res = await fetch('proxy.php?action=send_email', {
+                    method: 'POST',
+                    body: JSON.stringify(this.generatedEmail)
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    alert("✅ Email envoyé avec succès !");
+                    this.markAsContacted(result);
+                    this.expandedEmail = null; // Fermer le panneau
+                } else {
+                    alert("⚠️ Erreur d'envoi serveur (PHP mail). J'ouvre Gmail à la place.");
+                    this.openGmail(result);
+                }
+            } catch(e) {
+                alert("Erreur technique : " + e.message);
+            } finally {
+                this.isSending = false;
+            }
+        },
+
+        // Fallback Gmail
+        openGmail(result) {
+            const mailto = `mailto:${this.generatedEmail.to}?subject=${encodeURIComponent(this.generatedEmail.subject)}&body=${encodeURIComponent(this.generatedEmail.body)}`;
+            window.open(mailto, '_blank');
+            this.markAsContacted(result);
+        },
+
+        // Marquer comme contacté (Met à jour Local + Serveur)
         async markAsContacted(leadData) {
+            // 1. Visuel dans la recherche
+            const searchRes = this.searchResults.find(r => r.id === leadData.id);
+            if(searchRes) searchRes.crmStatus = 'Contacted';
+
+            // 2. Mise à jour donnée réelle
             const lead = this.leads.find(l => l.id === leadData.id);
             if (lead) {
                 lead.status = 'Contacted';
-                lead.lastContactDate = new Date().toISOString(); 
+                lead.lastContactDate = new Date().toISOString();
+                lead.email = this.generatedEmail.to; // On sauvegarde l'email qu'on vient d'utiliser
                 await this.saveLeadToServer(lead);
             }
         },
 
-        // Quand on clique sur "Relancer"
+        // Relance manuelle
         async markAsRelanced(lead) {
             lead.status = 'Relance';
-            lead.lastContactDate = new Date().toISOString(); // Reset le timer
+            lead.lastContactDate = new Date().toISOString(); // Reset le timer de relance
             await this.saveLeadToServer(lead);
         },
 
@@ -306,9 +388,15 @@ function leadApp() {
         },
 
         async saveLeadToServer(lead) {
-            // On nettoie l'objet avant envoi (on enlève les états temporaires d'interface)
+            // Nettoyage avant envoi
             const cleanLead = JSON.parse(JSON.stringify(lead));
-            delete cleanLead.confirmDelete; 
+            // On retire les champs "temporaires" d'affichage pour ne pas polluer la DB
+            delete cleanLead.confirmDelete;
+            delete cleanLead.crmStatus;
+            delete cleanLead.analyzed;
+            delete cleanLead.score;
+            delete cleanLead.issues;
+            delete cleanLead.speed;
 
             await fetch('proxy.php?action=save_lead', {
                 method: 'POST',
@@ -318,28 +406,19 @@ function leadApp() {
         },
 
         async removeLead(lead) {
-            // LOGIQUE DE SUPPRESSION SANS POPUP
             if (!lead.confirmDelete) {
-                // Premier clic : on demande confirmation
                 lead.confirmDelete = true;
-                // Si pas de 2ème clic après 3s, on annule
                 setTimeout(() => { lead.confirmDelete = false; }, 3000);
-                return; 
+                return;
             }
-            
-            // Deuxième clic : on supprime vraiment
             this.leads = this.leads.filter(l => l.id !== lead.id);
             await fetch(`proxy.php?action=delete_lead&id=${lead.id}`);
         },
 
         async updateStatus(lead) {
-            // CORRECTION BUG BARRE PROGRESSION
             if (lead.status === 'To Contact') {
-                // Si on remet en "A contacter", on efface la date de contact
-                // Donc le compteur "todayCount" ne le prendra plus en compte
-                lead.lastContactDate = null; 
+                lead.lastContactDate = null;
             } else if (lead.status === 'Contacted' && !lead.lastContactDate) {
-                // Si on passe en contacté, on met la date
                 lead.lastContactDate = new Date().toISOString();
             }
             await this.saveLeadToServer(lead);
@@ -351,13 +430,15 @@ function leadApp() {
         },
         
         exportCSV() {
-            let csv = "Nom,Ville,Tel,Status,Dernier Contact\n";
+            let csv = "Nom,Email,Tel,Ville,Status,Dernier Contact\n";
             this.leads.forEach(l => {
-                csv += `${(l.name||'').replace(/,/g,'')},${l.city},${l.phone},${l.status},${l.lastContactDate || ''}\n`;
+                // On gère les virgules dans les noms pour ne pas casser le CSV
+                const cleanName = (l.name||'').replace(/,/g,' ');
+                csv += `${cleanName},${l.email||''},${l.phone},${l.city},${l.status},${l.lastContactDate || ''}\n`;
             });
             const link = document.createElement("a");
             link.href = encodeURI("data:text/csv;charset=utf-8," + csv);
-            link.download = "prospects.csv";
+            link.download = "prospects_leadmachine.csv";
             link.click();
         }
     }
