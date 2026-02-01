@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LeadMachine V3 | Nathan Marzilli</title>
+    <title>LeadMachine V3.2 | Nathan Marzilli</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -31,225 +31,298 @@
         .progress-bar { transition: width 1s ease-in-out; }
         [x-cloak] { display: none !important; }
         
-        /* Slider Custom */
-        input[type=range] { -webkit-appearance: none; background: transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #2DD4BF; cursor: pointer; margin-top: -6px; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #334155; border-radius: 2px; }
+        /* Scrollbars Fines */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2DD4BF; }
     </style>
 </head>
-<body x-data="leadApp()" x-init="init()" class="h-screen flex flex-col overflow-hidden bg-dark-950 font-sans selection:bg-accent-400/30">
+<body x-data="leadApp()" x-init="init()" class="h-screen flex flex-col overflow-hidden bg-dark-950 font-sans selection:bg-accent-400/30 text-slate-200">
+
+    <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
+        <template x-for="notif in notifications" :key="notif.id">
+            <div x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-2"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 translate-y-2"
+                 class="pointer-events-auto px-4 py-3 rounded-lg shadow-xl border flex items-center gap-3 min-w-[300px]"
+                 :class="notif.type === 'error' ? 'bg-red-950/90 border-red-500/50 text-red-200' : 'bg-dark-800/90 border-accent-500/50 text-white'">
+                
+                <i class="ph-bold text-xl" :class="notif.type === 'error' ? 'ph-warning-circle' : 'ph-check-circle'"></i>
+                <div class="flex flex-col">
+                    <span class="text-xs font-bold uppercase opacity-70" x-text="notif.type === 'error' ? 'Erreur' : 'Succ√®s'"></span>
+                    <span class="text-sm font-medium" x-text="notif.message"></span>
+                </div>
+            </div>
+        </template>
+    </div>
 
     <header class="glass-header shrink-0 z-20">
         <div class="h-16 flex items-center justify-between px-4 md:px-6 border-b border-white/5">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-accent-400 flex items-center justify-center text-dark-950 font-bold font-display">N</div>
-                <span class="font-display font-bold text-white tracking-wide hidden md:inline">LeadMachine <span class="text-xs text-accent-400">V3</span></span>
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 text-white hover:bg-white/10 rounded-lg">
+                    <i class="ph-bold ph-list text-2xl"></i>
+                </button>
+
+                <div class="w-8 h-8 rounded-full bg-accent-400 flex items-center justify-center text-dark-950 font-bold font-display shadow-[0_0_15px_rgba(45,212,191,0.5)]">N</div>
+                <span class="font-display font-bold text-white tracking-wide hidden md:inline">LeadMachine <span class="text-xs text-accent-400 font-mono">V3.2</span></span>
             </div>
             
             <div class="flex items-center gap-6 text-sm">
                 <div class="flex flex-col items-end">
-                    <span class="text-slate-400 text-[10px] uppercase font-bold">Jour</span>
+                    <span class="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Jour</span>
                     <div class="flex items-center gap-2">
-                        <span class="font-bold text-white" x-text="todayCount + ' / ' + dailyGoal"></span>
-                        <div class="w-16 h-1.5 bg-dark-800 rounded-full overflow-hidden">
-                            <div class="h-full bg-accent-400 progress-bar" :style="`width: ${(todayCount / dailyGoal) * 100}%`"></div>
+                        <span class="font-bold text-white font-mono" x-text="todayCount + ' / ' + dailyGoal"></span>
+                        <div class="w-20 h-1.5 bg-dark-800 rounded-full overflow-hidden border border-white/5">
+                            <div class="h-full bg-accent-400 progress-bar shadow-[0_0_10px_rgba(45,212,191,0.5)]" :style="`width: ${(todayCount / dailyGoal) * 100}%`"></div>
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-col items-end border-l border-white/10 pl-6">
-                    <span class="text-slate-400 text-[10px] uppercase font-bold">Mois</span>
+                <div class="flex flex-col items-end border-l border-white/10 pl-6 hidden sm:flex">
+                    <span class="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Mois</span>
                     <div class="flex items-center gap-2">
-                        <span class="font-bold text-white" x-text="monthCount + ' / ' + monthlyGoal"></span>
-                        <div class="w-16 h-1.5 bg-dark-800 rounded-full overflow-hidden">
-                            <div class="h-full bg-purple-500 progress-bar" :style="`width: ${(monthCount / monthlyGoal) * 100}%`"></div>
+                        <span class="font-bold text-white font-mono" x-text="monthCount + ' / ' + monthlyGoal"></span>
+                        <div class="w-20 h-1.5 bg-dark-800 rounded-full overflow-hidden border border-white/5">
+                            <div class="h-full bg-purple-500 progress-bar shadow-[0_0_10px_rgba(168,85,247,0.5)]" :style="`width: ${(monthCount / monthlyGoal) * 100}%`"></div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="bg-accent-400/5 py-2 px-6 text-center border-b border-accent-400/10">
-            <p class="text-xs font-medium text-accent-400">
-                ?? <span x-text="motivationText"></span>
-            </p>
         </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden">
+    <div class="flex flex-1 overflow-hidden relative">
         
-        <aside class="w-72 glass-panel border-r border-white/5 flex flex-col p-4 gap-2 shrink-0 z-10 hidden md:flex overflow-y-auto">
-            <button @click="currentTab = 'search'" :class="currentTab === 'search' ? 'bg-accent-400 text-dark-950 font-bold' : 'text-slate-400 hover:bg-white/5 hover:text-white'" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm">
-                <i class="ph-bold ph-magnifying-glass text-lg"></i> Prospection
-            </button>
-            <button @click="currentTab = 'crm'" :class="currentTab === 'crm' ? 'bg-accent-400 text-dark-950 font-bold' : 'text-slate-400 hover:bg-white/5 hover:text-white'" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm relative">
-                <i class="ph-bold ph-kanban text-lg"></i> Pipeline CRM
-                <span x-show="followUpCount > 0" class="absolute right-3 top-3 w-2 h-2 rounded-full bg-warning-500 animate-pulse"></span>
-            </button>
+        <aside class="glass-panel border-r border-white/5 flex flex-col shrink-0 z-30 transition-transform duration-300 absolute md:relative h-full w-full md:w-80 bg-dark-950 md:bg-transparent"
+               :class="mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'">
             
-            <div class="mt-6 space-y-4">
-                <h3 class="px-4 text-xs font-bold text-slate-500 uppercase">?? MÈtiers Rentables</h3>
-                
-                <template x-for="(items, category) in nichesCategories">
-                    <div class="px-2">
-                        <div class="text-[10px] font-bold text-slate-400 mb-1 px-2" x-text="category"></div>
-                        <div class="flex flex-wrap gap-1">
-                            <template x-for="niche in items">
-                                <button @click="searchQuery = niche" 
-                                    class="px-2 py-1 rounded-md border border-white/5 bg-white/5 text-[11px] text-slate-300 hover:text-white hover:border-accent-400 hover:bg-accent-400/10 transition-colors" 
-                                    x-text="niche"></button>
-                            </template>
-                        </div>
-                    </div>
-                </template>
+            <button @click="mobileMenuOpen = false" class="md:hidden absolute top-4 right-4 text-white p-2 bg-dark-800 rounded-full">
+                <i class="ph-bold ph-x text-xl"></i>
+            </button>
+
+            <div class="p-4 gap-2 flex flex-col shrink-0 border-b border-white/5">
+                <button @click="currentTab = 'search'; mobileMenuOpen = false" :class="currentTab === 'search' ? 'bg-accent-400 text-dark-950 font-bold shadow-lg shadow-accent-400/20' : 'text-slate-400 hover:bg-white/5 hover:text-white'" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm">
+                    <i class="ph-bold ph-magnifying-glass text-lg"></i> Prospection
+                </button>
+                <button @click="currentTab = 'crm'; mobileMenuOpen = false" :class="currentTab === 'crm' ? 'bg-accent-400 text-dark-950 font-bold shadow-lg shadow-accent-400/20' : 'text-slate-400 hover:bg-white/5 hover:text-white'" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm relative">
+                    <i class="ph-bold ph-kanban text-lg"></i> Pipeline CRM
+                    <span x-show="followUpCount > 0" class="absolute right-3 top-3 flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-warning-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-warning-500"></span>
+                    </span>
+                </button>
             </div>
 
-            <div class="mt-6 flex-1 overflow-hidden flex flex-col">
-                <h3 class="px-4 text-xs font-bold text-slate-500 uppercase mb-2">Villes Cibles</h3>
-                <div class="space-y-1 px-2 overflow-y-auto pr-1">
-                    <template x-for="city in targetCities">
-                        <button @click="searchLocation = city" class="w-full text-left px-3 py-2 rounded text-xs text-slate-400 hover:text-white hover:bg-white/5 flex justify-between group transition-colors" :class="searchLocation === city ? 'bg-white/10 text-white' : ''">
-                            <span x-text="city"></span>
-                            <i class="ph-bold ph-crosshair opacity-0 group-hover:opacity-100 text-accent-400"></i>
-                        </button>
+            <div class="flex-1 flex flex-col min-h-0">
+                
+                <div class="flex-1 overflow-y-auto p-4 min-h-0 border-b border-white/10 relative">
+                    <div class="sticky top-0 bg-dark-950/90 backdrop-blur z-10 py-2 mb-2 border-b border-white/5 flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-accent-400 uppercase flex items-center gap-2">
+                            <i class="ph-bold ph-briefcase"></i> M√©tiers Rentables
+                        </h3>
+                    </div>
+                    
+                    <template x-for="(items, category) in nichesCategories">
+                        <div class="mb-4">
+                            <div class="text-[10px] font-bold text-slate-400 mb-2 flex items-center gap-2 uppercase tracking-wide">
+                                <i class="ph-bold text-slate-500" :class="getCategoryIcon(category)"></i>
+                                <span x-text="category"></span>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <template x-for="niche in items">
+                                    <button @click="searchQuery = niche" 
+                                        class="px-3 py-1.5 rounded-lg border border-white/5 bg-white/5 text-[11px] text-slate-300 hover:text-white hover:border-accent-400 hover:bg-accent-400/10 transition-all flex-grow text-center truncate" 
+                                        :class="searchQuery === niche ? 'border-accent-400 bg-accent-400/10 text-white' : ''"
+                                        x-text="niche"></button>
+                                </template>
+                            </div>
+                        </div>
                     </template>
                 </div>
+
+                <div class="flex-1 overflow-y-auto p-0 min-h-0 bg-dark-900/30">
+                     <div class="sticky top-0 bg-dark-900/90 backdrop-blur z-10 py-3 px-4 border-b border-white/5 flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-accent-400 uppercase flex items-center gap-2">
+                            <i class="ph-bold ph-map-pin"></i> Villes Cibles
+                        </h3>
+                    </div>
+                    <div class="p-2 space-y-1">
+                        <template x-for="city in targetCities">
+                            <button @click="searchLocation = city" 
+                                    class="w-full text-left px-3 py-2.5 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-white/5 flex justify-between items-center group transition-all" 
+                                    :class="searchLocation === city ? 'bg-accent-400/10 text-white border border-accent-400/20' : 'border border-transparent'">
+                                <span x-text="city"></span>
+                                <i class="ph-bold ph-crosshair opacity-0 group-hover:opacity-100 text-accent-400 transition-opacity"></i>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+
             </div>
             
-            <div class="mt-auto pt-4 border-t border-white/5">
-                <button @click="exportCSV()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 w-full text-sm transition-colors">
-                    <i class="ph-bold ph-download-simple"></i> Exporter CSV
+            <div class="p-4 border-t border-white/5 bg-dark-900/50 shrink-0">
+                <button @click="exportCSV()" class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 w-full text-xs font-bold transition-colors border border-dashed border-white/10 hover:border-white/20">
+                    <i class="ph-bold ph-download-simple text-lg"></i> EXPORTER TOUT (CSV)
                 </button>
             </div>
         </aside>
 
-        <main class="flex-1 overflow-y-auto relative p-4 md:p-8 scroll-smooth">
+        <main class="flex-1 overflow-y-auto relative p-4 md:p-6 scroll-smooth" @click="mobileMenuOpen = false">
             
             <div x-show="currentTab === 'search'" class="max-w-5xl mx-auto space-y-6 animate-fade-up">
                 
-                <div class="glass-panel p-6 rounded-2xl shadow-2xl space-y-4">
-                    <div class="flex flex-col md:flex-row gap-4 items-end">
-                        <div class="flex-1 w-full space-y-1">
-                            <label class="text-xs font-bold text-accent-400 uppercase ml-1">ActivitÈ</label>
-                            <div class="relative">
-                                <i class="ph-bold ph-briefcase absolute left-4 top-3.5 text-slate-500"></i>
-                                <input x-model="searchQuery" type="text" class="w-full bg-dark-900 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white focus:border-accent-400 focus:outline-none placeholder-slate-600" placeholder="Ex: Plombier...">
-                            </div>
-                        </div>
-                        <div class="flex-1 w-full space-y-1">
-                            <label class="text-xs font-bold text-accent-400 uppercase ml-1">Ville</label>
-                            <div class="relative">
-                                <i class="ph-bold ph-map-pin absolute left-4 top-3.5 text-slate-500"></i>
-                                <input x-model="searchLocation" type="text" class="w-full bg-dark-900 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white focus:border-accent-400 focus:outline-none placeholder-slate-600" placeholder="Ville...">
-                            </div>
-                        </div>
-                        <button @click="performRealSearch()" :disabled="isLoading" class="w-full md:w-auto px-8 py-3 rounded-xl bg-accent-400 text-dark-950 font-bold hover:bg-white transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_0_20px_rgba(45,212,191,0.2)]">
-                            <i x-show="isLoading" class="ph-bold ph-spinner animate-spin"></i>
-                            <span x-text="isLoading ? '...' : 'SCANNER'"></span>
-                        </button>
-                    </div>
+                <div class="glass-panel p-6 rounded-2xl shadow-2xl space-y-4 relative overflow-hidden group">
+                     <div class="absolute -top-24 -right-24 w-64 h-64 bg-accent-400/10 rounded-full blur-[80px] group-hover:bg-accent-400/15 transition-all duration-700"></div>
 
-                    <div class="border-t border-white/5 pt-4 flex items-center gap-4">
-                        <span class="text-xs font-bold text-slate-500 uppercase whitespace-nowrap">Rayon de recherche : <span x-text="searchRadius + ' km'" class="text-white"></span></span>
-                        <input type="range" min="0" max="300" step="5" x-model="searchRadius" class="w-full md:w-64">
+                    <div class="flex flex-col md:flex-row gap-4 items-end relative z-10">
+                        <div class="flex-1 w-full space-y-1.5">
+                            <label class="text-[10px] font-bold text-accent-400 uppercase ml-1 tracking-widest">Activit√© Recherch√©e</label>
+                            <div class="relative group/input">
+                                <i class="ph-bold ph-briefcase absolute left-4 top-3.5 text-slate-500 group-focus-within/input:text-accent-400 transition-colors"></i>
+                                <input x-model="searchQuery" type="text" class="w-full bg-dark-950/80 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white focus:border-accent-400 focus:ring-1 focus:ring-accent-400 focus:outline-none placeholder-slate-600 transition-all shadow-inner" placeholder="Ex: Dentiste, Plombier...">
+                            </div>
+                        </div>
+                        <div class="flex-1 w-full space-y-1.5">
+                            <label class="text-[10px] font-bold text-accent-400 uppercase ml-1 tracking-widest">Localisation</label>
+                            <div class="relative group/input">
+                                <i class="ph-bold ph-map-pin absolute left-4 top-3.5 text-slate-500 group-focus-within/input:text-accent-400 transition-colors"></i>
+                                <input x-model="searchLocation" type="text" class="w-full bg-dark-950/80 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white focus:border-accent-400 focus:ring-1 focus:ring-accent-400 focus:outline-none placeholder-slate-600 transition-all shadow-inner" placeholder="Ville...">
+                            </div>
+                        </div>
+                        <button @click="performRealSearch()" :disabled="isLoading" class="w-full md:w-auto px-8 py-3 rounded-xl bg-accent-400 text-dark-950 font-bold hover:bg-white transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(45,212,191,0.15)] hover:shadow-[0_0_30px_rgba(45,212,191,0.4)] transform hover:-translate-y-0.5 active:translate-y-0">
+                            <i x-show="isLoading" class="ph-bold ph-spinner animate-spin text-xl"></i>
+                            <i x-show="!isLoading" class="ph-bold ph-radar text-xl"></i>
+                            <span x-text="isLoading ? 'ANALYSE...' : 'LANCER SCAN'"></span>
+                        </button>
                     </div>
                 </div>
 
                 <div class="space-y-4" x-show="searchResults.length > 0">
-                    <h3 class="text-white font-bold text-lg flex items-center gap-2">
-                        OpportunitÈs DÈtectÈes
-                        <span class="text-xs font-normal text-slate-500 bg-dark-800 px-2 py-1 rounded" x-text="searchResults.length"></span>
-                    </h3>
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-white font-bold text-lg flex items-center gap-2">
+                            Opportunit√©s D√©tect√©es
+                            <span class="text-xs font-normal text-slate-400 bg-white/5 px-2 py-1 rounded-full border border-white/5" x-text="searchResults.length"></span>
+                        </h3>
+                        <div class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">
+                            Tri√© par potentiel
+                        </div>
+                    </div>
                     
                     <template x-for="result in searchResults" :key="result.id">
-                        <div class="glass-panel p-5 rounded-xl border border-white/5 hover:border-accent-400/30 transition-all group relative"
-                             :class="result.crmStatus === 'Contacted' ? 'opacity-75 bg-dark-900' : ''">
+                        <div class="glass-panel p-5 rounded-xl border border-white/5 hover:border-accent-400/30 transition-all group relative overflow-hidden"
+                             :class="result.crmStatus === 'Contacted' ? 'bg-dark-900/40 opacity-80' : ''">
                             
-                            <div x-show="result.crmStatus === 'Contacted'" class="absolute -top-3 -right-3 bg-purple-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border border-white/10 z-10 flex items-center gap-1">
-                                <i class="ph-bold ph-check-circle"></i> D…J¿ CONTACT…
+                            <div x-show="result.crmStatus === 'Contacted'" class="absolute top-0 right-0 bg-purple-600/20 border-b border-l border-purple-500/30 text-purple-200 text-[9px] font-bold px-3 py-1 rounded-bl-xl z-10 flex items-center gap-1 backdrop-blur-sm">
+                                <i class="ph-bold ph-check"></i> D√âJ√Ä CONTACT√â
                             </div>
 
-                            <div class="flex flex-col md:flex-row gap-6 items-start md:items-center">
+                            <div class="flex flex-col md:flex-row gap-6 items-start md:items-center relative z-10">
                                 
-                                <div class="w-20 rounded-xl flex flex-col items-center justify-center border shrink-0 bg-dark-900/50 p-2 gap-1"
+                                <div class="w-20 rounded-xl flex flex-col items-center justify-center border shrink-0 bg-dark-950/50 p-3 gap-1 relative shadow-inner"
                                      :class="getScoreColor(result.score)">
-                                    <span class="text-2xl font-bold font-display" x-text="result.score"></span>
-                                    <span class="text-[8px] uppercase font-bold opacity-70">Potentiel</span>
+                                    <span class="text-2xl font-bold font-display tracking-tight" x-text="result.score"></span>
+                                    <span class="text-[8px] uppercase font-bold opacity-70">Score</span>
                                 </div>
 
                                 <div class="flex-1 min-w-0 w-full">
-                                    <div class="flex flex-wrap items-center gap-2 mb-1">
-                                        <h3 class="font-bold text-white text-lg truncate" x-text="result.name"></h3>
-                                        <div class="flex gap-1">
-                                            <span x-show="!result.hasWebsite" class="px-2 py-0.5 rounded text-[10px] bg-red-500/20 text-red-400 font-bold uppercase border border-red-500/20">Sans Site</span>
-                                            <span x-show="result.issues.includes('Pas Responsive')" class="px-2 py-0.5 rounded text-[10px] bg-warning-500/20 text-warning-500 font-bold uppercase border border-warning-500/20">Non-Resp</span>
-                                            <span x-show="result.email" class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/20 flex items-center gap-1"><i class="ph-bold ph-at"></i> Email trouvÈ</span>
+                                    <div class="flex flex-wrap items-center gap-3 mb-2">
+                                        <h3 class="font-bold text-white text-lg truncate leading-tight" x-text="result.name"></h3>
+                                        
+                                        <div class="flex gap-1.5 flex-wrap">
+                                            <span x-show="!result.hasWebsite" class="px-2 py-0.5 rounded text-[9px] bg-red-500/10 text-red-400 font-bold uppercase border border-red-500/20 flex items-center gap-1">
+                                                <i class="ph-bold ph-globe-x"></i> Pas de Site
+                                            </span>
+                                            
+                                            <span x-show="result.issues.includes('Pas Responsive')" class="px-2 py-0.5 rounded text-[9px] bg-warning-500/10 text-warning-500 font-bold uppercase border border-warning-500/20 flex items-center gap-1">
+                                                <i class="ph-bold ph-device-mobile-slash"></i> Mobile KO
+                                            </span>
+                                            
+                                            <span x-show="result.email" class="px-2 py-0.5 rounded text-[9px] bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center gap-1 font-bold">
+                                                <i class="ph-bold ph-at"></i> Email Trouv√©
+                                            </span>
                                         </div>
                                     </div>
                                     
-                                    <div class="text-sm text-slate-400 space-y-1">
-                                        <div class="flex items-center gap-2">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 text-xs text-slate-400">
+                                        <div class="flex items-center gap-2 truncate">
                                             <i class="ph-bold ph-map-pin text-slate-600"></i>
-                                            <span x-text="result.address" class="truncate max-w-[400px]"></span>
+                                            <span x-text="result.address"></span>
                                         </div>
-                                        <div class="flex items-center gap-2">
+                                        <div class="flex items-center gap-2 truncate">
                                             <i class="ph-bold ph-globe text-slate-600"></i>
-                                            <a x-show="result.website" :href="result.website" target="_blank" class="text-accent-400 hover:underline">Visiter le site</a>
-                                            <span x-show="!result.website" class="text-slate-600 italic">Pas de site</span>
+                                            <a x-show="result.website" :href="result.website" target="_blank" class="text-accent-400 hover:text-white transition-colors underline decoration-accent-400/30">Visiter le site</a>
+                                            <span x-show="!result.website" class="text-slate-600 italic">Aucun site d√©tect√©</span>
                                         </div>
-                                    </div>
-
-                                    <div x-show="result.issues.length > 0" class="mt-2 flex flex-wrap gap-2">
-                                        <template x-for="issue in result.issues">
-                                            <span class="text-[10px] text-slate-400 bg-white/5 px-2 py-1 rounded border border-white/5 flex items-center gap-1">
-                                                <i class="ph-bold ph-warning text-warning-500"></i> <span x-text="issue"></span>
-                                            </span>
-                                        </template>
+                                        <div class="flex items-center gap-2 truncate">
+                                            <i class="ph-bold ph-phone text-slate-600"></i>
+                                            <span x-text="result.phone"></span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="flex gap-2 shrink-0 w-full md:w-auto mt-2 md:mt-0">
-                                    <button @click="addToCRM(result)" x-show="!getExistingLead(result.id)" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white text-sm font-medium border border-white/10 transition-colors">
+                                <div class="flex gap-2 shrink-0 w-full md:w-auto mt-3 md:mt-0">
+                                    <button @click="addToCRM(result)" x-show="!getExistingLead(result.id)" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-bold border border-white/10 transition-colors uppercase tracking-wide">
                                         <i class="ph-bold ph-plus"></i> CRM
                                     </button>
+                                    
                                     <button @click="toggleEmailPanel(result)" 
-                                            class="px-5 py-2 rounded-lg text-dark-950 text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-accent-400/20"
-                                            :class="result.crmStatus === 'Contacted' ? 'bg-purple-500 hover:bg-purple-400 text-white' : 'bg-accent-400 hover:bg-white'">
-                                        <i class="ph-bold" :class="result.crmStatus === 'Contacted' ? 'ph-arrow-u-up-left' : 'ph-paper-plane-tilt'"></i>
-                                        <span x-text="result.crmStatus === 'Contacted' ? 'Relancer' : 'Contacter'"></span>
+                                            class="px-5 py-2.5 rounded-lg text-dark-950 text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg uppercase tracking-wide min-w-[140px]"
+                                            :class="result.crmStatus === 'Contacted' ? 'bg-purple-500 hover:bg-purple-400 text-white shadow-purple-500/20' : 'bg-accent-400 hover:bg-white hover:scale-105 shadow-accent-400/20'">
+                                        <i class="ph-bold text-lg" :class="result.crmStatus === 'Contacted' ? 'ph-arrow-u-up-left' : 'ph-paper-plane-tilt'"></i>
+                                        <span x-text="result.crmStatus === 'Contacted' ? 'RELANCER' : 'CONTACTER'"></span>
                                     </button>
                                 </div>
                             </div>
 
-                            <div x-show="expandedEmail === result.id" x-collapse class="mt-4 pt-4 border-t border-white/10 bg-dark-900/50 -mx-5 px-5 -mb-5 pb-5 rounded-b-xl">
-                                <div class="grid md:grid-cols-2 gap-4">
+                            <div x-show="expandedEmail === result.id" x-collapse class="mt-4 pt-4 border-t border-white/10 bg-dark-950/30 -mx-5 px-5 -mb-5 pb-5 rounded-b-xl">
+                                <div class="grid md:grid-cols-2 gap-6">
                                     <div class="order-2 md:order-1 space-y-2">
                                         <div class="flex justify-between items-center">
-                                            <label class="text-[10px] font-bold text-slate-500 uppercase">Message</label>
-                                            <button @click="copyEmail()" class="text-[10px] text-accent-400 hover:underline">Copier</button>
+                                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Message (Modifiable)</label>
+                                            <button @click="copyEmail()" class="text-[10px] text-accent-400 hover:text-white flex items-center gap-1 transition-colors"><i class="ph-bold ph-copy"></i> Copier le texte</button>
                                         </div>
-                                        <textarea x-model="generatedEmail.body" rows="14" class="w-full bg-dark-950 border border-white/10 rounded-lg px-3 py-2 text-white text-xs font-mono leading-relaxed resize-none focus:border-accent-400 outline-none"></textarea>
+                                        <textarea x-model="generatedEmail.body" rows="12" class="w-full bg-dark-950 border border-white/10 rounded-lg px-4 py-3 text-white text-xs font-mono leading-relaxed resize-none focus:border-accent-400 focus:ring-1 focus:ring-accent-400 outline-none"></textarea>
                                     </div>
+                                    
                                     <div class="order-1 md:order-2 space-y-4">
                                         <div>
-                                            <label class="text-[10px] font-bold text-slate-500 uppercase">Destinataire (Email)</label>
-                                            <input type="text" x-model="generatedEmail.to" placeholder="exemple@gmail.com" class="w-full bg-dark-950 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-accent-400 outline-none">
-                                            <p x-show="!generatedEmail.to" class="text-[10px] text-warning-500 mt-1">?? Aucun email trouvÈ automatiquement. Cherche sur leur Facebook ou PagesJaunes.</p>
+                                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Destinataire</label>
+                                            <div class="relative mt-1">
+                                                 <i class="ph-bold ph-envelope absolute left-3 top-2.5 text-slate-500"></i>
+                                                 <input type="text" x-model="generatedEmail.to" placeholder="email@client.com" class="w-full bg-dark-950 border border-white/10 rounded-lg pl-9 pr-3 py-2 text-white text-sm focus:border-accent-400 outline-none">
+                                            </div>
+                                            
+                                            <div x-show="!generatedEmail.to" class="mt-2 animate-pulse">
+                                                <a :href="'https://www.google.com/search?q=email+contact+' + encodeURIComponent(result.name) + '+' + encodeURIComponent(searchLocation)" 
+                                                   target="_blank"
+                                                   class="flex items-center justify-center gap-2 w-full py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 text-xs rounded transition-colors group">
+                                                    <i class="ph-bold ph-google-logo text-lg"></i>
+                                                    <span>Chercher l'email sur Google</span>
+                                                    <i class="ph-bold ph-arrow-right opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                                </a>
+                                            </div>
                                         </div>
+
                                         <div>
-                                            <label class="text-[10px] font-bold text-slate-500 uppercase">Sujet</label>
-                                            <input type="text" x-model="generatedEmail.subject" class="w-full bg-dark-950 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-accent-400 outline-none">
+                                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Objet du mail</label>
+                                            <input type="text" x-model="generatedEmail.subject" class="w-full mt-1 bg-dark-950 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-accent-400 outline-none">
                                         </div>
                                         
-                                        <div class="flex flex-col gap-2 mt-4">
+                                        <div class="h-px bg-white/5 my-2"></div>
+
+                                        <div class="flex flex-col gap-3">
                                             <button @click="sendEmailDirectly(result)" 
                                                     :disabled="isSending"
-                                                    class="w-full py-3 rounded-lg bg-accent-400 text-dark-950 font-bold text-center text-sm hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-lg shadow-accent-400/20 disabled:opacity-50">
-                                                <i class="ph-bold" :class="isSending ? 'ph-spinner animate-spin' : 'ph-paper-plane-right'"></i>
-                                                <span x-text="isSending ? 'Envoi en cours...' : 'Envoyer Maintenant'"></span>
+                                                    class="w-full py-3 rounded-lg bg-white text-dark-950 font-bold text-center text-sm hover:bg-accent-400 transition-colors flex items-center justify-center gap-2 shadow-lg disabled:opacity-50">
+                                                <i class="ph-bold text-lg" :class="isSending ? 'ph-spinner animate-spin' : 'ph-paper-plane-right'"></i>
+                                                <span x-text="isSending ? 'Envoi en cours...' : 'Envoyer Maintenant (PHP)'"></span>
                                             </button>
                                             
                                             <button @click="openGmail(result)" class="w-full py-2 rounded-lg border border-white/10 text-slate-400 text-xs hover:text-white hover:bg-white/5 transition-colors flex items-center justify-center gap-2">
-                                                <i class="ph-bold ph-arrow-square-out"></i> Ou ouvrir dans Gmail
+                                                <i class="ph-bold ph-arrow-square-out text-lg"></i> Ouvrir mon Gmail (Manuel)
                                             </button>
                                         </div>
                                     </div>
@@ -260,20 +333,22 @@
                 </div>
             </div>
 
-            <div x-show="currentTab === 'crm'" class="max-w-7xl mx-auto animate-fade-up">
-                <h2 class="font-display text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                    Pipeline 
-                    <span class="text-sm font-normal text-slate-500 bg-dark-800 px-3 py-1 rounded-full border border-white/5" x-text="leads.length + ' prospects'"></span>
-                </h2>
+            <div x-show="currentTab === 'crm'" class="max-w-7xl mx-auto animate-fade-up pb-10">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="font-display text-3xl font-bold text-white flex items-center gap-3">
+                        Pipeline CRM
+                        <span class="text-sm font-normal text-slate-400 font-sans border border-white/10 bg-white/5 px-3 py-1 rounded-full" x-text="leads.length + ' prospects'"></span>
+                    </h2>
+                </div>
                 
-                <div class="overflow-x-auto rounded-2xl border border-white/10 bg-dark-900/30">
+                <div class="overflow-x-auto rounded-xl border border-white/10 bg-dark-900/40 backdrop-blur-sm">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-white/5 border-b border-white/10 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                                <th class="p-4">DÈtails Entreprise</th>
-                                <th class="p-4">Contact</th>
-                                <th class="p-4">Dernier …change</th>
-                                <th class="p-4">Statut</th>
+                            <tr class="bg-white/5 border-b border-white/10 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                <th class="p-4">Prospect</th>
+                                <th class="p-4">Coordonn√©es</th>
+                                <th class="p-4">Dernier Contact</th>
+                                <th class="p-4">√âtat</th>
                                 <th class="p-4 w-10"></th>
                             </tr>
                         </thead>
@@ -281,39 +356,39 @@
                             <template x-for="lead in leads" :key="lead.id">
                                 <tr class="hover:bg-white/5 transition-colors group" :class="needsRelance(lead) ? 'bg-warning-500/5' : ''">
                                     <td class="p-4">
-                                        <div class="font-bold text-white" x-text="lead.name"></div>
-                                        <div class="text-xs text-slate-500 flex gap-2 items-center">
+                                        <div class="font-bold text-white text-sm" x-text="lead.name"></div>
+                                        <div class="text-[11px] text-slate-500 flex gap-2 items-center mt-1">
                                             <span x-text="lead.city"></span>
                                             <span class="w-1 h-1 rounded-full bg-slate-600"></span>
                                             <span class="text-accent-400" x-text="lead.tech"></span>
                                         </div>
                                     </td>
-                                    <td class="p-4 text-xs text-slate-300">
-                                        <div x-show="lead.email" class="flex items-center gap-1 mb-1"><i class="ph-bold ph-envelope text-slate-500"></i> <span x-text="lead.email"></span></div>
-                                        <div class="flex items-center gap-1"><i class="ph-bold ph-phone text-slate-500"></i> <span x-text="lead.phone"></span></div>
+                                    <td class="p-4 text-[11px] text-slate-300 space-y-1">
+                                        <div x-show="lead.email" class="flex items-center gap-2"><i class="ph-bold ph-envelope text-slate-500"></i> <span x-text="lead.email" class="select-all"></span></div>
+                                        <div class="flex items-center gap-2"><i class="ph-bold ph-phone text-slate-500"></i> <span x-text="lead.phone" class="select-all"></span></div>
                                     </td>
                                     <td class="p-4">
-                                        <div class="text-xs text-slate-300" x-text="formatDate(lead.lastContactDate)"></div>
-                                        <div x-show="needsRelance(lead)" class="mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-warning-500/20 text-warning-500 text-[10px] font-bold uppercase border border-warning-500/20">
-                                            <i class="ph-bold ph-alarm"></i> Relancer (J+3)
+                                        <div class="text-[11px] text-slate-300" x-text="formatDate(lead.lastContactDate)"></div>
+                                        <div x-show="needsRelance(lead)" class="mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-warning-500/20 text-warning-500 text-[9px] font-bold uppercase border border-warning-500/20 animate-pulse">
+                                            <i class="ph-bold ph-alarm"></i> Relance Requise
                                         </div>
                                     </td>
                                     <td class="p-4">
                                         <select x-model="lead.status" @change="updateStatus(lead)" 
-                                            class="bg-dark-950 border border-white/10 rounded-lg px-2 py-1 text-xs text-white focus:border-accent-400 outline-none cursor-pointer w-32">
-                                            <option value="To Contact">¿ contacter</option>
-                                            <option value="Contacted">Premier Mail</option>
-                                            <option value="Relance">Relance faite</option>
-                                            <option value="Replied">A rÈpondu</option>
-                                            <option value="Won">GagnÈ ??</option>
+                                            class="bg-dark-950 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-white focus:border-accent-400 outline-none cursor-pointer w-32 appearance-none">
+                                            <option value="To Contact">√Ä contacter</option>
+                                            <option value="Contacted">Contact√©</option>
+                                            <option value="Relance">Relanc√©</option>
+                                            <option value="Replied">A r√©pondu</option>
+                                            <option value="Won">Gagn√©</option>
                                             <option value="Lost">Perdu</option>
                                         </select>
                                     </td>
                                     <td class="p-4 text-right">
                                         <button @click="removeLead(lead)" 
-                                            class="transition-all duration-200 text-slate-600 hover:text-red-400">
-                                            <i class="ph-bold ph-trash" x-show="!lead.confirmDelete"></i>
-                                            <span x-show="lead.confirmDelete" class="text-xs font-bold text-red-500">Confirmer</span>
+                                            class="transition-all duration-200 text-slate-600 hover:text-red-400 p-2 hover:bg-white/5 rounded-lg">
+                                            <i class="ph-bold ph-trash text-lg" x-show="!lead.confirmDelete"></i>
+                                            <span x-show="lead.confirmDelete" class="text-[9px] font-bold text-red-500 uppercase">Supprimer ?</span>
                                         </button>
                                     </td>
                                 </tr>
@@ -324,6 +399,7 @@
             </div>
         </main>
     </div>
+
     <script src="app.js"></script>
 </body>
 </html>

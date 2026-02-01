@@ -1,0 +1,17 @@
+Instruction de mise à jour LeadMachine :
+
+Applique les modifications suivantes sur le code, mais respecte strictement ce protocole de sécurité :
+
+
+
+Conservation intégrale : Ne supprime AUCUNE ligne de code existante (commentaires, fonctions de sécurité, vérification de quotas, headers d'encodage).
+
+Données immuables : Conserve l'intégralité des listes (villes, métiers) et les templates d'emails sans utiliser de points de suspension ....
+
+Vérification de la taille : Si le nouveau fichier est plus court que le précédent, explique précisément pourquoi (optimisation réelle ou suppression). Sinon, privilégie la verbosité à la concision.
+
+Encodage & UTF-8 : Maintiens le support UTF-8 intégral pour les accents français.
+
+
+
+Modifications demandées :
