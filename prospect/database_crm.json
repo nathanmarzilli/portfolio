@@ -10,5 +10,41 @@
         "tech": "Inconnu",
         "lastContactDate": null,
         "addedAt": "2026-02-02T00:05:38.788Z"
+    },
+    {
+        "id": "ChIJYYO2o2bG9EcRy6Yf8vYmo7U",
+        "name": "Aurélie DOS SANTOS - Pauline RESCOURIO - Paola TAVERNIER - Louise MARRILLET - Ostéopathes Genas",
+        "city": "genas",
+        "email": "aurelie.dossantos@isosteo.com",
+        "phone": "+33 6 65 95 07 09",
+        "website": "http:\/\/www.osteopathe-genas-dossantos.com\/",
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": null,
+        "addedAt": "2026-02-02T00:10:29.065Z"
+    },
+    {
+        "id": "ChIJt24ptHXB9EcRY_fzc9ah2v8",
+        "name": "Cabinet des Glycines - Kinésithérapeute - Ostéopathe - Orthophoniste - Hypnothérapeute - Psychologue",
+        "city": "bron",
+        "email": "brice@sensode.com",
+        "phone": "+33 4 72 37 28 49",
+        "website": "http:\/\/cabinetdesglycines.fr\/",
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": null,
+        "addedAt": "2026-02-02T00:11:51.897Z"
+    },
+    {
+        "id": "ChIJwdXq6GNEB0URzvJeOgZDV64",
+        "name": "Optimal Plomberie - Chauffage | Climatisation | Ventilation | Salle de bain",
+        "city": "mions",
+        "email": "optimalplomberie@gmail.com",
+        "phone": "+33 6 74 97 17 75",
+        "website": "http:\/\/www.optimalplomberie.fr\/",
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": null,
+        "addedAt": "2026-02-02T00:32:04.206Z"
     }
 ]

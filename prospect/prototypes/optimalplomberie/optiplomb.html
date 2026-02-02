@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimal Plomberie | Plombier Chauffagiste à Saint-Bonnet-de-Mure</title>
+    <meta name="description" content="Plombier chauffagiste expert à Saint-Bonnet-de-Mure et environs. Dépannage urgence, installation salle de bain, chauffage. Devis gratuit.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#0f172a',
+                            light: '#3b82f6',
+                            orange: '#f97316',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Effet de verre dépoli pour le menu */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        /* Animation subtile des cartes */
+        .service-card {
+            transition: all 0.3s ease;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Hero pattern */
+        .hero-bg {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.7)), url('https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-700 antialiased bg-gray-50">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <div class="w-10 h-10 bg-brand-orange rounded-lg flex items-center justify-center text-white mr-3">
+                        <i class="fa-solid fa-droplet"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-xl text-brand-blue block leading-none">OPTIMAL</span>
+                        <span class="text-xs text-gray-500 font-semibold tracking-widest">PLOMBERIE</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#services" class="text-gray-600 hover:text-brand-light font-medium transition">Nos Services</a>
+                    <a href="#apropos" class="text-gray-600 hover:text-brand-light font-medium transition">L'Entreprise</a>
+                    <a href="#avis" class="text-gray-600 hover:text-brand-light font-medium transition">Avis Clients</a>
+                    <a href="#contact" class="bg-brand-blue text-white px-6 py-2.5 rounded-full font-medium hover:bg-gray-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                        Demander un devis
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-gray-900 focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div class="md:hidden hidden bg-white border-t border-gray-100 absolute w-full" id="mobile-menu">
+            <div class="px-4 pt-2 pb-6 space-y-2 shadow-lg">
+                <a href="#services" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand-light hover:bg-gray-50">Services</a>
+                <a href="#apropos" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand-light hover:bg-gray-50">L'Entreprise</a>
+                <a href="#avis" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand-light hover:bg-gray-50">Avis</a>
+                <a href="#contact" class="block px-3 py-3 mt-4 text-center rounded-lg text-base font-bold bg-brand-orange text-white">Devis Gratuit</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative hero-bg h-screen min-h-[600px] flex items-center justify-center text-white pt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div class="inline-flex items-center bg-brand-orange/20 border border-brand-orange/50 rounded-full px-4 py-1.5 mb-8 backdrop-blur-sm">
+                <span class="w-2 h-2 rounded-full bg-brand-orange mr-2 animate-pulse"></span>
+                <span class="text-sm font-semibold text-brand-orange uppercase tracking-wide">Disponible 24h/24 & 7j/7</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                Votre expert Plomberie & Chauffage <br>
+                <span class="text-brand-orange">Saint-Bonnet-de-Mure</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-200 mb-10 max-w-2xl mx-auto">
+                Intervention rapide, installation soignée et dépannage d'urgence. 
+                Faites confiance à un artisan qualifié pour tous vos travaux sanitaires et thermiques.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="tel:0674971775" class="bg-brand-orange text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition shadow-lg flex items-center justify-center">
+                    <i class="fas fa-phone-alt mr-3"></i> 06 74 97 17 75
+                </a>
+                <a href="#contact" class="bg-white/10 backdrop-blur-md border border-white/30 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition flex items-center justify-center">
+                    Devis en ligne
+                </a>
+            </div>
+        </div>
+        
+        <!-- Wave Divider -->
+        <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
+            <svg class="relative block w-[calc(100%+1.3px)] h-[70px] md:h-[120px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="fill-gray-50"></path>
+            </svg>
+        </div>
+    </header>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-brand-orange font-bold text-sm tracking-wider uppercase mb-2">Nos Prestations</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-brand-blue mb-4">Des solutions complètes pour votre habitat</h3>
+                <div class="w-20 h-1 bg-brand-light mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 service-card group">
+                    <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center text-brand-light text-2xl mb-6 group-hover:bg-brand-light group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-wrench"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Dépannage Urgent</h4>
+                    <p class="text-gray-500 leading-relaxed">
+                        Fuite d'eau, canalisation bouchée ou panne de chauffe-eau. Intervention rapide pour limiter les dégâts.
+                    </p>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 service-card group">
+                    <div class="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center text-brand-orange text-2xl mb-6 group-hover:bg-brand-orange group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-fire-flame-curved"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Chauffage & Chaudière</h4>
+                    <p class="text-gray-500 leading-relaxed">
+                        Installation, entretien et réparation de vos systèmes de chauffage (gaz, fioul) pour un confort optimal.
+                    </p>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 service-card group">
+                    <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center text-brand-light text-2xl mb-6 group-hover:bg-brand-light group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-bath"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Salle de Bain</h4>
+                    <p class="text-gray-500 leading-relaxed">
+                        Création et rénovation de salle de bain clé en main. Pose de douche italienne, baignoire et robinetterie.
+                    </p>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 service-card group">
+                    <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center text-brand-light text-2xl mb-6 group-hover:bg-brand-light group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-magnifying-glass-droplet"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Recherche de Fuite</h4>
+                    <p class="text-gray-500 leading-relaxed">
+                        Détection précise des fuites invisibles sans destruction inutile grâce à nos équipements modernes.
+                    </p>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 service-card group">
+                    <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center text-brand-light text-2xl mb-6 group-hover:bg-brand-light group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-toilet"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">WC & Sanitaires</h4>
+                    <p class="text-gray-500 leading-relaxed">
+                        Remplacement de WC, réparation de chasse d'eau, installation de sanitaires suspendus.
+                    </p>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 service-card group">
+                    <div class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center text-green-600 text-2xl mb-6 group-hover:bg-green-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-leaf"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Économies d'Énergie</h4>
+                    <p class="text-gray-500 leading-relaxed">
+                        Conseils et installation d'équipements performants pour réduire votre facture énergétique.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section id="apropos" class="py-20 bg-brand-blue text-white relative overflow-hidden">
+        <!-- Background decorative blobs -->
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-brand-light opacity-10 blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-brand-orange opacity-10 blur-3xl"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-brand-orange font-bold text-sm tracking-wider uppercase mb-2">Pourquoi nous choisir ?</h2>
+                    <h3 class="text-3xl md:text-4xl font-bold mb-6">L'expertise d'un artisan local à votre service</h3>
+                    <p class="text-gray-300 mb-6 text-lg leading-relaxed">
+                        Chez Optimal Plomberie, nous privilégions la qualité et la transparence. Basés à Saint-Bonnet-de-Mure, nous intervenons rapidement avec le sourire et le matériel adéquat.
+                    </p>
+                    
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check-circle text-brand-orange mt-1 mr-4"></i>
+                            <div>
+                                <span class="font-bold block">Devis clair et détaillé</span>
+                                <span class="text-gray-400 text-sm">Pas de surprise sur la facture finale.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check-circle text-brand-orange mt-1 mr-4"></i>
+                            <div>
+                                <span class="font-bold block">Intervention rapide</span>
+                                <span class="text-gray-400 text-sm">Nous savons qu'une fuite n'attend pas.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check-circle text-brand-orange mt-1 mr-4"></i>
+                            <div>
+                                <span class="font-bold block">Travail soigné</span>
+                                <span class="text-gray-400 text-sm">Le chantier est laissé propre après notre passage.</span>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <a href="#contact" class="inline-block bg-white text-brand-blue font-bold px-8 py-3 rounded-lg hover:bg-gray-100 transition">
+                        Parler à un expert
+                    </a>
+                </div>
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1507652313519-d4e9174996dd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Plombier au travail" class="rounded-2xl shadow-2xl relative z-10 w-full object-cover h-[500px]">
+                    <div class="absolute -bottom-6 -left-6 bg-brand-orange text-white p-6 rounded-xl shadow-xl z-20 hidden md:block">
+                        <p class="text-3xl font-bold">10+</p>
+                        <p class="text-sm font-medium">Années d'expérience</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="avis" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-blue mb-4">Ce que nos clients disent</h2>
+                <p class="text-gray-500 max-w-2xl mx-auto">La satisfaction client est notre priorité absolue.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Review 1 -->
+                <div class="bg-white p-8 rounded-xl shadow-sm relative">
+                    <div class="text-brand-orange mb-4 flex">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 mb-6 italic">"Intervention très rapide pour une fuite de chauffe-eau. Le plombier était courtois, efficace et a laissé l'endroit impeccable. Je recommande vivement !"</p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold mr-3">S</div>
+                        <div>
+                            <p class="font-bold text-gray-900">Sophie D.</p>
+                            <p class="text-xs text-gray-400">Saint-Bonnet-de-Mure</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="bg-white p-8 rounded-xl shadow-sm relative transform md:-translate-y-4">
+                    <div class="text-brand-orange mb-4 flex">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 mb-6 italic">"Rénovation complète de notre salle de bain. Des conseils avisés sur le choix des matériaux et un résultat au-delà de nos espérances. Merci Optimal Plomberie."</p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold mr-3">M</div>
+                        <div>
+                            <p class="font-bold text-gray-900">Marc L.</p>
+                            <p class="text-xs text-gray-400">Genas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="bg-white p-8 rounded-xl shadow-sm relative">
+                    <div class="text-brand-orange mb-4 flex">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 mb-6 italic">"Appelé un dimanche pour des toilettes bouchées. Arrivé en moins d'une heure. Prix correct et annoncé à l'avance. Très pro."</p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold mr-3">J</div>
+                        <div>
+                            <p class="font-bold text-gray-900">Jean-Pierre B.</p>
+                            <p class="text-xs text-gray-400">Mions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 rounded-3xl overflow-hidden shadow-2xl">
+                
+                <!-- Contact Info -->
+                <div class="bg-brand-blue p-10 text-white flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-3xl font-bold mb-6">Contactez-nous</h3>
+                        <p class="text-gray-300 mb-8">Une urgence ou un projet ? Laissez-nous un message ou appelez-nous directement. Devis gratuit sous 24h.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fa-solid fa-phone text-brand-orange text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-sm">Téléphone</p>
+                                    <a href="tel:0674971775" class="font-bold text-xl hover:text-brand-orange transition">06 74 97 17 75</a>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fa-solid fa-location-dot text-brand-orange text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-sm">Adresse</p>
+                                    <p class="font-bold">13 Rue François Joseph Biétrix,<br>69720 Saint-Bonnet-de-Mure</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fa-solid fa-envelope text-brand-orange text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-sm">Email</p>
+                                    <a href="mailto:contact@optimalplomberie.fr" class="font-bold hover:text-brand-orange transition">contact@optimalplomberie.fr</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-10 pt-10 border-t border-white/10">
+                        <p class="text-sm text-gray-400">Nous intervenons sur : Saint-Bonnet-de-Mure, Genas, Saint-Priest, Mions, et tout l'Est Lyonnais.</p>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <div class="bg-white p-10">
+                    <form id="contactForm" class="space-y-6" onsubmit="handleSubmit(event)">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nom complet</label>
+                                <input type="text" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent outline-none transition" placeholder="Votre nom">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Téléphone</label>
+                                <input type="tel" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent outline-none transition" placeholder="06 00 00 00 00">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Type de demande</label>
+                            <select class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent outline-none transition bg-white">
+                                <option>Urgence / Dépannage</option>
+                                <option>Demande de Devis</option>
+                                <option>Entretien Chaudière</option>
+                                <option>Autre</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                            <textarea rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent outline-none transition" placeholder="Décrivez votre problème..."></textarea>
+                        </div>
+
+                        <button type="submit" id="submitBtn" class="w-full bg-brand-orange text-white font-bold py-4 rounded-lg hover:bg-orange-600 transition shadow-lg transform active:scale-95">
+                            Envoyer ma demande
+                        </button>
+                    </form>
+                    
+                    <!-- Success Message (Hidden by default) -->
+                    <div id="successMessage" class="hidden mt-4 p-4 bg-green-50 text-green-700 rounded-lg text-center border border-green-200">
+                        <i class="fas fa-check-circle mr-2"></i> Message envoyé avec succès ! Nous vous rappellerons très vite.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-6 md:mb-0">
+                <span class="text-2xl font-bold text-white tracking-tight">OPTIMAL<span class="text-brand-orange">PLOMBERIE</span></span>
+                <p class="text-sm mt-2">Votre artisan de confiance depuis 2024.</p>
+            </div>
+            <div class="flex space-x-6 text-sm">
+                <a href="#" class="hover:text-white transition">Mentions Légales</a>
+                <a href="#" class="hover:text-white transition">Politique de Confidentialité</a>
+            </div>
+            <div class="mt-6 md:mt-0 text-sm">
+                &copy; 2024 Optimal Plomberie. Tous droits réservés.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Call Button (Sticky Bottom) -->
+    <a href="tel:0674971775" class="md:hidden fixed bottom-6 right-6 bg-brand-orange text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-2xl z-50 animate-bounce">
+        <i class="fas fa-phone"></i>
+    </a>
+
+    <script>
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu on link click
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+
+        // Form Handling Simulation
+        function handleSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const success = document.getElementById('successMessage');
+            
+            // Loading state
+            const originalText = btn.innerText;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Envoi...';
+            btn.disabled = true;
+            btn.classList.add('opacity-75');
+
+            // Simulate API call
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                btn.classList.remove('opacity-75');
+                document.getElementById('contactForm').reset();
+                
+                success.classList.remove('hidden');
+                setTimeout(() => {
+                    success.classList.add('hidden');
+                }, 5000);
+            }, 1500);
+        }
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-sm');
+            } else {
+                nav.classList.remove('shadow-sm');
+            }
+        });
+    </script>
+</body>
+</html>

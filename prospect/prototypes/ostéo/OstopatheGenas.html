@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aurélie Dos Santos, Ostéopathe D.O. à Genas. Consultations pour adultes, nourrissons, femmes enceintes et sportifs. Drainage lymphatique et ateliers portage.">
+    <title>Aurélie Dos Santos | Ostéopathe à Genas</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        osteo: {
+                            50: '#f4f7f6',
+                            100: '#e3ebe8',
+                            200: '#c5d9d2',
+                            300: '#9dbfb5',
+                            400: '#76a094',
+                            500: '#568478',
+                            600: '#42685f',
+                            700: '#36534d',
+                            800: '#2e4440',
+                            900: '#273936',
+                        },
+                        sand: {
+                            50: '#fdfbf7',
+                            100: '#faf6ed',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hero-pattern {
+            background-color: #f4f7f6;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23568478' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-600 bg-sand-50 antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a href="#" class="flex flex-col">
+                    <span class="text-2xl font-serif font-semibold text-osteo-700">Aurélie Dos Santos</span>
+                    <span class="text-xs tracking-widest uppercase text-osteo-500">Ostéopathe D.O. à Genas</span>
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#expertises" class="text-slate-600 hover:text-osteo-600 transition-colors">Expertises</a>
+                    <a href="#cabinet" class="text-slate-600 hover:text-osteo-600 transition-colors">Le Cabinet</a>
+                    <a href="#infos" class="text-slate-600 hover:text-osteo-600 transition-colors">Infos Pratiques</a>
+                    <a href="https://www.doctolib.fr/cabinet-osteopathie/genas/cabinet-d-osteopathie-d-aurelie-dos-santos-et-pauline-rescourio" 
+                       target="_blank" 
+                       class="bg-osteo-600 hover:bg-osteo-700 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                        Prendre Rendez-vous
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-slate-600 hover:text-osteo-600 focus:outline-none" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#expertises" class="block px-3 py-3 text-slate-600 hover:bg-osteo-50 hover:text-osteo-600 rounded-lg">Expertises</a>
+                <a href="#cabinet" class="block px-3 py-3 text-slate-600 hover:bg-osteo-50 hover:text-osteo-600 rounded-lg">Le Cabinet</a>
+                <a href="#infos" class="block px-3 py-3 text-slate-600 hover:bg-osteo-50 hover:text-osteo-600 rounded-lg">Infos Pratiques</a>
+                <a href="https://www.doctolib.fr/cabinet-osteopathie/genas/cabinet-d-osteopathie-d-aurelie-dos-santos-et-pauline-rescourio" target="_blank" class="block mt-4 text-center bg-osteo-600 text-white px-4 py-3 rounded-lg font-medium">
+                    Prendre Rendez-vous
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden hero-pattern">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8 animate-fade-in-up">
+                    <div class="inline-block px-4 py-1.5 rounded-full bg-osteo-100 text-osteo-800 text-sm font-medium tracking-wide">
+                        Cabinet d'Ostéopathie à Genas (69)
+                    </div>
+                    <h1 class="text-4xl lg:text-6xl font-serif text-slate-800 leading-tight">
+                        Retrouvez votre <span class="text-osteo-600 italic">équilibre</span> et votre mobilité.
+                    </h1>
+                    <p class="text-lg text-slate-600 leading-relaxed max-w-lg">
+                        Une approche douce et bienveillante pour tous les âges de la vie. Spécialisée en périnatalité, pédiatrie et drainage lymphatique.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="https://www.doctolib.fr/cabinet-osteopathie/genas/cabinet-d-osteopathie-d-aurelie-dos-santos-et-pauline-rescourio" target="_blank" class="inline-flex justify-center items-center px-8 py-3.5 border border-transparent text-base font-medium rounded-full text-white bg-osteo-600 hover:bg-osteo-700 shadow-lg transition-all hover:-translate-y-1">
+                            Prendre RDV sur Doctolib
+                        </a>
+                        <a href="tel:0665950709" class="inline-flex justify-center items-center px-8 py-3.5 border border-osteo-200 text-base font-medium rounded-full text-osteo-700 bg-white hover:bg-osteo-50 transition-all">
+                            <i class="fas fa-phone-alt mr-2"></i> 06 65 95 07 09
+                        </a>
+                    </div>
+                </div>
+                <div class="relative lg:h-[500px] w-full rounded-2xl overflow-hidden shadow-2xl">
+                    <img src="images/hero.avif" alt="Cabinet Ostéopathie" class="w-full h-full object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-8">
+                        <p class="text-white font-medium">Aurélie Dos Santos & Collaborateurs</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expertises -->
+    <section id="expertises" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-serif text-slate-800 mb-4">Domaines d'intervention</h2>
+                <div class="w-20 h-1 bg-osteo-300 mx-auto rounded-full"></div>
+                <p class="mt-4 text-slate-500 max-w-2xl mx-auto">Une prise en charge globale adaptée à chaque patient, du nourrisson au sénior.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="group p-8 bg-sand-50 rounded-2xl border border-osteo-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center text-osteo-600 shadow-sm mb-6 text-2xl group-hover:bg-osteo-600 group-hover:text-white transition-colors">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">Adultes & Séniors</h3>
+                    <p class="text-slate-600 leading-relaxed">Soulagement des douleurs chroniques, maux de dos, migraines, troubles digestifs et gestion du stress.</p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="group p-8 bg-sand-50 rounded-2xl border border-osteo-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center text-osteo-600 shadow-sm mb-6 text-2xl group-hover:bg-osteo-600 group-hover:text-white transition-colors">
+                        <i class="fas fa-baby"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">Nourrissons & Enfants</h3>
+                    <p class="text-slate-600 leading-relaxed">Bilan de naissance, coliques, plagiocéphalie (tête plate), troubles du sommeil et suivi de croissance.</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="group p-8 bg-sand-50 rounded-2xl border border-osteo-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center text-osteo-600 shadow-sm mb-6 text-2xl group-hover:bg-osteo-600 group-hover:text-white transition-colors">
+                        <i class="fas fa-person-pregnant"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">Femmes Enceintes</h3>
+                    <p class="text-slate-600 leading-relaxed">Accompagnement de la grossesse, préparation à l'accouchement et suivi post-partum. Massages prénatals.</p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="group p-8 bg-sand-50 rounded-2xl border border-osteo-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center text-osteo-600 shadow-sm mb-6 text-2xl group-hover:bg-osteo-600 group-hover:text-white transition-colors">
+                        <i class="fas fa-running"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">Sportifs</h3>
+                    <p class="text-slate-600 leading-relaxed">Préparation aux compétitions, récupération, tendinites, entorses et optimisation des performances.</p>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="group p-8 bg-white ring-1 ring-osteo-200 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 md:col-span-2 lg:col-span-2 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-osteo-600 text-9xl">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <div class="relative z-10">
+                         <div class="w-14 h-14 bg-osteo-100 rounded-xl flex items-center justify-center text-osteo-700 shadow-sm mb-6 text-2xl">
+                            <i class="fas fa-hands-bubbles"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-slate-800 mb-3">Soins Spécifiques & Bien-être</h3>
+                        <p class="text-slate-600 leading-relaxed mb-4">
+                            En plus de l'ostéopathie classique, le cabinet propose des soins dédiés au bien-être :
+                        </p>
+                        <ul class="space-y-2 text-slate-700">
+                            <li class="flex items-center"><i class="fas fa-check text-osteo-500 mr-2"></i> Drainage Lymphatique méthode Renata Franca</li>
+                            <li class="flex items-center"><i class="fas fa-check text-osteo-500 mr-2"></i> Ateliers de portage bébé</li>
+                            <li class="flex items-center"><i class="fas fa-check text-osteo-500 mr-2"></i> Massage femme enceinte</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Le Cabinet / About -->
+    <section id="cabinet" class="py-20 bg-osteo-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <div class="w-full lg:w-1/2">
+                    <div class="relative">
+                        <div class="absolute -top-4 -left-4 w-24 h-24 bg-osteo-200 rounded-tl-3xl -z-10"></div>
+                        <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-osteo-200 rounded-br-3xl -z-10"></div>
+                        <img src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Cabinet médical apaisant" class="rounded-xl shadow-lg w-full object-cover h-[400px]">
+                    </div>
+                </div>
+                <div class="w-full lg:w-1/2">
+                    <h2 class="text-3xl lg:text-4xl font-serif text-slate-800 mb-6">Le Cabinet Dos Santos</h2>
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">
+                        Situé au cœur de Genas, le cabinet vous accueille dans un espace moderne et chaleureux. 
+                        <strong>Aurélie Dos Santos</strong>, ostéopathe D.O., et ses collaboratrices vous proposent une prise en charge personnalisée.
+                    </p>
+                    <p class="text-slate-600 mb-8 leading-relaxed">
+                        Notre pratique s'appuie sur une connaissance approfondie de l'anatomie et de la physiologie pour rétablir les fonctions du corps, en utilisant des techniques manuelles adaptées à chaque patient. Le cabinet est parfaitement accessible (normes PMR) et dispose d'un parking gratuit pour votre confort.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="flex items-start">
+                            <i class="fas fa-parking text-osteo-500 text-xl mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-semibold text-slate-800">Parking Gratuit</h4>
+                                <p class="text-sm text-slate-500">Places disponibles devant le cabinet</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-wheelchair text-osteo-500 text-xl mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-semibold text-slate-800">Accès PMR</h4>
+                                <p class="text-sm text-slate-500">Cabinet au rez-de-chaussée</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Banner -->
+    <div class="bg-osteo-700 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+            <h3 class="text-2xl font-serif mb-6">Besoin d'un rendez-vous ?</h3>
+            <p class="mb-8 text-osteo-100 max-w-2xl mx-auto">La prise de rendez-vous s'effectue principalement via Doctolib pour votre confort. En cas d'urgence, vous pouvez contacter le secrétariat.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="https://www.doctolib.fr/cabinet-osteopathie/genas/cabinet-d-osteopathie-d-aurelie-dos-santos-et-pauline-rescourio" target="_blank" class="bg-white text-osteo-800 px-8 py-3 rounded-full font-medium hover:bg-osteo-50 transition-colors">
+                    <i class="fas fa-calendar-check mr-2"></i> Réserver en ligne
+                </a>
+                <a href="tel:0665950709" class="bg-transparent border border-white text-white px-8 py-3 rounded-full font-medium hover:bg-white/10 transition-colors">
+                    <i class="fas fa-phone mr-2"></i> 06 65 95 07 09
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Practical Info / Map -->
+    <section id="infos" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-3 gap-12">
+                <!-- Info Column -->
+                <div class="lg:col-span-1 space-y-8">
+                    <div>
+                        <h3 class="text-2xl font-serif text-slate-800 mb-6">Informations</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 rounded-full bg-osteo-50 flex items-center justify-center text-osteo-600 flex-shrink-0">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-semibold text-slate-800">Adresse</h4>
+                                    <p class="text-slate-600">3 Rue Marguerite de Gandil<br>69740 Genas</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 rounded-full bg-osteo-50 flex items-center justify-center text-osteo-600 flex-shrink-0">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-semibold text-slate-800">Horaires</h4>
+                                    <p class="text-slate-600">Du Lundi au Vendredi<br>08h00 - 20h00</p>
+                                    <p class="text-slate-600 mt-1">Le Samedi<br>08h00 - 15h00</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 rounded-full bg-osteo-50 flex items-center justify-center text-osteo-600 flex-shrink-0">
+                                    <i class="fas fa-euro-sign"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-semibold text-slate-800">Tarifs & Remboursement</h4>
+                                    <p class="text-slate-600 text-sm">Consultation d'ostéopathie : ~60€</p>
+                                    <p class="text-slate-500 text-xs mt-1">Règlement par chèque ou espèces.<br>Une facture vous sera remise pour votre mutuelle.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map Column -->
+                <div class="lg:col-span-2 h-[400px] bg-slate-100 rounded-2xl overflow-hidden shadow-inner border border-slate-200 relative">
+                    <!-- Placeholder for Map - In production, replace with actual Google Maps Embed -->
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2784.025218764835!2d5.0004!3d45.7285!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47f4c9c0c0c0c0c0%3A0x0!2s3%20Rue%20Marguerite%20de%20Gandil%2C%2069740%20Genas!5e0!3m2!1sfr!2sfr!4v1620000000000!5m2!1sfr!2sfr" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy"
+                        class="absolute inset-0 grayscale-[50%] hover:grayscale-0 transition-all duration-500">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-300 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h4 class="text-white text-lg font-serif mb-4">Aurélie Dos Santos</h4>
+                    <p class="text-sm opacity-80 mb-4">Ostéopathe D.O. exclusive à Genas.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-slate-400 hover:text-white transition-colors"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-white transition-colors"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-white text-lg font-serif mb-4">Liens Rapides</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#expertises" class="hover:text-osteo-300 transition-colors">Expertises</a></li>
+                        <li><a href="#cabinet" class="hover:text-osteo-300 transition-colors">Le Cabinet</a></li>
+                        <li><a href="https://www.doctolib.fr/cabinet-osteopathie/genas/cabinet-d-osteopathie-d-aurelie-dos-santos-et-pauline-rescourio" target="_blank" class="hover:text-osteo-300 transition-colors">Prendre RDV</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-lg font-serif mb-4">Mentions Légales</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-osteo-300 transition-colors">Politique de confidentialité</a></li>
+                        <li><a href="#" class="hover:text-osteo-300 transition-colors">Mentions légales</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
+                <p>&copy; 2024 Cabinet Dos Santos. Tous droits réservés.</p>
+                <p class="mt-2 md:mt-0">Design modernisé pour démo</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <a href="#" id="scrollTop" class="fixed bottom-8 right-8 bg-osteo-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-40 hover:bg-osteo-700">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            const scrollTopBtn = document.getElementById('scrollTop');
+            
+            if (window.scrollY > 20) {
+                navbar.classList.add('shadow-md');
+                navbar.classList.remove('py-4');
+            } else {
+                navbar.classList.remove('shadow-md');
+                navbar.classList.add('py-4');
+            }
+
+            if (window.scrollY > 500) {
+                scrollTopBtn.classList.remove('translate-y-20', 'opacity-0');
+            } else {
+                scrollTopBtn.classList.add('translate-y-20', 'opacity-0');
+            }
+        });
+    </script>
+</body>
+</html>

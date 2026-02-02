@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cabinet Paramédical des Etats-Unis | Kinésithérapie Saint-Priest</title>
+    <meta name="description" content="Cabinet de kinésithérapie à Saint-Priest. Soins en traumatologie, orthopédie, rhumatologie et kinésithérapie du sport.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons (Phosphor Icons) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9', // Sky blue
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            500: '#64748b', // Slate
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        .hero-pattern {
+            background-color: #f0f9ff;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230ea5e9' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-600 antialiased bg-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-3">
+                    <div class="bg-primary-600 text-white p-2 rounded-lg shadow-lg">
+                        <i class="ph ph-heartbeat text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-slate-900 leading-tight">Cabinet Paramédical</h1>
+                        <p class="text-xs text-primary-600 font-medium tracking-wide">DES ETATS-UNIS • SAINT-PRIEST</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#accueil" class="text-slate-600 hover:text-primary-600 font-medium transition-colors">Accueil</a>
+                    <a href="#specialites" class="text-slate-600 hover:text-primary-600 font-medium transition-colors">Spécialités</a>
+                    <a href="#equipe" class="text-slate-600 hover:text-primary-600 font-medium transition-colors">L'Équipe</a>
+                    <a href="#infos" class="text-slate-600 hover:text-primary-600 font-medium transition-colors">Infos Pratiques</a>
+                    <a href="tel:0472488371" class="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-full font-semibold transition-all shadow-md hover:shadow-lg flex items-center gap-2">
+                        <i class="ph ph-phone"></i>
+                        04 72 48 83 71
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-600 hover:text-primary-600 p-2">
+                        <i class="ph ph-list text-3xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 absolute w-full shadow-xl">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#accueil" class="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-primary-600 hover:bg-slate-50">Accueil</a>
+                <a href="#specialites" class="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-primary-600 hover:bg-slate-50">Spécialités</a>
+                <a href="#equipe" class="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-primary-600 hover:bg-slate-50">L'Équipe</a>
+                <a href="#infos" class="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-primary-600 hover:bg-slate-50">Infos Pratiques</a>
+                <a href="tel:0472488371" class="block w-full text-center mt-4 bg-primary-600 text-white px-4 py-3 rounded-lg font-bold">
+                    Appeler le cabinet
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="accueil" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden hero-pattern">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8 animate-fade-in-up">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-100 text-primary-700 text-sm font-semibold">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
+                        </span>
+                        Cabinet ouvert du Lundi au Vendredi
+                    </div>
+                    <h1 class="text-4xl lg:text-6xl font-bold text-slate-900 leading-tight">
+                        Votre santé, notre <span class="text-primary-600">priorité</span> au quotidien.
+                    </h1>
+                    <p class="text-lg text-slate-600 max-w-lg leading-relaxed">
+                        Une équipe de kinésithérapeutes dynamiques et qualifiés à Saint-Priest pour vous accompagner dans votre rééducation : traumatologie, sport, orthopédie et rhumatologie.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#infos" class="px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-primary-500/30 transition-all text-center">
+                            Prendre Rendez-vous
+                        </a>
+                        <a href="#specialites" class="px-8 py-4 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl font-semibold shadow-sm hover:shadow-md transition-all text-center">
+                            Nos Spécialités
+                        </a>
+                    </div>
+                </div>
+                <!-- Abstract Visual -->
+                <div class="relative hidden lg:block">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-primary-100 to-white rounded-full filter blur-3xl opacity-60"></div>
+                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Cabinet de Kinésithérapie" class="relative rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500 object-cover h-[500px] w-full border-4 border-white">
+                    
+                    <!-- Floating Badge -->
+                    <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-xl border border-slate-100 flex items-center gap-4 max-w-xs">
+                        <div class="bg-green-100 p-3 rounded-full text-green-600">
+                            <i class="ph ph-check-circle text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-900">Conventionné</p>
+                            <p class="text-sm text-slate-500">Tiers payant & Mutuelles</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Specialties Section -->
+    <section id="specialites" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">Nos domaines d'expertise</h2>
+                <p class="text-slate-600">
+                    Nous combinons techniques manuelles et technologies modernes pour assurer une prise en charge complète adaptée à votre pathologie.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="group p-8 rounded-2xl bg-slate-50 hover:bg-primary-50 transition-colors border border-slate-100 hover:border-primary-100">
+                    <div class="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary-600 mb-6 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-person-simple-run text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Kinésithérapie du Sport</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        Prévention des blessures, réathlétisation et suivi du sportif. Accompagnement spécifique pour la reprise de l'activité.
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="group p-8 rounded-2xl bg-slate-50 hover:bg-primary-50 transition-colors border border-slate-100 hover:border-primary-100">
+                    <div class="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary-600 mb-6 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-first-aid text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Traumatologie</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        Rééducation post-opératoire (ligaments croisés, prothèses, fractures) et traitement des entorses et lésions musculaires.
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="group p-8 rounded-2xl bg-slate-50 hover:bg-primary-50 transition-colors border border-slate-100 hover:border-primary-100">
+                    <div class="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary-600 mb-6 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-bone text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Orthopédie & Rhumato</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        Prise en charge des douleurs chroniques, maux de dos (lombalgies, cervicalgies), arthrose et troubles posturaux.
+                    </p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="group p-8 rounded-2xl bg-slate-50 hover:bg-primary-50 transition-colors border border-slate-100 hover:border-primary-100">
+                    <div class="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary-600 mb-6 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-activity text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Méthode McKenzie</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        Diagnostic et thérapie mécanique pour les douleurs vertébrales et des membres. Une approche active de l'auto-traitement.
+                    </p>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="group p-8 rounded-2xl bg-slate-50 hover:bg-primary-50 transition-colors border border-slate-100 hover:border-primary-100">
+                    <div class="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary-600 mb-6 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-flower-lotus text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Pilates & Bien-être</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        Renforcement des muscles profonds, amélioration de la posture et de la souplesse. Cours adaptés aux pathologies.
+                    </p>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="group p-8 rounded-2xl bg-slate-50 hover:bg-primary-50 transition-colors border border-slate-100 hover:border-primary-100">
+                    <div class="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary-600 mb-6 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-heart text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Sénologie</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        Accompagnement spécifique et rééducation post-opératoire du cancer du sein (drainage, mobilité, cicatrices).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="equipe" class="py-20 bg-slate-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-16">
+                <span class="text-primary-400 font-semibold tracking-wider uppercase text-sm">Notre Équipe</span>
+                <h2 class="text-3xl lg:text-4xl font-bold mt-2">Vos Praticiens</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Team Member -->
+                <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-primary-500 transition-colors group">
+                    <div class="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center text-2xl font-bold text-primary-400 mb-4 group-hover:bg-primary-600 group-hover:text-white transition-colors">
+                        LM
+                    </div>
+                    <h3 class="text-lg font-bold">Léa Morais</h3>
+                    <p class="text-slate-400 text-sm mb-4">Masseur-Kinésithérapeute</p>
+                    <div class="h-1 w-10 bg-primary-500 rounded-full"></div>
+                    <p class="mt-4 text-xs text-slate-400">Diplômée IFMK Lyon 2024. Mécanique de la douleur.</p>
+                </div>
+
+                <!-- Team Member -->
+                <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-primary-500 transition-colors group">
+                    <div class="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center text-2xl font-bold text-primary-400 mb-4 group-hover:bg-primary-600 group-hover:text-white transition-colors">
+                        FC
+                    </div>
+                    <h3 class="text-lg font-bold">Florian Christot</h3>
+                    <p class="text-slate-400 text-sm mb-4">Kinésithérapeute & Ostéopathe</p>
+                    <div class="h-1 w-10 bg-primary-500 rounded-full"></div>
+                    <p class="mt-4 text-xs text-slate-400">Diplômé 2011. Ostéopathie, McKenzie A-D, Neurodynamique.</p>
+                </div>
+
+                <!-- Team Member -->
+                <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-primary-500 transition-colors group">
+                    <div class="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center text-2xl font-bold text-primary-400 mb-4 group-hover:bg-primary-600 group-hover:text-white transition-colors">
+                        QC
+                    </div>
+                    <h3 class="text-lg font-bold">Quentin Crouzet</h3>
+                    <p class="text-slate-400 text-sm mb-4">Masseur-Kinésithérapeute</p>
+                    <div class="h-1 w-10 bg-primary-500 rounded-full"></div>
+                    <p class="mt-4 text-xs text-slate-400">Diplômé 2015. Épaule (CGE), McKenzie, Gestion douleur.</p>
+                </div>
+
+                <!-- Team Member -->
+                <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-primary-500 transition-colors group">
+                    <div class="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center text-2xl font-bold text-primary-400 mb-4 group-hover:bg-primary-600 group-hover:text-white transition-colors">
+                        VB
+                    </div>
+                    <h3 class="text-lg font-bold">Virginie Bouchut</h3>
+                    <p class="text-slate-400 text-sm mb-4">Masseur-Kinésithérapeute</p>
+                    <div class="h-1 w-10 bg-primary-500 rounded-full"></div>
+                    <p class="mt-4 text-xs text-slate-400">Diplômée 2015. Kiné du Sport, Pilates, Sénologie.</p>
+                </div>
+                 <!-- Team Member -->
+                 <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-primary-500 transition-colors group">
+                    <div class="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center text-2xl font-bold text-primary-400 mb-4 group-hover:bg-primary-600 group-hover:text-white transition-colors">
+                        CL
+                    </div>
+                    <h3 class="text-lg font-bold">Coralie Lagaly</h3>
+                    <p class="text-slate-400 text-sm mb-4">Masseur-Kinésithérapeute</p>
+                    <div class="h-1 w-10 bg-primary-500 rounded-full"></div>
+                    <p class="mt-4 text-xs text-slate-400">Diplômée 2023. Formation McKenzie A, B.</p>
+                </div>
+                 <!-- Team Member -->
+                 <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-primary-500 transition-colors group">
+                    <div class="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center text-2xl font-bold text-primary-400 mb-4 group-hover:bg-primary-600 group-hover:text-white transition-colors">
+                        JD
+                    </div>
+                    <h3 class="text-lg font-bold">Jordan Da Silva</h3>
+                    <p class="text-slate-400 text-sm mb-4">Masseur-Kinésithérapeute</p>
+                    <div class="h-1 w-10 bg-primary-500 rounded-full"></div>
+                    <p class="mt-4 text-xs text-slate-400">Diplômé IFMK Lyon.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Infos Pratiques -->
+    <section id="infos" class="py-20 bg-primary-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Info Box -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+                        <i class="ph ph-info text-primary-600"></i>
+                        Premier Rendez-vous
+                    </h2>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <i class="ph ph-check-circle text-green-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-slate-600">Présentez-vous 5 minutes avant l'heure du rendez-vous.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="ph ph-cardholder text-primary-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-slate-600">Munissez-vous de votre <strong>Carte Vitale</strong> à jour et de votre attestation de mutuelle.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="ph ph-file-text text-primary-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-slate-600">N'oubliez pas l'<strong>ordonnance du médecin</strong> et vos examens complémentaires (Radio, IRM, Echo).</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="ph ph-t-shirt text-primary-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-slate-600">Prévoyez une <strong>tenue confortable</strong> et une serviette de bain.</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-8 p-4 bg-amber-50 rounded-lg border border-amber-100 text-amber-800 text-sm flex gap-3">
+                        <i class="ph ph-warning-circle text-xl flex-shrink-0"></i>
+                        <p>Tout rendez-vous non honoré ou annulé moins de 24h à l'avance est préjudiciable à la continuité des soins et aux autres patients.</p>
+                    </div>
+                </div>
+
+                <!-- Hours & Location -->
+                <div class="space-y-6">
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                        <h3 class="text-xl font-bold text-slate-900 mb-4">Horaires d'ouverture</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-slate-600 py-2 border-b border-slate-50">
+                                <span>Lundi - Vendredi</span>
+                                <span class="font-medium text-slate-900">08h00 - 20h00</span>
+                            </div>
+                            <div class="flex justify-between text-slate-600 py-2 border-b border-slate-50">
+                                <span>Samedi</span>
+                                <span class="font-medium text-slate-400">Fermé</span>
+                            </div>
+                            <div class="flex justify-between text-slate-600 py-2">
+                                <span>Dimanche</span>
+                                <span class="font-medium text-slate-400">Fermé</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-primary-600 p-8 rounded-2xl shadow-lg text-white">
+                        <h3 class="text-xl font-bold mb-4">Nous contacter</h3>
+                        <p class="mb-6 opacity-90">Pour prendre rendez-vous ou pour toute question, notre secrétariat est à votre écoute.</p>
+                        <a href="tel:0472488371" class="flex items-center justify-center gap-3 w-full bg-white text-primary-700 font-bold py-3 rounded-xl hover:bg-slate-50 transition-colors">
+                            <i class="ph ph-phone-call text-xl"></i>
+                            04 72 48 83 71
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer with Map -->
+    <footer class="bg-white border-t border-slate-100 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 mb-12">
+                <div>
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="bg-primary-600 text-white p-1.5 rounded-lg">
+                            <i class="ph ph-heartbeat text-xl"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-900">Cabinet Paramédical</h4>
+                    </div>
+                    <p class="text-slate-500 mb-6 max-w-sm">
+                        73 rue des Etats-Unis<br>
+                        69800 Saint-Priest
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-primary-600 hover:text-white transition-colors">
+                            <i class="ph ph-facebook-logo text-xl"></i>
+                        </a>
+                        <a href="https://www.google.com/maps/dir//73+Rue+des+Etats+Unis,+69800+Saint-Priest" target="_blank" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-primary-600 hover:text-white transition-colors">
+                            <i class="ph ph-map-pin text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Simple Map Placeholder (Functional in real implementation with iframe) -->
+                <div class="h-64 bg-slate-100 rounded-2xl overflow-hidden relative">
+                     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2785.876798835777!2d4.927230276686311!3d45.71351111675765!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47f4c49d8a1e2b5d%3A0x6b8c9b9b9b9b9b9b!2s73%20Rue%20des%20Etats%20Unis%2C%2069800%20Saint-Priest!5e0!3m2!1sfr!2sfr!4v1700000000000!5m2!1sfr!2sfr" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+            
+            <div class="border-t border-slate-100 pt-8 text-center text-slate-400 text-sm">
+                <p>&copy; 2024 Cabinet Paramédical des Etats-Unis. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Smooth Scroll handling for links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                menu.classList.add('hidden'); // Close mobile menu on click
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('shadow-md');
+                navbar.classList.replace('bg-white/90', 'bg-white/95');
+            } else {
+                navbar.classList.remove('shadow-md');
+                navbar.classList.replace('bg-white/95', 'bg-white/90');
+            }
+        });
+    </script>
+</body>
+</html>
