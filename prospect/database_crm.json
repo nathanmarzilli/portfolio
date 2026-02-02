@@ -46,5 +46,74 @@
         "tech": "Inconnu",
         "lastContactDate": null,
         "addedAt": "2026-02-02T00:32:04.206Z"
+    },
+    {
+        "id": "ChIJgZdBcZg_jEcR4u9O0h1Kjek",
+        "name": "Entreprise CHAUVIN",
+        "city": "thonon",
+        "email": "plomberie74500@gmail.com",
+        "phone": "+33 6 18 37 12 81",
+        "website": "https:\/\/www.entreprise-chauvin.fr\/",
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": null,
+        "addedAt": "2026-02-02T00:46:11.165Z"
+    },
+    {
+        "id": "ChIJwSOopDzdrRIRE5G4KpJQiCM",
+        "name": "Oliveira France Rénovation- artisan peintre- couvreur albi- nettoyage toiture- ravalement façade- peinture- Gaillac- graulhet",
+        "city": "Albi",
+        "email": "605a7baede844d278b89dc95ae0a9123@sentry-next.wixpress.com",
+        "phone": "+33 6 37 77 94 45",
+        "website": "https:\/\/www.oliveira-france-renovation.com\/",
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": "2026-02-02T08:55:08.207Z",
+        "addedAt": "2026-02-02T08:54:30.326Z",
+        "contactCount": 0,
+        "lastContactChannel": null,
+        "nextFollowUpDate": null,
+        "socials": {
+            "facebook": false,
+            "instagram": false
+        }
+    },
+    {
+        "id": "ChIJu5FQ7m7prRIR67Zr18d5gKs",
+        "name": "JM rénovation Toiture façade boiseries, peinture, ravalement nettoyage hydrofuge anti mousse",
+        "city": "Albi",
+        "email": "",
+        "phone": "+33 6 31 43 80 64",
+        "website": "http:\/\/jm-entreprise.e-monsite.com\/",
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": null,
+        "addedAt": "2026-02-02T08:58:58.904Z",
+        "contactCount": 0,
+        "lastContactChannel": null,
+        "nextFollowUpDate": null,
+        "socials": {
+            "facebook": false,
+            "instagram": false
+        }
+    },
+    {
+        "id": "ChIJEScmPOrdrRIRUHbPVf7FPhI",
+        "name": "jaccompagnevostravaux",
+        "city": "Albi",
+        "email": "",
+        "phone": "+33 7 77 78 49 69",
+        "website": "https:\/\/jaccompagnevostravaux-77.webself.net\/",
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": null,
+        "addedAt": "2026-02-02T09:00:04.296Z",
+        "contactCount": 0,
+        "lastContactChannel": null,
+        "nextFollowUpDate": null,
+        "socials": {
+            "facebook": false,
+            "instagram": false
+        }
     }
 ]

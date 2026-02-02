@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entreprise Chauvin | Maçonnerie & Rénovation Générale</title>
+    <meta name="description" content="Entreprise Chauvin : Expert en maçonnerie, rénovation et aménagement extérieur. Qualité et savoir-faire depuis plus de 20 ans.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons (SVGs light) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Configuration Tailwind personnalisée -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            500: '#f97316', // Orange chantier moderne
+                            600: '#ea580c',
+                            900: '#1e293b', // Slate dark
+                        }
+                    },
+                    backgroundImage: {
+                        'hero-pattern': "url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=2070&auto=format&fit=crop')",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Styles personnalisés pour les animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Glassmorphism navbar */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* Masquer la scrollbar tout en gardant le scroll */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-600 antialiased bg-slate-50">
+
+    <!-- NAVIGATION -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-4 bg-transparent">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <div class="w-10 h-10 bg-brand-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg transform -rotate-3">
+                        C
+                    </div>
+                    <span class="font-bold text-2xl tracking-tight text-slate-900">CHAUVIN<span class="text-brand-600">.</span></span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#home" class="text-slate-900 font-medium hover:text-brand-600 transition">Accueil</a>
+                    <a href="#services" class="text-slate-600 font-medium hover:text-brand-600 transition">Savoir-faire</a>
+                    <a href="#projects" class="text-slate-600 font-medium hover:text-brand-600 transition">Réalisations</a>
+                    <a href="#contact" class="px-6 py-2.5 bg-slate-900 text-white font-semibold rounded-full hover:bg-brand-600 transition-colors shadow-lg hover:shadow-brand-500/30">
+                        Demander un devis
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-900 focus:outline-none">
+                        <i data-lucide="menu" class="w-8 h-8"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-100 shadow-xl">
+            <div class="px-4 pt-4 pb-8 space-y-2 flex flex-col">
+                <a href="#home" class="block px-3 py-3 rounded-md text-base font-medium text-slate-900 hover:bg-slate-50">Accueil</a>
+                <a href="#services" class="block px-3 py-3 rounded-md text-base font-medium text-slate-600 hover:bg-slate-50">Savoir-faire</a>
+                <a href="#projects" class="block px-3 py-3 rounded-md text-base font-medium text-slate-600 hover:bg-slate-50">Réalisations</a>
+                <a href="#contact" class="block px-3 py-3 mt-4 text-center rounded-md text-base font-bold bg-brand-600 text-white">Contactez-nous</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
+        <!-- Background Image with Overlay -->
+        <div class="absolute inset-0 bg-hero-pattern bg-cover bg-center bg-no-repeat bg-fixed"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-900/90 to-slate-900/40"></div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left pt-20">
+            <div class="reveal active delay-100">
+                <span class="inline-block py-1 px-3 rounded-full bg-brand-500/20 border border-brand-500/30 text-brand-100 text-sm font-semibold tracking-wide uppercase mb-6 backdrop-blur-sm">
+                    Depuis 1998
+                </span>
+                <h1 class="text-5xl sm:text-7xl font-extrabold text-white tracking-tight leading-tight mb-6">
+                    L'Art de Bâtir,<br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-amber-300">La Passion de Rénover.</span>
+                </h1>
+                <p class="mt-4 text-xl text-slate-300 max-w-2xl font-light">
+                    L'Entreprise Chauvin transforme vos projets en réalité. Maçonnerie générale, rénovation de façade et aménagement extérieur avec une exigence de qualité absolue.
+                </p>
+                <div class="mt-10 flex flex-col sm:flex-row gap-4">
+                    <a href="#contact" class="px-8 py-4 bg-white text-slate-900 font-bold rounded-lg hover:bg-brand-50 transition duration-300 flex items-center justify-center gap-2">
+                        <span>Démarrer un projet</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#projects" class="px-8 py-4 bg-transparent border border-white/30 text-white font-semibold rounded-lg hover:bg-white/10 transition duration-300 flex items-center justify-center backdrop-blur-sm">
+                        Voir nos réalisations
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-white/50">
+            <i data-lucide="chevron-down" class="w-8 h-8"></i>
+        </div>
+    </section>
+
+    <!-- STATS STRIP -->
+    <div class="bg-white border-b border-gray-100 relative z-20 -mt-8 mx-4 sm:mx-8 lg:mx-auto max-w-6xl rounded-xl shadow-xl p-8 grid grid-cols-2 md:grid-cols-4 gap-8 reveal">
+        <div class="text-center border-r border-gray-100 last:border-0">
+            <div class="text-3xl font-bold text-slate-900">25+</div>
+            <div class="text-sm text-slate-500 uppercase tracking-wide mt-1">Années d'expérience</div>
+        </div>
+        <div class="text-center border-r border-gray-100 last:border-0 md:border-r">
+            <div class="text-3xl font-bold text-slate-900">500+</div>
+            <div class="text-sm text-slate-500 uppercase tracking-wide mt-1">Chantiers livrés</div>
+        </div>
+        <div class="text-center border-r border-gray-100 last:border-0">
+            <div class="text-3xl font-bold text-slate-900">100%</div>
+            <div class="text-sm text-slate-500 uppercase tracking-wide mt-1">Garantie Décennale</div>
+        </div>
+        <div class="text-center">
+            <div class="text-3xl font-bold text-slate-900">4.9/5</div>
+            <div class="text-sm text-slate-500 uppercase tracking-wide mt-1">Satisfaction Client</div>
+        </div>
+    </div>
+
+    <!-- SERVICES SECTION -->
+    <section id="services" class="py-24 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                <h2 class="text-brand-600 font-semibold tracking-wide uppercase text-sm">Nos Expertises</h2>
+                <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                    Une solution complète pour votre habitat
+                </p>
+                <p class="mt-4 max-w-2xl text-xl text-slate-500 mx-auto">
+                    Nous combinons techniques traditionnelles et matériaux modernes pour des résultats durables.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition duration-300 border border-slate-100 group reveal">
+                    <div class="w-14 h-14 bg-brand-100 rounded-xl flex items-center justify-center text-brand-600 mb-6 group-hover:scale-110 transition duration-300">
+                        <i data-lucide="brick-wall" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Maçonnerie Générale</h3>
+                    <p class="text-slate-600 leading-relaxed">
+                        Construction de maisons individuelles, extensions, garages et murs de clôture. Gros œuvre réalisé dans les règles de l'art.
+                    </p>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition duration-300 border border-slate-100 group reveal">
+                    <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 transition duration-300">
+                        <i data-lucide="home" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Rénovation Complète</h3>
+                    <p class="text-slate-600 leading-relaxed">
+                        Réhabilitation de l'ancien, ouverture de murs porteurs, réagencement des espaces intérieurs et pose de cloisons.
+                    </p>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition duration-300 border border-slate-100 group reveal">
+                    <div class="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-110 transition duration-300">
+                        <i data-lucide="shovel" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Aménagements Extérieurs</h3>
+                    <p class="text-slate-600 leading-relaxed">
+                        Création de terrasses, dallage, pavage, allées de jardin et ravalement de façade pour sublimer votre extérieur.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECT GALLERY (BENTO GRID STYLE) -->
+    <section id="projects" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 reveal">
+                <div>
+                    <h2 class="text-4xl font-extrabold text-slate-900">Nos Réalisations</h2>
+                    <p class="mt-4 text-xl text-slate-500">Découvrez la qualité de nos derniers chantiers.</p>
+                </div>
+                <a href="#contact" class="hidden md:inline-flex items-center gap-2 text-brand-600 font-semibold hover:text-brand-700 transition">
+                    Voir tous les projets <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-6 h-auto md:h-[600px]">
+                <!-- Project 1 (Large) -->
+                <div class="md:col-span-2 md:row-span-2 relative group rounded-2xl overflow-hidden cursor-pointer reveal">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop" alt="Maison moderne" class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition"></div>
+                    <div class="absolute bottom-0 left-0 p-8">
+                        <span class="text-brand-400 text-sm font-bold uppercase tracking-wider">Rénovation Totale</span>
+                        <h3 class="text-white text-2xl font-bold mt-2">Villa des Cèdres</h3>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="md:col-span-1 md:row-span-1 relative group rounded-2xl overflow-hidden cursor-pointer reveal">
+                    <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop" alt="Terrasse" class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+                    <div class="absolute bottom-0 left-0 p-6 translate-y-4 group-hover:translate-y-0 transition">
+                        <h3 class="text-white text-lg font-bold">Extension Bois & Béton</h3>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="md:col-span-1 md:row-span-1 relative group rounded-2xl overflow-hidden cursor-pointer reveal">
+                    <img src="https://images.unsplash.com/photo-1595846519845-68e298c2edd8?q=80&w=1974&auto=format&fit=crop" alt="Façade" class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+                    <div class="absolute bottom-0 left-0 p-6 translate-y-4 group-hover:translate-y-0 transition">
+                        <h3 class="text-white text-lg font-bold">Ravalement de Façade</h3>
+                    </div>
+                </div>
+
+                <!-- Project 4 (Wide) -->
+                <div class="md:col-span-2 md:row-span-1 relative group rounded-2xl overflow-hidden cursor-pointer reveal">
+                    <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop" alt="Intérieur" class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+                    <div class="absolute bottom-0 left-0 p-6 translate-y-4 group-hover:translate-y-0 transition">
+                        <h3 class="text-white text-lg font-bold">Aménagement Intérieur</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="py-24 bg-slate-900 text-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Ils nous ont fait confiance</h2>
+                    <p class="text-slate-400 text-lg mb-8">La satisfaction de nos clients est notre meilleure publicité. Nous nous engageons à respecter les délais et les budgets.</p>
+                    <div class="flex items-center gap-4">
+                        <div class="flex -space-x-4">
+                            <div class="w-12 h-12 rounded-full bg-slate-700 border-2 border-slate-900 flex items-center justify-center text-xs">JP</div>
+                            <div class="w-12 h-12 rounded-full bg-slate-600 border-2 border-slate-900 flex items-center justify-center text-xs">MA</div>
+                            <div class="w-12 h-12 rounded-full bg-slate-500 border-2 border-slate-900 flex items-center justify-center text-xs">EL</div>
+                        </div>
+                        <span class="text-sm font-medium text-slate-300">Rejoignez nos +500 clients satisfaits</span>
+                    </div>
+                </div>
+                
+                <div class="relative reveal delay-200">
+                    <div class="absolute -top-10 -left-10 text-brand-600 opacity-20">
+                        <i data-lucide="quote" class="w-32 h-32"></i>
+                    </div>
+                    <figure class="relative z-10 bg-slate-800 p-8 rounded-2xl shadow-xl border border-slate-700">
+                        <blockquote class="text-lg text-slate-300 leading-relaxed italic">
+                            "L'équipe Chauvin a transformé notre vieille grange en une maison moderne magnifique. Le professionnalisme et le souci du détail étaient au rendez-vous du début à la fin. Je recommande vivement pour tout gros œuvre."
+                        </blockquote>
+                        <figcaption class="mt-6 flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center font-bold">TB</div>
+                            <div>
+                                <div class="font-bold text-white">Thomas Bernard</div>
+                                <div class="text-sm text-slate-400">Propriétaire à Lyon</div>
+                            </div>
+                        </figcaption>
+                    </figure>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="py-24 bg-slate-50 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 flex flex-col md:flex-row reveal">
+                
+                <!-- Contact Info -->
+                <div class="md:w-5/12 bg-slate-900 p-12 text-white flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-brand-500 rounded-full filter blur-[80px] opacity-20 transform translate-x-1/2 -translate-y-1/2"></div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2">Discutons de votre projet</h3>
+                        <p class="text-slate-400 mb-8">Remplissez le formulaire et nous vous recontacterons sous 24h pour un devis gratuit.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <i data-lucide="map-pin" class="w-6 h-6 text-brand-500 mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold text-white">Notre Adresse</h4>
+                                    <p class="text-slate-400 text-sm">123 Rue de la Construction<br>69000 Lyon, France</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <i data-lucide="phone" class="w-6 h-6 text-brand-500 mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold text-white">Téléphone</h4>
+                                    <p class="text-slate-400 text-sm">04 78 00 00 00</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <i data-lucide="mail" class="w-6 h-6 text-brand-500 mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold text-white">Email</h4>
+                                    <p class="text-slate-400 text-sm">contact@entreprise-chauvin.fr</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-12">
+                        <p class="text-sm text-slate-500">Suivez-nous sur les réseaux :</p>
+                        <div class="flex gap-4 mt-4">
+                            <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-500 transition"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                            <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-500 transition"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                            <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-500 transition"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <div class="md:w-7/12 p-12 bg-white">
+                    <form onsubmit="event.preventDefault(); alert('Merci ! Votre message a bien été simulé.');" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Nom complet</label>
+                                <input type="text" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" placeholder="Jean Dupont" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Téléphone</label>
+                                <input type="tel" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" placeholder="06 12 34 56 78">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Type de projet</label>
+                            <select class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition bg-white">
+                                <option>Rénovation complète</option>
+                                <option>Maçonnerie / Gros œuvre</option>
+                                <option>Extension de maison</option>
+                                <option>Aménagement extérieur</option>
+                                <option>Autre</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Votre message</label>
+                            <textarea rows="4" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" placeholder="Décrivez votre projet en quelques lignes..."></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-lg shadow-lg hover:shadow-brand-500/40 transition duration-300 transform hover:-translate-y-1">
+                            Envoyer ma demande
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 text-slate-400 py-12 border-t border-slate-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-slate-800 rounded flex items-center justify-center text-white font-bold">C</div>
+                <span class="text-white font-bold tracking-tight">CHAUVIN.</span>
+            </div>
+            
+            <div class="text-sm">
+                &copy; <script>document.write(new Date().getFullYear())</script> Entreprise Chauvin. Tous droits réservés.
+            </div>
+
+            <div class="flex gap-6 text-sm font-medium">
+                <a href="#" class="hover:text-white transition">Mentions Légales</a>
+                <a href="#" class="hover:text-white transition">Politique de confidentialité</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // 1. Initialisation des icônes Lucide
+        lucide.createIcons();
+
+        // 2. Gestion de la Navbar au scroll (Glass effect)
+        const navbar = document.getElementById('navbar');
+        const logoText = navbar.querySelector('span'); // Le texte du logo
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('glass-nav', 'shadow-sm', 'py-2');
+                navbar.classList.remove('bg-transparent', 'py-4');
+            } else {
+                navbar.classList.add('bg-transparent', 'py-4');
+                navbar.classList.remove('glass-nav', 'shadow-sm', 'py-2');
+            }
+        });
+
+        // 3. Menu Mobile
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Fermer le menu mobile lors d'un clic sur un lien
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+
+        // 4. Animation d'apparition au scroll (Intersection Observer)
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Ne jouer l'animation qu'une fois
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

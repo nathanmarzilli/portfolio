@@ -1,9 +1,20 @@
+/**
+ * LEADMACHINE V4.0 - APP.JS
+ * Fonctionnalités:
+ * - State Management (AlpineJS)
+ * - Gestion de la "Pain-based Qualification" (Injection texte email)
+ * - Gestion des dates de relance automatique (J+3, J+7)
+ * - Tri intelligent des leads (Score Vétusté)
+ * - Gestion multi-canaux (LastContactChannel)
+ */
+
 function leadApp() {
     return {
         // --- ETAT ---
         currentTab: 'search',
         searchQuery: '',
         searchLocation: '',
+        filterHighPot: false, // Nouveau filtre Score > 75
         notifications: [],
         isLoading: false,
         isSending: false,
@@ -13,7 +24,6 @@ function leadApp() {
         expandedEmail: null,
         generatedEmail: { subject: '', body: '', to: '' },
         dailyGoal: 12,
-        monthlyGoal: 300,
 
         // --- DATA ---
         nichesCategories: {
@@ -37,9 +47,13 @@ function leadApp() {
         get followUpCount() { return this.leads.filter(l => this.needsRelance(l)).length; },
         
         needsRelance(lead) {
-            if (lead.status !== 'Contacted' || !lead.lastContactDate) return false;
-            const diff = Math.ceil(Math.abs(new Date() - new Date(lead.lastContactDate)) / (86400000));
-            return diff >= 3; 
+            if (!lead.nextFollowUpDate || lead.status === 'Won') return false;
+            return new Date(lead.nextFollowUpDate) <= new Date();
+        },
+        
+        formatDate(dateStr) {
+            if(!dateStr) return '';
+            return new Date(dateStr).toLocaleDateString('fr-FR');
         },
 
         getExistingLead(id) { return this.leads.find(l => l.id === id); },
@@ -68,25 +82,28 @@ function leadApp() {
                         tech: existing ? existing.tech : 'Inconnu',
                         email: existing ? existing.email : null,
                         crmStatus: existing ? existing.status : null,
-                        // Score Initial
-                        score: !!place.websiteUri ? 100 : 90, // On part de 100 (ou 90 si pas de site, car très bon lead)
+                        // Nouveaux champs V4
+                        contactCount: existing ? existing.contactCount : 0,
+                        lastContactChannel: existing ? existing.lastContactChannel : null,
+                        nextFollowUpDate: existing ? existing.nextFollowUpDate : null,
+                        
+                        score: !!place.websiteUri ? 100 : 90, 
                         issues: [], 
-                        analyzed: !!existing && existing.tech !== 'Inconnu'
+                        painPointsDetected: '',
+                        analyzed: !!existing && existing.tech !== 'Inconnu',
+                        socials: existing ? existing.socials : { facebook: false, instagram: false },
+                        probableEmails: []
                     };
                     
                     if (!place.websiteUri) {
                         lead.issues.push("Pas de Site Web");
-                        // Un sans site est un EXCELLENT lead, donc score élevé
-                        lead.score = 95; 
+                        lead.score = 95; // Top priorité
                     }
                     this.searchResults.push(lead);
                 }
                 
-                // Analyse technique des sites trouvés
                 await this.analyzeWebsitesInResults();
-                
-                // TRI FINAL : On veut voir les scores "Moyens" (Vieux sites) et "Sans Site" en premier.
-                // On inverse le tri : Score élevé = Gros Potentiel de vente (donc site pourri)
+                // Tri par score (Potentiel décroissant)
                 this.searchResults.sort((a, b) => b.score - a.score);
 
             } catch (err) { this.notify(err.message, 'error'); } 
@@ -103,39 +120,34 @@ function leadApp() {
                         if (!data.error) {
                             if(data.scraped_email) lead.email = data.scraped_email;
                             if(data.scraped_phone && lead.phone === 'Non renseigné') lead.phone = data.scraped_phone;
-
-                            // ALGORITHME DE VÉTUSTÉ "SNIPER"
-                            // Plus le score est HAUT, plus le prospect est INTÉRESSANT (donc site pourri)
                             
-                            // 1. Mobile First (Critique)
+                            // Nouveautés V4 : Socials & Probable Emails
+                            if(data.socials) lead.socials = data.socials;
+                            if(data.probable_emails) lead.probableEmails = data.probable_emails;
+
+                            // Scoring & Pain Points
                             if (!data.mobile) {
                                 lead.issues.push("Pas Responsive");
-                                // Si pas responsive, c'est quasi sûr à refaire
                             } else {
-                                lead.score -= 20; // Si responsive, moins intéressant
+                                lead.score -= 20; 
                             }
 
-                            // 2. Sécurité
                             if (!data.https) {
                                 lead.issues.push("Non Sécurisé");
-                                lead.score += 10; // Bonus de potentiel vente
+                                lead.score += 10;
                             }
 
-                            // 3. Vitesse (Indice de lourdeur/vieux code)
                             if (data.speed > 2.5) {
                                 lead.issues.push("Lent (>2.5s)");
                                 lead.score += 5;
                             }
 
-                            // 4. DATE DE COPYRIGHT (Le tueur)
                             if (data.copyright_year && data.copyright_year < 2021) {
                                 lead.issues.push(`Vieux Copyright (${data.copyright_year})`);
-                                lead.score += 25; // Bingo !
+                                lead.score += 25;
                             }
 
-                            // 5. Tech
                             if (data.tech === 'WordPress' || data.tech === 'Wix') {
-                                // Souvent plus dur à vendre une refonte si ils ont déjà un CMS récent
                                 lead.score -= 10; 
                             }
                         }
@@ -147,10 +159,9 @@ function leadApp() {
 
         // COULEURS INDICATEURS
         getScoreColor(score) {
-            // Score élevé = Très bon prospect (Site pourri)
             if (score >= 80) return 'border-green-500 bg-green-500/10 text-green-400'; 
             if (score >= 50) return 'border-orange-500 bg-orange-500/10 text-orange-400';
-            return 'border-slate-600 bg-slate-600/10 text-slate-500'; // Site récent, dur à vendre
+            return 'border-slate-600 bg-slate-600/10 text-slate-500';
         },
 
         getIssueColor(issue) {
@@ -168,53 +179,82 @@ function leadApp() {
         },
 
         getSearchLink(result) {
-            // Recherche Google Intelligente pour trouver l'email
-            const q = `"${result.name}" "${this.searchLocation}" email @gmail.com OR @orange.fr OR contact`;
+            // Recherche affinée pour trouver l'email
+            const q = `"${result.name}" "${this.searchLocation}" email OR contact OR "@gmail.com" site:facebook.com OR site:instagram.com`;
             return `https://www.google.com/search?q=${encodeURIComponent(q)}`;
         },
 
-        // --- EMAIL & TEXTE (Ton modèle exact) ---
+        // --- EMAIL & PAIN POINTS ---
         generateEmailContent(result) {
-            this.generatedEmail.to = result.email || ''; 
+            this.generatedEmail.to = result.email || (result.probableEmails && result.probableEmails.length > 0 ? result.probableEmails[0] : ''); 
             
-            // TON TEXTE EXACT (Avec sauts de lignes préservés)
+            // 1. Détection des Pain Points pour injection
+            let painPointsText = "";
+            let painSummary = "";
+            
+            if (result.issues.includes("Pas Responsive")) {
+                painPointsText += "- votre site n'est pas adapté aux mobiles (très pénalisant pour Google aujourd'hui)\n";
+                painSummary += "[Mobile] ";
+            }
+            if (result.issues.includes("Lent (>2.5s)")) {
+                painPointsText += "- le chargement semble lent, ce qui fait souvent fuir les visiteurs\n";
+                painSummary += "[Lent] ";
+            }
+            if (result.issues.some(i => i.includes("Vieux"))) {
+                painPointsText += "- le design semble dater de quelques années et ne reflète pas la qualité de votre travail\n";
+                painSummary += "[Vieux] ";
+            }
+            if (result.issues.includes("Non Sécurisé")) {
+                painPointsText += "- le site apparaît comme 'Non Sécurisé', ce qui effraie les clients\n";
+                painSummary += "[Sécurité] ";
+            }
+
+            // Fallback si pas de problème majeur détecté mais qu'on veut pitcher
+            if (painPointsText === "") {
+                painPointsText = "- votre site pourrait être modernisé pour attirer plus de clients locaux\n";
+            }
+            
+            result.painPointsDetected = painSummary;
+
+            // 2. Template
             const body = `Bonjour,
 
-Je me permets de vous contacter car j’accompagne des artisans et professionnels locaux dans la création et la modernisation de leur site internet, avec un objectif simple : vous aider à être visible, crédible et facilement contactable par vos futurs clients.
+Je me permets de vous contacter car j’ai analysé votre présence en ligne pour ${result.name}.
 
-Aujourd’hui, beaucoup d’entreprises perdent des opportunités faute d’un site clair, à jour et adapté au mobile. Mon rôle est justement de vous éviter cela, en vous proposant une solution clé en main, sans contrainte technique pour vous.
+En regardant votre site, j’ai remarqué quelques points qui freinent sans doute votre visibilité :
+${painPointsText}
+Aujourd’hui, beaucoup d’artisans perdent des opportunités à cause de ces détails techniques. C'est dommage car votre activité mérite d'être mise en valeur.
 
-Concrètement, je propose :
+Je propose une solution simple et accessible (990€ tout inclus) pour remettre votre site au goût du jour, le sécuriser et surtout vous amener des clients.
 
-👉 La création ou la refonte complète de votre site internet (design moderne, adapté mobile, clair pour vos clients)
-Prix : 990 € (paiement unique)
+Pas de bla-bla technique, je m'occupe de tout.
 
-👉 Un accompagnement mensuel à 50 € / mois comprenant :
-- l’hébergement du site
-- la maintenance technique
-- les mises à jour et améliorations
-- la mise au goût du jour du contenu si besoin
-- un suivi régulier, avec un interlocuteur unique : moi
+Si vous le souhaitez, je peux vous envoyer une maquette ou un exemple de ce que je pourrais faire pour vous.
 
-Mon approche est volontairement humaine et durable : je travaille avec un nombre limité de clients afin d’assurer un vrai suivi, et je reste disponible pour faire évoluer votre site en fonction de votre activité (nouvelles prestations, photos, horaires, saisonnalité, etc.).
-
-Si vous le souhaitez, je vous propose un échange gratuit et sans engagement, simplement pour faire un point sur votre présence actuelle en ligne et voir si un site internet pourrait réellement vous être utile.
-
-👉 Vous pouvez répondre directement à ce mail,
-ou, si c’est plus simple pour vous, prendre rendez-vous en ligne via mon portfolio afin de consulter mes disponibilités et choisir le créneau qui vous convient.
-
-Je reste bien entendu à votre disposition.
+Vous pouvez me répondre directement ici, ou on peut en discuter rapidement par téléphone.
 
 Bien cordialement,
-Nathan`;
+Nathan
+Spécialiste visibilité locale`;
 
-            this.generatedEmail.subject = `Visibilité locale pour ${result.name}`;
+            this.generatedEmail.subject = `Question sur le site de ${result.name}`;
             this.generatedEmail.body = body;
         },
 
         // --- BACKEND & HELPERS ---
         async addToCRM(result) {
-            const newLead = { id: result.id, name: result.name, city: this.searchLocation, email: result.email || '', phone: result.phone, website: result.website, status: 'To Contact', tech: result.tech || 'Inconnu', lastContactDate: null, addedAt: new Date().toISOString() };
+            const newLead = { 
+                id: result.id, name: result.name, city: this.searchLocation, 
+                email: result.email || '', phone: result.phone, website: result.website, 
+                status: 'To Contact', tech: result.tech || 'Inconnu', 
+                lastContactDate: null, 
+                addedAt: new Date().toISOString(),
+                // V4 Fields
+                contactCount: 0,
+                lastContactChannel: null,
+                nextFollowUpDate: null,
+                socials: result.socials || {}
+            };
             if(this.getExistingLead(newLead.id)) return;
             this.leads.unshift(newLead);
             await this.saveLeadToServer(newLead);
@@ -229,33 +269,72 @@ Nathan`;
         },
 
         async sendEmailDirectly(result) {
-            if(!this.generatedEmail.to) return this.notify("Veuillez trouver et coller l'email d'abord.", "error");
+            if(!this.generatedEmail.to) return this.notify("Aucun email destinataire.", "error");
             this.isSending = true;
             try {
                 const res = await fetch('proxy.php?action=send_email', { method: 'POST', body: JSON.stringify(this.generatedEmail) });
                 const data = await res.json();
-                if (data.success) { this.notify("Email envoyé !"); this.markAsContacted(result); this.expandedEmail = null; }
-                else { this.notify("Erreur envoi PHP. Utilise Gmail.", "error"); this.openGmail(result); }
+                if (data.success) { 
+                    this.notify("Email envoyé !"); 
+                    this.markAsContacted(result, 'Email'); 
+                    this.expandedEmail = null; 
+                }
+                else { 
+                    this.notify("Erreur PHP Mail. Ouverture Gmail...", "error"); 
+                    this.openGmail(result); 
+                }
             } catch(e) { this.notify("Erreur: " + e.message, "error"); } finally { this.isSending = false; }
         },
 
         openGmail(result) {
             window.open(`mailto:${this.generatedEmail.to}?subject=${encodeURIComponent(this.generatedEmail.subject)}&body=${encodeURIComponent(this.generatedEmail.body)}`, '_blank');
-            this.markAsContacted(result);
+            this.markAsContacted(result, 'Email');
         },
 
-        async markAsContacted(l) {
+        async updateLeadChannel(result, channel) {
+            this.markAsContacted(result, channel);
+            this.notify(`Marqué comme contacté via ${channel}`);
+        },
+
+        async markAsContacted(l, channel) {
             const s = this.searchResults.find(r => r.id === l.id); if(s) s.crmStatus = 'Contacted';
             const dbL = this.leads.find(i => i.id === l.id);
-            if (dbL) { dbL.status = 'Contacted'; dbL.lastContactDate = new Date().toISOString(); dbL.email = this.generatedEmail.to; await this.saveLeadToServer(dbL); }
+            if (dbL) { 
+                dbL.status = 'Contacted'; 
+                dbL.lastContactDate = new Date().toISOString(); 
+                dbL.email = this.generatedEmail.to; 
+                
+                // V4 Logic: Smart Relance
+                dbL.contactCount = (dbL.contactCount || 0) + 1;
+                dbL.lastContactChannel = channel;
+                
+                // Calcul prochaine relance (J+3 après 1er contact, J+7 après 2eme)
+                const daysToAdd = dbL.contactCount === 1 ? 3 : 7;
+                const nextDate = new Date();
+                nextDate.setDate(nextDate.getDate() + daysToAdd);
+                dbL.nextFollowUpDate = nextDate.toISOString();
+
+                await this.saveLeadToServer(dbL); 
+            }
         },
 
         copyEmail() { navigator.clipboard.writeText(this.generatedEmail.body); this.notify("Copié !"); },
         
         async loadLeadsFromServer() { try { const r = await fetch('proxy.php?action=get_leads'); const d = await r.json(); if(Array.isArray(d)) this.leads = d.reverse(); } catch(e){} },
-        async saveLeadToServer(l) { const c=JSON.parse(JSON.stringify(l)); delete c.issues; delete c.score; delete c.crmStatus; delete c.analyzed; await fetch('proxy.php?action=save_lead', { method:'POST', body:JSON.stringify(c) }); },
+        async saveLeadToServer(l) { 
+            const c=JSON.parse(JSON.stringify(l)); 
+            // On nettoie les objets UI avant sauvegarde DB
+            delete c.issues; delete c.score; delete c.crmStatus; delete c.analyzed; delete c.painPointsDetected; delete c.probableEmails;
+            await fetch('proxy.php?action=save_lead', { method:'POST', body:JSON.stringify(c) }); 
+        },
         async removeLead(l) { this.leads=this.leads.filter(i=>i.id!==l.id); await fetch(`proxy.php?action=delete_lead&id=${l.id}`); this.notify("Supprimé"); },
-        async updateStatus(l) { if(l.status==='Contacted') l.lastContactDate=new Date().toISOString(); await this.saveLeadToServer(l); },
-        exportCSV() { let c="Nom,Email,Tel,Status\n"; this.leads.forEach(l=>c+=`${l.name.replace(/,/g,' ')},${l.email},${l.phone},${l.status}\n`); const a=document.createElement("a"); a.href="data:text/csv;charset=utf-8,"+encodeURI(c); a.download="leads.csv"; a.click(); }
+        async updateStatus(l) { 
+            if(l.status==='Contacted') {
+                 if(!l.lastContactDate) l.lastContactDate=new Date().toISOString();
+            }
+            if (l.status === 'Won') l.nextFollowUpDate = null; // Pas de relance si gagné
+            await this.saveLeadToServer(l); 
+        },
+        exportCSV() { let c="Nom,Email,Tel,Status,Canal,Relances\n"; this.leads.forEach(l=>c+=`${l.name.replace(/,/g,' ')},${l.email},${l.phone},${l.status},${l.lastContactChannel||''},${l.contactCount||0}\n`); const a=document.createElement("a"); a.href="data:text/csv;charset=utf-8,"+encodeURI(c); a.download="leads_sniper.csv"; a.click(); }
     }
 }

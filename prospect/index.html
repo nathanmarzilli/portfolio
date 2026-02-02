@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LeadMachine V3.3 | Sniper Edition</title>
+    <title>LeadMachine V4.0 | Sniper Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -48,7 +48,7 @@
         <div class="flex items-center gap-3">
             <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-white"><i class="ph-bold ph-list text-2xl"></i></button>
             <div class="w-8 h-8 rounded-full bg-accent-400 flex items-center justify-center text-dark-950 font-bold font-display">N</div>
-            <span class="font-display font-bold text-white tracking-wide hidden md:inline">LeadMachine <span class="text-xs text-accent-400 font-mono">V3.3</span></span>
+            <span class="font-display font-bold text-white tracking-wide hidden md:inline">LeadMachine <span class="text-xs text-accent-400 font-mono">V4.0</span></span>
         </div>
         <div class="flex items-center gap-4 text-sm">
             <span class="text-slate-400 text-xs font-bold uppercase">Objectif Jour</span>
@@ -107,6 +107,7 @@
         </aside>
 
         <main class="flex-1 overflow-y-auto relative p-4 md:p-6 scroll-smooth" @click="mobileMenuOpen = false">
+            
             <div x-show="currentTab === 'search'" class="max-w-5xl mx-auto space-y-6">
                 
                 <div class="glass-panel p-6 rounded-2xl shadow-2xl relative overflow-hidden">
@@ -116,20 +117,30 @@
                             <input x-model="searchQuery" type="text" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 outline-none" placeholder="Ex: Menuisier...">
                         </div>
                         <div class="flex-1 w-full">
-                            <label class="text-[10px] font-bold text-accent-400 uppercase ml-1">Ville</label>
+                            <label class="text-[10px] font-bold text-accent-400 uppercase ml-1">Ville (Zone Morte = Jackpot)</label>
                             <input x-model="searchLocation" type="text" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 outline-none" placeholder="Ville...">
                         </div>
+                        <div class="flex items-center gap-2">
+                             <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-400 select-none">
+                                <input type="checkbox" x-model="filterHighPot" class="rounded border-white/20 bg-dark-950 text-accent-400 focus:ring-accent-400">
+                                <span class="font-bold">Score > 75 Only</span>
+                             </label>
+                        </div>
                         <button @click="performRealSearch()" :disabled="isLoading" class="w-full md:w-auto px-8 py-3 rounded-xl bg-accent-400 text-dark-950 font-bold hover:bg-white transition-all flex items-center justify-center gap-2">
-                            <span x-text="isLoading ? 'Analyse...' : 'SCANNER'"></span>
+                            <span x-text="isLoading ? 'Analyse en cours...' : 'SCANNER'"></span>
                         </button>
                     </div>
                 </div>
 
                 <div class="space-y-4" x-show="searchResults.length > 0">
-                    <h3 class="text-white font-bold text-lg">Résultats de l'analyse</h3>
+                    <h3 class="text-white font-bold text-lg flex justify-between items-center">
+                        <span>Résultats de l'analyse</span>
+                        <span class="text-xs text-slate-500 font-normal" x-text="searchResults.length + ' leads trouvés'"></span>
+                    </h3>
                     
                     <template x-for="result in searchResults" :key="result.id">
-                        <div class="glass-panel p-5 rounded-xl border border-white/5 hover:border-accent-400/30 transition-all relative overflow-hidden"
+                        <div x-show="!filterHighPot || result.score >= 75"
+                             class="glass-panel p-5 rounded-xl border border-white/5 hover:border-accent-400/30 transition-all relative overflow-hidden"
                              :class="result.crmStatus === 'Contacted' ? 'opacity-60 bg-dark-900 grayscale-[0.8]' : ''">
                             
                             <div class="absolute top-0 right-0 flex">
@@ -155,8 +166,8 @@
                                                 <span x-text="issue"></span>
                                             </span>
                                         </template>
-                                        <span x-show="result.score > 80" class="text-[9px] px-2 py-1 rounded border border-green-500/20 bg-green-500/10 text-green-400 text-center">
-                                            ✅ Site Correct
+                                        <span x-show="result.score > 80" class="text-[9px] px-2 py-1 rounded border border-green-500/20 bg-green-500/10 text-green-400 text-center font-bold">
+                                            🔥 HOT LEAD
                                         </span>
                                     </div>
                                 </div>
@@ -174,9 +185,23 @@
                                             <a x-show="result.website" :href="result.website" target="_blank" class="text-accent-400 hover:underline">Voir le site</a>
                                             <span x-show="!result.website" class="text-red-400 font-bold text-xs uppercase">⛔ Pas de Site Web</span>
                                         </div>
-                                        <div class="flex items-center gap-2">
-                                            <i class="ph-bold ph-phone text-slate-500"></i>
-                                            <span x-text="result.phone"></span>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Canaux détectés</label>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span x-show="result.email" class="px-2 py-1 rounded bg-blue-500/10 text-blue-400 border border-blue-500/30 text-[10px] font-bold flex items-center gap-1">
+                                                <i class="ph-bold ph-envelope"></i> Email
+                                            </span>
+                                            <span x-show="result.phone" class="px-2 py-1 rounded bg-green-500/10 text-green-400 border border-green-500/30 text-[10px] font-bold flex items-center gap-1 cursor-pointer" @click="navigator.clipboard.writeText(result.phone); notify('Tél copié')">
+                                                <i class="ph-bold ph-phone"></i> <span x-text="result.phone"></span>
+                                            </span>
+                                            <span x-show="result.socials && result.socials.facebook" class="px-2 py-1 rounded bg-blue-600/20 text-blue-400 border border-blue-600/30 text-[10px] font-bold flex items-center gap-1">
+                                                <i class="ph-bold ph-facebook-logo"></i> Facebook
+                                            </span>
+                                            <span x-show="result.socials && result.socials.instagram" class="px-2 py-1 rounded bg-pink-500/20 text-pink-400 border border-pink-500/30 text-[10px] font-bold flex items-center gap-1">
+                                                <i class="ph-bold ph-instagram-logo"></i> Instagram
+                                            </span>
                                         </div>
                                     </div>
 
@@ -191,15 +216,11 @@
                                             <span x-text="result.crmStatus === 'Contacted' ? 'Relancer' : 'CONTACTER'"></span>
                                         </button>
                                         
-                                        <a x-show="!result.email" 
+                                        <a x-show="!result.email && (!result.probableEmails || result.probableEmails.length === 0)" 
                                            :href="getSearchLink(result)" target="_blank"
                                            class="px-3 py-2 rounded bg-red-500/20 text-red-400 border border-red-500/50 hover:bg-red-500 hover:text-white transition-colors text-xs font-bold flex items-center gap-2">
-                                            <i class="ph-bold ph-magnifying-glass"></i> TROUVER EMAIL
+                                            <i class="ph-bold ph-magnifying-glass"></i> CHERCHER EMAIL
                                         </a>
-                                        
-                                        <span x-show="result.email" class="px-3 py-2 rounded bg-blue-500/10 text-blue-400 border border-blue-500/30 text-xs font-bold flex items-center gap-2">
-                                            <i class="ph-bold ph-check"></i> Email : <span x-text="result.email"></span>
-                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -207,17 +228,29 @@
                             <div x-show="expandedEmail === result.id" x-collapse class="mt-4 pt-4 border-t border-white/10 bg-dark-950/50 -mx-5 px-5 -mb-5 pb-5 rounded-b-xl">
                                 <div class="grid md:grid-cols-2 gap-4">
                                     <div>
-                                        <div class="flex justify-between mb-1">
-                                            <label class="text-[10px] font-bold text-slate-500 uppercase">Message</label>
+                                        <div class="flex justify-between mb-1 items-center">
+                                            <label class="text-[10px] font-bold text-slate-500 uppercase">Message (Optimisé Pain-Points)</label>
                                             <button @click="copyEmail()" class="text-[10px] text-accent-400">Copier</button>
+                                        </div>
+                                        <div x-show="result.painPointsDetected" class="mb-2 p-2 bg-red-500/10 border border-red-500/20 rounded text-[10px] text-red-300">
+                                            <b>🧠 Douleurs détectées et injectées :</b><br>
+                                            <span x-text="result.painPointsDetected"></span>
                                         </div>
                                         <textarea x-model="generatedEmail.body" rows="15" class="w-full bg-dark-950 border border-white/10 rounded px-3 py-2 text-white text-xs font-mono leading-relaxed resize-none focus:border-accent-400 outline-none"></textarea>
                                     </div>
                                     <div class="space-y-3">
                                         <div>
                                             <label class="text-[10px] font-bold text-slate-500 uppercase">Email Destinataire</label>
-                                            <input type="text" x-model="generatedEmail.to" placeholder="Coller l'email trouvé ici..." class="w-full bg-dark-950 border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-accent-400 outline-none">
-                                            <p x-show="!generatedEmail.to" class="text-[10px] text-red-400 mt-1">⚠️ Cherchez l'email sur Google avec le bouton rouge et collez-le ici.</p>
+                                            <input type="text" x-model="generatedEmail.to" placeholder="Email..." class="w-full bg-dark-950 border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-accent-400 outline-none">
+                                            
+                                            <div x-show="result.probableEmails && result.probableEmails.length > 0" class="mt-2">
+                                                <p class="text-[10px] font-bold text-accent-400 mb-1">🧠 Emails Probables (cliquez pour tester) :</p>
+                                                <div class="flex flex-wrap gap-1">
+                                                    <template x-for="prob in result.probableEmails">
+                                                        <button @click="generatedEmail.to = prob" class="px-2 py-1 rounded bg-white/5 border border-white/10 hover:bg-accent-400 hover:text-dark-950 text-[10px] transition-colors" x-text="prob"></button>
+                                                    </template>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div>
                                             <label class="text-[10px] font-bold text-slate-500 uppercase">Sujet</label>
@@ -227,6 +260,14 @@
                                             <span x-text="isSending ? 'Envoi...' : 'Envoyer Maintenant'"></span>
                                         </button>
                                         <button @click="openGmail(result)" class="w-full py-2 rounded border border-white/10 text-slate-400 text-xs hover:bg-white/5">Ouvrir dans Gmail</button>
+                                        
+                                        <div class="pt-2 border-t border-white/10 mt-2">
+                                            <label class="text-[10px] font-bold text-slate-500 uppercase">Mise à jour manuelle</label>
+                                            <div class="flex gap-2 mt-1">
+                                                <button @click="updateLeadChannel(result, 'Facebook')" class="flex-1 py-1 rounded bg-blue-900/30 text-blue-400 text-[10px] border border-blue-900/50">Via Facebook</button>
+                                                <button @click="updateLeadChannel(result, 'Phone')" class="flex-1 py-1 rounded bg-green-900/30 text-green-400 text-[10px] border border-green-900/50">Via Tél</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -240,12 +281,15 @@
                  <div class="overflow-x-auto rounded-lg border border-white/10 bg-dark-900/30">
                     <table class="w-full text-left border-collapse">
                         <thead class="bg-white/5 text-[10px] font-bold text-slate-400 uppercase">
-                            <tr><th class="p-3">Nom</th><th class="p-3">Contact</th><th class="p-3">Statut</th><th class="p-3">Action</th></tr>
+                            <tr><th class="p-3">Nom</th><th class="p-3">Contact</th><th class="p-3">Statut</th><th class="p-3">Relances</th><th class="p-3">Action</th></tr>
                         </thead>
                         <tbody class="divide-y divide-white/5 text-sm">
                             <template x-for="lead in leads" :key="lead.id">
                                 <tr class="hover:bg-white/5">
-                                    <td class="p-3 font-bold text-white" x-text="lead.name"></td>
+                                    <td class="p-3">
+                                        <div class="font-bold text-white" x-text="lead.name"></div>
+                                        <div class="text-[10px] text-slate-500" x-text="lead.city"></div>
+                                    </td>
                                     <td class="p-3 text-slate-300">
                                         <div x-text="lead.email"></div>
                                         <div x-text="lead.phone" class="text-xs text-slate-500"></div>
@@ -254,9 +298,18 @@
                                         <select x-model="lead.status" @change="updateStatus(lead)" class="bg-dark-950 border border-white/10 rounded px-2 py-1 text-xs text-white">
                                             <option value="To Contact">À contacter</option>
                                             <option value="Contacted">Contacté</option>
-                                            <option value="Relance">Relance</option>
+                                            <option value="Relance">À Relancer</option>
                                             <option value="Won">Gagné</option>
                                         </select>
+                                    </td>
+                                    <td class="p-3">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs font-mono bg-white/10 px-2 py-0.5 rounded" x-text="(lead.contactCount || 0) + ' fois'"></span>
+                                            <span x-show="lead.lastContactChannel" class="text-[10px] uppercase text-slate-500" x-text="lead.lastContactChannel"></span>
+                                        </div>
+                                        <div x-show="lead.nextFollowUpDate" class="text-[10px] text-accent-400 mt-1">
+                                            Prochaine: <span x-text="formatDate(lead.nextFollowUpDate)"></span>
+                                        </div>
                                     </td>
                                     <td class="p-3">
                                         <button @click="removeLead(lead)" class="text-slate-500 hover:text-red-500"><i class="ph-bold ph-trash"></i></button>
