@@ -272,6 +272,7 @@
                 <a href="#skills" class="hover:text-white transition-colors">Expertise</a>
                 <a href="#projects" class="hover:text-white transition-colors">Réalisations</a>
                 <a href="#services" class="hover:text-white transition-colors">Tarifs</a>
+                <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
                 <a href="#contact" class="px-5 py-2.5 rounded-full bg-white text-dark-950 hover:bg-accent-400 font-bold transition-all text-xs uppercase tracking-wider interactive-hover">
                     Réserver
                 </a>
@@ -288,7 +289,9 @@
             <a href="#about" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">L'Artisan</a>
             <a href="#skills" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">Expertise</a>
             <a href="#projects" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">Réalisations</a>
-            <a href="#services" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">Offres</a>
+            <a href="#services" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">Tarifs</a>
+            <a href="#faq" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">FAQ</a>
+            <a href="#contact" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">FAQ</a>
         </div>
     </nav>
 
@@ -382,24 +385,54 @@
                 </div>
 
                 <div class="reveal delay-100 pt-8">
-                    <div class="glass-card p-8 rounded-3xl border border-white/10 relative overflow-hidden interactive-hover">
-                        <i class="ph-duotone ph-quotes text-6xl text-accent-400/20 absolute top-4 right-4"></i>
-                        <h3 class="text-xl font-bold text-white mb-4">Ma philosophie : L'Efficacité</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed mb-6">
-                            Mon objectif est simple : répondre à vos besoins avec précision et rapidité.
-                            <br><br>
-                            <strong>Lundi :</strong> Démarrage du projet.<br>
-                            <strong>Mardi soir :</strong> Livraison de la première version.<br>
-                            <strong>Mercredi :</strong> Vos retours et ajustements.<br>
-                            <strong>Jeudi :</strong> Finitions et mise en ligne.<br><br>
-                            Un processus rodé pour garantir qualité et satisfaction.
-                        </p>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-accent-400 flex items-center justify-center text-dark-950 font-bold transform transition-transform duration-300 hover:scale-110 hover:rotate-3">N</div>
-                            <div class="text-sm font-medium text-white">Nathan M.</div>
-                        </div>
-                    </div>
-                </div>
+					<div class="glass-card p-8 rounded-3xl border border-white/10 relative overflow-hidden interactive-hover group h-full flex flex-col justify-between">
+						
+						<div class="absolute top-0 right-0 p-20 bg-accent-400/5 blur-3xl rounded-full -mr-10 -mt-10 pointer-events-none transition-opacity group-hover:opacity-100 opacity-50"></div>
+						<i class="ph-duotone ph-fingerprint text-6xl text-white/5 absolute top-6 right-6 group-hover:text-accent-400/10 transition-colors duration-500"></i>
+
+						<div>
+							<h3 class="text-xl font-display font-bold text-white mb-4 flex items-center gap-2">
+								<span class="w-1 h-6 bg-accent-400 rounded-full"></span>
+								Ma Vision : Le "Slow Web"
+							</h3>
+							
+							<p class="text-slate-400 text-sm leading-relaxed mb-6">
+								Le web est inondé de sites jetables, lents et mal conçus. Je prends le contre-pied.
+								<br>
+								Je ne vends pas des "modèles", je construis des <strong>actifs numériques</strong> faits pour durer, évoluer et convertir.
+							</p>
+
+							<ul class="space-y-4 mb-8">
+								<li class="flex items-start gap-3">
+									<div class="p-1.5 rounded bg-accent-400/10 text-accent-400 mt-0.5 shrink-0">
+										<i class="ph-bold ph-code"></i>
+									</div>
+									<div>
+										<strong class="text-white text-sm block">Code Propre & Durable</strong>
+										<span class="text-xs text-slate-500">Pas de "bricolage". Un code optimisé, sécurisé et performant qui plaît à Google.</span>
+									</div>
+								</li>
+								<li class="flex items-start gap-3">
+									<div class="p-1.5 rounded bg-accent-400/10 text-accent-400 mt-0.5 shrink-0">
+										<i class="ph-bold ph-chats-circle"></i>
+									</div>
+									<div>
+										<strong class="text-white text-sm block">Zéro Intermédiaire</strong>
+										<span class="text-xs text-slate-500">Vous ne parlez pas à un commercial, mais à l'ingénieur qui bâtit votre projet.</span>
+									</div>
+								</li>
+							</ul>
+						</div>
+
+						<div class="flex items-center gap-3 pt-6 border-t border-white/5">
+							<div class="w-10 h-10 rounded-full bg-gradient-to-br from-accent-400 to-accent-500 flex items-center justify-center text-dark-950 font-bold shadow-lg shadow-accent-400/20">N</div>
+							<div>
+								<div class="text-sm font-bold text-white">Nathan Marzilli</div>
+								<div class="text-[10px] text-accent-400 uppercase tracking-wider font-medium">Votre Partenaire</div>
+							</div>
+						</div>
+					</div>
+				</div>
             </div>
         </div>
     </section>
@@ -643,6 +676,131 @@
 					<a href="#contact" onclick="selectOffer('Premium', 2590)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10">Choisir</a>
 				</div>
 			</div>
+			
+			<div class="mb-16 reveal">
+				<div class="glass-card p-6 md:p-8 rounded-3xl border border-white/10 bg-gradient-to-br from-dark-900 to-dark-950 relative overflow-hidden">
+					
+					<div class="text-center mb-10">
+						<h3 class="text-xl font-display font-bold text-white flex items-center justify-center gap-2">
+							<i class="ph-duotone ph-chart-bar text-accent-400 text-2xl"></i>
+							Pourquoi mes tarifs sont justes (et pas trop chers)
+						</h3>
+						<p class="text-slate-400 text-sm mt-2 max-w-2xl mx-auto">
+							La qualité d'une agence, la proximité d'un artisan, au prix juste.
+							Comparatif transparent basé sur les standards du marché web en 2026.
+						</p>
+					</div>
+
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+						
+						<div class="p-6 rounded-2xl bg-white/5 border border-white/5 flex flex-col relative">
+							<div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
+								<div class="p-2 rounded-lg bg-orange-500/10 text-orange-400">
+									<i class="ph-bold ph-storefront text-xl"></i>
+								</div>
+								<div>
+									<h4 class="font-bold text-white text-lg">Ailleurs sur le marché</h4>
+									<p class="text-xs text-slate-500">Agences & Plateformes</p>
+								</div>
+							</div>
+
+							<ul class="space-y-4 text-sm text-slate-400 flex-grow">
+								<li class="flex items-start gap-3">
+									<i class="ph-bold ph-x text-orange-500 mt-1 shrink-0"></i>
+									<div>
+										<strong class="text-slate-200 block">Agence Web Classique</strong>
+										Prix moyen : <span class="text-orange-400 font-bold">3 000€ à 5 000€</span> pour un site vitrine responsive de qualité équivalente (frais de structure, locaux, commerciaux...).
+									</div>
+								</li>
+								
+								<li class="flex items-start gap-3">
+									<i class="ph-bold ph-warning text-orange-500 mt-1 shrink-0"></i>
+									<div>
+										<strong class="text-slate-200 block">Plateformes (Wix, etc.)</strong>
+										L'illusion du "pas cher". Abonnement perpétuel (20-40€/mois pour retirer les pubs), référencement Google souvent bridé et design limité par des templates. Vous ne possédez jamais vraiment votre site.
+									</div>
+								</li>
+
+								<li class="flex items-start gap-3">
+									<i class="ph-bold ph-warning text-orange-500 mt-1 shrink-0"></i>
+									<div>
+										<strong class="text-slate-200 block">Freelance "Low Cost"</strong>
+										Souvent < 800€, mais risque élevé : design daté, code non sécurisé, pas de responsive mobile, et souvent... silence radio une fois payé.
+									</div>
+								</li>
+
+								<li class="flex items-start gap-3">
+									<i class="ph-bold ph-users-three text-orange-500 mt-1 shrink-0"></i>
+									<div>
+										<strong class="text-slate-200 block">Relation Impersonnelle</strong>
+										Vous parlez à un commercial ou un chef de projet, rarement à celui qui crée votre site.
+									</div>
+								</li>
+							</ul>
+						</div>
+
+						<div class="p-6 rounded-2xl bg-accent-400/5 border border-accent-400/20 flex flex-col relative shadow-[0_0_30px_rgba(0,0,0,0.2)]">
+							<div class="absolute top-0 right-0 w-20 h-20 bg-accent-400/10 blur-3xl rounded-full -mr-10 -mt-10 pointer-events-none"></div>
+							
+							<div class="flex items-center gap-3 mb-6 border-b border-accent-400/20 pb-4">
+								<div class="p-2 rounded-lg bg-accent-400 text-dark-950">
+									<i class="ph-bold ph-handshake text-xl"></i>
+								</div>
+								<div>
+									<h4 class="font-bold text-white text-lg">Avec Moi</h4>
+									<p class="text-xs text-accent-400">Partenaire de confiance</p>
+								</div>
+							</div>
+
+							<ul class="space-y-4 text-sm text-slate-300 flex-grow">
+								 <li class="flex items-start gap-3">
+									<i class="ph-fill ph-check-circle text-accent-400 mt-1 shrink-0 text-lg"></i>
+									<div>
+										<strong class="text-white block">Tarif "Direct Artisan"</strong>
+										À partir de <span class="text-accent-400 font-bold">990€</span>. Pas de frais d'agence, pas de commerciaux. Vous payez uniquement mon expertise et le temps passé.
+									</div>
+								</li>
+
+								<li class="flex items-start gap-3">
+									<i class="ph-fill ph-check-circle text-accent-400 mt-1 shrink-0 text-lg"></i>
+									<div>
+										<strong class="text-white block">Vraiment Sur-Mesure</strong>
+										On ne force pas un template. On construit le site qui répond à <span class="italic text-white">votre</span> besoin réel. Design moderne, fluide et 100% mobile.
+									</div>
+								</li>
+
+								<li class="flex items-start gap-3">
+									<i class="ph-fill ph-check-circle text-accent-400 mt-1 shrink-0 text-lg"></i>
+									<div>
+										<strong class="text-white block">Ligne Directe</strong>
+										Je suis votre seul interlocuteur. On s'appelle régulièrement pendant le projet pour ajuster les détails. Pas d'intermédiaire, pas d'incompréhension.
+									</div>
+								</li>
+
+								<li class="flex items-start gap-3">
+									<i class="ph-fill ph-check-circle text-accent-400 mt-1 shrink-0 text-lg"></i>
+									<div>
+										<strong class="text-white block">Partenaires dans la durée</strong>
+										Avec le suivi (49.90€/mois), votre site n'est jamais abandonné. Je gère la technique et les mises à jour pour que vous restiez concentré sur votre métier.
+									</div>
+								</li>
+							</ul>
+							
+							<div class="mt-6 pt-4 border-t border-accent-400/20 flex items-center justify-between">
+								<span class="text-xs text-slate-400 font-medium">Satisfaction Garantie</span>
+								<div class="flex text-accent-400 gap-1 text-xs">
+									<i class="ph-fill ph-star"></i>
+									<i class="ph-fill ph-star"></i>
+									<i class="ph-fill ph-star"></i>
+									<i class="ph-fill ph-star"></i>
+									<i class="ph-fill ph-star"></i>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
 
 			<div class="mb-16 reveal">
 				<div class="glass-card p-6 md:p-10 rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-950/30 to-dark-900/50 relative overflow-hidden group">
@@ -780,6 +938,145 @@
 							<span class="font-bold text-white">300€</span>
 						</div>
 					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<section id="faq" class="py-24 bg-dark-900 border-t border-white/5 relative overflow-hidden">
+		<div class="absolute top-0 left-0 p-64 bg-accent-400/5 blur-[100px] rounded-full -ml-32 -mt-32 pointer-events-none"></div>
+
+		<div class="max-w-6xl mx-auto px-6 relative z-10">
+			
+			<div class="text-center mb-16 reveal">
+				<h2 class="font-display text-4xl font-bold text-white mb-4">Questions Fréquentes</h2>
+				<p class="text-slate-400 max-w-xl mx-auto">
+					Tout ce que vous devez savoir avant de lancer votre projet.
+					<br>Pas de jargon, juste des réponses claires.
+				</p>
+			</div>
+
+			<div class="grid md:grid-cols-2 gap-6 items-start">
+				
+				<div class="space-y-4 reveal delay-100">
+					
+					<div class="glass-card rounded-2xl border border-white/5 overflow-hidden transition-all duration-300 group">
+						<button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-6 text-left focus:outline-none">
+							<span class="font-bold text-white group-hover:text-accent-400 transition-colors">Combien de temps faut-il pour créer mon site ?</span>
+							<i class="ph-bold ph-caret-down text-slate-500 transform transition-transform duration-300"></i>
+						</button>
+						<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out px-6 text-slate-400 text-sm leading-relaxed">
+							<div class="pb-6 border-t border-white/5 pt-4">
+								Pour un <strong>Site One-Page (Essentiel)</strong>, comptez environ <strong>5 à 7 jours</strong> ouvrés après réception de vos contenus (textes/photos). <br><br>
+								Pour un site <strong>Vitrine ou Premium</strong>, le délai moyen est de <strong>2 à 3 semaines</strong>. Je privilégie la rapidité d'exécution sans sacrifier la qualité, grâce à une méthode de travail rodée.
+							</div>
+						</div>
+					</div>
+
+					<div class="glass-card rounded-2xl border border-white/5 overflow-hidden transition-all duration-300 group">
+						<button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-6 text-left focus:outline-none">
+							<span class="font-bold text-white group-hover:text-accent-400 transition-colors">Suis-je vraiment propriétaire du site ?</span>
+							<i class="ph-bold ph-caret-down text-slate-500 transform transition-transform duration-300"></i>
+						</button>
+						<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out px-6 text-slate-400 text-sm leading-relaxed">
+							<div class="pb-6 border-t border-white/5 pt-4">
+								<strong>OUI, à 100%.</strong> Contrairement aux agences qui vous "louent" un site ou aux plateformes comme Wix, vous êtes le seul propriétaire de votre nom de domaine et de votre hébergement.<br><br>
+								Si demain vous souhaitez changer de prestataire, vous partez avec votre site. Aucune "menotte" contractuelle.
+							</div>
+						</div>
+					</div>
+
+					<div class="glass-card rounded-2xl border border-white/5 overflow-hidden transition-all duration-300 group">
+						<button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-6 text-left focus:outline-none">
+							<span class="font-bold text-white group-hover:text-accent-400 transition-colors">Comment se passe le paiement ?</span>
+							<i class="ph-bold ph-caret-down text-slate-500 transform transition-transform duration-300"></i>
+						</button>
+						<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out px-6 text-slate-400 text-sm leading-relaxed">
+							<div class="pb-6 border-t border-white/5 pt-4">
+								Le règlement se fait en deux étapes pour sécuriser les deux parties :
+								<ul class="list-disc pl-5 mt-2 space-y-1">
+									<li><strong>40% d'acompte</strong> à la signature du devis pour lancer le projet.</li>
+									<li><strong>60% à la livraison</strong>, une fois que le site est en ligne et que vous êtes satisfait.</li>
+								</ul>
+								Paiement par virement bancaire. Une facture est systématiquement émise.
+							</div>
+						</div>
+					</div>
+
+					 <div class="glass-card rounded-2xl border border-white/5 overflow-hidden transition-all duration-300 group">
+						<button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-6 text-left focus:outline-none">
+							<span class="font-bold text-white group-hover:text-accent-400 transition-colors">Dois-je fournir les textes et photos ?</span>
+							<i class="ph-bold ph-caret-down text-slate-500 transform transition-transform duration-300"></i>
+						</button>
+						<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out px-6 text-slate-400 text-sm leading-relaxed">
+							<div class="pb-6 border-t border-white/5 pt-4">
+								Idéalement, oui. Vous connaissez votre métier mieux que personne. Cependant, je peux <strong>relire et optimiser</strong> vos textes pour le web. <br><br>
+								Si vous n'avez pas de photos, je peux utiliser des banques d'images libres de droits de haute qualité pour illustrer votre activité en attendant vos propres visuels.
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="space-y-4 reveal delay-200">
+					
+					<div class="glass-card rounded-2xl border border-white/5 overflow-hidden transition-all duration-300 group">
+						<button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-6 text-left focus:outline-none">
+							<span class="font-bold text-white group-hover:text-accent-400 transition-colors">À quoi sert le Pack Sérénité (49.90€) ?</span>
+							<i class="ph-bold ph-caret-down text-slate-500 transform transition-transform duration-300"></i>
+						</button>
+						<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out px-6 text-slate-400 text-sm leading-relaxed">
+							<div class="pb-6 border-t border-white/5 pt-4">
+								Un site n'est pas "figé", il vit. Le Pack Sérénité est votre assurance tranquillité :
+								<ul class="list-disc pl-5 mt-2 space-y-1 text-slate-400">
+									<li>Je gère les mises à jour techniques (sécurité).</li>
+									<li>Je fais des sauvegardes régulières.</li>
+									<li><strong>Inclus :</strong> 1 intervention par mois (changer une photo, un texte, une promo).</li>
+								</ul>
+								Sans ce pack, les interventions ponctuelles sont facturées à l'heure (voir grille tarifaire).
+							</div>
+						</div>
+					</div>
+
+					<div class="glass-card rounded-2xl border border-white/5 overflow-hidden transition-all duration-300 group">
+						<button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-6 text-left focus:outline-none">
+							<span class="font-bold text-white group-hover:text-accent-400 transition-colors">Mon site sera-t-il bien référencé sur Google ?</span>
+							<i class="ph-bold ph-caret-down text-slate-500 transform transition-transform duration-300"></i>
+						</button>
+						<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out px-6 text-slate-400 text-sm leading-relaxed">
+							<div class="pb-6 border-t border-white/5 pt-4">
+								Tous mes sites sont conçus avec les <strong>meilleures pratiques SEO</strong> (Search Engine Optimization) : structure propre, chargement rapide, balises optimisées et version mobile parfaite.<br><br>
+								Cela vous donne les meilleures bases pour être visible. Pour aller chercher la 1ère place sur des mots-clés très concurrentiels, une stratégie de contenu dédiée (blog, etc.) sera nécessaire par la suite.
+							</div>
+						</div>
+					</div>
+
+					<div class="glass-card rounded-2xl border border-white/5 overflow-hidden transition-all duration-300 group">
+						<button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-6 text-left focus:outline-none">
+							<span class="font-bold text-white group-hover:text-accent-400 transition-colors">Puis-je modifier le site moi-même ?</span>
+							<i class="ph-bold ph-caret-down text-slate-500 transform transition-transform duration-300"></i>
+						</button>
+						<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out px-6 text-slate-400 text-sm leading-relaxed">
+							<div class="pb-6 border-t border-white/5 pt-4">
+								Si vous choisissez l'offre <strong>Premium</strong> avec Blog, vous aurez une interface pour écrire vos articles.<br><br>
+								Pour le reste (mise en page, design), je privilégie le code sur-mesure pour la performance. C'est pourquoi le <strong>Pack Sérénité</strong> est intéressant : vous m'envoyez un mail, je fais la modification pour vous. C'est plus simple et vous ne risquez pas de "casser" le design du site.
+							</div>
+						</div>
+					</div>
+
+					<div class="glass-card rounded-2xl border border-white/5 overflow-hidden transition-all duration-300 group">
+						<button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-6 text-left focus:outline-none">
+							<span class="font-bold text-white group-hover:text-accent-400 transition-colors">Travaillez-vous à distance ?</span>
+							<i class="ph-bold ph-caret-down text-slate-500 transform transition-transform duration-300"></i>
+						</button>
+						<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out px-6 text-slate-400 text-sm leading-relaxed">
+							<div class="pb-6 border-t border-white/5 pt-4">
+								Oui, tout à fait. Je suis basé entre <strong>Évian-les-Bains et Lausanne</strong>, mais je travaille avec des clients dans toute la France et en Suisse.<br><br>
+								Nous échangeons par téléphone, visio ou email. Les outils d'aujourd'hui nous permettent de collaborer efficacement, peu importe la distance.
+							</div>
+						</div>
+					</div>
+
 				</div>
 			</div>
 		</div>

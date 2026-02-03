@@ -890,4 +890,32 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     };
+	
+	// --- GESTION FAQ ---
+	window.toggleFaq = function(button) {
+		// 1. Gestion de l'icone
+		const icon = button.querySelector('i');
+		
+		// 2. Gestion du contenu
+		const content = button.nextElementSibling;
+		
+		// Si c'est déjà ouvert, on ferme
+		if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+			content.style.maxHeight = '0px';
+			icon.style.transform = 'rotate(0deg)';
+			button.classList.remove('active-faq'); // Optionnel pour le style
+		} else {
+			// OPTIONNEL : Fermer les autres quand on en ouvre un (effet accordéon strict)
+			/* document.querySelectorAll('#faq .max-h-0').forEach(el => {
+				el.style.maxHeight = '0px';
+				el.previousElementSibling.querySelector('i').style.transform = 'rotate(0deg)';
+			});
+			*/
+
+			// On ouvre celui-ci
+			content.style.maxHeight = content.scrollHeight + "px";
+			icon.style.transform = 'rotate(180deg)';
+			button.classList.add('active-faq');
+		}
+	};
 });
