@@ -918,4 +918,43 @@ document.addEventListener('DOMContentLoaded', () => {
 			button.classList.add('active-faq');
 		}
 	};
+	
+	// ==============================================
+    // GESTION MENU MOBILE (MANQUANT)
+    // ==============================================
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', () => {
+            window.vibrate(); // Petit retour haptique
+            
+            // Bascule l'affichage du menu (enlève/ajoute la translation)
+            mobileMenu.classList.toggle('translate-x-full');
+            
+            // Change l'icône (List <-> X)
+            const icon = mobileMenuBtn.querySelector('i');
+            if (mobileMenu.classList.contains('translate-x-full')) {
+                icon.classList.remove('ph-x');
+                icon.classList.add('ph-list');
+                document.body.style.overflow = ''; // Réactive le scroll
+            } else {
+                icon.classList.remove('ph-list');
+                icon.classList.add('ph-x');
+                document.body.style.overflow = 'hidden'; // Bloque le scroll arrière-plan
+            }
+        });
+
+        // Ferme le menu quand on clique sur un lien
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('translate-x-full');
+                const icon = mobileMenuBtn.querySelector('i');
+                icon.classList.remove('ph-x');
+                icon.classList.add('ph-list');
+                document.body.style.overflow = '';
+            });
+        });
+    }
 });
