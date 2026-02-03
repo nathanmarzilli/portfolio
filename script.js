@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { label: "Créer Devis / Facture", icon: "ph-file-text", color: "text-blue-400", link: "/portfolio/contrat/devis&contrat/" },
         { label: "Quittance de Loyer", icon: "ph-house-line", color: "text-green-400", link: "/portfolio/contrat/quittance/" },
         { label: "Bail Location Meublée", icon: "ph-key", color: "text-purple-400", link: "/portfolio/contrat/bail/" },
-        { label: "Prospecter", icon: "ph-key", color: "text-purple-400", link: "/portfolio/prospect/" }
+        { label: "Prospecter", icon: "ph-target", color: "text-pink-400", link: "/portfolio/prospect/" }
     ];
 
     function renderAdminButtons() {
@@ -329,7 +329,6 @@ document.addEventListener('DOMContentLoaded', () => {
         'responsive': { title: 'Mobile First', text: 'Votre site est pensé pour les smartphones en priorité, car c\'est là que vos clients se trouvent aujourd\'hui.', icon: 'ph-device-mobile', color: 'text-purple-400' },
         'firebase': { title: 'Google Firebase', text: 'Base de données temps réel et authentification sécurisée par Google. Performance et fiabilité industrielle.', icon: 'ph-fire', color: 'text-orange-400' },
         'seo': { title: 'SEO & Performance', text: 'Optimisation technique avancée (Core Web Vitals) pour plaire à Google et faire monter votre site dans les résultats.', icon: 'ph-magnifying-glass', color: 'text-green-500' },
-        // AJOUT FORMSPREE
         'formspree': { title: 'Formspree', text: 'Gestion fiable et instantanée des formulaires de contact. Réception des e-mails en temps réel avec protection anti-spam intégrée.', icon: 'ph-paper-plane-tilt', color: 'text-red-500' }
     };
 
@@ -407,78 +406,103 @@ document.addEventListener('DOMContentLoaded', () => {
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
     // ==============================================
-    // 5. SELECTION OFFRES & CALCULATEUR
+    // 5. SELECTION OFFRES & CALCULATEUR (REFONDU)
     // ==============================================
-    
-    // Fonction appelée par les boutons "Choisir"
-    window.selectOffer = function(offerName, price) {
-        window.vibrate(); // Haptic
-        // Animation immédiate sur la carte
-        window.updateCardSelection(offerName, price); 
+
+    // Variables globales pour le calcul
+    let currentBasePrice = 1790;
+    let isSerenitySelected = false;
+    let isDocumentSelected = false;
+    const SERENITY_MONTHLY = 49.90;
+    const DOC_PRICE = 250;
+
+    // --- Fonctions exposées à window pour les onclick HTML ---
+
+    window.selectOffer = function(packName, price) {
+        window.vibrate(); 
+        const radioBtn = document.querySelector(`input[name="project_pack"][value="${packName}"]`);
+        if (radioBtn) {
+            radioBtn.checked = true;
+            updateCardSelection(packName, price);
+        }
         
-        // Délai avant le scroll pour voir l'effet doré
+        // Scroll doux vers le formulaire avec délai pour effet visuel
         setTimeout(() => {
             document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
-            // Cocher le radio correspondant
-            const radioToSelect = document.querySelector(`input[name="project_pack"][value="${offerName}"]`);
-            if(radioToSelect) {
-                radioToSelect.checked = true;
-            }
-        }, 500); // Temporisation légère
-    };
-
-    // Fonction toggle pour le bouton Sérénité du formulaire
-    window.toggleSerenityForm = function() {
-        window.vibrate(); // Haptic
-        const checkSerenity = document.getElementById('check-serenite');
-        const btnContainer = document.getElementById('serenite-toggle-btn');
-        const fakeCheck = document.getElementById('serenite-fake-checkbox');
-        const checkIcon = document.getElementById('serenite-check-icon');
-
-        if(checkSerenity && btnContainer) {
-            checkSerenity.checked = !checkSerenity.checked;
-            
-            if(checkSerenity.checked) {
-                btnContainer.classList.add('active');
-                fakeCheck.classList.remove('border-blue-400/50', 'bg-dark-900');
-                fakeCheck.classList.add('border-blue-400', 'bg-blue-400/20');
-                checkIcon.classList.remove('opacity-0', 'scale-50');
-                checkIcon.classList.add('opacity-100', 'scale-100');
-                updateSerenityCard(true);
-            } else {
-                btnContainer.classList.remove('active');
-                fakeCheck.classList.add('border-blue-400/50', 'bg-dark-900');
-                fakeCheck.classList.remove('border-blue-400', 'bg-blue-400/20');
-                checkIcon.classList.add('opacity-0', 'scale-50');
-                checkIcon.classList.remove('opacity-100', 'scale-100');
-                updateSerenityCard(false);
-            }
-            updateTotal();
+        }, 300);
+    }
+    
+    // Fonction Helper depuis la section Service pour activer l'option doc
+    window.toggleDocumentOptionFromService = function() {
+        window.vibrate();
+        if(!isDocumentSelected) {
+            window.toggleDocumentOption();
         }
-    };
-
-    // Fonction toggle pour le bouton Sérénité du Pricing (Haut de page)
-    window.toggleSerenityOption = function() {
-        window.vibrate(); // Haptic
-        // Scroll vers formulaire
         document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
-        // Activer le bouton du formulaire
-        const checkSerenity = document.getElementById('check-serenite');
-        if(checkSerenity && !checkSerenity.checked) {
-           window.toggleSerenityForm();
-        }
-    };
-
-    function updateSerenityCard(isChecked) {
-        const card = document.getElementById('card-serenite');
-        if(card) {
-            if(isChecked) card.classList.add('serenity-selected-card');
-            else card.classList.remove('serenity-selected-card');
-        }
     }
 
-    // Gestion contour doré + Calcul Total
-    window.updateCardSelection = function(selectedVal, price) {
+    window.toggleDocumentOption = function() {
+        window.vibrate();
+        const checkbox = document.getElementById('check-documents');
+        const fakeCheckbox = document.getElementById('doc-fake-checkbox');
+        const icon = document.getElementById('doc-check-icon');
+        const btn = document.getElementById('document-toggle-btn');
+
+        isDocumentSelected = !isDocumentSelected;
+        if(checkbox) checkbox.checked = isDocumentSelected;
+
+        if (isDocumentSelected) {
+            icon?.classList.remove('opacity-0', 'scale-50');
+            fakeCheckbox?.classList.add('bg-emerald-500/20', 'border-emerald-500');
+            btn?.classList.add('bg-emerald-500/10', 'border-emerald-500/30');
+        } else {
+            icon?.classList.add('opacity-0', 'scale-50');
+            fakeCheckbox?.classList.remove('bg-emerald-500/20', 'border-emerald-500');
+            btn?.classList.remove('bg-emerald-500/10', 'border-emerald-500/30');
+        }
+        updateTotal();
+    }
+
+    // Toggle Sérénité (Depuis le bouton du haut ou du bas)
+    window.toggleSerenityOption = function() {
+        if (!isSerenitySelected) {
+            window.toggleSerenityForm();
+        }
+        document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    window.toggleSerenityForm = function() {
+        // Si "Essentiel" est sélectionné, on empêche de décocher
+        const radioEssentiel = document.querySelector('input[name="project_pack"][value="Essentiel"]');
+        if (radioEssentiel && radioEssentiel.checked) return;
+
+        window.vibrate();
+        const checkbox = document.getElementById('check-serenite');
+        const fakeCheckbox = document.getElementById('serenite-fake-checkbox');
+        const icon = document.getElementById('serenite-check-icon');
+        const btn = document.getElementById('serenite-toggle-btn');
+
+        isSerenitySelected = !isSerenitySelected;
+        if(checkbox) checkbox.checked = isSerenitySelected;
+
+        if (isSerenitySelected) {
+            icon?.classList.remove('opacity-0', 'scale-50');
+            fakeCheckbox?.classList.add('bg-blue-500/20', 'border-blue-500');
+            btn?.classList.add('active');
+            updateSerenityCardInServices(true);
+        } else {
+            icon?.classList.add('opacity-0', 'scale-50');
+            fakeCheckbox?.classList.remove('bg-blue-500/20', 'border-blue-500');
+            btn?.classList.remove('active');
+            updateSerenityCardInServices(false);
+        }
+        updateTotal();
+    }
+
+    // Mise à jour visuelle des cartes (contour doré)
+    window.updateCardSelection = function(packName, price) {
+        currentBasePrice = price;
+
         // Reset classes
         ['card-essentiel', 'card-vitrine', 'card-premium'].forEach(id => {
             const el = document.getElementById(id);
@@ -487,17 +511,93 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Add class
         let targetId = '';
-        if(selectedVal === 'Essentiel') targetId = 'card-essentiel';
-        if(selectedVal === 'Vitrine') targetId = 'card-vitrine';
-        if(selectedVal === 'Premium') targetId = 'card-premium';
+        if(packName === 'Essentiel') targetId = 'card-essentiel';
+        if(packName === 'Vitrine') targetId = 'card-vitrine';
+        if(packName === 'Premium') targetId = 'card-premium';
 
         const targetEl = document.getElementById(targetId);
         if(targetEl) targetEl.classList.add('gold-selected-card');
+        
+        // Gestion Forçage Sérénité pour Essentiel
+        if (packName === 'Essentiel') {
+            forceSerenity(true);
+        } else {
+            forceSerenity(false);
+        }
 
         updateTotal();
-    };
-    
-    // Écouter les changements directs sur les radios
+    }
+
+    // Gestion de l'état "Forcé" du pack Sérénité
+    function forceSerenity(forced) {
+        const btn = document.getElementById('serenite-toggle-btn');
+        const checkbox = document.getElementById('check-serenite');
+        const fakeCheckbox = document.getElementById('serenite-fake-checkbox');
+        const icon = document.getElementById('serenite-check-icon');
+        
+        if (forced) {
+            isSerenitySelected = true;
+            if(checkbox) checkbox.checked = true;
+            
+            // Style visuel "Forcé/Verrouillé"
+            btn?.classList.add('active', 'opacity-80', 'cursor-not-allowed');
+            // On désactive le clic en enlevant l'event listener via HTML onclick check
+            // (La fonction toggleSerenityForm a aussi un check de sécurité)
+            
+            // Icone Checked
+            icon?.classList.remove('opacity-0', 'scale-50');
+            fakeCheckbox?.classList.add('bg-blue-500/20', 'border-blue-500');
+            
+            // Ajout du texte "Inclus"
+            if(btn && !document.getElementById('forced-msg')) {
+                const msg = document.createElement('span');
+                msg.id = 'forced-msg';
+                msg.className = 'text-[9px] text-blue-300 absolute top-1 right-2 uppercase font-bold tracking-widest';
+                msg.innerText = 'Inclus';
+                btn.classList.add('relative');
+                btn.appendChild(msg);
+            }
+            updateSerenityCardInServices(true);
+
+        } else {
+            // Restaure l'interaction normale
+            btn?.classList.remove('opacity-80', 'cursor-not-allowed');
+            
+            // Retire le message "Inclus"
+            const msg = document.getElementById('forced-msg');
+            if(msg) msg.remove();
+        }
+    }
+
+    function updateSerenityCardInServices(isChecked) {
+        const card = document.getElementById('card-serenite');
+        if(card) {
+            if(isChecked) card.classList.add('serenity-selected-card');
+            else card.classList.remove('serenity-selected-card');
+        }
+    }
+
+    function updateTotal() {
+        let totalOneShot = currentBasePrice;
+        
+        if (isDocumentSelected) {
+            totalOneShot += DOC_PRICE;
+        }
+
+        const displayEl = document.getElementById('total-price-display');
+        if(displayEl) {
+            // Formatage : 1 790 € (+ 49.90€/mois)
+            let text = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(totalOneShot);
+            
+            if (isSerenitySelected) {
+                text += ` <span class="text-xs font-normal text-blue-300 block text-right mt-1">+ ${SERENITY_MONTHLY}€ /mois</span>`;
+            }
+            
+            displayEl.innerHTML = text;
+        }
+    }
+
+    // Écouter les changements directs sur les radios (sécurité si l'utilisateur clique directement)
     document.querySelectorAll('input[name="project_pack"]').forEach(radio => {
         radio.addEventListener('change', (e) => {
              window.vibrate();
@@ -507,21 +607,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    function updateTotal() {
-        const packRadio = document.querySelector('input[name="project_pack"]:checked');
-        const packPrice = packRadio ? parseInt(packRadio.getAttribute('data-price')) : 0;
-        const serenityPrice = document.getElementById('check-serenite').checked ? 600 : 0;
-        
-        const total = packPrice + serenityPrice;
-        
-        const display = document.getElementById('total-price-display');
-        if(display) {
-            display.textContent = total.toLocaleString('fr-FR') + ' €';
+    // --- GESTION IMAGES PREVIEW ---
+    window.openImageModal = function(imageSrc) {
+        const modal = document.getElementById('image-preview-modal');
+        const img = document.getElementById('preview-img');
+        if(modal && img) {
+            img.src = imageSrc;
+            modal.classList.add('active');
         }
     }
 
+    window.closeImageModal = function() {
+        const modal = document.getElementById('image-preview-modal');
+        if(modal) modal.classList.remove('active');
+    }
+
     // Init défaut
-    window.updateCardSelection('Vitrine', 1700);
+    // On simule une sélection Vitrine au chargement
+    window.updateCardSelection('Vitrine', 1790);
 
 
     // ==============================================
@@ -685,6 +788,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const selectedPack = document.querySelector('input[name="project_pack"]:checked').value;
             const hasSerenity = document.getElementById('check-serenite').checked;
+            const hasDocuments = document.getElementById('check-documents')?.checked || false;
             const desc = document.getElementById('client-desc').value;
             const total = document.getElementById('total-price-display').textContent;
             
@@ -717,6 +821,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     phone: document.getElementById('client-phone').value,
                     pack: selectedPack,
                     option_serenite: hasSerenity,
+                    option_documents: hasDocuments,
                     description: desc,
                     estimated_total: total,
                     created_at: new Date().toISOString(),
@@ -728,20 +833,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 const dateStr = dateObjFormatted.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
                 document.getElementById('success-message-date').textContent = `Le ${dateStr} à ${timeInput.value}`;
 
-                // --- MODIFICATION : Génération du lien intelligent vers Kickoff ---
                 const kickoffBtn = document.querySelector('#booking-success a[href*="kickoff"]');
                 if (kickoffBtn) {
-                    // On prépare les données à envoyer dans l'URL
                     const params = new URLSearchParams({
-                        pack: selectedPack,              // ex: "Vitrine"
-                        name: `${firstname} ${name}`,    // ex: "Jean Dupont"
-                        email: email,                    // ex: "jean@mail.com"
-                        date: dateStr + ' à ' + timeInput.value // Pour rappel
+                        pack: selectedPack,             
+                        name: `${firstname} ${name}`,    
+                        email: email,                    
+                        date: dateStr + ' à ' + timeInput.value 
                     });
-                    // On met à jour le lien du bouton
                     kickoffBtn.href = `/portfolio/kickoff/?${params.toString()}`;
                 }
-                // ------------------------------------------------------------------
 
                 // Affichage Overlay
                 document.getElementById('booking-success').classList.remove('hidden');

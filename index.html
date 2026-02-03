@@ -229,6 +229,21 @@
             50% { opacity: 0.8; }
             100% { opacity: 0.4; }
         }
+		
+		/* --- MODALE PREVIEW IMAGE --- */
+		#image-preview-modal {
+			position: fixed; inset: 0; z-index: 100;
+			background: rgba(2, 6, 23, 0.95); backdrop-filter: blur(10px);
+			display: flex; align-items: center; justify-content: center;
+			opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+		}
+		#image-preview-modal.active { opacity: 1; pointer-events: auto; }
+		#preview-img {
+			max-width: 90vw; max-height: 90vh;
+			border-radius: 12px; box-shadow: 0 0 50px rgba(45, 212, 191, 0.2);
+			transform: scale(0.95); transition: transform 0.3s ease;
+		}
+		#image-preview-modal.active #preview-img { transform: scale(1); }
     </style>
 </head>
 <body class="selection:bg-accent-400/30 selection:text-white bg-dark-950">
@@ -535,8 +550,8 @@
 					<div class="flex flex-col mb-6">
 						<span class="text-3xl font-bold text-accent-400">990€ <span class="text-sm font-normal text-slate-400">à la création</span></span>
 						<div class="flex items-center gap-2 mt-1">
-							<span class="text-xl font-bold text-white">+ 49.90€</span>
-							<span class="text-xs font-bold text-slate-900 bg-accent-400 px-2 py-0.5 rounded text-center">PAR MOIS</span>
+							<span class="text-sm font-bold text-white">+ Pack Sérénité</span>
+							<span class="text-[10px] font-bold text-dark-950 bg-accent-400 px-2 py-0.5 rounded text-center">49.90€ / MOIS</span>
 						</div>
 					</div>
 
@@ -566,7 +581,7 @@
 							</span>
 						</li>
 					</ul>
-					<a href="#contact" onclick="selectOffer('Essentiel + Abo', 990)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-colors font-medium relative z-10">Choisir cette formule</a>
+					<a href="#contact" onclick="selectOffer('Essentiel', 990)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-colors font-medium relative z-10">Choisir</a>
 				</div>
 
 				<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover border-accent-400/30 bg-accent-400/5 relative overflow-visible pricing-card transition-all duration-300" id="card-vitrine">
@@ -580,8 +595,11 @@
 						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Formulaire de contact intégré</li>
 						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne et responsive mobile & tablette</li>
 						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne et configuration technique</li>
+						<li class="flex items-center gap-2 text-slate-500 italic">
+							<i class="ph-bold ph-shield-plus"></i> Pack Sérénité en option
+						</li>
 						<li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
-							 <i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-accent-400"></i>
+								<i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-accent-400"></i>
 							<span class="text-slate-200">
 								Hébergement OVH<br>
 								<strong class="text-accent-400 text-xs hover:underline">
@@ -593,12 +611,12 @@
 							</span>
 						</li>
 					</ul>
-					<a href="#contact" onclick="selectOffer('Vitrine', 1700)" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10">Choisir</a>
+					<a href="#contact" onclick="selectOffer('Vitrine', 1790)" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10">Choisir</a>
 				</div>
 
 				<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-premium">
 					<h3 class="text-xl font-display font-bold text-white mb-2">Premium</h3>
-					<div class="text-3xl font-bold text-purple-400 mb-6">2590€</div>
+					<div class="text-3xl font-bold text-purple-400 mb-6">2 590€</div>
 					<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
 						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Design 100% sur-mesure adapté à votre identité</li>
 						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Blog ou section Actualités pour dynamiser votre contenu</li>
@@ -606,6 +624,9 @@
 						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Statistiques & suivi de performance pour mesurer vos résultats</li>
 						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Site responsive mobile & tablette</li>
 						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Mise en ligne et configuration technique</li>
+						<li class="flex items-center gap-2 text-slate-500 italic">
+							<i class="ph-bold ph-shield-plus"></i> Pack Sérénité en option
+						</li>
 						<li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
 							<i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-purple-400"></i>
 							<span class="text-slate-200">
@@ -619,7 +640,7 @@
 							</span>
 						</li>
 					</ul>
-					<a href="#contact" onclick="selectOffer('Premium', 2500)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10">Choisir</a>
+					<a href="#contact" onclick="selectOffer('Premium', 2590)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10">Choisir</a>
 				</div>
 			</div>
 
@@ -637,22 +658,34 @@
 							</div>
 							<p class="text-slate-300 mb-4 max-w-2xl">
 								Transformez votre site en outil de gestion. Je crée des pages dédiées qui génèrent vos documents administratifs automatiquement (PDF) prêts à être envoyés ou signés.
+								<br><span class="text-xs text-slate-500 italic">Cliquez sur les tags ci-dessous pour voir un exemple.</span>
 							</p>
+							
 							<div class="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
-								<span class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300">Génération de Devis</span>
-								<span class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300">Factures</span>
-								<span class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300">Contrats de bail</span>
-								<span class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300">Quittances</span>
-								<span class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300">Remboursements</span>
+								<button onclick="openImageModal('images/documents/frais.png')" class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-colors cursor-zoom-in">
+									Génération de Devis
+								</button>
+								<button onclick="openImageModal('images/documents/frais.png')" class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-colors cursor-zoom-in">
+									Factures
+								</button>
+								<button onclick="openImageModal('images/documents/frais.png')" class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-colors cursor-zoom-in">
+									Contrats de bail
+								</button>
+								<button onclick="openImageModal('images/documents/frais.png')" class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-colors cursor-zoom-in">
+									Quittances
+								</button>
+								<button onclick="openImageModal('images/documents/frais.png')" class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-colors cursor-zoom-in">
+									Remboursements
+								</button>
 							</div>
 						</div>
 						
 						<div class="flex flex-col items-center md:items-end gap-3 min-w-[200px]">
 							<div class="text-3xl font-bold text-emerald-400">250€</div>
 							<div class="text-slate-400 text-sm">par formulaire + document</div>
-							<a href="#contact" onclick="selectOffer('Option Formulaire', 250)" class="px-6 py-2 rounded-lg border border-emerald-500/30 text-emerald-300 font-bold hover:bg-emerald-500 hover:text-white transition-all text-sm">
+							<button onclick="toggleDocumentOptionFromService()" id="btn-add-doc" class="px-6 py-2 rounded-lg border border-emerald-500/30 text-emerald-300 font-bold hover:bg-emerald-500 hover:text-white transition-all text-sm">
 								Ajouter au projet
-							</a>
+							</button>
 						</div>
 					</div>
 				</div>
@@ -717,7 +750,7 @@
 						</p>
 					</div>
 					<div class="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
-						<span class="text-2xl font-bold text-blue-400">600€ <span class="text-sm text-slate-500 font-normal">/an</span></span>
+						<span class="text-2xl font-bold text-blue-400">49.90€ <span class="text-sm text-slate-500 font-normal">/mois</span></span>
 						<button onclick="toggleSerenityOption()" class="px-4 py-2 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-bold uppercase hover:bg-blue-500 hover:text-white transition-all">Ajouter au devis</button>
 					</div>
 				</div>
@@ -742,196 +775,217 @@
 				</div>
 			</div>
 		</div>
+		
+		<div id="image-preview-modal" onclick="closeImageModal()">
+			<img id="preview-img" src="" alt="Aperçu document">
+			<button class="absolute top-6 right-6 text-white bg-black/50 p-2 rounded-full hover:bg-white hover:text-black transition-colors">
+				<i class="ph-bold ph-x text-xl"></i>
+			</button>
+		</div>
 	</section>
 
     <footer id="contact" class="py-20 border-t border-white/5 bg-dark-950 relative overflow-hidden">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="grid lg:grid-cols-2 gap-16">
-                <div class="w-full">
-                    <h3 class="font-display text-4xl font-bold text-white mb-4">Parlons Concret</h3>
-                    <p class="text-slate-400 mb-8 max-w-full break-words whitespace-normal">
-                        Sélectionnez un créneau ci-contre. Je vous appellerai pour comprendre votre besoin.
-                    </p>
-                    <div class="space-y-4 mb-8 w-full">
-                        <a href="mailto:nathan.marzilli@gmail.com" class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors interactive-hover w-full overflow-hidden">
-                            <i class="ph-fill ph-envelope-simple text-2xl text-accent-400 shrink-0"></i>
-                            <span class="text-slate-300 truncate text-sm sm:text-base">nathan.marzilli@gmail.com</span>
-                        </a>
-                        <div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 interactive-hover w-full">
-                            <i class="ph-fill ph-map-pin text-2xl text-accent-400 shrink-0"></i>
-                            <span class="text-slate-300 text-sm sm:text-base">74500 Évian-les-Bains / Lausanne</span>
-                        </div>
-                    </div>
-                    <div class="text-xs text-slate-500 border-t border-white/5 pt-4">
-                         TVA non applicable – article 293B du CGI
-                    </div>
-                </div>
+		<div class="max-w-6xl mx-auto px-6">
+			<div class="grid lg:grid-cols-2 gap-16">
+				<div class="w-full">
+					<h3 class="font-display text-4xl font-bold text-white mb-4">Parlons Concret</h3>
+					<p class="text-slate-400 mb-8 max-w-full break-words whitespace-normal">
+						Sélectionnez un créneau ci-contre. Je vous appellerai pour comprendre votre besoin.
+					</p>
+					<div class="space-y-4 mb-8 w-full">
+						<a href="mailto:nathan.marzilli@gmail.com" class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors interactive-hover w-full overflow-hidden">
+							<i class="ph-fill ph-envelope-simple text-2xl text-accent-400 shrink-0"></i>
+							<span class="text-slate-300 truncate text-sm sm:text-base">nathan.marzilli@gmail.com</span>
+						</a>
+						<div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 interactive-hover w-full">
+							<i class="ph-fill ph-map-pin text-2xl text-accent-400 shrink-0"></i>
+							<span class="text-slate-300 text-sm sm:text-base">74500 Évian-les-Bains / Lausanne</span>
+						</div>
+					</div>
+					<div class="text-xs text-slate-500 border-t border-white/5 pt-4">
+						 TVA non applicable – article 293B du CGI
+					</div>
+				</div>
 
-                <div class="glass-card p-6 md:p-8 rounded-3xl border border-white/10 w-full">
-                    <form id="booking-form" class="space-y-6 relative">
-                        <div id="booking-success" class="hidden absolute inset-0 z-20 bg-dark-900/95 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 rounded-3xl animate-fade-up">
-                            <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
-                                <i class="ph-fill ph-check-circle text-4xl text-green-500"></i>
-                            </div>
-                            <h4 class="text-xl font-bold text-white mb-2">Demande enregistrée !</h4>
-                            <p id="success-message-date" class="text-accent-400 font-bold text-lg mb-4"></p>
-                            
-                            <div class="bg-white/5 border border-accent-400/30 p-6 rounded-2xl w-full max-w-sm">
-                                <p class="text-slate-300 text-sm mb-4 leading-relaxed">
-                                    La demande de RDV a bien été prise en compte.<br>
-                                    Veuillez remplir ce formulaire pour préparer la réunion.
-                                </p>
-                                <a href="/portfolio/kickoff/" class="block w-full py-3 rounded-xl bg-accent-400 text-dark-950 font-bold text-sm hover:scale-105 transition-transform shadow-lg shadow-accent-400/20">
-                                    <i class="ph-bold ph-pencil-simple mr-2"></i>
-                                    Préparer la réunion
-                                </a>
-                            </div>
-                        </div>
+				<div class="glass-card p-6 md:p-8 rounded-3xl border border-white/10 w-full">
+					<form id="booking-form" class="space-y-6 relative">
+						<div id="booking-success" class="hidden absolute inset-0 z-20 bg-dark-900/95 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 rounded-3xl animate-fade-up">
+							<div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
+								<i class="ph-fill ph-check-circle text-4xl text-green-500"></i>
+							</div>
+							<h4 class="text-xl font-bold text-white mb-2">Demande enregistrée !</h4>
+							<p id="success-message-date" class="text-accent-400 font-bold text-lg mb-4"></p>
+							
+							<div class="bg-white/5 border border-accent-400/30 p-6 rounded-2xl w-full max-w-sm">
+								<p class="text-slate-300 text-sm mb-4 leading-relaxed">
+									La demande de RDV a bien été prise en compte.<br>
+									Veuillez remplir ce formulaire pour préparer la réunion.
+								</p>
+								<a href="/portfolio/kickoff/" class="block w-full py-3 rounded-xl bg-accent-400 text-dark-950 font-bold text-sm hover:scale-105 transition-transform shadow-lg shadow-accent-400/20">
+									<i class="ph-bold ph-pencil-simple mr-2"></i>
+									Préparer la réunion
+								</a>
+							</div>
+						</div>
 
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-end">
-                                <div class="form-section-title"><i class="ph-bold ph-calendar-blank"></i> Choisir un moment</div>
-                                <div class="flex gap-2">
-                                    <button type="button" id="prev-week" class="p-1 rounded bg-white/5 hover:bg-white/10 text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"><i class="ph-bold ph-caret-left"></i></button>
-                                    <button type="button" id="next-week" class="p-1 rounded bg-white/5 hover:bg-white/10 text-white transition-colors"><i class="ph-bold ph-caret-right"></i></button>
-                                </div>
-                            </div>
-                            
-                            <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2 pb-2" id="calendar-days">
-                                </div>
-                            
-                            <div id="calendar-slots" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                                <div class="text-xs text-slate-500 italic col-span-2">Sélectionnez un jour...</div>
-                            </div>
-                            <input type="hidden" id="selected-date" name="date" required>
-                            <input type="hidden" id="selected-time" name="time" required>
-                        </div>
+						<div class="space-y-4">
+							<div class="flex justify-between items-end">
+								<div class="form-section-title"><i class="ph-bold ph-calendar-blank"></i> Choisir un moment</div>
+								<div class="flex gap-2">
+									<button type="button" id="prev-week" class="p-1 rounded bg-white/5 hover:bg-white/10 text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"><i class="ph-bold ph-caret-left"></i></button>
+									<button type="button" id="next-week" class="p-1 rounded bg-white/5 hover:bg-white/10 text-white transition-colors"><i class="ph-bold ph-caret-right"></i></button>
+								</div>
+							</div>
+							
+							<div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2 pb-2" id="calendar-days">
+								</div>
+							
+							<div id="calendar-slots" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+								<div class="text-xs text-slate-500 italic col-span-2">Sélectionnez un jour...</div>
+							</div>
+							<input type="hidden" id="selected-date" name="date" required>
+							<input type="hidden" id="selected-time" name="time" required>
+						</div>
 
-                        <div class="space-y-4 pt-4 border-t border-white/5">
-                            <div class="form-section-title"><i class="ph-bold ph-user"></i> Vos Coordonnées</div>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="space-y-1">
-                                    <label class="text-xs text-slate-400 uppercase font-bold ml-1">Nom</label>
-                                    <input type="text" id="client-lastname" required placeholder="Votre nom" 
-                                        class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
-                                </div>
-                                <div class="space-y-1">
-                                    <label class="text-xs text-slate-400 uppercase font-bold ml-1">Prénom</label>
-                                    <input type="text" id="client-firstname" required placeholder="Votre prénom" 
-                                        class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
-                                </div>
-                            </div>
-                            <div class="space-y-1">
-                                <label class="text-xs text-slate-400 uppercase font-bold ml-1">Email</label>
-                                <input type="email" id="client-email" required placeholder="votre@email.com" 
-                                    class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
-                            </div>
-                            <div class="space-y-1">
-                                <label class="text-xs text-slate-400 uppercase font-bold ml-1">Téléphone</label>
-                                <input type="tel" id="client-phone" required placeholder="06 12 34 56 78" 
-                                    class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
-                            </div>
+						<div class="space-y-4 pt-4 border-t border-white/5">
+							<div class="form-section-title"><i class="ph-bold ph-user"></i> Vos Coordonnées</div>
+							
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+								<div class="space-y-1">
+									<label class="text-xs text-slate-400 uppercase font-bold ml-1">Nom</label>
+									<input type="text" id="client-lastname" required placeholder="Votre nom" 
+										class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
+								</div>
+								<div class="space-y-1">
+									<label class="text-xs text-slate-400 uppercase font-bold ml-1">Prénom</label>
+									<input type="text" id="client-firstname" required placeholder="Votre prénom" 
+										class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
+								</div>
+							</div>
+							<div class="space-y-1">
+								<label class="text-xs text-slate-400 uppercase font-bold ml-1">Email</label>
+								<input type="email" id="client-email" required placeholder="votre@email.com" 
+									class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
+							</div>
+							<div class="space-y-1">
+								<label class="text-xs text-slate-400 uppercase font-bold ml-1">Téléphone</label>
+								<input type="tel" id="client-phone" required placeholder="06 12 34 56 78" 
+									class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
+							</div>
 
-                            <div class="space-y-2 pt-2">
-                                <label class="text-xs text-slate-400 uppercase font-bold ml-1">Pack Sélectionné</label>
-                                <div class="grid grid-cols-3 gap-2">
-                                    <div class="relative">
-                                        <input type="radio" name="project_pack" id="pack-essentiel" value="Essentiel" data-price="900" class="hidden pack-radio-input" onchange="updateCardSelection('Essentiel', 900)">
-                                        <label for="pack-essentiel" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Essentiel</label>
-                                    </div>
-                                    <div class="relative">
-                                        <input type="radio" name="project_pack" id="pack-vitrine" value="Vitrine" data-price="1700" class="hidden pack-radio-input" checked onchange="updateCardSelection('Vitrine', 1700)">
-                                        <label for="pack-vitrine" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Vitrine</label>
-                                    </div>
-                                    <div class="relative">
-                                        <input type="radio" name="project_pack" id="pack-premium" value="Premium" data-price="2500" class="hidden pack-radio-input" onchange="updateCardSelection('Premium', 2500)">
-                                        <label for="pack-premium" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Premium</label>
-                                    </div>
-                                </div>
-                            </div>
+							<div class="space-y-2 pt-2">
+								<label class="text-xs text-slate-400 uppercase font-bold ml-1">Pack Sélectionné</label>
+								<div class="grid grid-cols-3 gap-2">
+									<div class="relative">
+										<input type="radio" name="project_pack" id="pack-essentiel" value="Essentiel" data-price="990" class="hidden pack-radio-input" onchange="updateCardSelection('Essentiel', 990)">
+										<label for="pack-essentiel" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Essentiel</label>
+									</div>
+									<div class="relative">
+										<input type="radio" name="project_pack" id="pack-vitrine" value="Vitrine" data-price="1790" class="hidden pack-radio-input" checked onchange="updateCardSelection('Vitrine', 1790)">
+										<label for="pack-vitrine" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Vitrine</label>
+									</div>
+									<div class="relative">
+										<input type="radio" name="project_pack" id="pack-premium" value="Premium" data-price="2590" class="hidden pack-radio-input" onchange="updateCardSelection('Premium', 2590)">
+										<label for="pack-premium" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Premium</label>
+									</div>
+								</div>
+							</div>
 
-                            <div id="serenite-toggle-btn" class="serenity-btn cursor-pointer flex items-center justify-between p-3 rounded-xl gap-4 group select-none" onclick="toggleSerenityForm()">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-5 h-5 rounded border border-blue-400/50 flex items-center justify-center transition-colors group-hover:border-blue-400 bg-dark-900" id="serenite-fake-checkbox">
-                                        <i class="ph-bold ph-check text-blue-400 opacity-0 transform scale-50 transition-all" id="serenite-check-icon"></i>
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <span class="text-sm text-slate-300 font-bold group-hover:text-white transition-colors">Ajouter Pack Sérénité</span>
-                                        <span class="text-[10px] text-slate-500">Maintenance & Sécurité mensuelle</span>
-                                    </div>
-                                </div>
-                                <span class="text-xs text-blue-400 font-bold bg-blue-400/10 px-2 py-1 rounded">+600€</span>
-                                <input type="checkbox" id="check-serenite" class="hidden">
-                            </div>
+							<div id="document-toggle-btn" class="cursor-pointer flex items-center justify-between p-3 rounded-xl gap-4 group select-none border border-emerald-500/10 bg-emerald-500/5 hover:border-emerald-500/30 transition-all" onclick="toggleDocumentOption()">
+								<div class="flex items-center gap-3">
+									<div class="w-5 h-5 rounded border border-emerald-400/50 flex items-center justify-center transition-colors group-hover:border-emerald-400 bg-dark-900" id="doc-fake-checkbox">
+										<i class="ph-bold ph-check text-emerald-400 opacity-0 transform scale-50 transition-all" id="doc-check-icon"></i>
+									</div>
+									<div class="flex flex-col">
+										<span class="text-sm text-slate-300 font-bold group-hover:text-white transition-colors">Documents & Auto.</span>
+										<span class="text-[10px] text-slate-500">Génération PDF sur-mesure</span>
+									</div>
+								</div>
+								<span class="text-xs text-emerald-400 font-bold bg-emerald-400/10 px-2 py-1 rounded">+250€</span>
+								<input type="checkbox" id="check-documents" class="hidden">
+							</div>
 
-                            <div class="flex justify-between items-center px-4 py-3 bg-white/5 rounded-xl border border-white/10">
-                                <span class="text-sm text-slate-400 font-bold uppercase">Total Estimé</span>
-                                <span id="total-price-display" class="text-xl font-bold text-accent-400">1 700 €</span>
-                            </div>
+							<div id="serenite-toggle-btn" class="serenity-btn cursor-pointer flex items-center justify-between p-3 rounded-xl gap-4 group select-none" onclick="toggleSerenityForm()">
+								<div class="flex items-center gap-3">
+									<div class="w-5 h-5 rounded border border-blue-400/50 flex items-center justify-center transition-colors group-hover:border-blue-400 bg-dark-900" id="serenite-fake-checkbox">
+										<i class="ph-bold ph-check text-blue-400 opacity-0 transform scale-50 transition-all" id="serenite-check-icon"></i>
+									</div>
+									<div class="flex flex-col">
+										<span class="text-sm text-slate-300 font-bold group-hover:text-white transition-colors">Ajouter Pack Sérénité</span>
+										<span class="text-[10px] text-slate-500">Maintenance & Sécurité</span>
+									</div>
+								</div>
+								<span class="text-xs text-blue-400 font-bold bg-blue-400/10 px-2 py-1 rounded">+49.90€<span class="font-normal text-[8px] opacity-70">/mois</span></span>
+								<input type="checkbox" id="check-serenite" class="hidden">
+							</div>
 
-                            <div class="space-y-1">
-                                <label class="text-xs text-slate-400 uppercase font-bold ml-1">Description de la demande</label>
-                                <textarea id="client-desc" rows="3" placeholder="Parlez-moi un peu de votre projet..." class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm resize-none"></textarea>
-                            </div>
-                        </div>
+							<div class="flex justify-between items-center px-4 py-3 bg-white/5 rounded-xl border border-white/10">
+								<span class="text-sm text-slate-400 font-bold uppercase">Total Estimé <span class="text-[10px] font-normal lowercase">(Création)</span></span>
+								<span id="total-price-display" class="text-xl font-bold text-accent-400">1 790 €</span>
+							</div>
 
-                        <button type="submit" id="submit-booking" class="w-full py-4 rounded-xl bg-gradient-to-r from-accent-500 to-blue-600 text-white font-bold text-lg shadow-lg hover:shadow-accent-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <span>Confirmer le rendez-vous</span>
-                            <i class="ph-bold ph-paper-plane-right"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
+							<div class="space-y-1">
+								<label class="text-xs text-slate-400 uppercase font-bold ml-1">Description de la demande</label>
+								<textarea id="client-desc" rows="3" placeholder="Parlez-moi un peu de votre projet..." class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm resize-none"></textarea>
+							</div>
+						</div>
 
-            <div class="flex flex-col md:flex-row justify-between items-center mt-16 pt-8 border-t border-white/5 gap-4">
-                <div class="text-slate-600 text-sm">© <span id="year"></span> Nathan Marzilli.</div>
-                <button onclick="toggleAdminModal()" class="text-slate-700 hover:text-accent-400 transition-colors text-xs flex items-center gap-2 uppercase tracking-widest font-bold">
-                    <i class="ph-bold ph-lock-key"></i> Administration
+						<button type="submit" id="submit-booking" class="w-full py-4 rounded-xl bg-gradient-to-r from-accent-500 to-blue-600 text-white font-bold text-lg shadow-lg hover:shadow-accent-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed">
+							<span>Confirmer le rendez-vous</span>
+							<i class="ph-bold ph-paper-plane-right"></i>
+						</button>
+					</form>
+				</div>
+			</div>
+
+			<div class="flex flex-col md:flex-row justify-between items-center mt-16 pt-8 border-t border-white/5 gap-4">
+				<div class="text-slate-600 text-sm">© <span id="year"></span> Nathan Marzilli.</div>
+				<button onclick="toggleAdminModal()" class="text-slate-700 hover:text-accent-400 transition-colors text-xs flex items-center gap-2 uppercase tracking-widest font-bold">
+					<i class="ph-bold ph-lock-key"></i> Administration
+				</button>
+			</div>
+		</div>
+	</footer>
+	
+	<div id="admin-modal" class="fixed inset-0 z-[100] bg-dark-950/90 backdrop-blur-xl hidden flex items-center justify-center p-4 transition-all duration-300 opacity-0">
+        <div class="glass-card w-full max-w-md p-8 rounded-3xl border border-white/10 bg-dark-900 shadow-2xl transform scale-95 transition-all duration-300" id="admin-content">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-xl font-display font-bold text-white flex items-center gap-2">
+                    <i class="ph-duotone ph-shield-check text-accent-400"></i> Espace Sécurisé
+                </h3>
+                <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white transition-colors">
+                    <i class="ph-bold ph-x text-xl"></i>
                 </button>
             </div>
-        </div>
 
-        <div id="admin-modal" class="fixed inset-0 z-[100] bg-dark-950/90 backdrop-blur-xl hidden flex items-center justify-center p-4 transition-all duration-300 opacity-0">
-            <div class="glass-card w-full max-w-md p-8 rounded-3xl border border-white/10 bg-dark-900 shadow-2xl transform scale-95 transition-all duration-300" id="admin-content">
-                <div class="flex justify-between items-center mb-8">
-                    <h3 class="text-xl font-display font-bold text-white flex items-center gap-2">
-                        <i class="ph-duotone ph-shield-check text-accent-400"></i> Espace Sécurisé
-                    </h3>
-                    <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white transition-colors">
-                        <i class="ph-bold ph-x text-xl"></i>
-                    </button>
+            <div id="admin-login-view" class="space-y-4">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-400 uppercase">Identifiant</label>
+                    <input type="text" id="admin-id" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors" placeholder="ID">
                 </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-400 uppercase">Mot de passe</label>
+                    <div class="relative">
+                        <input type="password" id="admin-pass" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors pr-12" placeholder="••••••••">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
+                            <i id="eye-icon" class="ph-bold ph-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="login-error" class="hidden text-red-400 text-xs font-bold flex items-center gap-2">
+                    <i class="ph-bold ph-warning"></i> Erreur connexion
+                </div>
+                <button onclick="attemptLogin()" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 font-bold hover:bg-white transition-colors mt-2">
+                    Connexion
+                </button>
+            </div>
 
-                <div id="admin-login-view" class="space-y-4">
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-400 uppercase">Identifiant</label>
-                        <input type="text" id="admin-id" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors" placeholder="ID">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-400 uppercase">Mot de passe</label>
-                        <div class="relative">
-                            <input type="password" id="admin-pass" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors pr-12" placeholder="••••••••">
-                            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
-                                <i id="eye-icon" class="ph-bold ph-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div id="login-error" class="hidden text-red-400 text-xs font-bold flex items-center gap-2">
-                        <i class="ph-bold ph-warning"></i> Erreur connexion
-                    </div>
-                    <button onclick="attemptLogin()" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 font-bold hover:bg-white transition-colors mt-2">
-                        Connexion
-                    </button>
-                </div>
-
-                <div id="admin-dashboard-view" class="hidden space-y-4">
-                    <p class="text-sm text-slate-400 mb-4">Bienvenue, Nathan.</p>
-                    <div class="grid gap-3" id="admin-actions-grid"></div>
-                </div>
+            <div id="admin-dashboard-view" class="hidden space-y-4">
+                <p class="text-sm text-slate-400 mb-4">Bienvenue, Nathan.</p>
+                <div class="grid gap-3" id="admin-actions-grid"></div>
             </div>
         </div>
-    </footer>
+    </div>
 
     <script type="module" src="script.js"></script>
 </body>
