@@ -515,182 +515,234 @@
     </section>
 
     <section id="services" class="py-24 border-t border-white/5 bg-[#0B1120]">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-16 reveal">
-                <h2 class="font-display text-4xl font-bold text-white mb-4">Tarifs & Sérénité</h2>
-                <p class="text-slate-400 max-w-xl mx-auto">
-                    La propriété est à vous. Pas d'abonnement caché pour la création.
-                </p>
-                <div class="mt-4 text-xs text-slate-500 uppercase tracking-widest font-bold">
-                    TVA non applicable – article 293B du CGI (Prix Finaux)
-                </div>
-            </div>
+		<div class="max-w-7xl mx-auto px-6">
+			
+			<div class="text-center mb-16 reveal">
+				<h2 class="font-display text-4xl font-bold text-white mb-4">Offres & Accompagnement</h2>
+				<p class="text-slate-400 max-w-xl mx-auto">
+					Une tarification claire et adaptée. De la création pure à l'accompagnement mensuel complet, choisissez la formule qui assure votre tranquillité d'esprit.
+				</p>
+				<div class="mt-4 text-xs text-slate-500 uppercase tracking-widest font-bold">
+					TVA non applicable – article 293B du CGI (Prix Finaux)
+				</div>
+			</div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-                <div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-essentiel">
-                    <h3 class="text-xl font-display font-bold text-white mb-2">L'Essentiel</h3>
-                    <div class="text-3xl font-bold text-accent-400 mb-6">900€</div>
-                    <ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site One-Page personnalisé</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne adapté à votre activité</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Optimisation mobile & performance</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Intégration des contenus fournis</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne clé en main</li>
-                        <li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
-                            <i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-accent-400"></i>
-                            <span class="text-slate-200">
-                                Hébergement OVH<br>
-                                <strong class="text-accent-400 text-xs hover:underline">
-                                    ~22€/an (Détails)
-                                </strong>
-                                <span class="block text-xs text-slate-400">
-                                    1ère année offerte
-                                </span>
-                            </span>
-                        </li>
-                    </ul>
-                    <a href="#contact" onclick="selectOffer('Essentiel', 900)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-colors font-medium relative z-10">Choisir</a>
-                </div>
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+				
+				<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-essentiel">
+					<h3 class="text-xl font-display font-bold text-white mb-2">L'Essentiel & Suivi</h3>
+					
+					<div class="flex flex-col mb-6">
+						<span class="text-3xl font-bold text-accent-400">990€ <span class="text-sm font-normal text-slate-400">à la création</span></span>
+						<div class="flex items-center gap-2 mt-1">
+							<span class="text-xl font-bold text-white">+ 49.90€</span>
+							<span class="text-xs font-bold text-slate-900 bg-accent-400 px-2 py-0.5 rounded text-center">PAR MOIS</span>
+						</div>
+					</div>
 
-                <div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover border-accent-400/30 bg-accent-400/5 relative overflow-visible pricing-card transition-all duration-300" id="card-vitrine">
-                    <div class="absolute top-4 right-4 text-xs font-bold text-accent-400 bg-accent-400/10 px-2 py-1 rounded tag-populaire">POPULAIRE</div>
-                    <h3 class="text-xl font-display font-bold text-white mb-2">Vitrine Artisan</h3>
-                    <div class="text-3xl font-bold text-accent-400 mb-6">1 700€</div>
-                    <ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site jusqu’à 5 pages personnalisé</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Option Site Multilingue incluse</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Galerie de réalisations pour mettre en valeur vos projets</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Formulaire de contact intégré</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne et responsive mobile & tablette</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne et configuration technique</li>
-                        <li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
-                             <i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-accent-400"></i>
-                            <span class="text-slate-200">
-                                Hébergement OVH<br>
-                                <strong class="text-accent-400 text-xs hover:underline">
-                                    ~22€/an (Détails)
-                                </strong>
-                                <span class="block text-xs text-slate-400">
-                                    1ère année offerte
-                                </span>
-                            </span>
-                        </li>
-                    </ul>
-                    <a href="#contact" onclick="selectOffer('Vitrine', 1700)" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10">Choisir</a>
-                </div>
+					<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
+						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site One-Page personnalisé</li>
+						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne adapté à votre activité</li>
+						
+						<li class="flex items-center gap-2 font-bold text-white bg-white/5 p-1 rounded pr-2 -ml-1">
+							<i class="ph-bold ph-shield-check text-accent-400 pl-1"></i> Maintenance & Mises à jour incluses
+						</li>
+						<li class="flex items-center gap-2 font-bold text-white bg-white/5 p-1 rounded pr-2 -ml-1">
+							<i class="ph-bold ph-life-buoy text-accent-400 pl-1"></i> Assistance prioritaire en cas de panne
+						</li>
 
-                <div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-premium">
-                    <h3 class="text-xl font-display font-bold text-white mb-2">Premium</h3>
-                    <div class="text-3xl font-bold text-purple-400 mb-6">2500€</div>
-                    <ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Design 100% sur-mesure adapté à votre identité</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Blog ou section Actualités pour dynamiser votre contenu</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Intégration des avis Google pour renforcer la confiance</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Statistiques & suivi de performance pour mesurer vos résultats</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Site responsive mobile & tablette</li>
-                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Mise en ligne et configuration technique</li>
-                        <li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
-                            <i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-purple-400"></i>
-                            <span class="text-slate-200">
-                                Hébergement OVH<br>
-                                <strong class="text-purple-400 text-xs hover:underline">
-                                    ~55€/an (Détails)
-                                </strong>
-                                <span class="block text-xs text-slate-400">
-                                    1ère année offerte
-                                </span>
-                            </span>
-                        </li>
-                    </ul>
-                    <a href="#contact" onclick="selectOffer('Premium', 2500)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10">Choisir</a>
-                </div>
-            </div>
-            
-            <div class="mb-16 reveal" id="hosting-section">
-                <div class="glass-card rounded-3xl border border-white/10 bg-dark-900/50 overflow-hidden">
-                    <div class="p-6 md:p-8 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors" onclick="toggleHosting()">
-                        <h3 class="text-xl font-display font-bold text-white flex items-center gap-2">
-                            <i class="ph-duotone ph-cloud text-accent-400"></i> Pourquoi payer l'hébergement à part ?
-                        </h3>
-                        <i id="hosting-chevron" class="ph-bold ph-caret-down text-white text-xl transition-transform duration-300"></i>
-                    </div>
+						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Optimisation mobile & performance</li>
+						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne clé en main</li>
+						<li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
+							<i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-accent-400"></i>
+							<span class="text-slate-200">
+								Hébergement OVH<br>
+								<strong class="text-accent-400 text-xs hover:underline">
+									~22€/an (Détails)
+								</strong>
+								<span class="block text-xs text-slate-400">
+									1ère année offerte
+								</span>
+							</span>
+						</li>
+					</ul>
+					<a href="#contact" onclick="selectOffer('Essentiel + Abo', 990)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-colors font-medium relative z-10">Choisir cette formule</a>
+				</div>
 
-                    <div id="hosting-content">
-                        <div class="p-6 md:p-8 pt-0">
-                            <p class="text-slate-400 text-sm mb-6 max-w-3xl">
-                                Pour que vous soyez <strong>100% propriétaire</strong> de votre site. Je ne prends aucune marge là-dessus. OVH Cloud est le leader français, sécurisé et fiable. C'est un abonnement que vous payez directement à l'hébergeur pour maintenir votre site en ligne et conserver votre nom de domaine.
-                            </p>
-                            
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <div class="p-4 rounded-xl bg-white/5 border border-white/5">
-                                    <div class="flex justify-between items-start mb-2">
-                                        <h4 class="font-bold text-white text-sm">Pour packs "Essentiel" & "Vitrine"</h4>
-                                        <span class="text-accent-400 font-bold text-sm">22.05€ <span class="text-xs font-normal text-slate-400">/an</span></span>
-                                    </div>
-                                    <p class="text-xs text-slate-500 mb-3">Offre OVH "Starter" (Idéal vitrine)</p>
-                                    <ul class="text-xs text-slate-300 space-y-1">
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> Hébergement (14,26€ TTC)</li>
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> Nom de domaine (7,79€ TTC)</li>
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 1 Go d'espace disque</li>
-                                    </ul>
-                                </div>
+				<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover border-accent-400/30 bg-accent-400/5 relative overflow-visible pricing-card transition-all duration-300" id="card-vitrine">
+					<div class="absolute top-4 right-4 text-xs font-bold text-accent-400 bg-accent-400/10 px-2 py-1 rounded tag-populaire">POPULAIRE</div>
+					<h3 class="text-xl font-display font-bold text-white mb-2">Vitrine Artisan</h3>
+					<div class="text-3xl font-bold text-accent-400 mb-6">1 790€</div>
+					<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
+						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site jusqu’à 5 pages personnalisé</li>
+						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Option Site Multilingue incluse</li>
+						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Galerie de réalisations pour mettre en valeur vos projets</li>
+						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Formulaire de contact intégré</li>
+						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne et responsive mobile & tablette</li>
+						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne et configuration technique</li>
+						<li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
+							 <i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-accent-400"></i>
+							<span class="text-slate-200">
+								Hébergement OVH<br>
+								<strong class="text-accent-400 text-xs hover:underline">
+									~22€/an (Détails)
+								</strong>
+								<span class="block text-xs text-slate-400">
+									1ère année offerte
+								</span>
+							</span>
+						</li>
+					</ul>
+					<a href="#contact" onclick="selectOffer('Vitrine', 1700)" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10">Choisir</a>
+				</div>
 
-                                <div class="p-4 rounded-xl bg-white/5 border border-white/5">
-                                    <div class="flex justify-between items-start mb-2">
-                                        <h4 class="font-bold text-white text-sm">Pour pack "Premium"</h4>
-                                        <span class="text-purple-400 font-bold text-sm">54.79€ <span class="text-xs font-normal text-slate-400">/an</span></span>
-                                    </div>
-                                    <p class="text-xs text-slate-500 mb-3">Offre OVH "Perso" (Plus de puissance)</p>
-                                    <ul class="text-xs text-slate-300 space-y-1">
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Hébergement (47€ TTC)</li>
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Nom de domaine (7,79€ TTC)</li>
-                                        <li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 100 Go d'espace disque</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+				<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-premium">
+					<h3 class="text-xl font-display font-bold text-white mb-2">Premium</h3>
+					<div class="text-3xl font-bold text-purple-400 mb-6">2590€</div>
+					<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
+						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Design 100% sur-mesure adapté à votre identité</li>
+						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Blog ou section Actualités pour dynamiser votre contenu</li>
+						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Intégration des avis Google pour renforcer la confiance</li>
+						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Statistiques & suivi de performance pour mesurer vos résultats</li>
+						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Site responsive mobile & tablette</li>
+						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Mise en ligne et configuration technique</li>
+						<li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
+							<i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-purple-400"></i>
+							<span class="text-slate-200">
+								Hébergement OVH<br>
+								<strong class="text-purple-400 text-xs hover:underline">
+									~55€/an (Détails)
+								</strong>
+								<span class="block text-xs text-slate-400">
+									1ère année offerte
+								</span>
+							</span>
+						</li>
+					</ul>
+					<a href="#contact" onclick="selectOffer('Premium', 2500)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10">Choisir</a>
+				</div>
+			</div>
 
-            <div class="grid md:grid-cols-2 gap-8 reveal">
-                <div class="glass-card p-8 rounded-3xl border border-blue-500/20 bg-blue-500/5 interactive-hover flex flex-col justify-between transition-all duration-300" id="card-serenite">
-                    <div>
-                        <div class="flex items-center gap-3 mb-4">
-                            <i class="ph-duotone ph-shield-check text-3xl text-blue-400"></i>
-                            <h3 class="text-xl font-bold text-white">Pack Sérénité</h3>
-                        </div>
-                        <p class="text-slate-400 text-sm mb-4">
-                            Dormez tranquille. Mises à jour de sécurité, sauvegardes et <strong>1 intervention simple incluse par mois</strong>.
-                        </p>
-                    </div>
-                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
-                        <span class="text-2xl font-bold text-blue-400">600€ <span class="text-sm text-slate-500 font-normal">/an</span></span>
-                        <button onclick="toggleSerenityOption()" class="px-4 py-2 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-bold uppercase hover:bg-blue-500 hover:text-white transition-all">Ajouter au devis</button>
-                    </div>
-                </div>
+			<div class="mb-16 reveal">
+				<div class="glass-card p-8 md:p-10 rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent relative overflow-hidden">
+					<div class="absolute top-0 right-0 p-32 bg-emerald-500/10 blur-3xl rounded-full -mr-16 -mt-16 pointer-events-none"></div>
+					
+					<div class="flex flex-col md:flex-row gap-8 items-start md:items-center justify-between relative z-10">
+						<div class="flex-1">
+							<div class="flex items-center gap-3 mb-3">
+								<div class="p-2 rounded-lg bg-emerald-500/20 text-emerald-400">
+									<i class="ph-duotone ph-file-text text-2xl"></i>
+								</div>
+								<h3 class="text-2xl font-display font-bold text-white">Documents Sur-Mesure & Automatisation</h3>
+							</div>
+							<p class="text-slate-300 mb-4 max-w-2xl">
+								Transformez votre site en outil de gestion. Je crée des pages dédiées qui génèrent vos documents administratifs automatiquement (PDF) prêts à être envoyés ou signés.
+							</p>
+							<div class="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+								<span class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300">Génération de Devis</span>
+								<span class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300">Factures</span>
+								<span class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300">Contrats de bail</span>
+								<span class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300">Quittances</span>
+								<span class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300">Remboursements</span>
+							</div>
+						</div>
+						
+						<div class="flex flex-col items-center md:items-end gap-3 min-w-[200px]">
+							<div class="text-3xl font-bold text-emerald-400">250€</div>
+							<div class="text-slate-400 text-sm">par formulaire + document</div>
+							<a href="#contact" onclick="selectOffer('Option Formulaire', 250)" class="px-6 py-2 rounded-lg border border-emerald-500/30 text-emerald-300 font-bold hover:bg-emerald-500 hover:text-white transition-all text-sm">
+								Ajouter au projet
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="mb-16 reveal" id="hosting-section">
+				<div class="glass-card rounded-3xl border border-white/10 bg-dark-900/50 overflow-hidden">
+					<div class="p-6 md:p-8 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors" onclick="toggleHosting()">
+						<h3 class="text-xl font-display font-bold text-white flex items-center gap-2">
+							<i class="ph-duotone ph-cloud text-accent-400"></i> Pourquoi payer l'hébergement à part ?
+						</h3>
+						<i id="hosting-chevron" class="ph-bold ph-caret-down text-white text-xl transition-transform duration-300"></i>
+					</div>
 
-                <div class="glass-card p-8 rounded-3xl interactive-hover">
-                    <h3 class="text-lg font-bold text-white mb-4">Interventions Ponctuelles</h3>
-                    <p class="text-slate-500 text-xs mb-6">Sans pack maintenance :</p>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center border-b border-white/5 pb-2">
-                            <span class="text-sm text-slate-300">Simple (Texte/Photo)</span>
-                            <span class="font-bold text-white">100€</span>
-                        </div>
-                        <div class="flex justify-between items-center border-b border-white/5 pb-2">
-                            <span class="text-sm text-slate-300">Moyenne (Mise en page)</span>
-                            <span class="font-bold text-white">200€</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-slate-300">Complexe (Fonctionnalité)</span>
-                            <span class="font-bold text-white">300€</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+					<div id="hosting-content">
+						<div class="p-6 md:p-8 pt-0">
+							<p class="text-slate-400 text-sm mb-6 max-w-3xl">
+								Pour que vous soyez <strong>100% propriétaire</strong> de votre site. Je ne prends aucune marge là-dessus. OVH Cloud est le leader français, sécurisé et fiable. C'est un abonnement que vous payez directement à l'hébergeur pour maintenir votre site en ligne et conserver votre nom de domaine.
+							</p>
+							
+							<div class="grid md:grid-cols-2 gap-6">
+								<div class="p-4 rounded-xl bg-white/5 border border-white/5">
+									<div class="flex justify-between items-start mb-2">
+										<h4 class="font-bold text-white text-sm">Pour packs "Essentiel" & "Vitrine"</h4>
+										<span class="text-accent-400 font-bold text-sm">22.05€ <span class="text-xs font-normal text-slate-400">/an</span></span>
+									</div>
+									<p class="text-xs text-slate-500 mb-3">Offre OVH "Starter" (Idéal vitrine)</p>
+									<ul class="text-xs text-slate-300 space-y-1">
+										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> Hébergement (14,26€ TTC)</li>
+										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> Nom de domaine (7,79€ TTC)</li>
+										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 1 Go d'espace disque</li>
+									</ul>
+								</div>
+
+								<div class="p-4 rounded-xl bg-white/5 border border-white/5">
+									<div class="flex justify-between items-start mb-2">
+										<h4 class="font-bold text-white text-sm">Pour pack "Premium"</h4>
+										<span class="text-purple-400 font-bold text-sm">54.79€ <span class="text-xs font-normal text-slate-400">/an</span></span>
+									</div>
+									<p class="text-xs text-slate-500 mb-3">Offre OVH "Perso" (Plus de puissance)</p>
+									<ul class="text-xs text-slate-300 space-y-1">
+										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Hébergement (47€ TTC)</li>
+										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Nom de domaine (7,79€ TTC)</li>
+										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 100 Go d'espace disque</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="grid md:grid-cols-2 gap-8 reveal">
+				<div class="glass-card p-8 rounded-3xl border border-blue-500/20 bg-blue-500/5 interactive-hover flex flex-col justify-between transition-all duration-300" id="card-serenite">
+					<div>
+						<div class="flex items-center gap-3 mb-4">
+							<i class="ph-duotone ph-shield-check text-3xl text-blue-400"></i>
+							<h3 class="text-xl font-bold text-white">Pack Sérénité</h3>
+						</div>
+						<p class="text-slate-400 text-sm mb-4">
+							Dormez tranquille. Mises à jour de sécurité, sauvegardes et <strong>1 intervention simple incluse par mois</strong>.
+						</p>
+					</div>
+					<div class="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
+						<span class="text-2xl font-bold text-blue-400">600€ <span class="text-sm text-slate-500 font-normal">/an</span></span>
+						<button onclick="toggleSerenityOption()" class="px-4 py-2 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-bold uppercase hover:bg-blue-500 hover:text-white transition-all">Ajouter au devis</button>
+					</div>
+				</div>
+
+				<div class="glass-card p-8 rounded-3xl interactive-hover">
+					<h3 class="text-lg font-bold text-white mb-4">Interventions Ponctuelles</h3>
+					<p class="text-slate-500 text-xs mb-6">Sans pack maintenance :</p>
+					<div class="space-y-4">
+						<div class="flex justify-between items-center border-b border-white/5 pb-2">
+							<span class="text-sm text-slate-300">Simple (Texte/Photo)</span>
+							<span class="font-bold text-white">100€</span>
+						</div>
+						<div class="flex justify-between items-center border-b border-white/5 pb-2">
+							<span class="text-sm text-slate-300">Moyenne (Mise en page)</span>
+							<span class="font-bold text-white">200€</span>
+						</div>
+						<div class="flex justify-between items-center">
+							<span class="text-sm text-slate-300">Complexe (Fonctionnalité)</span>
+							<span class="font-bold text-white">300€</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 
     <footer id="contact" class="py-20 border-t border-white/5 bg-dark-950 relative overflow-hidden">
         <div class="max-w-6xl mx-auto px-6">
