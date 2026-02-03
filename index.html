@@ -645,46 +645,54 @@
 			</div>
 
 			<div class="mb-16 reveal">
-				<div class="glass-card p-8 md:p-10 rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent relative overflow-hidden">
-					<div class="absolute top-0 right-0 p-32 bg-emerald-500/10 blur-3xl rounded-full -mr-16 -mt-16 pointer-events-none"></div>
+				<div class="glass-card p-6 md:p-10 rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-950/30 to-dark-900/50 relative overflow-hidden group">
+					<div class="absolute top-0 right-0 p-32 bg-emerald-500/10 blur-3xl rounded-full -mr-16 -mt-16 pointer-events-none mix-blend-screen"></div>
 					
-					<div class="flex flex-col md:flex-row gap-8 items-start md:items-center justify-between relative z-10">
-						<div class="flex-1">
-							<div class="flex items-center gap-3 mb-3">
-								<div class="p-2 rounded-lg bg-emerald-500/20 text-emerald-400">
+					<div class="flex flex-col md:flex-row gap-8 items-center justify-between relative z-10">
+						
+						<div class="flex-1 w-full text-center md:text-left">
+							<div class="flex flex-col md:flex-row items-center gap-3 mb-4 justify-center md:justify-start">
+								<div class="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
 									<i class="ph-duotone ph-file-text text-2xl"></i>
 								</div>
-								<h3 class="text-2xl font-display font-bold text-white">Documents Sur-Mesure & Automatisation</h3>
+								<h3 class="text-xl md:text-2xl font-display font-bold text-white">Documents & Automatisation</h3>
 							</div>
-							<p class="text-slate-300 mb-4 max-w-2xl">
+							
+							<p class="text-slate-300 text-sm mb-6 max-w-2xl mx-auto md:mx-0 leading-relaxed">
 								Transformez votre site en outil de gestion. Je crée des pages dédiées qui génèrent vos documents administratifs automatiquement (PDF) prêts à être envoyés ou signés.
-								<br><span class="text-xs text-slate-500 italic">Cliquez sur les tags ci-dessous pour voir un exemple.</span>
+								<br><span class="text-xs text-emerald-400/80 italic mt-2 block"><i class="ph-bold ph-hand-tap mr-1"></i>Cliquez sur un exemple pour prévisualiser.</span>
 							</p>
 							
-							<div class="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
-								<button onclick="openImageModal('images/documents/frais.png')" class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-colors cursor-zoom-in">
-									Génération de Devis
+							<div class="flex flex-wrap justify-center md:justify-start gap-2.5 text-xs font-bold uppercase tracking-wider text-slate-400">
+								<button type="button" onclick="openImageModal('images/documents/devis.png')" class="px-4 py-2 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-100 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all duration-300 transform active:scale-95">
+									Devis
 								</button>
-								<button onclick="openImageModal('images/documents/frais.png')" class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-colors cursor-zoom-in">
+								<button type="button" onclick="openImageModal('images/documents/facture.png')" class="px-4 py-2 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-100 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all duration-300 transform active:scale-95">
 									Factures
 								</button>
-								<button onclick="openImageModal('images/documents/frais.png')" class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-colors cursor-zoom-in">
+								<button type="button" onclick="openImageModal('images/documents/bail.png')" class="px-4 py-2 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-100 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all duration-300 transform active:scale-95">
 									Contrats de bail
 								</button>
-								<button onclick="openImageModal('images/documents/frais.png')" class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-colors cursor-zoom-in">
+								<button type="button" onclick="openImageModal('images/documents/quittance.png')" class="px-4 py-2 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-100 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all duration-300 transform active:scale-95">
 									Quittances
 								</button>
-								<button onclick="openImageModal('images/documents/frais.png')" class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-colors cursor-zoom-in">
-									Remboursements
+								<button type="button" onclick="openImageModal('images/documents/frais.png')" class="px-4 py-2 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-100 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all duration-300 transform active:scale-95">
+									Notes de frais
 								</button>
 							</div>
 						</div>
 						
-						<div class="flex flex-col items-center md:items-end gap-3 min-w-[200px]">
-							<div class="text-3xl font-bold text-emerald-400">250€</div>
-							<div class="text-slate-400 text-sm">par formulaire + document</div>
-							<button onclick="toggleDocumentOptionFromService()" id="btn-add-doc" class="px-6 py-2 rounded-lg border border-emerald-500/30 text-emerald-300 font-bold hover:bg-emerald-500 hover:text-white transition-all text-sm">
-								Ajouter au projet
+						<div class="w-full h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent my-2 md:hidden"></div>
+						
+						<div class="flex flex-col items-center md:items-end gap-1 min-w-[200px] bg-emerald-950/20 md:bg-transparent p-4 md:p-0 rounded-2xl w-full md:w-auto border border-emerald-500/10 md:border-0">
+							<div class="flex items-baseline gap-1">
+								<span class="text-3xl font-display font-bold text-emerald-400 text-shadow-glow">250€</span>
+							</div>
+							<div class="text-emerald-200/60 text-xs mb-3 text-center md:text-right">par type de document<br>(ex: Générateur de devis)</div>
+							
+							<button onclick="toggleDocumentOptionFromService()" id="btn-add-doc" class="w-full md:w-auto px-6 py-2.5 rounded-xl border border-emerald-500/50 text-emerald-300 font-bold hover:bg-emerald-500 hover:text-white hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all text-sm flex items-center justify-center gap-2 group/btn">
+								<span>Ajouter au projet</span>
+								<i class="ph-bold ph-plus-circle group-hover/btn:rotate-90 transition-transform"></i>
 							</button>
 						</div>
 					</div>
@@ -774,13 +782,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		
-		<div id="image-preview-modal" onclick="closeImageModal()">
-			<img id="preview-img" src="" alt="Aperçu document">
-			<button class="absolute top-6 right-6 text-white bg-black/50 p-2 rounded-full hover:bg-white hover:text-black transition-colors">
-				<i class="ph-bold ph-x text-xl"></i>
-			</button>
 		</div>
 	</section>
 
@@ -986,6 +987,13 @@
             </div>
         </div>
     </div>
+		
+	<div id="image-preview-modal" onclick="closeImageModal()">
+		<img id="preview-img" src="" alt="Aperçu document">
+		<button class="absolute top-6 right-6 text-white bg-black/50 p-2 rounded-full hover:bg-white hover:text-black transition-colors">
+			<i class="ph-bold ph-x text-xl"></i>
+		</button>
+	</div>
 
     <script type="module" src="script.js"></script>
 </body>
