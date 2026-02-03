@@ -294,38 +294,50 @@
 		</div>
     </nav>
 
-    <header class="min-h-screen flex items-center justify-center relative pt-20 overflow-hidden bg-dark-950">
-        <div class="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob"></div>
-        <div class="absolute top-20 right-10 w-72 h-72 bg-accent-400/10 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+    <header class="min-h-screen flex items-center justify-center relative pt-20 overflow-hidden bg-dark-950 group">
+		
+		<div class="absolute inset-0 z-0 select-none pointer-events-none">
+			
+			<img src="images/hero.jpg" 
+				 alt="Ambiance" 
+				 class="w-full h-full object-cover opacity-50 blur-sm scale-105 transition-transform duration-[20s] ease-linear transform group-hover:scale-110"
+				 onerror="this.style.display='none'"> <div class="absolute inset-0 bg-gradient-to-b from-dark-950/80 via-dark-950/40 to-dark-950"></div>
+			
+			<div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E');"></div>
+		</div>
 
-        <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
-            <div class="reveal inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-slate-300 mb-8 backdrop-blur-sm">
-                <span class="w-1.5 h-1.5 rounded-full bg-accent-400 animate-pulse"></span>
-                Disponibilité immédiate (France / Suisse)
-            </div>
-            
-            <h1 class="reveal delay-100 font-display text-5xl md:text-7xl font-bold leading-[1] mb-8 tracking-tight">
-                L'artisanat web<br />
-                <span class="text-gradient-accent">au service de votre image.</span>
-            </h1>
-            
-            <p class="reveal delay-200 text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed font-light">
-                Je conçois des sites internet comme un artisan travaille sa matière : avec précision, soin du détail et sans superflu.
-                <br class="hidden md:block">
-                Pour une présence digitale durable, performante et référencée.
-            </p>
-            
-            <div class="reveal delay-300 flex flex-col sm:flex-row gap-5 justify-center items-center">
-                <a href="#contact" class="px-8 py-4 bg-white text-dark-950 font-bold rounded-full interactive-hover flex items-center gap-2">
-                    <i class="ph-bold ph-calendar-check text-lg"></i>
-                    Discuter de votre projet
-                </a>
-                <a href="#projects" class="px-8 py-4 rounded-full border border-white/10 text-slate-300 interactive-hover flex items-center gap-2">
-                    Voir mon travail
-                </a>
-            </div>
-        </div>
-    </header>
+		<div class="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob"></div>
+		<div class="absolute top-20 right-10 w-72 h-72 bg-accent-400/20 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+
+		<div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+			
+			<div class="reveal inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-black/40 backdrop-blur-md text-xs font-medium text-slate-300 mb-8 shadow-lg">
+				<span class="w-1.5 h-1.5 rounded-full bg-accent-400 animate-pulse"></span>
+				Disponibilité immédiate (France / Suisse)
+			</div>
+			
+			<h1 class="reveal delay-100 font-display text-5xl md:text-7xl font-bold leading-[1] mb-8 tracking-tight text-white drop-shadow-2xl">
+				L'artisanat web<br />
+				<span class="text-gradient-accent">au service de votre image.</span>
+			</h1>
+			
+			<p class="reveal delay-200 text-lg md:text-xl text-slate-100 max-w-2xl mx-auto mb-12 leading-relaxed font-light text-shadow-sm">
+				Je conçois des sites internet comme un artisan travaille sa matière : avec précision, soin du détail et sans superflu.
+				<br class="hidden md:block">
+				Pour une présence digitale durable, performante et référencée.
+			</p>
+			
+			<div class="reveal delay-300 flex flex-col sm:flex-row gap-5 justify-center items-center">
+				<a href="#contact" class="px-8 py-4 bg-white text-dark-950 font-bold rounded-full interactive-hover flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+					<i class="ph-bold ph-calendar-check text-lg"></i>
+					Discuter de votre projet
+				</a>
+				<a href="#projects" class="px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white interactive-hover flex items-center gap-2 hover:bg-white/10">
+					Voir mon travail
+				</a>
+			</div>
+		</div>
+	</header>
 
     <section id="about" class="pt-24 pb-12 relative bg-[#0B1120] border-t border-white/5">
         <div class="max-w-6xl mx-auto px-6">
