@@ -37,8 +37,15 @@
 
     <style>
         /* --- UI APPLICATION (MODE SOMBRE) --- */
-        body { background-color: #020617; color: #E2E8F0; overflow-x: hidden; }
+        body { background-color: #020617; color: #E2E8F0; overflow-x: hidden; position: relative; }
         
+        /* --- NOISE TEXTURE (AJOUTÉ) --- */
+        .noise-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 40; opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
         /* Background Blobs */
         .animate-blob { animation: blob 7s infinite; }
         .animation-delay-2000 { animation-delay: 2s; }
@@ -50,6 +57,8 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(12px);
             border-radius: 1.5rem;
+            position: relative;
+            z-index: 50; /* Au dessus du noise pour intéraction */
         }
 
         /* Inputs Styling */
@@ -63,7 +72,15 @@
             transition: all 0.3s ease;
             font-size: 0.95rem;
             font-family: 'Inter', sans-serif;
+            position: relative;
+            z-index: 50;
         }
+        
+        /* AJOUT : Hauteur minimum pour les textareas sur mobile */
+        .textarea-premium {
+            min-height: 120px;
+        }
+
         .input-premium:focus, .textarea-premium:focus, .select-premium:focus {
             border-color: #2DD4BF;
             outline: none;
@@ -155,7 +172,7 @@
             background: rgba(2, 6, 23, 0.90);
             backdrop-filter: blur(10px);
             border-top: 1px solid rgba(255,255,255,0.1);
-            z-index: 50;
+            z-index: 60;
             display: flex;
             justify-content: center;
             gap: 1rem;
@@ -168,13 +185,15 @@
 </head>
 <body class="selection:bg-accent-400/30 selection:text-white pb-32">
 
+    <div class="noise-overlay"></div>
+
     <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
         <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[100px] mix-blend-screen animate-blob"></div>
         <div class="absolute top-[20%] right-[-10%] w-[400px] h-[400px] bg-accent-400/10 rounded-full blur-[100px] mix-blend-screen animate-blob animation-delay-2000"></div>
         <div class="absolute bottom-[-10%] left-[20%] w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[100px] mix-blend-screen animate-blob animation-delay-4000"></div>
     </div>
 
-    <nav class="w-full border-b border-white/5 bg-dark-950/50 backdrop-blur-md sticky top-0 z-40">
+    <nav class="w-full border-b border-white/5 bg-dark-950/50 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-400 to-blue-600 flex items-center justify-center text-dark-950 font-bold">
@@ -188,7 +207,7 @@
         </div>
     </nav>
 
-    <main class="max-w-4xl mx-auto p-4 lg:p-8">
+    <main class="max-w-4xl mx-auto p-4 lg:p-8 relative z-40">
         
         <div class="text-center mb-10 fade-in">
             <h1 class="font-display text-3xl lg:text-4xl font-bold text-white mb-4">Préparons votre succès</h1>
@@ -238,7 +257,7 @@
                     </div>
                     <div class="col-span-1 md:col-span-2">
                         <label class="label-premium">Activité & Zone Géographique</label>
-                        <textarea name="activity_description" id="activityDesc" rows="2" placeholder="Que faites-vous et où ? (Ex: Plombier à Lyon et alentours...)" class="textarea-premium" required></textarea>
+                        <textarea name="activity_description" id="activityDesc" rows="4" placeholder="Que faites-vous et où ? (Ex: Plombier à Lyon et alentours...)" class="textarea-premium" required></textarea>
                     </div>
                     <div class="col-span-1 md:col-span-2">
                         <label class="label-premium">Votre Email (pour le retour)</label>
@@ -395,12 +414,12 @@
                     <div>
                         <label class="label-premium text-emerald-400">Détails pour le document "Autre"</label>
                         <p class="text-xs text-slate-400 mb-2">Si vous avez sélectionné "Autre", décrivez ici le type de document souhaité.</p>
-                        <textarea name="doc_custom_details" id="docCustomDetails" class="textarea-premium border-emerald-500/20 focus:border-emerald-500" rows="2" placeholder="Ex: Je souhaite une attestation de présence générée automatiquement..."></textarea>
+                        <textarea name="doc_custom_details" id="docCustomDetails" class="textarea-premium border-emerald-500/20 focus:border-emerald-500" rows="4" placeholder="Ex: Je souhaite une attestation de présence générée automatiquement..."></textarea>
                     </div>
                     <div>
                         <label class="label-premium text-emerald-400">Champs spécifiques & Modifications</label>
                         <p class="text-xs text-slate-400 mb-2">Pour les documents standards (Bail, Devis...), listez ici les champs spécifiques ou clauses particulières à ajouter.</p>
-                        <textarea name="doc_modifications" id="docModifications" class="textarea-premium border-emerald-500/20 focus:border-emerald-500" rows="3" placeholder="Ex: Sur le bail, rajouter une clause concernant les animaux. Sur le devis, ajouter une colonne TVA spécifique..."></textarea>
+                        <textarea name="doc_modifications" id="docModifications" class="textarea-premium border-emerald-500/20 focus:border-emerald-500" rows="4" placeholder="Ex: Sur le bail, rajouter une clause concernant les animaux. Sur le devis, ajouter une colonne TVA spécifique..."></textarea>
                     </div>
                  </div>
             </div>
@@ -421,7 +440,7 @@
                 <div>
                     <label class="label-premium text-accent-400">La Question Magique ✨</label>
                     <p class="text-xs text-slate-400 mb-2">Y a-t-il quelque chose d'important que vous voulez absolument voir et que je n'ai pas demandé ?</p>
-                    <textarea name="magic_question" id="magicQuestion" rows="3" class="textarea-premium" placeholder="Ex: Je déteste le vert, j'adore les coins arrondis, je veux que ma grand-mère puisse lire sans lunettes..."></textarea>
+                    <textarea name="magic_question" id="magicQuestion" rows="4" class="textarea-premium" placeholder="Ex: Je déteste le vert, j'adore les coins arrondis, je veux que ma grand-mère puisse lire sans lunettes..."></textarea>
                 </div>
             </div>
 
