@@ -441,26 +441,128 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
     }
 
+	// Fonction gérant le clic sur une "carte document" pour le style
+    window.handleDocClick = function(label) {
+        // Petit délai pour laisser le temps à la checkbox native de changer d'état
+        setTimeout(() => {
+            const checkbox = label.querySelector('input[type="checkbox"]');
+            const box = label.querySelector('.custom-checkbox-box');
+            const icon = label.querySelector('.custom-checkbox-icon');
+            const text = label.querySelector('.custom-checkbox-label');
+            const overlay = label.querySelector('.selection-overlay');
+            
+            if (checkbox.checked) {
+                // STYLE ACTIF
+                label.classList.remove('border-white/10', 'bg-dark-950');
+                label.classList.add('border-emerald-500', 'bg-dark-900'); // Bordure verte
+                
+                box.classList.remove('border-slate-600', 'bg-dark-900');
+                box.classList.add('border-emerald-500', 'bg-emerald-500'); // Case cochée verte
+                
+                icon.classList.remove('opacity-0', 'scale-50'); // Icone visible
+                
+                text.classList.add('text-white', 'font-bold');
+                text.classList.remove('text-slate-300');
+                
+                overlay.classList.remove('opacity-0'); // Fond vert léger
+            } else {
+                // STYLE INACTIF (Reset)
+                label.classList.add('border-white/10', 'bg-dark-950');
+                label.classList.remove('border-emerald-500', 'bg-dark-900');
+                
+                box.classList.add('border-slate-600', 'bg-dark-900');
+                box.classList.remove('border-emerald-500', 'bg-emerald-500');
+                
+                icon.classList.add('opacity-0', 'scale-50');
+                
+                text.classList.remove('text-white', 'font-bold');
+                text.classList.add('text-slate-300');
+                
+                overlay.classList.add('opacity-0');
+            }
+        }, 10);
+    }
+	
     window.toggleDocumentOption = function() {
         window.vibrate();
         const checkbox = document.getElementById('check-documents');
         const fakeCheckbox = document.getElementById('doc-fake-checkbox');
         const icon = document.getElementById('doc-check-icon');
         const btn = document.getElementById('document-toggle-btn');
+        const listContainer = document.getElementById('documents-details-list');
+        const priceTag = document.getElementById('docs-price-tag');
 
         isDocumentSelected = !isDocumentSelected;
         if(checkbox) checkbox.checked = isDocumentSelected;
 
         if (isDocumentSelected) {
+            // Style actif (bouton principal)
             icon?.classList.remove('opacity-0', 'scale-50');
             fakeCheckbox?.classList.add('bg-emerald-500/20', 'border-emerald-500');
             btn?.classList.add('bg-emerald-500/10', 'border-emerald-500/30');
+            priceTag?.classList.remove('opacity-50');
+            
+            // Ouvrir la liste
+            listContainer?.classList.remove('hidden');
+            setTimeout(() => {
+                listContainer?.classList.remove('opacity-0', 'scale-y-95');
+            }, 10);
+
         } else {
+            // Style inactif
             icon?.classList.add('opacity-0', 'scale-50');
             fakeCheckbox?.classList.remove('bg-emerald-500/20', 'border-emerald-500');
             btn?.classList.remove('bg-emerald-500/10', 'border-emerald-500/30');
+            priceTag?.classList.add('opacity-50');
+
+            // Fermer la liste
+            listContainer?.classList.add('opacity-0', 'scale-y-95');
+            setTimeout(() => {
+                listContainer?.classList.add('hidden');
+                
+                // RESET DES SOUS-OPTIONS QUAND ON FERME LE MODULE ?
+                // Optionnel : ici on décoche tout pour éviter les erreurs de prix cachés
+                document.querySelectorAll('.doc-sub-checkbox').forEach(cb => {
+                    if(cb.checked) {
+                        cb.checked = false;
+                        // On reset aussi le visuel
+                        handleDocClick(cb.closest('label'));
+                    }
+                });
+                updateTotal(); // Recalculer le total à 0 pour les docs
+            }, 300);
         }
         updateTotal();
+    }
+	
+	// Nouvelle fonction pour gérer l'affichage du champ "Autre"
+    window.toggleCustomDocInput = function() {
+        const checkbox = document.getElementById('check-custom-doc');
+        const input = document.getElementById('custom-doc-input');
+        
+        // Petit délai pour attendre que handleDocClick ait fini son travail visuel
+        setTimeout(() => {
+             if (checkbox && input) {
+                if (checkbox.checked) {
+                    input.classList.remove('hidden');
+                    setTimeout(() => {
+                        input.classList.remove('opacity-0', 'translate-y-2');
+                        input.focus();
+                    }, 10);
+                } else {
+                    input.classList.add('opacity-0', 'translate-y-2');
+                    setTimeout(() => {
+                        input.classList.add('hidden');
+                        input.value = ''; // Reset valeur
+                    }, 300);
+                }
+            }
+            updateTotal();
+        }, 20);
+    }
+	
+	window.saveCustomDocName = function() {
+        // Juste pour s'assurer que l'input reste accessible, pas de logique complexe ici
     }
 
     // Toggle Sérénité (Depuis le bouton du haut ou du bas)
@@ -579,9 +681,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateTotal() {
         let totalOneShot = currentBasePrice;
-        
+        let docTotal = 0;
+
+        // Calculer le prix des documents SEULEMENT si le module est activé
         if (isDocumentSelected) {
-            totalOneShot += DOC_PRICE;
+            const checkedDocs = document.querySelectorAll('.doc-sub-checkbox:checked');
+            checkedDocs.forEach(cb => {
+                // On récupère le prix depuis l'attribut data-price (converti en entier)
+                const price = parseInt(cb.getAttribute('data-price')) || 0;
+                docTotal += price;
+            });
+            totalOneShot += docTotal;
+        }
+
+        // Mise à jour du tag de prix dans le bouton Documents
+        const priceTag = document.getElementById('docs-price-tag');
+        if(priceTag) {
+            // Si module actif, on affiche le montant total des docs sélectionnés
+            if(isDocumentSelected) {
+                priceTag.textContent = `+${docTotal}€`;
+                if(docTotal > 0) {
+                     priceTag.classList.remove('text-slate-500');
+                     priceTag.classList.add('text-emerald-400', 'bg-emerald-400/10');
+                } else {
+                     priceTag.classList.add('text-slate-500');
+                     priceTag.classList.remove('text-emerald-400', 'bg-emerald-400/10');
+                }
+            } else {
+                priceTag.textContent = '+0€';
+                priceTag.classList.add('text-slate-500');
+                priceTag.classList.remove('text-emerald-400', 'bg-emerald-400/10');
+            }
         }
 
         const displayEl = document.getElementById('total-price-display');
@@ -774,28 +904,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // FORM SUBMIT
     const bookingForm = document.getElementById('booking-form');
-    if(bookingForm) {
+    if (bookingForm) {
         bookingForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            window.vibrate();
+            if (window.vibrate) window.vibrate(); // Petite sécurité si la fonction n'existe pas
+
             const submitBtn = document.getElementById('submit-booking');
             const originalText = submitBtn.innerHTML;
-            
-            if(!dateInput.value || !timeInput.value) {
+
+            const dateInput = document.getElementById('selected-date');
+            const timeInput = document.getElementById('selected-time');
+
+            if (!dateInput.value || !timeInput.value) {
                 alert("Veuillez sélectionner une date et une heure.");
                 return;
             }
 
+            // Récupération des données du formulaire
             const selectedPack = document.querySelector('input[name="project_pack"]:checked').value;
             const hasSerenity = document.getElementById('check-serenite').checked;
-            const hasDocuments = document.getElementById('check-documents')?.checked || false;
             const desc = document.getElementById('client-desc').value;
             const total = document.getElementById('total-price-display').textContent;
-            
+
             const name = document.getElementById('client-lastname').value;
             const firstname = document.getElementById('client-firstname').value;
             const email = document.getElementById('client-email').value;
-            
+
+            // --- NOUVELLE LOGIQUE DOCUMENTS ---
+            const isDocActive = document.getElementById('check-documents')?.checked || false;
+            let selectedDocumentsList = [];
+
+            if (isDocActive) {
+                // On récupère toutes les sous-cases cochées
+                const checkboxes = document.querySelectorAll('.doc-sub-checkbox:checked');
+                checkboxes.forEach(cb => {
+                    if (cb.value === 'Autre') {
+                        // Si c'est "Autre", on prend le texte de l'input
+                        const customVal = document.getElementById('custom-doc-input').value.trim();
+                        selectedDocumentsList.push(`Autre : ${customVal || 'Non précisé'}`);
+                    } else {
+                        selectedDocumentsList.push(cb.value);
+                    }
+                });
+            }
+            // ----------------------------------
+
             // Calcul de l'heure de fin (+30 minutes)
             const [hours, minutes] = timeInput.value.split(':').map(Number);
             const dateObj = new Date();
@@ -810,6 +963,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="ph-bold ph-spinner animate-spin text-xl"></i> Envoi...';
 
+                // Envoi vers Firebase
                 await addDoc(collection(db, "bookings"), {
                     date: dateInput.value,
                     time: timeInput.value,
@@ -820,26 +974,36 @@ document.addEventListener('DOMContentLoaded', () => {
                     email: email,
                     phone: document.getElementById('client-phone').value,
                     pack: selectedPack,
+                    
                     option_serenite: hasSerenity,
-                    option_documents: hasDocuments,
+                    
+                    // Nouveaux champs Documents
+                    option_documents_active: isDocActive,
+                    documents_list: selectedDocumentsList, // Tableau (ex: ["Devis", "Autre : Attestation"])
+                    documents_count: selectedDocumentsList.length,
+
                     description: desc,
                     estimated_total: total,
                     created_at: new Date().toISOString(),
-                    status: 'pending' 
+                    status: 'pending'
                 });
 
                 // Configuration Message Succès (AVEC REDIRECTION KICKOFF)
                 const dateObjFormatted = new Date(dateInput.value);
-                const dateStr = dateObjFormatted.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+                const dateStr = dateObjFormatted.toLocaleDateString('fr-FR', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long'
+                });
                 document.getElementById('success-message-date').textContent = `Le ${dateStr} à ${timeInput.value}`;
 
                 const kickoffBtn = document.querySelector('#booking-success a[href*="kickoff"]');
                 if (kickoffBtn) {
                     const params = new URLSearchParams({
-                        pack: selectedPack,             
-                        name: `${firstname} ${name}`,    
-                        email: email,                    
-                        date: dateStr + ' à ' + timeInput.value 
+                        pack: selectedPack,
+                        name: `${firstname} ${name}`,
+                        email: email,
+                        date: dateStr + ' à ' + timeInput.value
                     });
                     kickoffBtn.href = `/portfolio/kickoff/?${params.toString()}`;
                 }
@@ -847,9 +1011,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Affichage Overlay
                 document.getElementById('booking-success').classList.remove('hidden');
                 document.getElementById('booking-success').classList.add('flex');
+
             } catch (error) {
                 console.error("Booking error:", error);
-                alert("Une erreur est survenue.");
+                alert("Une erreur est survenue lors de la réservation.");
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
             }
