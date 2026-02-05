@@ -221,34 +221,6 @@
                 </div>
             </div>
 
-            <div id="documents-section" class="glass-card p-6 lg:p-8 hidden border-emerald-500/30 relative overflow-hidden">
-                 <div class="absolute top-0 left-0 w-32 h-32 bg-emerald-500/5 blur-2xl rounded-full"></div>
-                 
-                 <div class="section-title" id="documents-section-title">
-                     <i class="ph-duotone ph-files text-emerald-400"></i> <span class="text-emerald-50">Documents & Automatisation</span>
-                 </div>
-                 
-                 <div class="mb-6 p-4 rounded-xl bg-dark-950/50 border border-white/5">
-                    <label class="label-premium">Documents sélectionnés (Rappel)</label>
-                    <div id="selected-docs-display" class="flex flex-wrap gap-2 mt-2">
-                        </div>
-                    <input type="hidden" name="selected_documents_list" id="selectedDocsInput">
-                 </div>
-
-                 <div class="space-y-6">
-                    <div>
-                        <label class="label-premium text-emerald-400">Détails pour le document "Autre"</label>
-                        <p class="text-xs text-slate-400 mb-2">Si vous avez sélectionné "Autre", décrivez ici le type de document souhaité.</p>
-                        <textarea name="doc_custom_details" id="docCustomDetails" class="textarea-premium border-emerald-500/20 focus:border-emerald-500" rows="2" placeholder="Ex: Je souhaite une attestation de présence générée automatiquement..."></textarea>
-                    </div>
-                    <div>
-                        <label class="label-premium text-emerald-400">Champs spécifiques & Modifications</label>
-                        <p class="text-xs text-slate-400 mb-2">Pour les documents standards (Bail, Devis...), listez ici les champs spécifiques ou clauses particulières à ajouter.</p>
-                        <textarea name="doc_modifications" id="docModifications" class="textarea-premium border-emerald-500/20 focus:border-emerald-500" rows="3" placeholder="Ex: Sur le bail, rajouter une clause concernant les animaux. Sur le devis, ajouter une colonne TVA spécifique..."></textarea>
-                    </div>
-                 </div>
-            </div>
-
             <div class="glass-card p-6 lg:p-8">
                 <div class="section-title mt-0"><i class="ph-duotone ph-identification-card"></i> 1. Informations Générales</div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -405,6 +377,34 @@
                 </div>
             </div>
 
+            <div id="documents-section" class="glass-card p-6 lg:p-8 hidden border-emerald-500/30 relative overflow-hidden">
+                 <div class="absolute top-0 left-0 w-32 h-32 bg-emerald-500/5 blur-2xl rounded-full"></div>
+                 
+                 <div class="section-title" id="documents-section-title">
+                     <i class="ph-duotone ph-files text-emerald-400"></i> <span class="text-emerald-50">Documents & Automatisation</span>
+                 </div>
+                 
+                 <div class="mb-6 p-4 rounded-xl bg-dark-950/50 border border-white/5">
+                    <label class="label-premium">Documents sélectionnés (Rappel)</label>
+                    <div id="selected-docs-display" class="flex flex-wrap gap-2 mt-2">
+                        </div>
+                    <input type="hidden" name="selected_documents_list" id="selectedDocsInput">
+                 </div>
+
+                 <div class="space-y-6">
+                    <div>
+                        <label class="label-premium text-emerald-400">Détails pour le document "Autre"</label>
+                        <p class="text-xs text-slate-400 mb-2">Si vous avez sélectionné "Autre", décrivez ici le type de document souhaité.</p>
+                        <textarea name="doc_custom_details" id="docCustomDetails" class="textarea-premium border-emerald-500/20 focus:border-emerald-500" rows="2" placeholder="Ex: Je souhaite une attestation de présence générée automatiquement..."></textarea>
+                    </div>
+                    <div>
+                        <label class="label-premium text-emerald-400">Champs spécifiques & Modifications</label>
+                        <p class="text-xs text-slate-400 mb-2">Pour les documents standards (Bail, Devis...), listez ici les champs spécifiques ou clauses particulières à ajouter.</p>
+                        <textarea name="doc_modifications" id="docModifications" class="textarea-premium border-emerald-500/20 focus:border-emerald-500" rows="3" placeholder="Ex: Sur le bail, rajouter une clause concernant les animaux. Sur le devis, ajouter une colonne TVA spécifique..."></textarea>
+                    </div>
+                 </div>
+            </div>
+
             <div class="glass-card p-6 lg:p-8">
                 <div class="section-title"><i class="ph-duotone ph-calendar-check"></i> 5. Organisation</div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -450,149 +450,162 @@
     </div>
 
     <script>
-        function updateCardSelection(packName, price) {
-            console.log("Pack sélectionné : " + packName);
-        }
+	document.addEventListener('DOMContentLoaded', () => {
 
-        // --- Fonctions utilitaires ---
-        function getVal(id) { const el = document.getElementById(id); return el ? el.value : ''; }
-        function getChecks(name) { return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(c => c.value).join(', '); }
-        function getRadio(name) { const r = document.querySelector(`input[name="${name}"]:checked`); return r ? r.value : ''; }
+		// --- 1. GESTION DES PARAMETRES URL (AUTO-REMPLISSAGE) ---
+		const params = new URLSearchParams(window.location.search);
+		
+		// Remplissage Nom et Email
+		if(params.has('name')) {
+			const el = document.getElementById('contactName');
+			if(el) el.value = params.get('name');
+		}
+		if(params.has('email')) {
+			const el = document.getElementById('contactEmail');
+			if(el) el.value = params.get('email');
+		}
+		
+		// Sélection du Pack (Radio Button)
+		if(params.has('pack')) {
+			const packValue = params.get('pack');
+			const radio = document.querySelector(`input[name="project_pack"][value="${packValue}"]`);
+			if (radio) radio.checked = true;
+		}
 
-        function buildMessage() {
-            let pack = getRadio('project_pack') || 'Non défini';
-            let body = `PACK: ${pack}\n\n`;
-            
-            // Ajout des documents dans la copie
-            const docsList = getVal('selectedDocsInput');
-            if(docsList) {
-                body += `DOCUMENTS DEMANDÉS: ${docsList}\n`;
-                const customDetails = getVal('docCustomDetails');
-                const docMods = getVal('docModifications');
-                if(customDetails) body += `DETAIL AUTRE DOC: ${customDetails}\n`;
-                if(docMods) body += `MODIFS DOCS: ${docMods}\n`;
-                body += `\n`;
-            }
+		// Gestion des Documents sélectionnés
+		// URL attendue : ?documents=Devis,Facture,Autre : Test
+		if(params.has('documents')) {
+			const docsStr = params.get('documents');
+			if(docsStr && docsStr.trim() !== '') {
+				// Afficher la section cachée (si elle a la classe 'hidden')
+				const section = document.getElementById('documents-section');
+				if(section) section.classList.remove('hidden');
+				
+				// Remplir le champ caché pour Formspree
+				const hiddenInput = document.getElementById('selectedDocsInput');
+				if(hiddenInput) hiddenInput.value = docsStr;
 
-            body += `PROJET: ${getVal('companyName')} (${getVal('contactName')})\n`;
-            body += `SITE ACTUEL: ${getVal('currentUrl')}\n`;
-            body += `ACTIVITÉ: ${getVal('activityDesc')}\n\n`;
-            body += `OBJECTIFS: ${getChecks('goals')}\n`;
-            body += `CIBLE: ${getVal('targetAudience')}\n`;
-            body += `CTA: ${getVal('mainCta')}\n\n`;
-            body += `DESIGN: Logo ${getVal('hasLogo')}, Style ${getVal('designVibe')}\n`;
-            body += `CONTENU: ${getRadio('content_status')}\n\n`;
-            body += `TECH: ${getChecks('features')}\n`;
-            body += `DOMAINE: ${getVal('domainStatus')}, HÉBERGEUR: ${getVal('hostProvider')}\n\n`;
-            body += `DEADLINE: ${getVal('deadline')}\n`;
-            body += `NOTE: ${getVal('magicQuestion')}`;
-            return body;
-        }
+				// Afficher les tags visuels
+				const docsArr = docsStr.split(',');
+				const container = document.getElementById('selected-docs-display');
+				
+				if(container) {
+					docsArr.forEach(doc => {
+						if(doc.trim()) {
+							const tag = document.createElement('span');
+							tag.className = 'px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20';
+							tag.textContent = doc.trim();
+							container.appendChild(tag);
+						}
+					});
+				}
+			}
+		}
 
-        function copyContent() {
-            const content = buildMessage();
-            navigator.clipboard.writeText(content).then(() => {
-                const toast = document.getElementById('toast');
-                toast.innerHTML = '<i class="ph-fill ph-check-circle text-accent-400 text-xl"></i><span class="font-medium text-sm">Contenu copié dans le presse-papier !</span>';
-                toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
-                setTimeout(() => toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4'), 3000);
-            });
-        }
-        
-        // --- GESTION DE L'ENVOI ---
-        const form = document.getElementById("projectForm");
-        
-        async function handleSubmit(event) {
-            event.preventDefault();
-            const btn = form.querySelector('button[type="submit"]');
-            const originalContent = btn.innerHTML;
-            
-            btn.innerHTML = '<span>Envoi en cours...</span> <i class="ph-bold ph-spinner animate-spin"></i>';
-            btn.disabled = true;
+		// --- 2. FONCTIONS UTILITAIRES (Pour le formulaire) ---
+		
+		// Fonction dummy pour éviter les erreurs si le HTML appelle updateCardSelection
+		window.updateCardSelection = function(packName, price) {
+			console.log("Kickoff - Pack sélectionné : " + packName);
+		}
 
-            const data = new FormData(event.target);
-            
-            try {
-                const response = await fetch(event.target.action, {
-                    method: form.method,
-                    body: data,
-                    headers: { 'Accept': 'application/json' }
-                });
-                
-                if (response.ok) {
-                    const toast = document.getElementById('toast');
-                    toast.innerHTML = '<i class="ph-fill ph-check-circle text-accent-400 text-xl"></i><span class="font-medium text-sm">Bien reçu ! Je reviens vers vous vite.</span>';
-                    toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
-                    setTimeout(() => toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4'), 5000);
-                    form.reset();
-                } else {
-                    const data = await response.json();
-                    if (Object.hasOwn(data, 'errors')) {
-                        alert("Erreur: " + data["errors"].map(error => error["message"]).join(", "));
-                    } else {
-                        alert("Oups ! Une erreur est survenue lors de l'envoi.");
-                    }
-                }
-            } catch (error) {
-                alert("Erreur réseau. Veuillez réessayer.");
-            } finally {
-                btn.innerHTML = originalContent;
-                btn.disabled = false;
-            }
-        }
-        
-        form.addEventListener("submit", handleSubmit);
-    </script>
-    
-    <script>
-    // --- GESTION DES PARAMETRES URL (AUTO-REMPLISSAGE) ---
-    document.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        
-        // 1. Remplissage Nom et Email
-        if(params.has('name')) {
-            const el = document.getElementById('contactName');
-            if(el) el.value = params.get('name');
-        }
-        if(params.has('email')) {
-            const el = document.getElementById('contactEmail');
-            if(el) el.value = params.get('email');
-        }
-        
-        // 2. Sélection du Pack
-        if(params.has('pack')) {
-            const packValue = params.get('pack');
-            const radio = document.querySelector(`input[name="project_pack"][value="${packValue}"]`);
-            if (radio) radio.checked = true;
-        }
+		window.getVal = function(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+		
+		window.getChecks = function(name) { return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(c => c.value).join(', '); }
+		
+		window.getRadio = function(name) { const r = document.querySelector(`input[name="${name}"]:checked`); return r ? r.value : ''; }
 
-        // 3. Gestion des Documents sélectionnés (Nouveau)
-        // On suppose que l'URL ressemble à ?documents=Devis,Facture,Autre : Test
-        if(params.has('documents')) {
-            const docsStr = params.get('documents');
-            if(docsStr && docsStr.trim() !== '') {
-                // Afficher la section cachée
-                const section = document.getElementById('documents-section');
-                section.classList.remove('hidden');
-                
-                // Remplir le champ caché pour Formspree
-                document.getElementById('selectedDocsInput').value = docsStr;
+		window.buildMessage = function() {
+			let pack = window.getRadio('project_pack') || 'Non défini';
+			let body = `PACK: ${pack}\n\n`;
+			
+			// Ajout des documents dans la copie
+			const docsList = window.getVal('selectedDocsInput');
+			if(docsList) {
+				body += `DOCUMENTS DEMANDÉS: ${docsList}\n`;
+				const customDetails = window.getVal('docCustomDetails');
+				const docMods = window.getVal('docModifications');
+				if(customDetails) body += `DETAIL AUTRE DOC: ${customDetails}\n`;
+				if(docMods) body += `MODIFS DOCS: ${docMods}\n`;
+				body += `\n`;
+			}
 
-                // Afficher les tags visuels
-                const docsArr = docsStr.split(',');
-                const container = document.getElementById('selected-docs-display');
-                
-                docsArr.forEach(doc => {
-                    if(doc.trim()) {
-                        const tag = document.createElement('span');
-                        tag.className = 'px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20';
-                        tag.textContent = doc.trim();
-                        container.appendChild(tag);
-                    }
-                });
-            }
-        }
-    });
+			body += `PROJET: ${window.getVal('companyName')} (${window.getVal('contactName')})\n`;
+			body += `SITE ACTUEL: ${window.getVal('currentUrl')}\n`;
+			body += `ACTIVITÉ: ${window.getVal('activityDesc')}\n\n`;
+			body += `OBJECTIFS: ${window.getChecks('goals')}\n`;
+			body += `CIBLE: ${window.getVal('targetAudience')}\n`;
+			body += `CTA: ${window.getVal('mainCta')}\n\n`;
+			body += `DESIGN: Logo ${window.getVal('hasLogo')}, Style ${window.getVal('designVibe')}\n`;
+			body += `CONTENU: ${window.getRadio('content_status')}\n\n`;
+			body += `TECH: ${window.getChecks('features')}\n`;
+			body += `DOMAINE: ${window.getVal('domainStatus')}, HÉBERGEUR: ${window.getVal('hostProvider')}\n\n`;
+			body += `DEADLINE: ${window.getVal('deadline')}\n`;
+			body += `NOTE: ${window.getVal('magicQuestion')}`;
+			return body;
+		}
+
+		// --- 3. COPY CLIPBOARD ---
+		window.copyContent = function() {
+			const content = window.buildMessage();
+			navigator.clipboard.writeText(content).then(() => {
+				const toast = document.getElementById('toast');
+				if(toast) {
+					toast.innerHTML = '<i class="ph-fill ph-check-circle text-accent-400 text-xl"></i><span class="font-medium text-sm">Contenu copié dans le presse-papier !</span>';
+					toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+					setTimeout(() => toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4'), 3000);
+				}
+			});
+		}
+		
+		// --- 4. GESTION DE L'ENVOI (FORMSPREE) ---
+		const form = document.getElementById("projectForm");
+		
+		if(form) {
+			async function handleSubmit(event) {
+				event.preventDefault();
+				const btn = form.querySelector('button[type="submit"]');
+				const originalContent = btn.innerHTML;
+				
+				btn.innerHTML = '<span>Envoi en cours...</span> <i class="ph-bold ph-spinner animate-spin"></i>';
+				btn.disabled = true;
+
+				const data = new FormData(event.target);
+				
+				try {
+					const response = await fetch(event.target.action, {
+						method: form.method,
+						body: data,
+						headers: { 'Accept': 'application/json' }
+					});
+					
+					if (response.ok) {
+						const toast = document.getElementById('toast');
+						if(toast) {
+							toast.innerHTML = '<i class="ph-fill ph-check-circle text-accent-400 text-xl"></i><span class="font-medium text-sm">Bien reçu ! Je reviens vers vous vite.</span>';
+							toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+							setTimeout(() => toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4'), 5000);
+						}
+						form.reset();
+					} else {
+						const data = await response.json();
+						if (Object.hasOwn(data, 'errors')) {
+							alert("Erreur: " + data["errors"].map(error => error["message"]).join(", "));
+						} else {
+							alert("Oups ! Une erreur est survenue lors de l'envoi.");
+						}
+					}
+				} catch (error) {
+					alert("Erreur réseau. Veuillez réessayer.");
+				} finally {
+					btn.innerHTML = originalContent;
+					btn.disabled = false;
+				}
+			}
+			
+			form.addEventListener("submit", handleSubmit);
+		}
+	});
     </script>
 </body>
 </html>
