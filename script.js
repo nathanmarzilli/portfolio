@@ -418,34 +418,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Fonctions exposées à window pour les onclick HTML ---
 
-    // --- Sélection des Offres (Modification : Animation bouton, pas de scroll) ---
-    window.selectOffer = function(btnElement, packName, price) {
-        window.vibrate(); 
-        const radioBtn = document.querySelector(`input[name="project_pack"][value="${packName}"]`);
-        if (radioBtn) {
-            radioBtn.checked = true;
-            updateCardSelection(packName, price);
-        }
-
-        // Réinitialisation visuelle de tous les boutons "Choisir"
-        document.querySelectorAll('.offer-btn').forEach(b => {
-            b.innerHTML = '<span>Choisir</span>';
-            b.classList.remove('bg-accent-400', 'text-dark-950', 'hover:shadow-[0_0_20px_rgba(45,212,191,0.4)]');
-            b.classList.add('border-white/10', 'text-white', 'hover:bg-white', 'hover:text-dark-950');
-            // Cas spécial pour le bouton Premium qui était hover:purple
-            if(b.parentElement.id === 'card-premium') {
-                b.classList.remove('hover:bg-white', 'hover:text-dark-950');
-                b.classList.add('hover:bg-purple-400');
-            }
-        });
-
-        // Animation du bouton cliqué
-        if(btnElement) {
-            btnElement.classList.remove('border-white/10', 'text-white', 'hover:bg-white', 'hover:text-dark-950', 'hover:bg-purple-400');
-            btnElement.classList.add('bg-accent-400', 'text-dark-950', 'hover:shadow-[0_0_20px_rgba(45,212,191,0.4)]');
-            btnElement.innerHTML = '<span>Sélectionné</span> <i class="ph-bold ph-check animate-pop-in"></i>';
+    // --- Sélection des Offres (Bi-directionnel & Premium Violet) ---
+    window.selectOffer = function(btnElement, packName, price) {
+        if(window.vibrate) window.vibrate(); 
+        
+        // 1. Cocher le radio bouton du formulaire (ce qui déclenchera updateCardSelection via onchange)
+        const radioBtn = document.querySelector(`input[name="project_pack"][value="${packName}"]`);
+        if (radioBtn) {
+            radioBtn.checked = true;
+            // On appelle manuellement updateCardSelection pour être sûr de l'UI immédiate
+            updateCardSelection(packName, price);
         }
-    }
+    }
     
     // Fonction Helper depuis la section Service pour activer l'option doc
     window.toggleDocumentOptionFromService = function() {
@@ -456,36 +440,36 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
     }
 
-	// --- CORRECTION BUG : GESTION CLIC CARTE DOCUMENT (FORMULAIRE & SYNC INVERSE) ---    
+    // --- CORRECTION BUG : GESTION CLIC CARTE DOCUMENT (FORMULAIRE & SYNC INVERSE) ---     
     window.handleDocClick = function(label, skipLogic = false) {
-        // Petit délai pour laisser le temps à la checkbox native de changer d'état
-        setTimeout(() => {
-            const checkbox = label.querySelector('input[type="checkbox"]');
-            const box = label.querySelector('.custom-checkbox-box');
-            const icon = label.querySelector('.custom-checkbox-icon');
-            const text = label.querySelector('.custom-checkbox-label');
-            const overlay = label.querySelector('.selection-overlay');
-            
+        // Petit délai pour laisser le temps à la checkbox native de changer d'état
+        setTimeout(() => {
+            const checkbox = label.querySelector('input[type="checkbox"]');
+            const box = label.querySelector('.custom-checkbox-box');
+            const icon = label.querySelector('.custom-checkbox-icon');
+            const text = label.querySelector('.custom-checkbox-label');
+            const overlay = label.querySelector('.selection-overlay');
+            
             // 1. Mise à jour visuelle du FORMULAIRE
-            if (checkbox.checked) {
-                label.classList.remove('border-white/10', 'bg-dark-950');
-                label.classList.add('border-emerald-500', 'bg-dark-900');
-                box.classList.remove('border-slate-600', 'bg-dark-900');
-                box.classList.add('border-emerald-500', 'bg-emerald-500');
-                icon.classList.remove('opacity-0', 'scale-50');
-                text.classList.add('text-white', 'font-bold');
-                text.classList.remove('text-slate-300');
-                overlay.classList.remove('opacity-0');
-            } else {
-                label.classList.add('border-white/10', 'bg-dark-950');
-                label.classList.remove('border-emerald-500', 'bg-dark-900');
-                box.classList.add('border-slate-600', 'bg-dark-900');
-                box.classList.remove('border-emerald-500', 'bg-emerald-500');
-                icon.classList.add('opacity-0', 'scale-50');
-                text.classList.remove('text-white', 'font-bold');
-                text.classList.add('text-slate-300');
-                overlay.classList.add('opacity-0');
-            }
+            if (checkbox.checked) {
+                label.classList.remove('border-white/10', 'bg-dark-950');
+                label.classList.add('border-emerald-500', 'bg-dark-900');
+                box.classList.remove('border-slate-600', 'bg-dark-900');
+                box.classList.add('border-emerald-500', 'bg-emerald-500');
+                icon.classList.remove('opacity-0', 'scale-50');
+                text.classList.add('text-white', 'font-bold');
+                text.classList.remove('text-slate-300');
+                overlay.classList.remove('opacity-0');
+            } else {
+                label.classList.add('border-white/10', 'bg-dark-950');
+                label.classList.remove('border-emerald-500', 'bg-dark-900');
+                box.classList.add('border-slate-600', 'bg-dark-900');
+                box.classList.remove('border-emerald-500', 'bg-emerald-500');
+                icon.classList.add('opacity-0', 'scale-50');
+                text.classList.remove('text-white', 'font-bold');
+                text.classList.add('text-slate-300');
+                overlay.classList.add('opacity-0');
+            }
 
             // 2. SYNC INVERSE : Mettre à jour la section SERVICES
             // On trouve la checkbox correspondante dans le bloc du haut
@@ -524,76 +508,89 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateServicePrice(); // On recalcule le prix affiché en haut
             }
 
-            if (!skipLogic) {
-                updateTotal();
-            }
-        }, 20);
-    }
-	
-	// Nouvelle fonction pour gérer l'affichage du champ "Autre"
-    window.toggleCustomDocInput = function() {
+            if (!skipLogic) {
+                updateTotal();
+            }
+        }, 20);
+    }
+    
+    // Nouvelle fonction pour gérer l'affichage du champ "Autre" avec paramètre de focus optionnel
+    window.toggleCustomDocInput = function(shouldFocus = true) {
         const checkbox = document.getElementById('check-custom-doc');
         const input = document.getElementById('custom-doc-input');
         
-        // Petit délai pour attendre que handleDocClick ait fini son travail visuel
         setTimeout(() => {
              if (checkbox && input) {
                 if (checkbox.checked) {
                     input.classList.remove('hidden');
                     setTimeout(() => {
-                        input.classList.remove('opacity-0', 'translate-y-2');updateSerenityCardInServices
-                        input.focus();
+                        input.classList.remove('opacity-0', 'translate-y-2');
+                        // CORRECTION SCROLL : On ne focus que si demandé (depuis le formulaire direct)
+                        if(shouldFocus) input.focus();
                     }, 10);
                 } else {
                     input.classList.add('opacity-0', 'translate-y-2');
                     setTimeout(() => {
                         input.classList.add('hidden');
-                        input.value = ''; // Reset valeur
+                        input.value = ''; 
                     }, 300);
                 }
             }
             updateTotal();
         }, 20);
     }
-	
-	window.saveCustomDocName = function() {
+    
+    window.saveCustomDocName = function() {
         // Juste pour s'assurer que l'input reste accessible, pas de logique complexe ici
     }
 
     // --- Sérénité (Modification : Toggle visuel bouton, pas de scroll) ---
-    window.toggleSerenityOption = function(btnElement) {
-        if (!isSerenitySelected) {
-            window.toggleSerenityForm();
-        } else {
+    window.toggleSerenityOption = function(btnElement) {
+        if (!isSerenitySelected) {
+            window.toggleSerenityForm();
+        } else {
             // Si déjà sélectionné, le bouton permet de retirer (sauf si forcé par Essentiel)
             // Note: toggleSerenityForm gère déjà la logique d'exclusion "Essentiel"
              window.toggleSerenityForm();
         }
-    }
+    }
 
-	// Mise à jour visuelle du bouton Sérénité dans la section Services
-    function updateSerenityCardInServices(isChecked) {
-        const card = document.getElementById('card-serenite');
+    // Mise à jour visuelle du bouton Sérénité dans la section Services
+    window.updateSerenityCardInServices = function(isChecked) {
+        const card = document.getElementById('card-serenite');
         const btn = document.getElementById('btn-serenite-action');
 
-        if(card) {
-            if(isChecked) {
+        if(card && btn) {
+            if(isChecked) {
+                // 1. Style de la carte (Bordure brillante)
                 card.classList.add('serenity-selected-card');
-                if(btn) {
-                    btn.innerHTML = '<span>Ajouté</span> <i class="ph-bold ph-check"></i>';
-                    btn.classList.remove('bg-blue-500/20', 'text-blue-300');
-                    btn.classList.add('bg-blue-500', 'text-white', 'shadow-lg');
-                }
+
+                // 2. BOUTON : État "AJOUTÉ" (Transformation visuelle)
+                // On change le texte et l'icône avec une animation d'entrée sur l'icône
+                btn.innerHTML = '<span>Ajouté</span> <i class="ph-bold ph-check-circle text-lg animate-pop-in"></i>';
+
+                // On retire le style "transparent/fantôme"
+                btn.classList.remove('bg-blue-500/20', 'text-blue-300', 'hover:bg-blue-500', 'hover:text-white');
+                
+                // On ajoute le style "Plein/Validé" (Bleu solide + Ombre + Léger Zoom)
+                // scale-105 donne l'effet de "pop"
+                btn.classList.add('bg-blue-500', 'text-white', 'shadow-[0_0_20px_rgba(59,130,246,0.5)]', 'scale-105', 'border-transparent');
+
             } else {
+                // 1. Reset carte
                 card.classList.remove('serenity-selected-card');
-                if(btn) {
-                    btn.innerHTML = '<span>Ajouter</span> <i class="ph-bold ph-plus"></i>';
-                    btn.classList.add('bg-blue-500/20', 'text-blue-300');
-                    btn.classList.remove('bg-blue-500', 'text-white', 'shadow-lg');
-                }
+
+                // 2. BOUTON : État "DISPONIBLE"
+                btn.innerHTML = '<span>Ajouter au devis</span> <i class="ph-bold ph-plus"></i>';
+
+                // On retire le style "Plein"
+                btn.classList.remove('bg-blue-500', 'text-white', 'shadow-[0_0_20px_rgba(59,130,246,0.5)]', 'scale-105', 'border-transparent');
+                
+                // On remet le style "transparent" par défaut
+                btn.classList.add('bg-blue-500/20', 'text-blue-300', 'hover:bg-blue-500', 'hover:text-white');
             }
-        }
-    }
+        }
+    }
 
     window.toggleSerenityForm = function() {
         // Si "Essentiel" est sélectionné, on empêche de décocher
@@ -623,24 +620,57 @@ document.addEventListener('DOMContentLoaded', () => {
         updateTotal();
     }
 
-    // Mise à jour visuelle des cartes (contour doré)
+    // Mise à jour visuelle des cartes (contour + boutons)
     window.updateCardSelection = function(packName, price) {
         currentBasePrice = price;
 
-        // Reset classes
-        ['card-essentiel', 'card-vitrine', 'card-premium'].forEach(id => {
-            const el = document.getElementById(id);
-            if(el) el.classList.remove('gold-selected-card');
+        // 1. Reset de TOUTES les cartes et TOUS les boutons
+        ['Essentiel', 'Vitrine', 'Premium'].forEach(pName => {
+            let cardId = `card-${pName.toLowerCase()}`;
+            let card = document.getElementById(cardId);
+            if(card) {
+                card.classList.remove('gold-selected-card');
+                
+                // Reset bouton
+                let btn = card.querySelector('.offer-btn');
+                if(btn) {
+                    btn.innerHTML = '<span>Choisir</span>';
+                    // Reset classes génériques
+                    btn.classList.remove('bg-accent-400', 'text-dark-950', 'bg-purple-500', 'text-white', 'shadow-[0_0_20px_rgba(45,212,191,0.4)]', 'shadow-[0_0_20px_rgba(168,85,247,0.4)]');
+                    
+                    // Remettre les états hover par défaut
+                    btn.classList.add('border-white/10', 'text-white');
+                    if(pName === 'Premium') {
+                        btn.classList.add('hover:bg-purple-400');
+                        btn.classList.remove('hover:bg-white', 'hover:text-dark-950');
+                    } else {
+                        btn.classList.add('hover:bg-white', 'hover:text-dark-950');
+                        btn.classList.remove('hover:bg-purple-400');
+                    }
+                }
+            }
         });
 
-        // Add class
-        let targetId = '';
-        if(packName === 'Essentiel') targetId = 'card-essentiel';
-        if(packName === 'Vitrine') targetId = 'card-vitrine';
-        if(packName === 'Premium') targetId = 'card-premium';
-
+        // 2. Activer la carte CIBLÉE
+        let targetId = `card-${packName.toLowerCase()}`;
         const targetEl = document.getElementById(targetId);
-        if(targetEl) targetEl.classList.add('gold-selected-card');
+        
+        if(targetEl) {
+            targetEl.classList.add('gold-selected-card');
+            
+            const targetBtn = targetEl.querySelector('.offer-btn');
+            if(targetBtn) {
+                targetBtn.innerHTML = '<span>Sélectionné</span> <i class="ph-bold ph-check animate-pop-in"></i>';
+                targetBtn.classList.remove('border-white/10', 'text-white', 'hover:bg-white', 'hover:text-dark-950', 'hover:bg-purple-400');
+                
+                // GESTION COULEUR PREMIUM (VIOLET) vs AUTRES (CYAN)
+                if (packName === 'Premium') {
+                    targetBtn.classList.add('bg-purple-500', 'text-white', 'shadow-[0_0_20px_rgba(168,85,247,0.4)]');
+                } else {
+                    targetBtn.classList.add('bg-accent-400', 'text-dark-950', 'shadow-[0_0_20px_rgba(45,212,191,0.4)]');
+                }
+            }
+        }
         
         // Gestion Forçage Sérénité pour Essentiel
         if (packName === 'Essentiel') {
@@ -651,7 +681,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateTotal();
     }
-
+    
     // Gestion de l'état "Forcé" du pack Sérénité
     function forceSerenity(forced) {
         const btn = document.getElementById('serenite-toggle-btn');
@@ -693,14 +723,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function updateSerenityCardInServices(isChecked) {
-        const card = document.getElementById('card-serenite');
-        if(card) {
-            if(isChecked) card.classList.add('serenity-selected-card');
-            else card.classList.remove('serenity-selected-card');
-        }
-    }
-
     function updateTotal() {
         let totalOneShot = currentBasePrice;
         let docTotal = 0;
@@ -723,11 +745,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if(isDocumentSelected) {
                 priceTag.textContent = `+${docTotal}€`;
                 if(docTotal > 0) {
-                     priceTag.classList.remove('text-slate-500');
-                     priceTag.classList.add('text-emerald-400', 'bg-emerald-400/10');
+                      priceTag.classList.remove('text-slate-500');
+                      priceTag.classList.add('text-emerald-400', 'bg-emerald-400/10');
                 } else {
-                     priceTag.classList.add('text-slate-500');
-                     priceTag.classList.remove('text-emerald-400', 'bg-emerald-400/10');
+                      priceTag.classList.add('text-slate-500');
+                      priceTag.classList.remove('text-emerald-400', 'bg-emerald-400/10');
                 }
             } else {
                 priceTag.textContent = '+0€';
@@ -1077,36 +1099,36 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     };
-	
-	// --- GESTION FAQ ---
-	window.toggleFaq = function(button) {
-		// 1. Gestion de l'icone
-		const icon = button.querySelector('i');
-		
-		// 2. Gestion du contenu
-		const content = button.nextElementSibling;
-		
-		// Si c'est déjà ouvert, on ferme
-		if (content.style.maxHeight && content.style.maxHeight !== '0px') {
-			content.style.maxHeight = '0px';
-			icon.style.transform = 'rotate(0deg)';
-			button.classList.remove('active-faq'); // Optionnel pour le style
-		} else {
-			// OPTIONNEL : Fermer les autres quand on en ouvre un (effet accordéon strict)
-			/* document.querySelectorAll('#faq .max-h-0').forEach(el => {
-				el.style.maxHeight = '0px';
-				el.previousElementSibling.querySelector('i').style.transform = 'rotate(0deg)';
-			});
-			*/
+    
+    // --- GESTION FAQ ---
+    window.toggleFaq = function(button) {
+        // 1. Gestion de l'icone
+        const icon = button.querySelector('i');
+        
+        // 2. Gestion du contenu
+        const content = button.nextElementSibling;
+        
+        // Si c'est déjà ouvert, on ferme
+        if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+            content.style.maxHeight = '0px';
+            icon.style.transform = 'rotate(0deg)';
+            button.classList.remove('active-faq'); // Optionnel pour le style
+        } else {
+            // OPTIONNEL : Fermer les autres quand on en ouvre un (effet accordéon strict)
+            /* document.querySelectorAll('#faq .max-h-0').forEach(el => {
+                el.style.maxHeight = '0px';
+                el.previousElementSibling.querySelector('i').style.transform = 'rotate(0deg)';
+            });
+            */
 
-			// On ouvre celui-ci
-			content.style.maxHeight = content.scrollHeight + "px";
-			icon.style.transform = 'rotate(180deg)';
-			button.classList.add('active-faq');
-		}
-	};
-	
-	// ==============================================
+            // On ouvre celui-ci
+            content.style.maxHeight = content.scrollHeight + "px";
+            icon.style.transform = 'rotate(180deg)';
+            button.classList.add('active-faq');
+        }
+    };
+    
+    // ==============================================
     // GESTION MENU MOBILE (MANQUANT)
     // ==============================================
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -1144,8 +1166,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-	
-	// --- GESTION SERVICES (Style & Logique) ---
+    
+    // --- GESTION SERVICES (Style & Logique) ---
 
     // 1. Gestion du clic sur les cartes dans la section SERVICE (similaire au formulaire)
     window.handleServiceDocClick = function(label) {
@@ -1186,7 +1208,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 20);
     }
 
-    // 2. Ouvre le mode configuration
+    // 2. Ouvre le mode configuration (Services)
     window.toggleServiceConfig = function() {
         const selector = document.getElementById('service-doc-selector');
         const btnConfig = document.getElementById('btn-config-doc');
@@ -1198,12 +1220,26 @@ document.addEventListener('DOMContentLoaded', () => {
             btnValidate.classList.remove('hidden');
             btnValidate.classList.add('flex');
             
-            // Reset des checkbox service
+            // CORRECTION: Au lieu de reset, on synchronise AVEC le formulaire
+            // On regarde ce qui est coché en bas pour l'afficher coché en haut
+            const formCheckboxes = document.querySelectorAll('.doc-sub-checkbox:checked');
+            
+            // D'abord on reset visuellement tout en haut
             document.querySelectorAll('.service-doc-chk').forEach(c => {
-                c.checked = false;
-                // Reset visuel via handler
-                handleServiceDocClick(c.closest('label'));
+                 c.checked = false;
+                 handleServiceDocClick(c.closest('label'), true); // true = skip total calculation update temporarily
             });
+
+            // Ensuite on coche ce qui doit l'être
+            formCheckboxes.forEach(fc => {
+                const val = fc.value;
+                const serviceChk = document.querySelector(`.service-doc-chk[value="${val}"]`);
+                if(serviceChk) {
+                    serviceChk.checked = true;
+                    handleServiceDocClick(serviceChk.closest('label'), true);
+                }
+            });
+
             updateServicePrice(); 
         }
     }
@@ -1231,17 +1267,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 4. Validation et Transfert (Sans Scroll, avec Anim)
+    // 4. Validation et Transfert (Animation améliorée + Correction Scroll)
     window.validateServiceDocs = function() {
         const checked = document.querySelectorAll('.service-doc-chk:checked');
-        if(checked.length === 0) return; // Rien à faire si rien cochée
+        if(checked.length === 0) return; 
 
         // A. Activer le module Document dans le formulaire s'il ne l'est pas
         if (!isDocumentSelected) {
              window.toggleDocumentOption();
         }
 
-        // B. Reset du formulaire documents (nettoyage avant import)
+        // B. Reset du formulaire documents
         document.querySelectorAll('.doc-sub-checkbox').forEach(cb => {
             if(cb.checked) {
                 cb.checked = false; 
@@ -1257,33 +1293,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 formChk.checked = true;
                 handleDocClick(formChk.closest('label'), false);
                 
-                // Cas spécial "Autre" : ouvrir l'input
+                // Cas spécial "Autre" : ouvrir l'input MAIS SANS FOCUS (false) pour éviter le scroll
                 if(val === 'Autre') {
-                    window.toggleCustomDocInput();
+                    window.toggleCustomDocInput(false);
                 }
             }
         });
 
-        // D. Animation de succès sur le bouton (Feedback UX)
+        // D. Animation Bouton "Valider" (Plus propre)
         const btn = document.getElementById('btn-validate-doc');
-        const overlay = document.getElementById('btn-validate-overlay');
         const textSpan = document.getElementById('btn-validate-text');
+        const originalContent = textSpan.innerHTML;
         
-        // Etat Success
-        overlay.classList.remove('translate-y-full'); // Fond blanc/flash
-        setTimeout(() => {
-            textSpan.innerHTML = 'Ajouté au devis ! <i class="ph-bold ph-check-circle text-lg"></i>';
-            btn.classList.remove('bg-emerald-500');
-            btn.classList.add('bg-emerald-600');
-        }, 200);
+        // Changement d'état
+        btn.classList.remove('bg-accent-400', 'text-dark-950');
+        btn.classList.add('bg-emerald-500', 'text-white', 'scale-105'); // Vert Succès + Pop
+        textSpan.innerHTML = 'Sélection ajoutée ! <i class="ph-bold ph-check text-lg"></i>';
 
-        // Retour à la normale après 2.5s
+        // Retour à la normale
         setTimeout(() => {
-            overlay.classList.add('translate-y-full');
-            textSpan.innerHTML = 'Valider & Ajouter <i class="ph-bold ph-plus-circle"></i>';
-            btn.classList.add('bg-emerald-500');
-            btn.classList.remove('bg-emerald-600');
-        }, 2500);
+            btn.classList.remove('bg-emerald-500', 'text-white', 'scale-105');
+            btn.classList.add('bg-accent-400', 'text-dark-950');
+            textSpan.innerHTML = originalContent;
+        }, 2000);
     }
     
     // --- GESTION FORMULAIRE (Toggle Bloc Détails) ---
