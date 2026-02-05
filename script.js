@@ -1033,28 +1033,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 // Configuration Message Succès (AVEC REDIRECTION KICKOFF)
-                const dateObjFormatted = new Date(dateInput.value);
-                const dateStr = dateObjFormatted.toLocaleDateString('fr-FR', {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long'
-                });
-                document.getElementById('success-message-date').textContent = `Le ${dateStr} à ${timeInput.value}`;
+				const dateObjFormatted = new Date(dateInput.value);
+				const dateStr = dateObjFormatted.toLocaleDateString('fr-FR', {
+					weekday: 'long',
+					day: 'numeric',
+					month: 'long'
+				});
+				document.getElementById('success-message-date').textContent = `Le ${dateStr} à ${timeInput.value}`;
 
-                const kickoffBtn = document.querySelector('#booking-success a[href*="kickoff"]');
-                if (kickoffBtn) {
-                    const params = new URLSearchParams({
-                        pack: selectedPack,
-                        name: `${firstname} ${name}`,
-                        email: email,
-                        date: dateStr + ' à ' + timeInput.value
-                    });
-                    kickoffBtn.href = `/portfolio/kickoff/?${params.toString()}`;
-                }
+				const kickoffBtn = document.querySelector('#booking-success a[href*="kickoff"]');
+				if (kickoffBtn) {
+					// Conversion du tableau de documents en une chaîne séparée par des virgules
+					// (ex: ["Devis", "Facture"] devient "Devis,Facture")
+					const docsStr = (typeof selectedDocumentsList !== 'undefined' && selectedDocumentsList) 
+						? selectedDocumentsList.join(',') 
+						: '';
 
-                // Affichage Overlay
-                document.getElementById('booking-success').classList.remove('hidden');
-                document.getElementById('booking-success').classList.add('flex');
+					const params = new URLSearchParams({
+						pack: selectedPack,
+						name: `${firstname} ${name}`,
+						email: email,
+						date: dateStr + ' à ' + timeInput.value,
+						documents: docsStr // <--- C'est cette ligne qui permet l'affichage de la section verte !
+					});
+					
+					// Comme tu as créé le dossier "kickoff" avec "index.html" dedans, ce chemin est parfait :
+					kickoffBtn.href = `/portfolio/kickoff/?${params.toString()}`;
+				}
+
+				// Affichage Overlay
+				document.getElementById('booking-success').classList.remove('hidden');
+				document.getElementById('booking-success').classList.add('flex');
 
             } catch (error) {
                 console.error("Booking error:", error);
