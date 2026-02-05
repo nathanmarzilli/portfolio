@@ -775,10 +775,12 @@
 							</span>
 						</li>
 					</ul>
-					<a href="#contact" onclick="selectOffer('Essentiel', 990)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-colors font-medium relative z-10">Choisir</a>
+					<button onclick="selectOffer(this, 'Essentiel', 990)" class="offer-btn w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-all font-medium relative z-10 flex items-center justify-center gap-2">
+						<span>Choisir</span>
+					</button>
 				</div>
 
-				<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover border-accent-400/30 bg-accent-400/5 relative overflow-visible pricing-card transition-all duration-300" id="card-vitrine">
+				<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover border-accent-400/30 bg-accent-400/5 relative overflow-visible pricing-card transition-all duration-300 gold-selected-card" id="card-vitrine">
 					<div class="absolute top-4 right-4 text-xs font-bold text-accent-400 bg-accent-400/10 px-2 py-1 rounded tag-populaire">POPULAIRE</div>
 					<h3 class="text-xl font-display font-bold text-white mb-2">Vitrine Artisan</h3>
 					<div class="text-3xl font-bold text-accent-400 mb-6">1 790€</div>
@@ -805,7 +807,9 @@
 							</span>
 						</li>
 					</ul>
-					<a href="#contact" onclick="selectOffer('Vitrine', 1790)" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10">Choisir</a>
+					<button onclick="selectOffer(this, 'Vitrine', 1790)" class="offer-btn w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10 flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(45,212,191,0.4)] transition-all">
+						<span>Sélectionné</span> <i class="ph-bold ph-check"></i>
+					</button>
 				</div>
 
 				<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-premium">
@@ -834,7 +838,9 @@
 							</span>
 						</li>
 					</ul>
-					<a href="#contact" onclick="selectOffer('Premium', 2590)" class="w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10">Choisir</a>
+					<button onclick="selectOffer(this, 'Premium', 2590)" class="offer-btn w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10 flex items-center justify-center gap-2">
+						<span>Choisir</span>
+					</button>
 				</div>
 			</div>
 			
@@ -1154,7 +1160,9 @@
 					</div>
 					<div class="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
 						<span class="text-2xl font-bold text-blue-400">49.90€ <span class="text-sm text-slate-500 font-normal">/mois</span></span>
-						<button onclick="toggleSerenityOption()" class="px-4 py-2 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-bold uppercase hover:bg-blue-500 hover:text-white transition-all">Ajouter au devis</button>
+						<button id="btn-serenite-action" onclick="toggleSerenityOption(this)" class="px-4 py-2 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-bold uppercase hover:bg-blue-500 hover:text-white transition-all flex items-center gap-2">
+							<span>Ajouter</span> <i class="ph-bold ph-plus"></i>
+						</button>
 					</div>
 				</div>
 

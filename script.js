@@ -418,19 +418,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Fonctions exposées à window pour les onclick HTML ---
 
-    window.selectOffer = function(packName, price) {
-        window.vibrate(); 
-        const radioBtn = document.querySelector(`input[name="project_pack"][value="${packName}"]`);
-        if (radioBtn) {
-            radioBtn.checked = true;
-            updateCardSelection(packName, price);
+    // --- Sélection des Offres (Modification : Animation bouton, pas de scroll) ---
+    window.selectOffer = function(btnElement, packName, price) {
+        window.vibrate(); 
+        const radioBtn = document.querySelector(`input[name="project_pack"][value="${packName}"]`);
+        if (radioBtn) {
+            radioBtn.checked = true;
+            updateCardSelection(packName, price);
+        }
+
+        // Réinitialisation visuelle de tous les boutons "Choisir"
+        document.querySelectorAll('.offer-btn').forEach(b => {
+            b.innerHTML = '<span>Choisir</span>';
+            b.classList.remove('bg-accent-400', 'text-dark-950', 'hover:shadow-[0_0_20px_rgba(45,212,191,0.4)]');
+            b.classList.add('border-white/10', 'text-white', 'hover:bg-white', 'hover:text-dark-950');
+            // Cas spécial pour le bouton Premium qui était hover:purple
+            if(b.parentElement.id === 'card-premium') {
+                b.classList.remove('hover:bg-white', 'hover:text-dark-950');
+                b.classList.add('hover:bg-purple-400');
+            }
+        });
+
+        // Animation du bouton cliqué
+        if(btnElement) {
+            btnElement.classList.remove('border-white/10', 'text-white', 'hover:bg-white', 'hover:text-dark-950', 'hover:bg-purple-400');
+            btnElement.classList.add('bg-accent-400', 'text-dark-950', 'hover:shadow-[0_0_20px_rgba(45,212,191,0.4)]');
+            btnElement.innerHTML = '<span>Sélectionné</span> <i class="ph-bold ph-check animate-pop-in"></i>';
         }
-        
-        // Scroll doux vers le formulaire avec délai pour effet visuel
-        setTimeout(() => {
-            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
-        }, 300);
-    }
+    }
     
     // Fonction Helper depuis la section Service pour activer l'option doc
     window.toggleDocumentOptionFromService = function() {
@@ -441,57 +456,79 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
     }
 
-	// --- CORRECTION BUG : GESTION CLIC CARTE DOCUMENT (FORMULAIRE) ---
-    // On a modifié la fonction pour qu'elle appelle updateTotal() explicitement
-    // ce qui corrige le bug du "dernier clic uniquement".
-    
+	// --- CORRECTION BUG : GESTION CLIC CARTE DOCUMENT (FORMULAIRE & SYNC INVERSE) ---    
     window.handleDocClick = function(label, skipLogic = false) {
-        // Petit délai pour laisser le temps à la checkbox native de changer d'état (click propagation)
-        setTimeout(() => {
-            const checkbox = label.querySelector('input[type="checkbox"]');
-            const box = label.querySelector('.custom-checkbox-box');
-            const icon = label.querySelector('.custom-checkbox-icon');
-            const text = label.querySelector('.custom-checkbox-label');
-            const overlay = label.querySelector('.selection-overlay');
-            
-            if (checkbox.checked) {
-                // STYLE ACTIF
-                label.classList.remove('border-white/10', 'bg-dark-950');
-                label.classList.add('border-emerald-500', 'bg-dark-900');
+        // Petit délai pour laisser le temps à la checkbox native de changer d'état
+        setTimeout(() => {
+            const checkbox = label.querySelector('input[type="checkbox"]');
+            const box = label.querySelector('.custom-checkbox-box');
+            const icon = label.querySelector('.custom-checkbox-icon');
+            const text = label.querySelector('.custom-checkbox-label');
+            const overlay = label.querySelector('.selection-overlay');
+            
+            // 1. Mise à jour visuelle du FORMULAIRE
+            if (checkbox.checked) {
+                label.classList.remove('border-white/10', 'bg-dark-950');
+                label.classList.add('border-emerald-500', 'bg-dark-900');
+                box.classList.remove('border-slate-600', 'bg-dark-900');
+                box.classList.add('border-emerald-500', 'bg-emerald-500');
+                icon.classList.remove('opacity-0', 'scale-50');
+                text.classList.add('text-white', 'font-bold');
+                text.classList.remove('text-slate-300');
+                overlay.classList.remove('opacity-0');
+            } else {
+                label.classList.add('border-white/10', 'bg-dark-950');
+                label.classList.remove('border-emerald-500', 'bg-dark-900');
+                box.classList.add('border-slate-600', 'bg-dark-900');
+                box.classList.remove('border-emerald-500', 'bg-emerald-500');
+                icon.classList.add('opacity-0', 'scale-50');
+                text.classList.remove('text-white', 'font-bold');
+                text.classList.add('text-slate-300');
+                overlay.classList.add('opacity-0');
+            }
+
+            // 2. SYNC INVERSE : Mettre à jour la section SERVICES
+            // On trouve la checkbox correspondante dans le bloc du haut
+            const val = checkbox.value;
+            const serviceChk = document.querySelector(`.service-doc-chk[value="${val}"]`);
+            if (serviceChk) {
+                // On synchronise l'état coché
+                serviceChk.checked = checkbox.checked;
                 
-                box.classList.remove('border-slate-600', 'bg-dark-900');
-                box.classList.add('border-emerald-500', 'bg-emerald-500');
-                
-                icon.classList.remove('opacity-0', 'scale-50');
-                
-                text.classList.add('text-white', 'font-bold');
-                text.classList.remove('text-slate-300');
-                
-                overlay.classList.remove('opacity-0');
-            } else {
-                // STYLE INACTIF
-                label.classList.add('border-white/10', 'bg-dark-950');
-                label.classList.remove('border-emerald-500', 'bg-dark-900');
-                
-                box.classList.add('border-slate-600', 'bg-dark-900');
-                box.classList.remove('border-emerald-500', 'bg-emerald-500');
-                
-                icon.classList.add('opacity-0', 'scale-50');
-                
-                text.classList.remove('text-white', 'font-bold');
-                text.classList.add('text-slate-300');
-                
-                overlay.classList.add('opacity-0');
+                // On met à jour le style visuel de la carte Service manuellement
+                const sLabel = serviceChk.closest('label');
+                const sBox = sLabel.querySelector('.custom-checkbox-box');
+                const sIcon = sLabel.querySelector('.custom-checkbox-icon');
+                const sText = sLabel.querySelector('.custom-checkbox-label');
+                const sOverlay = sLabel.querySelector('.selection-overlay');
+
+                if (checkbox.checked) {
+                    sLabel.classList.remove('border-white/10', 'bg-dark-900');
+                    sLabel.classList.add('border-emerald-500', 'bg-dark-950');
+                    sBox.classList.remove('border-slate-600', 'bg-dark-950');
+                    sBox.classList.add('border-emerald-500', 'bg-emerald-500');
+                    sIcon.classList.remove('opacity-0', 'scale-50');
+                    sText.classList.add('text-white');
+                    sText.classList.remove('text-slate-300');
+                    sOverlay.classList.remove('opacity-0');
+                } else {
+                    sLabel.classList.add('border-white/10', 'bg-dark-900');
+                    sLabel.classList.remove('border-emerald-500', 'bg-dark-950');
+                    sBox.classList.add('border-slate-600', 'bg-dark-950');
+                    sBox.classList.remove('border-emerald-500', 'bg-emerald-500');
+                    sIcon.classList.add('opacity-0', 'scale-50');
+                    sText.classList.remove('text-white');
+                    sText.classList.add('text-slate-300');
+                    sOverlay.classList.add('opacity-0');
+                }
+                updateServicePrice(); // On recalcule le prix affiché en haut
             }
 
-            // --- CORRECTION DU BUG ---
-            // On force le recalcul du prix ICI, une fois que l'état visuel et le checked sont sûrs.
-            if (!skipLogic) {
-                updateTotal();
-            }
-
-        }, 20);
-    }
+            if (!skipLogic) {
+                updateTotal();
+            }
+        }, 20);
+    }
 	
 	// Nouvelle fonction pour gérer l'affichage du champ "Autre"
     window.toggleCustomDocInput = function() {
@@ -504,7 +541,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (checkbox.checked) {
                     input.classList.remove('hidden');
                     setTimeout(() => {
-                        input.classList.remove('opacity-0', 'translate-y-2');
+                        input.classList.remove('opacity-0', 'translate-y-2');updateSerenityCardInServices
                         input.focus();
                     }, 10);
                 } else {
@@ -523,13 +560,40 @@ document.addEventListener('DOMContentLoaded', () => {
         // Juste pour s'assurer que l'input reste accessible, pas de logique complexe ici
     }
 
-    // Toggle Sérénité (Depuis le bouton du haut ou du bas)
-    window.toggleSerenityOption = function() {
-        if (!isSerenitySelected) {
-            window.toggleSerenityForm();
+    // --- Sérénité (Modification : Toggle visuel bouton, pas de scroll) ---
+    window.toggleSerenityOption = function(btnElement) {
+        if (!isSerenitySelected) {
+            window.toggleSerenityForm();
+        } else {
+            // Si déjà sélectionné, le bouton permet de retirer (sauf si forcé par Essentiel)
+            // Note: toggleSerenityForm gère déjà la logique d'exclusion "Essentiel"
+             window.toggleSerenityForm();
         }
-        document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
-    }
+    }
+
+	// Mise à jour visuelle du bouton Sérénité dans la section Services
+    function updateSerenityCardInServices(isChecked) {
+        const card = document.getElementById('card-serenite');
+        const btn = document.getElementById('btn-serenite-action');
+
+        if(card) {
+            if(isChecked) {
+                card.classList.add('serenity-selected-card');
+                if(btn) {
+                    btn.innerHTML = '<span>Ajouté</span> <i class="ph-bold ph-check"></i>';
+                    btn.classList.remove('bg-blue-500/20', 'text-blue-300');
+                    btn.classList.add('bg-blue-500', 'text-white', 'shadow-lg');
+                }
+            } else {
+                card.classList.remove('serenity-selected-card');
+                if(btn) {
+                    btn.innerHTML = '<span>Ajouter</span> <i class="ph-bold ph-plus"></i>';
+                    btn.classList.add('bg-blue-500/20', 'text-blue-300');
+                    btn.classList.remove('bg-blue-500', 'text-white', 'shadow-lg');
+                }
+            }
+        }
+    }
 
     window.toggleSerenityForm = function() {
         // Si "Essentiel" est sélectionné, on empêche de décocher
