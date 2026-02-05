@@ -1044,21 +1044,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 const kickoffBtn = document.querySelector('#booking-success a[href*="kickoff"]');
                 if (kickoffBtn) {
                     // Conversion du tableau de documents en une chaîne séparée par des virgules
-                    // (ex: ["Devis", "Facture"] devient "Devis,Facture")
                     const docsStr = (typeof selectedDocumentsList !== 'undefined' && selectedDocumentsList) 
                         ? selectedDocumentsList.join(',') 
                         : '';
 
-                    const params = new URLSearchParams({
+                    // -----------------------------------------------------------
+                    // MODIFICATION ICI : AU LIEU DE PARAMS URL -> LOCALSTORAGE
+                    // -----------------------------------------------------------
+                    const kickoffData = {
                         pack: selectedPack,
                         name: `${firstname} ${name}`,
                         email: email,
                         date: dateStr + ' à ' + timeInput.value,
-                        documents: docsStr // <--- C'est cette ligne qui permet l'affichage de la section verte !
-                    });
+                        documents: docsStr
+                    };
                     
-                    // Comme tu as créé le dossier "kickoff" avec "index.html" dedans, ce chemin est parfait :
-                    kickoffBtn.href = `/portfolio/kickoff/?${params.toString()}`;
+                    // Sauvegarde dans le stockage local du navigateur
+                    localStorage.setItem('kickoffData', JSON.stringify(kickoffData));
+
+                    // URL propre
+                    kickoffBtn.href = '/portfolio/kickoff/';
+                    // -----------------------------------------------------------
                 }
 
                 // Affichage Overlay
