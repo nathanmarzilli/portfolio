@@ -97,6 +97,9 @@
             gap: 0.5rem;
         }
         .section-title i { color: #2DD4BF; }
+        
+        /* Ajustement marge titre section documents */
+        #documents-section-title { margin-top: 0; }
 
         /* Checkboxes */
         .chk-label {
@@ -165,14 +168,12 @@
 </head>
 <body class="selection:bg-accent-400/30 selection:text-white pb-32">
 
-    <!-- Background Effects -->
     <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
         <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[100px] mix-blend-screen animate-blob"></div>
         <div class="absolute top-[20%] right-[-10%] w-[400px] h-[400px] bg-accent-400/10 rounded-full blur-[100px] mix-blend-screen animate-blob animation-delay-2000"></div>
         <div class="absolute bottom-[-10%] left-[20%] w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[100px] mix-blend-screen animate-blob animation-delay-4000"></div>
     </div>
 
-    <!-- Navigation -->
     <nav class="w-full border-b border-white/5 bg-dark-950/50 backdrop-blur-md sticky top-0 z-40">
         <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -189,7 +190,6 @@
 
     <main class="max-w-4xl mx-auto p-4 lg:p-8">
         
-        <!-- Intro Header -->
         <div class="text-center mb-10 fade-in">
             <h1 class="font-display text-3xl lg:text-4xl font-bold text-white mb-4">Préparons votre succès</h1>
             <p class="text-slate-400 max-w-xl mx-auto">
@@ -197,13 +197,8 @@
             </p>
         </div>
 
-        <!-- 
-           IMPORTANT : REMPLACEZ 'YOUR_FORM_ID' PAR VOTRE ID FORMSPREE 
-           Exemple : action="https://formspree.io/f/xvazzbqz"
-        -->
         <form action="https://formspree.io/f/mwvbqozd" method="POST" id="projectForm" class="space-y-6 fade-in" style="animation-delay: 0.2s;">
 
-            <!-- PACK SELECTION (UPDATED) -->
             <div class="glass-card p-6 border-accent-400/30 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-accent-400/10 blur-2xl rounded-full"></div>
                 
@@ -226,7 +221,34 @@
                 </div>
             </div>
 
-            <!-- 1. INFO GENERALES -->
+            <div id="documents-section" class="glass-card p-6 lg:p-8 hidden border-emerald-500/30 relative overflow-hidden">
+                 <div class="absolute top-0 left-0 w-32 h-32 bg-emerald-500/5 blur-2xl rounded-full"></div>
+                 
+                 <div class="section-title" id="documents-section-title">
+                     <i class="ph-duotone ph-files text-emerald-400"></i> <span class="text-emerald-50">Documents & Automatisation</span>
+                 </div>
+                 
+                 <div class="mb-6 p-4 rounded-xl bg-dark-950/50 border border-white/5">
+                    <label class="label-premium">Documents sélectionnés (Rappel)</label>
+                    <div id="selected-docs-display" class="flex flex-wrap gap-2 mt-2">
+                        </div>
+                    <input type="hidden" name="selected_documents_list" id="selectedDocsInput">
+                 </div>
+
+                 <div class="space-y-6">
+                    <div>
+                        <label class="label-premium text-emerald-400">Détails pour le document "Autre"</label>
+                        <p class="text-xs text-slate-400 mb-2">Si vous avez sélectionné "Autre", décrivez ici le type de document souhaité.</p>
+                        <textarea name="doc_custom_details" id="docCustomDetails" class="textarea-premium border-emerald-500/20 focus:border-emerald-500" rows="2" placeholder="Ex: Je souhaite une attestation de présence générée automatiquement..."></textarea>
+                    </div>
+                    <div>
+                        <label class="label-premium text-emerald-400">Champs spécifiques & Modifications</label>
+                        <p class="text-xs text-slate-400 mb-2">Pour les documents standards (Bail, Devis...), listez ici les champs spécifiques ou clauses particulières à ajouter.</p>
+                        <textarea name="doc_modifications" id="docModifications" class="textarea-premium border-emerald-500/20 focus:border-emerald-500" rows="3" placeholder="Ex: Sur le bail, rajouter une clause concernant les animaux. Sur le devis, ajouter une colonne TVA spécifique..."></textarea>
+                    </div>
+                 </div>
+            </div>
+
             <div class="glass-card p-6 lg:p-8">
                 <div class="section-title mt-0"><i class="ph-duotone ph-identification-card"></i> 1. Informations Générales</div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -246,16 +268,13 @@
                         <label class="label-premium">Activité & Zone Géographique</label>
                         <textarea name="activity_description" id="activityDesc" rows="2" placeholder="Que faites-vous et où ? (Ex: Plombier à Lyon et alentours...)" class="textarea-premium" required></textarea>
                     </div>
-                    <!-- Ajout Email pour contact Formspree -->
                     <div class="col-span-1 md:col-span-2">
                         <label class="label-premium">Votre Email (pour le retour)</label>
-                        <!-- CHANGEMENT: name="_replyto" remplacé par name="email" pour correspondre à l'exemple Formspree -->
                         <input type="email" name="email" id="contactEmail" placeholder="votre@email.com" class="input-premium" required>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. OBJECTIFS & CIBLE -->
             <div class="glass-card p-6 lg:p-8">
                 <div class="section-title"><i class="ph-duotone ph-target"></i> 2. Objectifs & Clients</div>
                 
@@ -287,7 +306,6 @@
                 </div>
             </div>
 
-            <!-- 3. IDENTITÉ & CONTENU -->
             <div class="glass-card p-6 lg:p-8">
                 <div class="section-title"><i class="ph-duotone ph-paint-brush"></i> 3. Design & Contenus</div>
                 
@@ -346,7 +364,6 @@
                 </div>
             </div>
 
-            <!-- 4. TECHNIQUE & ACCES -->
             <div class="glass-card p-6 lg:p-8">
                 <div class="section-title"><i class="ph-duotone ph-wrench"></i> 4. Technique & Accès</div>
 
@@ -388,7 +405,6 @@
                 </div>
             </div>
 
-            <!-- 5. CONCLUSION -->
             <div class="glass-card p-6 lg:p-8">
                 <div class="section-title"><i class="ph-duotone ph-calendar-check"></i> 5. Organisation</div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -409,20 +425,16 @@
                 </div>
             </div>
 
-            <!-- Configuration Formspree -->
             <input type="hidden" name="_subject" value="🚀 Nouveau Brief Projet Web !">
             <input type="hidden" name="_language" value="fr">
 
-            <!-- Espace vide pour le footer sticky -->
             <div class="h-24"></div>
 
-            <!-- Sticky Action Bar (Déplacé dans le form pour gérer le submit) -->
             <div class="sticky-action-bar">
                 <button type="submit" class="bg-gradient-to-r from-accent-500 to-blue-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-accent-500/25 hover:scale-105 transition-all flex items-center gap-2">
                     <span>Envoyer mes réponses</span>
                     <i class="ph-bold ph-paper-plane-right"></i>
                 </button>
-                <!-- Bouton Copier gardé en sécurité -->
                 <button type="button" onclick="copyContent()" class="bg-white/10 text-slate-300 font-bold py-3 px-4 rounded-xl hover:bg-white/20 transition-all" title="Copier le texte (sauvegarde)">
                     <i class="ph-bold ph-copy"></i>
                 </button>
@@ -432,28 +444,36 @@
 
     </main>
 
-    <!-- Notification Toast -->
     <div id="toast" class="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-dark-900 border border-accent-400 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300 z-50">
         <i class="ph-fill ph-check-circle text-accent-400 text-xl"></i>
         <span class="font-medium text-sm">Contenu copié dans le presse-papier !</span>
     </div>
 
     <script>
-        // Fonction placeholder pour le onchange demandé dans le code snippet
-        // Le changement de style est géré 100% en CSS via :checked
         function updateCardSelection(packName, price) {
             console.log("Pack sélectionné : " + packName);
         }
 
-        // --- Fonctions utilitaires pour le bouton "Copier" ---
+        // --- Fonctions utilitaires ---
         function getVal(id) { const el = document.getElementById(id); return el ? el.value : ''; }
         function getChecks(name) { return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(c => c.value).join(', '); }
         function getRadio(name) { const r = document.querySelector(`input[name="${name}"]:checked`); return r ? r.value : ''; }
 
         function buildMessage() {
-            // Reconstitution manuelle pour le bouton "Copier" uniquement
             let pack = getRadio('project_pack') || 'Non défini';
             let body = `PACK: ${pack}\n\n`;
+            
+            // Ajout des documents dans la copie
+            const docsList = getVal('selectedDocsInput');
+            if(docsList) {
+                body += `DOCUMENTS DEMANDÉS: ${docsList}\n`;
+                const customDetails = getVal('docCustomDetails');
+                const docMods = getVal('docModifications');
+                if(customDetails) body += `DETAIL AUTRE DOC: ${customDetails}\n`;
+                if(docMods) body += `MODIFS DOCS: ${docMods}\n`;
+                body += `\n`;
+            }
+
             body += `PROJET: ${getVal('companyName')} (${getVal('contactName')})\n`;
             body += `SITE ACTUEL: ${getVal('currentUrl')}\n`;
             body += `ACTIVITÉ: ${getVal('activityDesc')}\n\n`;
@@ -479,15 +499,14 @@
             });
         }
         
-        // --- GESTION DE L'ENVOI SANS REDIRECTION (AJAX) ---
+        // --- GESTION DE L'ENVOI ---
         const form = document.getElementById("projectForm");
         
         async function handleSubmit(event) {
-            event.preventDefault(); // On empêche le rechargement/redirection
+            event.preventDefault();
             const btn = form.querySelector('button[type="submit"]');
             const originalContent = btn.innerHTML;
             
-            // Feedback visuel sur le bouton
             btn.innerHTML = '<span>Envoi en cours...</span> <i class="ph-bold ph-spinner animate-spin"></i>';
             btn.disabled = true;
 
@@ -497,20 +516,16 @@
                 const response = await fetch(event.target.action, {
                     method: form.method,
                     body: data,
-                    headers: {
-                        'Accept': 'application/json' // Demande à Formspree de répondre en JSON au lieu de rediriger
-                    }
+                    headers: { 'Accept': 'application/json' }
                 });
                 
                 if (response.ok) {
-                    // SUCCÈS : On affiche le toast de réussite
                     const toast = document.getElementById('toast');
                     toast.innerHTML = '<i class="ph-fill ph-check-circle text-accent-400 text-xl"></i><span class="font-medium text-sm">Bien reçu ! Je reviens vers vous vite.</span>';
                     toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
                     setTimeout(() => toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4'), 5000);
                     form.reset();
                 } else {
-                    // ERREUR FORMSPREE
                     const data = await response.json();
                     if (Object.hasOwn(data, 'errors')) {
                         alert("Erreur: " + data["errors"].map(error => error["message"]).join(", "));
@@ -521,7 +536,6 @@
             } catch (error) {
                 alert("Erreur réseau. Veuillez réessayer.");
             } finally {
-                // On remet le bouton à l'état initial
                 btn.innerHTML = originalContent;
                 btn.disabled = false;
             }
@@ -529,42 +543,56 @@
         
         form.addEventListener("submit", handleSubmit);
     </script>
-	
-	<script>
-	// Conservation des données envoyé depuis index.html de base
+    
+    <script>
+    // --- GESTION DES PARAMETRES URL (AUTO-REMPLISSAGE) ---
     document.addEventListener('DOMContentLoaded', () => {
-        // 1. Récupérer les paramètres dans l'URL
         const params = new URLSearchParams(window.location.search);
         
-        // 2. Fonction pour remplir un champ s'il existe
-        const fillField = (id, value) => {
-            const element = document.getElementById(id);
-            if (element && value) {
-                element.value = value;
-                // Si c'est un champ select (pour le pack), on déclenche l'événement change si nécessaire
-                if(element.tagName === 'SELECT') {
-                    element.dispatchEvent(new Event('change'));
-                }
-            }
-        };
-
-        // 3. Remplissage automatique
-        // Assure-toi que les ID de tes inputs dans le formulaire correspondent à 'nom', 'email', 'pack'
-        if(params.has('name')) fillField('nom', params.get('name')); // Cherche un input id="nom"
-        if(params.has('email')) fillField('email', params.get('email')); // Cherche un input id="email"
+        // 1. Remplissage Nom et Email
+        if(params.has('name')) {
+            const el = document.getElementById('contactName');
+            if(el) el.value = params.get('name');
+        }
+        if(params.has('email')) {
+            const el = document.getElementById('contactEmail');
+            if(el) el.value = params.get('email');
+        }
         
-        // Pour le pack, c'est souvent un select ou des radios
+        // 2. Sélection du Pack
         if(params.has('pack')) {
             const packValue = params.get('pack');
-            
-            // Cas 1 : C'est un champ <select id="pack">
-            fillField('pack', packValue);
-            
-            // Cas 2 : Ce sont des boutons radio <input type="radio" name="pack" value="...">
-            const radio = document.querySelector(`input[name="pack"][value="${packValue}"]`);
+            const radio = document.querySelector(`input[name="project_pack"][value="${packValue}"]`);
             if (radio) radio.checked = true;
         }
+
+        // 3. Gestion des Documents sélectionnés (Nouveau)
+        // On suppose que l'URL ressemble à ?documents=Devis,Facture,Autre : Test
+        if(params.has('documents')) {
+            const docsStr = params.get('documents');
+            if(docsStr && docsStr.trim() !== '') {
+                // Afficher la section cachée
+                const section = document.getElementById('documents-section');
+                section.classList.remove('hidden');
+                
+                // Remplir le champ caché pour Formspree
+                document.getElementById('selectedDocsInput').value = docsStr;
+
+                // Afficher les tags visuels
+                const docsArr = docsStr.split(',');
+                const container = document.getElementById('selected-docs-display');
+                
+                docsArr.forEach(doc => {
+                    if(doc.trim()) {
+                        const tag = document.createElement('span');
+                        tag.className = 'px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20';
+                        tag.textContent = doc.trim();
+                        container.appendChild(tag);
+                    }
+                });
+            }
+        }
     });
-</script>
+    </script>
 </body>
 </html>
