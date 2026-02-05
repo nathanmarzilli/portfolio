@@ -967,7 +967,7 @@
 				<div class="glass-card p-6 md:p-10 rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-950/30 to-dark-900/50 relative overflow-hidden group">
 					<div class="absolute top-0 right-0 p-32 bg-emerald-500/10 blur-3xl rounded-full -mr-16 -mt-16 pointer-events-none mix-blend-screen"></div>
 					
-					<div class="flex flex-col md:flex-row gap-8 items-center justify-between relative z-10">
+					<div class="flex flex-col md:flex-row gap-8 items-start justify-between relative z-10">
 						
 						<div class="flex-1 w-full text-center md:text-left">
 							<div class="flex flex-col md:flex-row items-center gap-3 mb-4 justify-center md:justify-start">
@@ -978,26 +978,94 @@
 							</div>
 							
 							<p class="text-slate-300 text-sm mb-6 max-w-2xl mx-auto md:mx-0 leading-relaxed">
-								Transformez votre site en outil de gestion. Je crée des pages dédiées qui génèrent vos documents administratifs automatiquement (PDF) prêts à être envoyés ou signés.
-								<br><span class="text-xs text-emerald-400/80 italic mt-2 block"><i class="ph-bold ph-hand-tap mr-1"></i>Cliquez sur un exemple pour prévisualiser.</span>
+								Transformez votre site en outil de gestion. Générez vos PDF administratifs automatiquement.
+								<br><span class="text-xs text-emerald-400/80 italic mt-2 block"><i class="ph-bold ph-eye mr-1"></i>Cliquez sur un tag pour prévisualiser l'exemple.</span>
 							</p>
 							
-							<div class="flex flex-wrap justify-center md:justify-start gap-2.5 text-xs font-bold uppercase tracking-wider text-slate-400">
-								<button type="button" onclick="openImageModal('images/documents/devis.png')" class="px-4 py-2 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-100 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all duration-300 transform active:scale-95">
-									Devis
-								</button>
-								<button type="button" onclick="openImageModal('images/documents/facture.png')" class="px-4 py-2 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-100 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all duration-300 transform active:scale-95">
-									Factures
-								</button>
-								<button type="button" onclick="openImageModal('images/documents/bail.png')" class="px-4 py-2 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-100 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all duration-300 transform active:scale-95">
-									Contrats de bail
-								</button>
-								<button type="button" onclick="openImageModal('images/documents/quittance.png')" class="px-4 py-2 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-100 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all duration-300 transform active:scale-95">
-									Quittances
-								</button>
-								<button type="button" onclick="openImageModal('images/documents/frais.png')" class="px-4 py-2 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-100 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all duration-300 transform active:scale-95">
-									Notes de frais
-								</button>
+							<div class="flex flex-wrap justify-center md:justify-start gap-2.5 text-xs font-bold uppercase tracking-wider text-slate-400 mb-6">
+								<button type="button" onclick="openImageModal('images/documents/devis.png')" class="px-3 py-1.5 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-100 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all">Devis</button>
+								<button type="button" onclick="openImageModal('images/documents/facture.png')" class="px-3 py-1.5 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-100 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all">Factures</button>
+								<button type="button" onclick="openImageModal('images/documents/bail.png')" class="px-3 py-1.5 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-100 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all">Bails</button>
+								<button type="button" onclick="openImageModal('images/documents/quittance.png')" class="px-3 py-1.5 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-100 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all">Quittances</button>
+								<button type="button" onclick="openImageModal('images/documents/frais.png')" class="px-3 py-1.5 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-100 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all">Frais</button>
+							</div>
+
+							<div id="service-doc-selector" class="hidden bg-dark-950/50 border border-emerald-500/30 rounded-xl p-4 mb-4 animate-fade-up">
+								<p class="text-xs text-slate-400 mb-3 font-bold uppercase tracking-wider">Sélectionnez vos besoins :</p>
+								
+								<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+									<label class="doc-card-service flex items-center justify-between p-2.5 rounded-lg cursor-pointer border border-white/10 bg-dark-900 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
+										<div class="flex items-center gap-2 relative z-10">
+											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box">
+												<i class="ph-bold ph-check text-white text-[10px] opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
+											</div>
+											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Devis</span>
+										</div>
+										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
+										<input type="checkbox" class="service-doc-chk hidden" value="Devis" data-price="250">
+										<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
+									</label>
+
+									<label class="doc-card-service flex items-center justify-between p-2.5 rounded-lg cursor-pointer border border-white/10 bg-dark-900 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
+										<div class="flex items-center gap-2 relative z-10">
+											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box">
+												<i class="ph-bold ph-check text-white text-[10px] opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
+											</div>
+											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Factures</span>
+										</div>
+										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
+										<input type="checkbox" class="service-doc-chk hidden" value="Facture" data-price="250">
+										<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
+									</label>
+
+									<label class="doc-card-service flex items-center justify-between p-2.5 rounded-lg cursor-pointer border border-white/10 bg-dark-900 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
+										<div class="flex items-center gap-2 relative z-10">
+											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box">
+												<i class="ph-bold ph-check text-white text-[10px] opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
+											</div>
+											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Quittance</span>
+										</div>
+										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
+										<input type="checkbox" class="service-doc-chk hidden" value="Quittance" data-price="250">
+										<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
+									</label>
+
+									<label class="doc-card-service flex items-center justify-between p-2.5 rounded-lg cursor-pointer border border-white/10 bg-dark-900 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
+										<div class="flex items-center gap-2 relative z-10">
+											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box">
+												<i class="ph-bold ph-check text-white text-[10px] opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
+											</div>
+											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Note de Frais</span>
+										</div>
+										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
+										<input type="checkbox" class="service-doc-chk hidden" value="Note de Frais" data-price="250">
+										<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
+									</label>
+
+									<label class="doc-card-service flex items-center justify-between p-2.5 rounded-lg cursor-pointer border border-white/10 bg-dark-900 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
+										<div class="flex items-center gap-2 relative z-10">
+											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box">
+												<i class="ph-bold ph-check text-white text-[10px] opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
+											</div>
+											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Bail Location</span>
+										</div>
+										<span class="text-[10px] font-bold text-purple-400 bg-purple-400/10 px-1.5 py-0.5 rounded">300€</span>
+										<input type="checkbox" class="service-doc-chk hidden" value="Bail Location" data-price="300">
+										<div class="absolute inset-0 bg-purple-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
+									</label>
+
+									<label class="doc-card-service flex items-center justify-between p-2.5 rounded-lg cursor-pointer border border-white/10 bg-dark-900 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
+										<div class="flex items-center gap-2 relative z-10">
+											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box">
+												<i class="ph-bold ph-check text-white text-[10px] opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
+											</div>
+											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Autre spécifique</span>
+										</div>
+										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">~300€</span>
+										<input type="checkbox" class="service-doc-chk hidden" value="Autre" data-price="300">
+										<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
+									</label>
+								</div>
 							</div>
 						</div>
 						
@@ -1006,13 +1074,20 @@
 						<div class="flex flex-col items-center md:items-end gap-1 min-w-[200px] bg-emerald-950/20 md:bg-transparent p-4 md:p-0 rounded-2xl w-full md:w-auto border border-emerald-500/10 md:border-0">
 							<div class="flex items-baseline gap-1">
 								<span class="text-sm text-emerald-400 font-bold mr-1">À partir de</span>
-								<span class="text-3xl font-display font-bold text-emerald-400 text-shadow-glow">250€</span>
+								<span class="text-3xl font-display font-bold text-emerald-400 text-shadow-glow" id="service-price-display">250€</span>
 							</div>
-							<div class="text-emerald-200/60 text-xs mb-3 text-center md:text-right">par type de document<br>(ex: Générateur de devis)</div>
+							<div class="text-emerald-200/60 text-xs mb-3 text-center md:text-right" id="service-price-label">par type de document</div>
 							
-							<button onclick="toggleDocumentOptionFromService()" id="btn-add-doc" class="w-full md:w-auto px-6 py-2.5 rounded-xl border border-emerald-500/50 text-emerald-300 font-bold hover:bg-emerald-500 hover:text-white hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all text-sm flex items-center justify-center gap-2 group/btn">
-								<span>Ajouter au projet</span>
-								<i class="ph-bold ph-plus-circle group-hover/btn:rotate-90 transition-transform"></i>
+							<button onclick="toggleServiceConfig()" id="btn-config-doc" class="w-full md:w-auto px-6 py-2.5 rounded-xl border border-emerald-500/50 text-emerald-300 font-bold hover:bg-emerald-500 hover:text-white hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all text-sm flex items-center justify-center gap-2 group/btn">
+								<span>Configurer</span>
+								<i class="ph-bold ph-sliders group-hover/btn:rotate-180 transition-transform"></i>
+							</button>
+
+							<button onclick="validateServiceDocs()" id="btn-validate-doc" class="hidden w-full md:w-auto px-6 py-2.5 rounded-xl bg-emerald-500 text-white font-bold hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all text-sm flex items-center justify-center gap-2 group/btn relative overflow-hidden">
+								<span class="relative z-10 flex items-center gap-2" id="btn-validate-text">
+									Valider & Ajouter <i class="ph-bold ph-plus-circle"></i>
+								</span>
+								<div class="absolute inset-0 bg-white/20 translate-y-full transition-transform duration-300" id="btn-validate-overlay"></div>
 							</button>
 						</div>
 					</div>
@@ -1451,86 +1526,88 @@
 									<input type="checkbox" id="check-documents" class="hidden">
 								</div>
 
-								<div class="p-4 rounded-xl bg-dark-900 border border-emerald-500/20 space-y-3">
-									<div class="flex justify-between items-center mb-2">
-										<p class="text-xs text-slate-500 italic"><i class="ph-bold ph-info mr-1"></i>Sélectionnez les documents à automatiser</p>
-										<span class="text-[10px] uppercase font-bold text-emerald-500/70 tracking-wider">Tarif unitaire</span>
-									</div>
-									
-									<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-										<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
-											<div class="flex items-center gap-3 relative z-10">
-												<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
-													<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
-												</div>
-												<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Devis</span>
-											</div>
-											<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
-											<input type="checkbox" class="doc-sub-checkbox hidden" value="Devis" data-price="250" onchange="updateTotal()">
-											<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
-										</label>
-
-										<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
-											<div class="flex items-center gap-3 relative z-10">
-												<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
-													<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
-												</div>
-												<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Factures</span>
-											</div>
-											<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
-											<input type="checkbox" class="doc-sub-checkbox hidden" value="Facture" data-price="250" onchange="updateTotal()">
-											<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
-										</label>
-
-										<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
-											<div class="flex items-center gap-3 relative z-10">
-												<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
-													<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
-												</div>
-												<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Quittance</span>
-											</div>
-											<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
-											<input type="checkbox" class="doc-sub-checkbox hidden" value="Quittance" data-price="250" onchange="updateTotal()">
-											<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
-										</label>
-
-										<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
-											<div class="flex items-center gap-3 relative z-10">
-												<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
-													<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
-												</div>
-												<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Note de Frais</span>
-											</div>
-											<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
-											<input type="checkbox" class="doc-sub-checkbox hidden" value="Note de Frais" data-price="250" onchange="updateTotal()">
-											<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
-										</label>
-
-										<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden col-span-1 sm:col-span-2" onclick="handleDocClick(this)">
-											<div class="flex items-center gap-3 relative z-10">
-												<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
-													<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
-												</div>
-												<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Bail de Location (Complexe)</span>
-											</div>
-											<span class="text-xs font-bold text-purple-400 bg-purple-400/10 px-2 py-1 rounded">300€</span>
-											<input type="checkbox" class="doc-sub-checkbox hidden" value="Bail Location" data-price="300" onchange="updateTotal()">
-											<div class="absolute inset-0 bg-purple-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
-										</label>
+								<div id="documents-details-list" class="hidden transition-all duration-500 ease-in-out origin-top transform scale-y-95 opacity-0">
+									<div class="p-4 rounded-xl bg-dark-900 border border-emerald-500/20 space-y-3">
+										<div class="flex justify-between items-center mb-2">
+											<p class="text-xs text-slate-500 italic"><i class="ph-bold ph-info mr-1"></i>Sélectionnez les documents à automatiser</p>
+											<span class="text-[10px] uppercase font-bold text-emerald-500/70 tracking-wider">Tarif unitaire</span>
+										</div>
 										
-										<div class="col-span-1 sm:col-span-2 pt-2 border-t border-white/5">
-											<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this); toggleCustomDocInput()">
+										<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+											<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
 												<div class="flex items-center gap-3 relative z-10">
 													<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
 														<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
 													</div>
-													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Autre document spécifique</span>
+													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Devis</span>
 												</div>
-												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">~300€</span>
-												<input type="checkbox" id="check-custom-doc" class="doc-sub-checkbox hidden" value="Autre" data-price="300" onchange="updateTotal()">
+												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
+												<input type="checkbox" class="doc-sub-checkbox hidden" value="Devis" data-price="250">
 												<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 											</label>
-											<input type="text" id="custom-doc-input" placeholder="Précisez ici (Ex: Attestation de présence...)" class="w-full mt-2 bg-dark-950 border border-white/10 rounded-lg px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none transition-colors hidden opacity-0 translate-y-2">
+
+											<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
+												<div class="flex items-center gap-3 relative z-10">
+													<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
+														<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
+													</div>
+													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Factures</span>
+												</div>
+												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
+												<input type="checkbox" class="doc-sub-checkbox hidden" value="Facture" data-price="250">
+												<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
+											</label>
+
+											<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
+												<div class="flex items-center gap-3 relative z-10">
+													<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
+														<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
+													</div>
+													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Quittance</span>
+												</div>
+												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
+												<input type="checkbox" class="doc-sub-checkbox hidden" value="Quittance" data-price="250">
+												<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
+											</label>
+
+											<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
+												<div class="flex items-center gap-3 relative z-10">
+													<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
+														<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
+													</div>
+													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Note de Frais</span>
+												</div>
+												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
+												<input type="checkbox" class="doc-sub-checkbox hidden" value="Note de Frais" data-price="250">
+												<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
+											</label>
+
+											<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden col-span-1 sm:col-span-2" onclick="handleDocClick(this)">
+												<div class="flex items-center gap-3 relative z-10">
+													<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
+														<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
+													</div>
+													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Bail de Location (Complexe)</span>
+												</div>
+												<span class="text-xs font-bold text-purple-400 bg-purple-400/10 px-2 py-1 rounded">300€</span>
+												<input type="checkbox" class="doc-sub-checkbox hidden" value="Bail Location" data-price="300">
+												<div class="absolute inset-0 bg-purple-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
+											</label>
+											
+											<div class="col-span-1 sm:col-span-2 pt-2 border-t border-white/5">
+												<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this); toggleCustomDocInput()">
+													<div class="flex items-center gap-3 relative z-10">
+														<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
+															<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
+														</div>
+														<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Autre document spécifique</span>
+													</div>
+													<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">~300€</span>
+													<input type="checkbox" id="check-custom-doc" class="doc-sub-checkbox hidden" value="Autre" data-price="300">
+													<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
+												</label>
+												<input type="text" id="custom-doc-input" placeholder="Précisez ici (Ex: Attestation de présence...)" class="w-full mt-2 bg-dark-950 border border-white/10 rounded-lg px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none transition-colors hidden opacity-0 translate-y-2">
+											</div>
 										</div>
 									</div>
 								</div>

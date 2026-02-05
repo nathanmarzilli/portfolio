@@ -441,9 +441,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
     }
 
-	// Fonction gérant le clic sur une "carte document" pour le style
-    window.handleDocClick = function(label) {
-        // Petit délai pour laisser le temps à la checkbox native de changer d'état
+	// --- CORRECTION BUG : GESTION CLIC CARTE DOCUMENT (FORMULAIRE) ---
+    // On a modifié la fonction pour qu'elle appelle updateTotal() explicitement
+    // ce qui corrige le bug du "dernier clic uniquement".
+    
+    window.handleDocClick = function(label, skipLogic = false) {
+        // Petit délai pour laisser le temps à la checkbox native de changer d'état (click propagation)
         setTimeout(() => {
             const checkbox = label.querySelector('input[type="checkbox"]');
             const box = label.querySelector('.custom-checkbox-box');
@@ -454,19 +457,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (checkbox.checked) {
                 // STYLE ACTIF
                 label.classList.remove('border-white/10', 'bg-dark-950');
-                label.classList.add('border-emerald-500', 'bg-dark-900'); // Bordure verte
+                label.classList.add('border-emerald-500', 'bg-dark-900');
                 
                 box.classList.remove('border-slate-600', 'bg-dark-900');
-                box.classList.add('border-emerald-500', 'bg-emerald-500'); // Case cochée verte
+                box.classList.add('border-emerald-500', 'bg-emerald-500');
                 
-                icon.classList.remove('opacity-0', 'scale-50'); // Icone visible
+                icon.classList.remove('opacity-0', 'scale-50');
                 
                 text.classList.add('text-white', 'font-bold');
                 text.classList.remove('text-slate-300');
                 
-                overlay.classList.remove('opacity-0'); // Fond vert léger
+                overlay.classList.remove('opacity-0');
             } else {
-                // STYLE INACTIF (Reset)
+                // STYLE INACTIF
                 label.classList.add('border-white/10', 'bg-dark-950');
                 label.classList.remove('border-emerald-500', 'bg-dark-900');
                 
@@ -480,59 +483,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 overlay.classList.add('opacity-0');
             }
-        }, 10);
-    }
-	
-    window.toggleDocumentOption = function() {
-        window.vibrate();
-        const checkbox = document.getElementById('check-documents');
-        const fakeCheckbox = document.getElementById('doc-fake-checkbox');
-        const icon = document.getElementById('doc-check-icon');
-        const btn = document.getElementById('document-toggle-btn');
-        const listContainer = document.getElementById('documents-details-list');
-        const priceTag = document.getElementById('docs-price-tag');
 
-        isDocumentSelected = !isDocumentSelected;
-        if(checkbox) checkbox.checked = isDocumentSelected;
+            // --- CORRECTION DU BUG ---
+            // On force le recalcul du prix ICI, une fois que l'état visuel et le checked sont sûrs.
+            if (!skipLogic) {
+                updateTotal();
+            }
 
-        if (isDocumentSelected) {
-            // Style actif (bouton principal)
-            icon?.classList.remove('opacity-0', 'scale-50');
-            fakeCheckbox?.classList.add('bg-emerald-500/20', 'border-emerald-500');
-            btn?.classList.add('bg-emerald-500/10', 'border-emerald-500/30');
-            priceTag?.classList.remove('opacity-50');
-            
-            // Ouvrir la liste
-            listContainer?.classList.remove('hidden');
-            setTimeout(() => {
-                listContainer?.classList.remove('opacity-0', 'scale-y-95');
-            }, 10);
-
-        } else {
-            // Style inactif
-            icon?.classList.add('opacity-0', 'scale-50');
-            fakeCheckbox?.classList.remove('bg-emerald-500/20', 'border-emerald-500');
-            btn?.classList.remove('bg-emerald-500/10', 'border-emerald-500/30');
-            priceTag?.classList.add('opacity-50');
-
-            // Fermer la liste
-            listContainer?.classList.add('opacity-0', 'scale-y-95');
-            setTimeout(() => {
-                listContainer?.classList.add('hidden');
-                
-                // RESET DES SOUS-OPTIONS QUAND ON FERME LE MODULE ?
-                // Optionnel : ici on décoche tout pour éviter les erreurs de prix cachés
-                document.querySelectorAll('.doc-sub-checkbox').forEach(cb => {
-                    if(cb.checked) {
-                        cb.checked = false;
-                        // On reset aussi le visuel
-                        handleDocClick(cb.closest('label'));
-                    }
-                });
-                updateTotal(); // Recalculer le total à 0 pour les docs
-            }, 300);
-        }
-        updateTotal();
+        }, 20);
     }
 	
 	// Nouvelle fonction pour gérer l'affichage du champ "Autre"
@@ -1121,5 +1079,200 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.style.overflow = '';
             });
         });
+    }
+	
+	// --- GESTION SERVICES (Style & Logique) ---
+
+    // 1. Gestion du clic sur les cartes dans la section SERVICE (similaire au formulaire)
+    window.handleServiceDocClick = function(label) {
+        // Délai pour laisser le temps au clic de se propager à la checkbox
+        setTimeout(() => {
+            const checkbox = label.querySelector('input[type="checkbox"]');
+            const box = label.querySelector('.custom-checkbox-box');
+            const icon = label.querySelector('.custom-checkbox-icon');
+            const text = label.querySelector('.custom-checkbox-label');
+            const overlay = label.querySelector('.selection-overlay');
+            
+            if (checkbox.checked) {
+                // STYLE ACTIF (Service)
+                label.classList.remove('border-white/10', 'bg-dark-900');
+                label.classList.add('border-emerald-500', 'bg-dark-950'); // Inversement léger des couleurs vs formulaire pour contraste
+                
+                box.classList.remove('border-slate-600', 'bg-dark-950');
+                box.classList.add('border-emerald-500', 'bg-emerald-500');
+                
+                icon.classList.remove('opacity-0', 'scale-50');
+                text.classList.add('text-white');
+                text.classList.remove('text-slate-300');
+                overlay.classList.remove('opacity-0');
+            } else {
+                // STYLE INACTIF
+                label.classList.add('border-white/10', 'bg-dark-900');
+                label.classList.remove('border-emerald-500', 'bg-dark-950');
+                
+                box.classList.add('border-slate-600', 'bg-dark-950');
+                box.classList.remove('border-emerald-500', 'bg-emerald-500');
+                
+                icon.classList.add('opacity-0', 'scale-50');
+                text.classList.remove('text-white');
+                text.classList.add('text-slate-300');
+                overlay.classList.add('opacity-0');
+            }
+            updateServicePrice(); // Calcul du prix local (Services)
+        }, 20);
+    }
+
+    // 2. Ouvre le mode configuration
+    window.toggleServiceConfig = function() {
+        const selector = document.getElementById('service-doc-selector');
+        const btnConfig = document.getElementById('btn-config-doc');
+        const btnValidate = document.getElementById('btn-validate-doc');
+        
+        if (selector.classList.contains('hidden')) {
+            selector.classList.remove('hidden');
+            btnConfig.classList.add('hidden');
+            btnValidate.classList.remove('hidden');
+            btnValidate.classList.add('flex');
+            
+            // Reset des checkbox service
+            document.querySelectorAll('.service-doc-chk').forEach(c => {
+                c.checked = false;
+                // Reset visuel via handler
+                handleServiceDocClick(c.closest('label'));
+            });
+            updateServicePrice(); 
+        }
+    }
+
+    // 3. Calcul Prix Service (Local)
+    window.updateServicePrice = function() {
+        let total = 0;
+        const checked = document.querySelectorAll('.service-doc-chk:checked');
+        
+        checked.forEach(chk => {
+            total += parseInt(chk.getAttribute('data-price'));
+        });
+
+        const display = document.getElementById('service-price-display');
+        const label = document.getElementById('service-price-label');
+
+        if (total > 0) {
+            display.textContent = total + '€';
+            label.textContent = "pour la sélection (" + checked.length + " docs)";
+            label.classList.add('text-emerald-400');
+        } else {
+            display.textContent = '250€';
+            label.textContent = "par type de document";
+            label.classList.remove('text-emerald-400');
+        }
+    }
+
+    // 4. Validation et Transfert (Sans Scroll, avec Anim)
+    window.validateServiceDocs = function() {
+        const checked = document.querySelectorAll('.service-doc-chk:checked');
+        if(checked.length === 0) return; // Rien à faire si rien cochée
+
+        // A. Activer le module Document dans le formulaire s'il ne l'est pas
+        if (!isDocumentSelected) {
+             window.toggleDocumentOption();
+        }
+
+        // B. Reset du formulaire documents (nettoyage avant import)
+        document.querySelectorAll('.doc-sub-checkbox').forEach(cb => {
+            if(cb.checked) {
+                cb.checked = false; 
+                handleDocClick(cb.closest('label'), true);
+            }
+        });
+
+        // C. Transférer la sélection
+        checked.forEach(sChk => {
+            const val = sChk.value;
+            const formChk = document.querySelector(`.doc-sub-checkbox[value="${val}"]`);
+            if (formChk) {
+                formChk.checked = true;
+                handleDocClick(formChk.closest('label'), false);
+                
+                // Cas spécial "Autre" : ouvrir l'input
+                if(val === 'Autre') {
+                    window.toggleCustomDocInput();
+                }
+            }
+        });
+
+        // D. Animation de succès sur le bouton (Feedback UX)
+        const btn = document.getElementById('btn-validate-doc');
+        const overlay = document.getElementById('btn-validate-overlay');
+        const textSpan = document.getElementById('btn-validate-text');
+        
+        // Etat Success
+        overlay.classList.remove('translate-y-full'); // Fond blanc/flash
+        setTimeout(() => {
+            textSpan.innerHTML = 'Ajouté au devis ! <i class="ph-bold ph-check-circle text-lg"></i>';
+            btn.classList.remove('bg-emerald-500');
+            btn.classList.add('bg-emerald-600');
+        }, 200);
+
+        // Retour à la normale après 2.5s
+        setTimeout(() => {
+            overlay.classList.add('translate-y-full');
+            textSpan.innerHTML = 'Valider & Ajouter <i class="ph-bold ph-plus-circle"></i>';
+            btn.classList.add('bg-emerald-500');
+            btn.classList.remove('bg-emerald-600');
+        }, 2500);
+    }
+    
+    // --- GESTION FORMULAIRE (Toggle Bloc Détails) ---
+
+    window.toggleDocumentOption = function() {
+        window.vibrate();
+        const checkbox = document.getElementById('check-documents');
+        const fakeCheckbox = document.getElementById('doc-fake-checkbox');
+        const icon = document.getElementById('doc-check-icon');
+        const btn = document.getElementById('document-toggle-btn');
+        
+        // Le bloc détails
+        const listContainer = document.getElementById('documents-details-list');
+        const priceTag = document.getElementById('docs-price-tag');
+
+        isDocumentSelected = !isDocumentSelected;
+        if(checkbox) checkbox.checked = isDocumentSelected;
+
+        if (isDocumentSelected) {
+            // Style actif (bouton principal)
+            icon?.classList.remove('opacity-0', 'scale-50');
+            fakeCheckbox?.classList.add('bg-emerald-500/20', 'border-emerald-500');
+            btn?.classList.add('bg-emerald-500/10', 'border-emerald-500/30');
+            priceTag?.classList.remove('opacity-50');
+            
+            // Ouvrir la liste (Animation CSS)
+            listContainer?.classList.remove('hidden');
+            setTimeout(() => {
+                listContainer?.classList.remove('opacity-0', 'scale-y-95');
+            }, 10);
+
+        } else {
+            // Style inactif
+            icon?.classList.add('opacity-0', 'scale-50');
+            fakeCheckbox?.classList.remove('bg-emerald-500/20', 'border-emerald-500');
+            btn?.classList.remove('bg-emerald-500/10', 'border-emerald-500/30');
+            priceTag?.classList.add('opacity-50');
+
+            // Fermer la liste
+            listContainer?.classList.add('opacity-0', 'scale-y-95');
+            setTimeout(() => {
+                listContainer?.classList.add('hidden');
+                
+                // Optionnel : Reset des choix quand on ferme le module
+                document.querySelectorAll('.doc-sub-checkbox').forEach(cb => {
+                    if(cb.checked) {
+                        cb.checked = false;
+                        handleDocClick(cb.closest('label'), true);
+                    }
+                });
+                updateTotal();
+            }, 500); // Correspond à duration-500
+        }
+        updateTotal();
     }
 });
