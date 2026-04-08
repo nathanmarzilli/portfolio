@@ -15,7 +15,7 @@ header("Content-Type: application/json; charset=UTF-8");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
 
-$API_KEY = ""; // ⚠️ TA CLÉ ICI
+$API_KEY = "AIzaSyCQu0JKzxOSlOod4dF6-T32TjRQ-Rjb4oQ"; // ⚠️ TA CLÉ ICI
 $DB_FILE = 'database_crm.json';
 
 function sendError($msg) { echo json_encode(['error' => $msg]); exit; }

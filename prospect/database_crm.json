@@ -115,5 +115,100 @@
             "facebook": false,
             "instagram": false
         }
+    },
+    {
+        "id": "ChIJmdVX8FQjjEcRgK3M27bW7bs",
+        "name": "Dentistes Alban et Simonnet",
+        "city": "Evian",
+        "email": "",
+        "phone": "+33 4 50 70 72 90",
+        "website": "http:\/\/dr-benjamin-simonnet.chirurgiens-dentistes.fr\/",
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": null,
+        "addedAt": "2026-02-05T20:33:43.112Z",
+        "contactCount": 0,
+        "lastContactChannel": null,
+        "nextFollowUpDate": null,
+        "socials": {
+            "facebook": false,
+            "instagram": false
+        }
+    },
+    {
+        "id": "ChIJVVVxXn_E9EcROFx22lPAIs4",
+        "name": "Chirurgien-Dentiste à Saint-Priest",
+        "city": "mions",
+        "email": "",
+        "phone": "+33 4 78 20 20 45",
+        "website": "http:\/\/cabinet-dentaire-de-saythe.fr\/",
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": null,
+        "addedAt": "2026-02-05T20:39:51.391Z",
+        "contactCount": 0,
+        "lastContactChannel": null,
+        "nextFollowUpDate": null,
+        "socials": {
+            "facebook": false,
+            "instagram": false
+        }
+    },
+    {
+        "id": "ChIJ4d0K-aQ9jEcRvAyBPTg7K-w",
+        "name": "AS Marin Football",
+        "city": "marin",
+        "email": "",
+        "phone": "Non renseigné",
+        "website": null,
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": null,
+        "addedAt": "2026-03-06T09:22:06.532Z",
+        "contactCount": 0,
+        "lastContactChannel": null,
+        "nextFollowUpDate": null,
+        "socials": {
+            "facebook": false,
+            "instagram": false
+        }
+    },
+    {
+        "id": "ChIJ_ZNt7a08jEcRj7CzrhHbrzY",
+        "name": "Union Sportive Evian Lugrin",
+        "city": "lugrin",
+        "email": "",
+        "phone": "+33 4 50 70 75 70",
+        "website": "http:\/\/evian-football.com\/",
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": null,
+        "addedAt": "2026-03-06T09:27:30.318Z",
+        "contactCount": 0,
+        "lastContactChannel": null,
+        "nextFollowUpDate": null,
+        "socials": {
+            "facebook": false,
+            "instagram": false
+        }
+    },
+    {
+        "id": "ChIJNQ7KyuM8jEcRIOez-m6JR6U",
+        "name": "Stade de Champanges",
+        "city": "champanges",
+        "email": "",
+        "phone": "Non renseigné",
+        "website": null,
+        "status": "To Contact",
+        "tech": "Inconnu",
+        "lastContactDate": null,
+        "addedAt": "2026-03-06T09:33:12.981Z",
+        "contactCount": 0,
+        "lastContactChannel": null,
+        "nextFollowUpDate": null,
+        "socials": {
+            "facebook": false,
+            "instagram": false
+        }
     }
 ]

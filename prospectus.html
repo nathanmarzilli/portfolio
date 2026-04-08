@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConnectSéniors - Assistance Numérique Évian-les-Bains</title>
+    <style>
+        /* Couleurs principales */
+        :root {
+            --bleu-marine: #1A2B4C;
+            --rose-doux: #F9E0E3;
+            --rose-vif: #D16B7B;
+            --blanc: #FFFFFF;
+            --texte-fonce: #333333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--blanc);
+            color: var(--texte-fonce);
+            font-size: 18px; /* Texte plus grand pour les seniors */
+            line-height: 1.6;
+        }
+
+        /* En-tête avec image de lac et montagne en fond */
+        header {
+            background: linear-gradient(rgba(26, 43, 76, 0.85), rgba(26, 43, 76, 0.85)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            color: var(--blanc);
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin: 0;
+            color: var(--rose-doux);
+        }
+
+        .subtitle {
+            font-size: 1.5em;
+            margin-top: 10px;
+            font-weight: 300;
+        }
+
+        /* Badge Service à la personne */
+        .sap-badge {
+            background-color: var(--rose-vif);
+            color: var(--blanc);
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        /* Section principale */
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .intro {
+            text-align: center;
+            font-size: 1.3em;
+            margin-bottom: 50px;
+            color: var(--bleu-marine);
+            font-weight: bold;
+        }
+
+        /* Grille des services */
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .service-card {
+            background-color: var(--rose-doux);
+            border-left: 8px solid var(--bleu-marine);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .service-title {
+            color: var(--bleu-marine);
+            font-size: 1.4em;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .service-desc {
+            margin: 10px 0;
+        }
+
+        .service-price {
+            font-weight: bold;
+            color: var(--rose-vif);
+            font-size: 1.1em;
+            background: var(--blanc);
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        /* Pied de page */
+        footer {
+            background-color: var(--bleu-marine);
+            color: var(--blanc);
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 60px;
+            font-size: 1.2em;
+        }
+
+        .contact-info {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--rose-doux);
+            margin: 20px 0;
+        }
+
+        /* Adaptation pour les tablettes et grands écrans */
+        @media (min-width: 768px) {
+            .services-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .service-card:nth-child(5) {
+                grid-column: span 2; /* Centrer le dernier élément s'il y en a 5 */
+                max-width: 50%;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ConnectSéniors</h1>
+        <div class="subtitle">Votre accompagnement numérique simple et sans souci à domicile</div>
+        <p>Intervention sur Évian-les-Bains et tout le Chablais</p>
+        <div class="sap-badge">💡 Profitez de 50% de crédit d'impôt immédiat !</div>
+    </header>
+
+    <div class="container">
+        <p class="intro">Un service patient, pour enfin comprendre la technologie à votre rythme.</p>
+
+        <div class="services-grid">
+            
+            <div class="service-card">
+                <h2 class="service-title">📱 1. Communiquer avec vos proches</h2>
+                <p class="service-desc">Appels vidéo, WhatsApp, e-mails, transfert de photos et réglages simplifiés (gros caractères, son fort).</p>
+                <div class="service-price">45€ / h (Soit 22,50€ après déduction fiscale)</div>
+            </div>
+
+            <div class="service-card">
+                <h2 class="service-title">📺 2. Divertissement Numérique</h2>
+                <p class="service-desc">Installation et réglage simple de votre TV, Box Internet, chaînes, Netflix ou YouTube.</p>
+                <div class="service-price">Forfait 50€ (Soit 25€ après déduction fiscale)</div>
+            </div>
+
+            <div class="service-card">
+                <h2 class="service-title">📼 3. Vos Souvenirs Précieux</h2>
+                <p class="service-desc">Ne perdez plus vos souvenirs ! Numérisation de vos anciennes cassettes (VHS, audio) et scan de vos photos papier sur clé USB.</p>
+                <div class="service-price">15€ / cassette VHS — 0,30€ / photo</div>
+            </div>
+
+            <div class="service-card">
+                <h2 class="service-title">🛡️ 4. Entretien & Protection</h2>
+                <p class="service-desc">Mise en sécurité de vos appareils : Wi-Fi, antivirus, prévention des arnaques, et installation simplifiée de caméras connectées pour votre tranquillité.</p>
+                <div class="service-price">Forfait 60€ (Soit 30€ après déduction fiscale)</div>
+            </div>
+
+            <div class="service-card">
+                <h2 class="service-title">📝 5. Gestion Quotidienne Simplifiée</h2>
+                <p class="service-desc">Gagnez du temps : création de modèles "prêts à remplir" pour vos courriers ou e-mails récurrents (assurances, abonnements).</p>
+                <div class="service-price">40€ / h (Soit 20€ après déduction fiscale)</div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>Prenez rendez-vous pour un premier diagnostic gratuit :</p>
+        <div class="contact-info">📞 06 XX XX XX XX</div>
+        <p>✉️ contact@connectseniors.fr</p>
+        <p>📍 Déplacement à Évian-les-Bains et ses environs</p>
+    </footer>
+
+</body>
+</html>

@@ -1386,4 +1386,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         updateTotal();
     }
+	
+	// SECTION FACILITATEUR NUMÉRIQUE - CLIC A DOMICILE// Synchronise le téléphone du flyer avec celui affiché sur le site
+	const sitePhone = "06 XX XX XX XX"; // ← change ici une seule fois
+	document.querySelectorAll('[href^="tel:"]').forEach(el => el.href = `tel:${sitePhone.replace(/\s/g,'')}`);
+	document.querySelectorAll('[href^="tel:"], .site-phone').forEach(el => { if(el.textContent.includes('06')) el.textContent = sitePhone; });
+	const flyerPhone = document.getElementById('flyer-phone');
+	if(flyerPhone) flyerPhone.textContent = sitePhone;
 });
