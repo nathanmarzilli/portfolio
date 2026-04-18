@@ -445,9 +445,18 @@
                             </select>
                         </div>
                     </div>
-                    <div>
-                        <label class="label-premium text-accent-400">Nb de jeux de clés remis</label>
-                        <input type="number" id="propKeys" value="2" class="input-premium">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                        <div>
+                            <label class="label-premium text-accent-400">Nb de jeux de clés remis</label>
+                            <input type="number" id="propKeys" value="2" class="input-premium">
+                        </div>
+                        <div>
+                            <label class="chk-label mt-5">
+                                <input type="checkbox" id="propParking"> 
+                                <span class="text-sm">Place de parking incluse</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -630,6 +639,7 @@
                             <div class="pdf-row"><span class="pdf-lbl">Chauffage :</span> <span class="pdf-val" id="oHeat"></span></div>
                             <div class="pdf-row"><span class="pdf-lbl">Eau Chaude :</span> <span class="pdf-val" id="oWater"></span></div>
                             <div class="pdf-row"><span class="pdf-lbl">Moyens d'accès :</span> <span class="pdf-val"><span id="oPropKeys"></span> jeux de clés remis ce jour.</span></div>
+                            <div class="pdf-row"><span class="pdf-lbl">Stationnement :</span> <span class="pdf-val" id="oPropParking"></span></div>
                             <div class="pdf-row"><span class="pdf-lbl">Travaux récents :</span> <span class="pdf-val" id="oHistWorks"></span></div>
                         </div>
         
@@ -734,19 +744,21 @@
             </div>
 
         </main>
-    </div> <script type="module">
+    </div> 
+    
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         // --- 1. CONFIGURATION FIREBASE (REMPLACE PAR TES CLÉS !) ---
         const firebaseConfig = {
-		  apiKey: "AIzaSyD6Q-HVto8eybwGo9YgcFx4hu7rWBLNYfg",
-		  authDomain: "portfolio-nathan-e148f.firebaseapp.com",
-		  projectId: "portfolio-nathan-e148f",
-		  storageBucket: "portfolio-nathan-e148f.firebasestorage.app",
-		  messagingSenderId: "61408006418",
-		  appId: "1:61408006418:web:8a448e8ca60ec77bf523cb"
-		};
+          apiKey: "AIzaSyD6Q-HVto8eybwGo9YgcFx4hu7rWBLNYfg",
+          authDomain: "portfolio-nathan-e148f.firebaseapp.com",
+          projectId: "portfolio-nathan-e148f",
+          storageBucket: "portfolio-nathan-e148f.firebasestorage.app",
+          messagingSenderId: "61408006418",
+          appId: "1:61408006418:web:8a448e8ca60ec77bf523cb"
+        };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -952,6 +964,11 @@
             setTxt('oHeat', getVal('heatType'));
             setTxt('oWater', getVal('waterType'));
             setTxt('oPropKeys', getVal('propKeys'));
+            
+            // Ajout du stationnement
+            const hasParking = document.getElementById('propParking') && document.getElementById('propParking').checked;
+            setTxt('oPropParking', hasParking ? "Oui (Place de parking incluse)" : "Non");
+
             setTxt('oHistWorks', getVal('histWorks'));
 
             // Finances
