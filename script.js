@@ -410,9 +410,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==============================================
 
     // Variables globales pour le calcul
-    let currentBasePrice = 1790;
+	let currentBasePrice = 1790;
 	let serenityTier = null; // null | 'simple' | 'plus'
 	let isDocumentSelected = false;
+	let requestType = 'newsite'; // 'newsite' | 'existing'
 	const SERENITY_PRICES = { simple: 49.90, plus: 94.90 };
 	const DOC_PRICE = 250;
 
@@ -727,66 +728,27 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 		const displayEl = document.getElementById('total-price-display');
+		const labelEl = document.getElementById('total-label');
+
 		if(displayEl) {
-			let text = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(totalOneShot);
+			let text = totalOneShot > 0
+				? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(totalOneShot)
+				: '—';
 
 			if (serenityTier) {
 				const monthly = SERENITY_PRICES[serenityTier];
 				const label = serenityTier === 'plus' ? 'Sérénité+' : 'Sérénité';
 				text += ` <span class="text-xs font-normal text-blue-300 block text-right mt-1">+ ${monthly}€/mois (${label}, engagement 12 mois)</span>`;
 			}
-
 			displayEl.innerHTML = text;
+		}
+
+		if(labelEl) {
+			labelEl.innerHTML = requestType === 'existing'
+				? 'Total Estimé <span class="text-[10px] font-normal lowercase">(Abonnement)</span>'
+				: 'Total Estimé <span class="text-[10px] font-normal lowercase">(Création)</span>';
 		}
 	}
-
-    function updateTotal() {
-        let totalOneShot = currentBasePrice;
-        let docTotal = 0;
-
-        // Calculer le prix des documents SEULEMENT si le module est activé
-        if (isDocumentSelected) {
-            const checkedDocs = document.querySelectorAll('.doc-sub-checkbox:checked');
-            checkedDocs.forEach(cb => {
-                // On récupère le prix depuis l'attribut data-price (converti en entier)
-                const price = parseInt(cb.getAttribute('data-price')) || 0;
-                docTotal += price;
-            });
-            totalOneShot += docTotal;
-        }
-
-        // Mise à jour du tag de prix dans le bouton Documents
-        const priceTag = document.getElementById('docs-price-tag');
-        if(priceTag) {
-            // Si module actif, on affiche le montant total des docs sélectionnés
-            if(isDocumentSelected) {
-                priceTag.textContent = `+${docTotal}€`;
-                if(docTotal > 0) {
-                      priceTag.classList.remove('text-slate-500');
-                      priceTag.classList.add('text-emerald-400', 'bg-emerald-400/10');
-                } else {
-                      priceTag.classList.add('text-slate-500');
-                      priceTag.classList.remove('text-emerald-400', 'bg-emerald-400/10');
-                }
-            } else {
-                priceTag.textContent = '+0€';
-                priceTag.classList.add('text-slate-500');
-                priceTag.classList.remove('text-emerald-400', 'bg-emerald-400/10');
-            }
-        }
-
-        const displayEl = document.getElementById('total-price-display');
-		if(displayEl) {
-			// Formatage : 1 790 € (+ 49.90€/mois)
-			let text = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(totalOneShot);
-			
-			if (isSerenitySelected) {
-				text += ` <span class="text-xs font-normal text-blue-300 block text-right mt-1">+ ${SERENITY_MONTHLY}€ /mois (engagement 12 mois)</span>`;
-			}
-			
-			displayEl.innerHTML = text;
-		}
-    }
 
     // Écouter les changements directs sur les radios (sécurité si l'utilisateur clique directement)
     document.querySelectorAll('input[name="project_pack"]').forEach(radio => {
@@ -980,9 +942,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert("Veuillez sélectionner une date et une heure.");
                 return;
             }
+			
+			if (requestType === 'existing' && !serenityTier) {
+				alert("Merci de choisir une formule (Sérénité ou Sérénité+) pour votre site existant.");
+				return;
+			}
 
             // Récupération des données du formulaire
-			const selectedPack = document.querySelector('input[name="project_pack"]:checked').value;
+			const packRadio = document.querySelector('input[name="project_pack"]:checked');
+			const selectedPack = requestType === 'existing' ? 'Site existant (Sérénité seul)' : (packRadio ? packRadio.value : '');
 			const hasSerenity = serenityTier !== null;
             const desc = document.getElementById('client-desc').value;
             const total = document.getElementById('total-price-display').textContent;
@@ -1035,6 +1003,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     email: email,
                     phone: document.getElementById('client-phone').value,
                     pack: selectedPack,
+					request_type: requestType, // 'newsite' | 'existing'
                     
                     option_serenite: hasSerenity,
 					option_serenite_tier: serenityTier, // null | 'simple' | 'plus'
@@ -1404,6 +1373,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         updateTotal();
     }
+	
+	window.setRequestType = function(type) {
+		window.vibrate();
+		requestType = type;
+
+		const btnNew = document.getElementById('request-type-newsite');
+		const btnExisting = document.getElementById('request-type-existing');
+		const packBlock = document.getElementById('pack-selection-block');
+
+		btnNew?.classList.remove('active-request-type');
+		btnExisting?.classList.remove('active-request-type');
+
+		if (type === 'existing') {
+			btnExisting?.classList.add('active-request-type');
+			packBlock?.classList.add('hidden');
+
+			// On désélectionne le pack de création et on retire le forçage Sérénité de l'Essentiel
+			document.querySelectorAll('input[name="project_pack"]').forEach(r => r.checked = false);
+			currentBasePrice = 0;
+			forceSerenity(false);
+
+		} else {
+			btnNew?.classList.add('active-request-type');
+			packBlock?.classList.remove('hidden');
+
+			const checkedRadio = document.querySelector('input[name="project_pack"]:checked');
+			if (checkedRadio) {
+				currentBasePrice = parseInt(checkedRadio.getAttribute('data-price'));
+				window.updateCardSelection(checkedRadio.value, currentBasePrice);
+			} else {
+				document.getElementById('pack-vitrine').checked = true;
+				window.updateCardSelection('Vitrine', 1790);
+			}
+		}
+
+		updateTotal();
+	};
 	
 	// SECTION FACILITATEUR NUMÉRIQUE - CLIC A DOMICILE// Synchronise le téléphone du flyer avec celui affiché sur le site
 	const sitePhone = "06 25 96 51 12"; // ← change ici une seule fois

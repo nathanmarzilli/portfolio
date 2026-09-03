@@ -249,6 +249,11 @@
 			border-color: #6366F1;
 			box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
 		}
+		.request-type-btn.active-request-type {
+			border-color: #2DD4BF !important;
+			background: rgba(45, 212, 191, 0.1) !important;
+			box-shadow: 0 0 15px rgba(45, 212, 191, 0.15);
+		}
     </style>
 	
 	<style>
@@ -1514,12 +1519,28 @@
 							<span class="text-sm text-slate-300">Moyenne (Mise en page)</span>
 							<span class="font-bold text-white">200€</span>
 						</div>
-						<div class="flex justify-between items-center">
+						<div class="flex justify-between items-center border-b border-white/5 pb-2">
 							<span class="text-sm text-slate-300">Complexe (Fonctionnalité)</span>
 							<span class="font-bold text-white">300€</span>
 						</div>
+						<div class="flex justify-between items-center pt-1">
+							<div class="flex flex-col">
+								<span class="text-sm text-slate-300 font-bold">Relifting complet du site</span>
+								<span class="text-[10px] text-slate-500">Ancien site → design moderne</span>
+							</div>
+							<span class="font-bold text-accent-400">Dès 690€</span>
+						</div>
 					</div>
+					<p class="text-[10px] text-slate-600 mt-4 italic">Relifting : devis personnalisé au-delà de 5 pages.</p>
 				</div>
+			</div>
+			
+			<div class="mt-4 text-center reveal">
+				<p class="text-xs text-slate-500">
+					<i class="ph-bold ph-info text-accent-400 mr-1"></i>
+					Vous avez déjà un site (même réalisé par quelqu'un d'autre) ? Le Pack Sérénité et Sérénité+ sont disponibles seuls, sans création de site.
+					<a href="#contact" class="text-accent-400 hover:underline font-bold">Faire une demande</a>
+				</p>
 			</div>
 		</div>
 	</section>
@@ -1547,7 +1568,7 @@
                                 <i class="ph-fill ph-gift text-2xl"></i>
                             </div>
                             <h3 class="text-white font-bold text-lg mb-1">Pour vous</h3>
-                            <div class="text-3xl font-display font-bold text-accent-400 mb-2">100 €</div>
+                            <div class="text-3xl font-display font-bold text-accent-400 mb-2">50 €</div>
                             <p class="text-xs text-slate-400">Versés directement par virement pour chaque nouveau contrat signé.</p>
                         </div>
 
@@ -1692,18 +1713,20 @@
 							<span class="font-bold text-white group-hover:text-accent-400 transition-colors">À quoi sert le Pack Sérénité (49.90€) ?</span>
 							<i class="ph-bold ph-caret-down text-slate-500 transform transition-transform duration-300"></i>
 						</button>
-						<div class="pb-6 border-t border-white/5 pt-4">
-							Un site n'est pas "figé", il vit. Le Pack Sérénité est votre assurance tranquillité :
-							<ul class="list-disc pl-5 mt-2 space-y-1 text-slate-400">
-								<li>Je gère les mises à jour techniques (sécurité).</li>
-								<li>Je fais des sauvegardes régulières.</li>
-								<li><strong>Sérénité (49.90€/mois) :</strong> 1 intervention simple incluse par mois.</li>
-								<li><strong>Sérénité+ (94.90€/mois) :</strong> 2 interventions simples incluses par mois, pour les sites qui bougent plus souvent.</li>
-							</ul>
-							<p class="mt-3 text-blue-300 font-bold flex items-center gap-2">
-								<i class="ph-bold ph-lock-simple"></i> Engagement minimum de 12 mois sur les deux formules.
-							</p>
-							Sans pack, les interventions ponctuelles sont facturées à l'heure (voir grille tarifaire). Les interventions incluses non utilisées dans le mois ne sont pas reportées au mois suivant.
+						<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out px-6 text-slate-400 text-sm leading-relaxed">
+							<div class="pb-6 border-t border-white/5 pt-4">
+								Un site n'est pas "figé", il vit. Le Pack Sérénité est votre assurance tranquillité :
+								<ul class="list-disc pl-5 mt-2 space-y-1 text-slate-400">
+									<li>Je gère les mises à jour techniques (sécurité).</li>
+									<li>Je fais des sauvegardes régulières.</li>
+									<li><strong>Sérénité (49.90€/mois) :</strong> 1 intervention simple incluse par mois.</li>
+									<li><strong>Sérénité+ (94.90€/mois) :</strong> 2 interventions simples incluses par mois, pour les sites qui bougent plus souvent.</li>
+								</ul>
+								<p class="mt-3 text-blue-300 font-bold flex items-center gap-2">
+									<i class="ph-bold ph-lock-simple"></i> Engagement minimum de 12 mois sur les deux formules.
+								</p>
+								Sans pack, les interventions ponctuelles sont facturées à l'heure (voir grille tarifaire). Les interventions incluses non utilisées dans le mois ne sont pas reportées au mois suivant.
+							</div>
 						</div>
 					</div>
 
@@ -1839,8 +1862,23 @@
 								<input type="tel" id="client-phone" required placeholder="06 12 34 56 78" 
 									class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 focus:outline-none transition-colors text-sm">
 							</div>
+							
+							<div class="space-y-3">
+								<div class="form-section-title"><i class="ph-bold ph-compass"></i> Votre situation</div>
+								<div class="grid grid-cols-2 gap-2">
+									<div id="request-type-newsite" class="request-type-btn active-request-type cursor-pointer flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center select-none border border-white/10 bg-dark-950" onclick="setRequestType('newsite')">										
+										<i class="ph-bold ph-rocket-launch text-lg text-accent-400 mb-1"></i>
+										<span class="text-xs text-white font-bold">Créer un site</span>
+									</div>
+									<div id="request-type-existing" class="request-type-btn cursor-pointer flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center select-none border border-white/10 bg-dark-950" onclick="setRequestType('existing')">
+										<i class="ph-bold ph-shield-check text-lg text-blue-400 mb-1"></i>
+										<span class="text-xs text-slate-300 font-bold">J'ai déjà un site</span>
+										<span class="text-[9px] text-slate-500">Pack Sérénité seul</span>
+									</div>
+								</div>
+							</div>
 
-							<div class="space-y-2 pt-2">
+							<div id="pack-selection-block" class="space-y-2 pt-2">
 								<label class="text-xs text-slate-400 uppercase font-bold ml-1">Pack Sélectionné</label>
 								<div class="grid grid-cols-3 gap-2">
 									<div class="relative">
@@ -1852,7 +1890,7 @@
 										<label for="pack-vitrine" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Vitrine</label>
 									</div>
 									<div class="relative">
-										<input type="radio" name="project_pack" id="pack-premium" value="Premium" data-price="2590" class="hidden pack-radio-input" onchange="updateCardSelection('Premium', 2990)">
+										<input type="radio" name="project_pack" id="pack-premium" value="Premium" data-price="2990" class="hidden pack-radio-input" onchange="updateCardSelection('Premium', 2990)">
 										<label for="pack-premium" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Premium</label>
 									</div>
 								</div>
@@ -1980,7 +2018,7 @@
 							</div>
 
 							<div class="flex justify-between items-center px-4 py-3 bg-white/5 rounded-xl border border-white/10">
-								<span class="text-sm text-slate-400 font-bold uppercase">Total Estimé <span class="text-[10px] font-normal lowercase">(Création)</span></span>
+								<span id="total-label" class="text-sm text-slate-400 font-bold uppercase">Total Estimé <span class="text-[10px] font-normal lowercase">(Création)</span></span>
 								<span id="total-price-display" class="text-xl font-bold text-accent-400">1 790 €</span>
 							</div>
 
