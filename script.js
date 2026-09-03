@@ -411,10 +411,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Variables globales pour le calcul
     let currentBasePrice = 1790;
-    let isSerenitySelected = false;
-    let isDocumentSelected = false;
-    const SERENITY_MONTHLY = 49.90;
-    const DOC_PRICE = 250;
+	let serenityTier = null; // null | 'simple' | 'plus'
+	let isDocumentSelected = false;
+	const SERENITY_PRICES = { simple: 49.90, plus: 94.90 };
+	const DOC_PRICE = 250;
 
     // --- Fonctions exposées à window pour les onclick HTML ---
 
@@ -544,184 +544,201 @@ document.addEventListener('DOMContentLoaded', () => {
         // Juste pour s'assurer que l'input reste accessible, pas de logique complexe ici
     }
 
-    // --- Sérénité (Modification : Toggle visuel bouton, pas de scroll) ---
-    window.toggleSerenityOption = function(btnElement) {
-        if (!isSerenitySelected) {
-            window.toggleSerenityForm();
-        } else {
-            // Si déjà sélectionné, le bouton permet de retirer (sauf si forcé par Essentiel)
-            // Note: toggleSerenityForm gère déjà la logique d'exclusion "Essentiel"
-             window.toggleSerenityForm();
-        }
-    }
+    // --- Sérénité (Sélection à 3 états, mutuellement exclusif) ---
+	window.toggleSerenityOption = function(tier) {
+		window.toggleSerenityForm(tier);
+	};
 
-    // Mise à jour visuelle du bouton Sérénité dans la section Services
-    window.updateSerenityCardInServices = function(isChecked) {
-        const card = document.getElementById('card-serenite');
-        const btn = document.getElementById('btn-serenite-action');
+	// Mise à jour visuelle des DEUX cartes dans la section Services
+	window.updateSerenityCardInServices = function() {
+		const cardSimple = document.getElementById('card-serenite');
+		const cardPlus = document.getElementById('card-serenite-plus');
+		const btnSimple = document.getElementById('btn-serenite-action');
+		const btnPlus = document.getElementById('btn-serenite-plus-action');
 
-        if(card && btn) {
-            if(isChecked) {
-                // 1. Style de la carte (Bordure brillante)
-                card.classList.add('serenity-selected-card');
+		// Reset des deux
+		[cardSimple, cardPlus].forEach(c => c?.classList.remove('serenity-selected-card'));
+		if (btnSimple) {
+			btnSimple.innerHTML = '<span>Ajouter au devis</span> <i class="ph-bold ph-plus"></i>';
+			btnSimple.classList.remove('bg-blue-500', 'text-white', 'shadow-[0_0_20px_rgba(59,130,246,0.5)]', 'scale-105');
+			btnSimple.classList.add('bg-blue-500/20', 'text-blue-300');
+		}
+		if (btnPlus) {
+			btnPlus.innerHTML = '<span>Ajouter au devis</span> <i class="ph-bold ph-plus"></i>';
+			btnPlus.classList.remove('bg-indigo-500', 'text-white', 'shadow-[0_0_20px_rgba(99,102,241,0.5)]', 'scale-105');
+			btnPlus.classList.add('bg-indigo-500/20', 'text-indigo-300');
+		}
 
-                // 2. BOUTON : État "AJOUTÉ" (Transformation visuelle)
-                // On change le texte et l'icône avec une animation d'entrée sur l'icône
-                btn.innerHTML = '<span>Ajouté</span> <i class="ph-bold ph-check-circle text-lg animate-pop-in"></i>';
+		// Active le bon
+		if (serenityTier === 'simple' && cardSimple && btnSimple) {
+			cardSimple.classList.add('serenity-selected-card');
+			btnSimple.innerHTML = '<span>Ajouté</span> <i class="ph-bold ph-check-circle text-lg animate-pop-in"></i>';
+			btnSimple.classList.remove('bg-blue-500/20', 'text-blue-300');
+			btnSimple.classList.add('bg-blue-500', 'text-white', 'shadow-[0_0_20px_rgba(59,130,246,0.5)]', 'scale-105');
+		} else if (serenityTier === 'plus' && cardPlus && btnPlus) {
+			cardPlus.classList.add('serenity-selected-card');
+			btnPlus.innerHTML = '<span>Ajouté</span> <i class="ph-bold ph-check-circle text-lg animate-pop-in"></i>';
+			btnPlus.classList.remove('bg-indigo-500/20', 'text-indigo-300');
+			btnPlus.classList.add('bg-indigo-500', 'text-white', 'shadow-[0_0_20px_rgba(99,102,241,0.5)]', 'scale-105');
+		}
+	};
 
-                // On retire le style "transparent/fantôme"
-                btn.classList.remove('bg-blue-500/20', 'text-blue-300', 'hover:bg-blue-500', 'hover:text-white');
-                
-                // On ajoute le style "Plein/Validé" (Bleu solide + Ombre + Léger Zoom)
-                // scale-105 donne l'effet de "pop"
-                btn.classList.add('bg-blue-500', 'text-white', 'shadow-[0_0_20px_rgba(59,130,246,0.5)]', 'scale-105', 'border-transparent');
+	// Mise à jour visuelle des DEUX boutons dans le formulaire
+	window.updateSerenityFormButtons = function() {
+		const btnSimple = document.getElementById('serenite-toggle-btn');
+		const btnPlus = document.getElementById('serenite-plus-toggle-btn');
+		btnSimple?.classList.remove('active');
+		btnPlus?.classList.remove('active-plus');
 
-            } else {
-                // 1. Reset carte
-                card.classList.remove('serenity-selected-card');
+		if (serenityTier === 'simple') btnSimple?.classList.add('active');
+		if (serenityTier === 'plus') btnPlus?.classList.add('active-plus');
+	};
 
-                // 2. BOUTON : État "DISPONIBLE"
-                btn.innerHTML = '<span>Ajouter au devis</span> <i class="ph-bold ph-plus"></i>';
+	window.toggleSerenityForm = function(tier) {
+		// Si "Essentiel" est sélectionné, Sérénité simple est forcée : on autorise seulement l'upgrade vers "plus"
+		const radioEssentiel = document.querySelector('input[name="project_pack"][value="Essentiel"]');
+		if (radioEssentiel && radioEssentiel.checked && tier === 'simple') return;
 
-                // On retire le style "Plein"
-                btn.classList.remove('bg-blue-500', 'text-white', 'shadow-[0_0_20px_rgba(59,130,246,0.5)]', 'scale-105', 'border-transparent');
-                
-                // On remet le style "transparent" par défaut
-                btn.classList.add('bg-blue-500/20', 'text-blue-300', 'hover:bg-blue-500', 'hover:text-white');
-            }
-        }
-    }
+		window.vibrate();
 
-    window.toggleSerenityForm = function() {
-        // Si "Essentiel" est sélectionné, on empêche de décocher
-        const radioEssentiel = document.querySelector('input[name="project_pack"][value="Essentiel"]');
-        if (radioEssentiel && radioEssentiel.checked) return;
+		if (serenityTier === tier) {
+			// Reclique sur l'option active -> on désélectionne (sauf si forcé par Essentiel)
+			if (radioEssentiel && radioEssentiel.checked) {
+				serenityTier = 'simple'; // reste au minimum forcé
+			} else {
+				serenityTier = null;
+			}
+		} else {
+			serenityTier = tier;
+		}
 
-        window.vibrate();
-        const checkbox = document.getElementById('check-serenite');
-        const fakeCheckbox = document.getElementById('serenite-fake-checkbox');
-        const icon = document.getElementById('serenite-check-icon');
-        const btn = document.getElementById('serenite-toggle-btn');
+		updateSerenityFormButtons();
+		updateSerenityCardInServices();
+		updateTotal();
+	};
 
-        isSerenitySelected = !isSerenitySelected;
-        if(checkbox) checkbox.checked = isSerenitySelected;
+	// Mise à jour des cartes tarifaires (Essentiel / Vitrine / Premium)
+	window.updateCardSelection = function(packName, price) {
+		currentBasePrice = price;
 
-        if (isSerenitySelected) {
-            icon?.classList.remove('opacity-0', 'scale-50');
-            fakeCheckbox?.classList.add('bg-blue-500/20', 'border-blue-500');
-            btn?.classList.add('active');
-            updateSerenityCardInServices(true);
-        } else {
-            icon?.classList.add('opacity-0', 'scale-50');
-            fakeCheckbox?.classList.remove('bg-blue-500/20', 'border-blue-500');
-            btn?.classList.remove('active');
-            updateSerenityCardInServices(false);
-        }
-        updateTotal();
-    }
+		['Essentiel', 'Vitrine', 'Premium'].forEach(pName => {
+			let cardId = `card-${pName.toLowerCase()}`;
+			let card = document.getElementById(cardId);
+			if(card) {
+				card.classList.remove('gold-selected-card');
+				let btn = card.querySelector('.offer-btn');
+				if(btn) {
+					btn.innerHTML = '<span>Choisir</span>';
+					btn.classList.remove('bg-accent-400', 'text-dark-950', 'bg-purple-500', 'text-white', 'shadow-[0_0_20px_rgba(45,212,191,0.4)]', 'shadow-[0_0_20px_rgba(168,85,247,0.4)]');
+					btn.classList.add('border-white/10', 'text-white');
+					if(pName === 'Premium') {
+						btn.classList.add('hover:bg-purple-400');
+						btn.classList.remove('hover:bg-white', 'hover:text-dark-950');
+					} else {
+						btn.classList.add('hover:bg-white', 'hover:text-dark-950');
+						btn.classList.remove('hover:bg-purple-400');
+					}
+				}
+			}
+		});
 
-    // Mise à jour visuelle des cartes (contour + boutons)
-    window.updateCardSelection = function(packName, price) {
-        currentBasePrice = price;
+		let targetId = `card-${packName.toLowerCase()}`;
+		const targetEl = document.getElementById(targetId);
+		if(targetEl) {
+			targetEl.classList.add('gold-selected-card');
+			const targetBtn = targetEl.querySelector('.offer-btn');
+			if(targetBtn) {
+				targetBtn.innerHTML = '<span>Sélectionné</span> <i class="ph-bold ph-check animate-pop-in"></i>';
+				targetBtn.classList.remove('border-white/10', 'text-white', 'hover:bg-white', 'hover:text-dark-950', 'hover:bg-purple-400');
+				if (packName === 'Premium') {
+					targetBtn.classList.add('bg-purple-500', 'text-white', 'shadow-[0_0_20px_rgba(168,85,247,0.4)]');
+				} else {
+					targetBtn.classList.add('bg-accent-400', 'text-dark-950', 'shadow-[0_0_20px_rgba(45,212,191,0.4)]');
+				}
+			}
+		}
 
-        // 1. Reset de TOUTES les cartes et TOUS les boutons
-        ['Essentiel', 'Vitrine', 'Premium'].forEach(pName => {
-            let cardId = `card-${pName.toLowerCase()}`;
-            let card = document.getElementById(cardId);
-            if(card) {
-                card.classList.remove('gold-selected-card');
-                
-                // Reset bouton
-                let btn = card.querySelector('.offer-btn');
-                if(btn) {
-                    btn.innerHTML = '<span>Choisir</span>';
-                    // Reset classes génériques
-                    btn.classList.remove('bg-accent-400', 'text-dark-950', 'bg-purple-500', 'text-white', 'shadow-[0_0_20px_rgba(45,212,191,0.4)]', 'shadow-[0_0_20px_rgba(168,85,247,0.4)]');
-                    
-                    // Remettre les états hover par défaut
-                    btn.classList.add('border-white/10', 'text-white');
-                    if(pName === 'Premium') {
-                        btn.classList.add('hover:bg-purple-400');
-                        btn.classList.remove('hover:bg-white', 'hover:text-dark-950');
-                    } else {
-                        btn.classList.add('hover:bg-white', 'hover:text-dark-950');
-                        btn.classList.remove('hover:bg-purple-400');
-                    }
-                }
-            }
-        });
+		// Gestion Forçage Sérénité pour Essentiel
+		if (packName === 'Essentiel') {
+			forceSerenity(true);
+		} else {
+			forceSerenity(false);
+		}
 
-        // 2. Activer la carte CIBLÉE
-        let targetId = `card-${packName.toLowerCase()}`;
-        const targetEl = document.getElementById(targetId);
-        
-        if(targetEl) {
-            targetEl.classList.add('gold-selected-card');
-            
-            const targetBtn = targetEl.querySelector('.offer-btn');
-            if(targetBtn) {
-                targetBtn.innerHTML = '<span>Sélectionné</span> <i class="ph-bold ph-check animate-pop-in"></i>';
-                targetBtn.classList.remove('border-white/10', 'text-white', 'hover:bg-white', 'hover:text-dark-950', 'hover:bg-purple-400');
-                
-                // GESTION COULEUR PREMIUM (VIOLET) vs AUTRES (CYAN)
-                if (packName === 'Premium') {
-                    targetBtn.classList.add('bg-purple-500', 'text-white', 'shadow-[0_0_20px_rgba(168,85,247,0.4)]');
-                } else {
-                    targetBtn.classList.add('bg-accent-400', 'text-dark-950', 'shadow-[0_0_20px_rgba(45,212,191,0.4)]');
-                }
-            }
-        }
-        
-        // Gestion Forçage Sérénité pour Essentiel
-        if (packName === 'Essentiel') {
-            forceSerenity(true);
-        } else {
-            forceSerenity(false);
-        }
+		updateTotal();
+	};
 
-        updateTotal();
-    }
-    
-    // Gestion de l'état "Forcé" du pack Sérénité
-    function forceSerenity(forced) {
-        const btn = document.getElementById('serenite-toggle-btn');
-        const checkbox = document.getElementById('check-serenite');
-        const fakeCheckbox = document.getElementById('serenite-fake-checkbox');
-        const icon = document.getElementById('serenite-check-icon');
-        
-        if (forced) {
-            isSerenitySelected = true;
-            if(checkbox) checkbox.checked = true;
-            
-            // Style visuel "Forcé/Verrouillé"
-            btn?.classList.add('active', 'opacity-80', 'cursor-not-allowed');
-            // On désactive le clic en enlevant l'event listener via HTML onclick check
-            // (La fonction toggleSerenityForm a aussi un check de sécurité)
-            
-            // Icone Checked
-            icon?.classList.remove('opacity-0', 'scale-50');
-            fakeCheckbox?.classList.add('bg-blue-500/20', 'border-blue-500');
-            
-            // Ajout du texte "Inclus"
-            if(btn && !document.getElementById('forced-msg')) {
-                const msg = document.createElement('span');
-                msg.id = 'forced-msg';
-                msg.className = 'text-[9px] text-blue-300 absolute top-1 right-2 uppercase font-bold tracking-widest';
-                msg.innerText = 'Inclus';
-                btn.classList.add('relative');
-                btn.appendChild(msg);
-            }
-            updateSerenityCardInServices(true);
+	// Gestion de l'état "Forcé" du pack Sérénité (simple, jamais Plus, quand Essentiel est choisi)
+	function forceSerenity(forced) {
+		const btnSimple = document.getElementById('serenite-toggle-btn');
 
-        } else {
-            // Restaure l'interaction normale
-            btn?.classList.remove('opacity-80', 'cursor-not-allowed');
-            
-            // Retire le message "Inclus"
-            const msg = document.getElementById('forced-msg');
-            if(msg) msg.remove();
-        }
-    }
+		if (forced) {
+			// Si Plus était choisi, on redescend sur Simple (Essentiel n'inclut que la base)
+			serenityTier = 'simple';
+			btnSimple?.classList.add('opacity-80', 'cursor-not-allowed');
+
+			if (btnSimple && !document.getElementById('forced-msg')) {
+				const msg = document.createElement('span');
+				msg.id = 'forced-msg';
+				msg.className = 'text-[9px] text-blue-300 absolute top-1 right-2 uppercase font-bold tracking-widest';
+				msg.innerText = 'Inclus (12 mois)';
+				btnSimple.classList.add('relative');
+				btnSimple.appendChild(msg);
+			}
+		} else {
+			btnSimple?.classList.remove('opacity-80', 'cursor-not-allowed');
+			const msg = document.getElementById('forced-msg');
+			if(msg) msg.remove();
+		}
+
+		updateSerenityFormButtons();
+		updateSerenityCardInServices();
+	}
+
+	function updateTotal() {
+		let totalOneShot = currentBasePrice;
+		let docTotal = 0;
+
+		if (isDocumentSelected) {
+			const checkedDocs = document.querySelectorAll('.doc-sub-checkbox:checked');
+			checkedDocs.forEach(cb => {
+				const price = parseInt(cb.getAttribute('data-price')) || 0;
+				docTotal += price;
+			});
+			totalOneShot += docTotal;
+		}
+
+		const priceTag = document.getElementById('docs-price-tag');
+		if(priceTag) {
+			if(isDocumentSelected) {
+				priceTag.textContent = `+${docTotal}€`;
+				if(docTotal > 0) {
+					priceTag.classList.remove('text-slate-500');
+					priceTag.classList.add('text-emerald-400', 'bg-emerald-400/10');
+				} else {
+					priceTag.classList.add('text-slate-500');
+					priceTag.classList.remove('text-emerald-400', 'bg-emerald-400/10');
+				}
+			} else {
+				priceTag.textContent = '+0€';
+				priceTag.classList.add('text-slate-500');
+				priceTag.classList.remove('text-emerald-400', 'bg-emerald-400/10');
+			}
+		}
+
+		const displayEl = document.getElementById('total-price-display');
+		if(displayEl) {
+			let text = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(totalOneShot);
+
+			if (serenityTier) {
+				const monthly = SERENITY_PRICES[serenityTier];
+				const label = serenityTier === 'plus' ? 'Sérénité+' : 'Sérénité';
+				text += ` <span class="text-xs font-normal text-blue-300 block text-right mt-1">+ ${monthly}€/mois (${label}, engagement 12 mois)</span>`;
+			}
+
+			displayEl.innerHTML = text;
+		}
+	}
 
     function updateTotal() {
         let totalOneShot = currentBasePrice;
@@ -759,16 +776,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const displayEl = document.getElementById('total-price-display');
-        if(displayEl) {
-            // Formatage : 1 790 € (+ 49.90€/mois)
-            let text = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(totalOneShot);
-            
-            if (isSerenitySelected) {
-                text += ` <span class="text-xs font-normal text-blue-300 block text-right mt-1">+ ${SERENITY_MONTHLY}€ /mois</span>`;
-            }
-            
-            displayEl.innerHTML = text;
-        }
+		if(displayEl) {
+			// Formatage : 1 790 € (+ 49.90€/mois)
+			let text = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(totalOneShot);
+			
+			if (isSerenitySelected) {
+				text += ` <span class="text-xs font-normal text-blue-300 block text-right mt-1">+ ${SERENITY_MONTHLY}€ /mois (engagement 12 mois)</span>`;
+			}
+			
+			displayEl.innerHTML = text;
+		}
     }
 
     // Écouter les changements directs sur les radios (sécurité si l'utilisateur clique directement)
@@ -965,8 +982,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Récupération des données du formulaire
-            const selectedPack = document.querySelector('input[name="project_pack"]:checked').value;
-            const hasSerenity = document.getElementById('check-serenite').checked;
+			const selectedPack = document.querySelector('input[name="project_pack"]:checked').value;
+			const hasSerenity = serenityTier !== null;
             const desc = document.getElementById('client-desc').value;
             const total = document.getElementById('total-price-display').textContent;
 
@@ -1020,6 +1037,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     pack: selectedPack,
                     
                     option_serenite: hasSerenity,
+					option_serenite_tier: serenityTier, // null | 'simple' | 'plus'
                     
                     // Nouveaux champs Documents
                     option_documents_active: isDocActive,
@@ -1388,7 +1406,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 	
 	// SECTION FACILITATEUR NUMÉRIQUE - CLIC A DOMICILE// Synchronise le téléphone du flyer avec celui affiché sur le site
-	const sitePhone = "06 XX XX XX XX"; // ← change ici une seule fois
+	const sitePhone = "06 25 96 51 12"; // ← change ici une seule fois
 	document.querySelectorAll('[href^="tel:"]').forEach(el => el.href = `tel:${sitePhone.replace(/\s/g,'')}`);
 	document.querySelectorAll('[href^="tel:"], .site-phone').forEach(el => { if(el.textContent.includes('06')) el.textContent = sitePhone; });
 	const flyerPhone = document.getElementById('flyer-phone');
