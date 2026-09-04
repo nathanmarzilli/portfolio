@@ -266,76 +266,74 @@
     </style>
 	
 	<style>
-		/* --- MASQUAGE SUR ÉCRAN (Plus robuste que la classe Tailwind) --- */
+		@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
+
 		@media screen {
 			#print-flyer { display: none !important; }
 		}
 
-		/* --- STYLES D'IMPRESSION (CORRECTION BUG PAGE BLANCHE) --- */
 		@media print {
 			@page { size: A4 portrait; margin: 0; }
-			
-			/* On force le navigateur à oublier les restrictions de hauteur/scroll de Tailwind */
-			html, body { 
-				background: white !important; 
-				padding: 0 !important; 
-				margin: 0 !important;
-				height: auto !important; 
-				min-height: auto !important;
-				overflow: visible !important; 
-			}
-			
+			html, body { background: white !important; padding: 0 !important; margin: 0 !important; height: auto !important; min-height: auto !important; overflow: visible !important; }
 			body > *:not(#print-flyer) { display: none !important; }
-			
-			/* Changement du position absolute en relative pour éviter que la page ne se coupe */
-			#print-flyer {
-				display: block !important;
-				position: relative !important;
-				width: 210mm !important;
-				height: 297mm !important;
-				background: white !important;
-				-webkit-print-color-adjust: exact !important;
-				print-color-adjust: exact !important;
-				overflow: hidden !important;
-			}
-			
+			#print-flyer { display: block !important; position: relative !important; width: 210mm !important; height: 297mm !important; background: white !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; overflow: hidden !important; }
 			.spotlight-overlay, .noise-overlay, .scroll-progress, #image-preview-modal { display: none !important; }
 		}
 
-		/* --- STYLES SPÉCIFIQUES DU FLYER --- */
-		#print-flyer {
-			--f-primary: #0f172a; --f-accent: #14B8A6; --f-accent-light: #f0fdfa; 
-			--f-text-main: #334155; --f-text-muted: #64748b; --f-surface: #f8fafc; --f-border: #e2e8f0;
-		}
+		#print-flyer { --f-primary: #0a192f; --f-accent: #14B8A6; --f-text-main: #334155; }
+		#print-flyer .flyer-a4 { width: 100%; height: 100%; background: white; position: relative; overflow: hidden; display: flex; flex-direction: column; font-family: 'Inter', sans-serif; }
 
-		#print-flyer .flyer-a4 {
-			width: 100%; height: 100%; background: white; position: relative; overflow: hidden; display: flex; flex-direction: column; font-family: 'Inter', sans-serif;
-		}
-		#print-flyer .f-header { padding: 12mm 15mm; background: var(--f-surface); border-bottom: 2px solid var(--f-accent); text-align: center; position: relative; }
-		#print-flyer .f-badge { display: inline-block; background: var(--f-primary); color: white; font-size: 8.5pt; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 4px 16px; border-radius: 20px; margin-bottom: 4mm; }
-		#print-flyer .f-title { font-family: 'Playfair Display', serif; font-size: 24pt; font-weight: 700; color: var(--f-primary); line-height: 1.15; margin: 0 0 3mm 0; }
-		#print-flyer .f-subtitle { font-size: 11pt; color: var(--f-text-main); max-width: 85%; margin: 0 auto; line-height: 1.5; }
-		#print-flyer .f-author { margin-top: 4mm; font-size: 9pt; color: var(--f-accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-		#print-flyer .f-content { padding: 8mm 15mm; flex-grow: 1; }
-		#print-flyer .f-intro { text-align: center; font-size: 11pt; color: var(--f-text-main); margin-bottom: 8mm; font-style: italic; }
-		#print-flyer .f-services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; margin-bottom: 8mm; }
-		#print-flyer .f-service-card { border: 1px solid var(--f-border); border-radius: 8px; padding: 5mm; background: white; }
+		#print-flyer .f-header { height: 84mm; position: relative; display: flex; background: #ffffff; }
+		#print-flyer .f-header-content { position: relative; z-index: 3; width: 60%; padding: 11mm 4mm 8mm 15mm; display: flex; flex-direction: column; justify-content: center; }
+		#print-flyer .f-header-image { position: relative; width: 40%; height: 100%; overflow: hidden; }
+		#print-flyer .f-bg-img-top { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; z-index: 1; }
+		#print-flyer .f-header-overlay { position: absolute; top: 0; left: 0; width: 30%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%); z-index: 2; }
+
+		#print-flyer .f-accent-line { width: 9mm; height: 2.5px; background: var(--f-accent); margin-bottom: 4mm; }
+		#print-flyer .f-brand-name { font-family: 'Montserrat', sans-serif; font-size: 13pt; font-weight: 900; letter-spacing: 0.14em; color: var(--f-primary); margin: 0; }
+		#print-flyer .f-brand-subtitle { font-family: 'Montserrat', sans-serif; font-size: 7.5pt; font-weight: 600; letter-spacing: 0.1em; color: #64748b; margin-top: 1mm; text-transform: uppercase; }
+		#print-flyer .f-main-title { font-family: 'Montserrat', sans-serif; font-size: 23pt; font-weight: 900; line-height: 1.12; margin: 6mm 0 4mm 0; color: var(--f-primary); letter-spacing: -0.5px; }
+		#print-flyer .f-highlight { color: var(--f-accent); }
+		#print-flyer .f-subtitle { font-size: 9.5pt; color: var(--f-text-main); font-weight: 500; line-height: 1.5; margin-bottom: 6mm; max-width: 92%; }
+		#print-flyer .f-targets { display: flex; align-items: center; gap: 3mm; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 8pt; color: var(--f-primary); flex-wrap: wrap; }
+		#print-flyer .f-target-item { display: flex; align-items: center; gap: 2mm; white-space: nowrap; }
+		#print-flyer .f-target-divider { width: 1px; height: 15px; background: #94a3b8; }
+
+		#print-flyer .f-badge-bubble { position: absolute; right: 12mm; bottom: 10mm; width: 32mm; padding: 4mm 2mm; background: #ccf3ec; border-radius: 30px 30px 6px 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: 'Montserrat', sans-serif; font-size: 7.5pt; font-weight: 800; letter-spacing: 0.03em; color: var(--f-primary); box-shadow: 0 6px 16px rgba(0,0,0,0.12); z-index: 10; line-height: 1.4; }
+
+		#print-flyer .f-content { padding: 8mm 15mm 5mm 15mm; flex-grow: 1; z-index: 5; background: white; position: relative; }
+		#print-flyer .f-services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm 4mm; margin-bottom: 8mm; }
+		#print-flyer .f-service-item { display: flex; flex-direction: column; }
 		#print-flyer .f-service-header { display: flex; align-items: center; gap: 3mm; margin-bottom: 2mm; }
-		#print-flyer .f-service-icon { width: 32px; height: 32px; background: var(--f-accent-light); color: var(--f-accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-		#print-flyer .f-service-title { font-size: 10pt; font-weight: 700; color: var(--f-primary); margin: 0; }
-		#print-flyer .f-service-desc { font-size: 8.5pt; color: var(--f-text-muted); line-height: 1.4; margin: 0; }
-		#print-flyer .f-pricing-section { background: var(--f-primary); color: white; border-radius: 12px; padding: 7mm; display: flex; justify-content: space-between; align-items: stretch; gap: 6mm; }
-		#print-flyer .f-price-col { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-		#print-flyer .f-price-col:first-child { border-right: 1px solid rgba(255,255,255,0.1); padding-right: 6mm; }
-		#print-flyer .f-price-title { font-size: 8.5pt; color: var(--f-accent); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 2mm; }
-		#print-flyer .f-pack-item { display: flex; justify-content: space-between; align-items: center; padding: 1.5mm 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-		#print-flyer .f-pack-item:last-child { border: none; }
-		#print-flyer .f-pack-name { font-size: 9pt; font-weight: 600; }
-		#print-flyer .f-pack-price { font-size: 9.5pt; font-weight: 700; color: var(--f-accent); }
-		#print-flyer .f-price-note { font-size: 7pt; color: #94a3b8; margin-top: 3mm; text-align: center; width: 100%; }
-		#print-flyer .f-footer { margin-top: auto; text-align: center; padding: 6mm 15mm; }
-		#print-flyer .f-phone { font-family: 'Playfair Display', serif; font-size: 24pt; font-weight: 700; color: var(--f-primary); margin-bottom: 1mm; }
-		#print-flyer .f-footer-text { font-size: 9pt; color: var(--f-text-muted); }
+		#print-flyer .f-service-icon { width: 44px; height: 44px; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--f-primary); background: #ccf3ec; flex-shrink: 0; }
+		#print-flyer .f-service-title { font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 800; color: var(--f-primary); margin: 0; line-height: 1.2; }
+		#print-flyer .f-service-desc { font-size: 8.5pt; color: var(--f-text-main); line-height: 1.4; margin: 0; }
+
+		#print-flyer .f-pricing-section { background: var(--f-primary); color: white; border-radius: 12px; padding: 7mm 8mm; display: flex; gap: 8mm; }
+		#print-flyer .f-price-col { flex: 1; display: flex; flex-direction: column; }
+		#print-flyer .f-price-col:first-child { border-right: 1px solid rgba(255,255,255,0.15); padding-right: 8mm; }
+		#print-flyer .f-price-title { font-family: 'Montserrat', sans-serif; font-size: 9pt; color: var(--f-accent); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; margin-bottom: 5mm; }
+		#print-flyer .f-pack-item { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4mm; }
+		#print-flyer .f-pack-item:last-child { margin-bottom: 0; }
+		#print-flyer .f-pack-name { font-size: 9.5pt; font-weight: 500; }
+		#print-flyer .f-pack-dots { flex-grow: 1; border-bottom: 1px dotted rgba(255,255,255,0.3); margin: 0 3mm 1.5mm 3mm; }
+		#print-flyer .f-pack-price { font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 800; color: var(--f-accent); white-space: nowrap; }
+		#print-flyer .f-price-note { font-size: 8pt; color: #94a3b8; margin-top: 3mm; text-align: center; width: 100%; }
+
+		#print-flyer .f-footer { height: 84mm; position: relative; background: #ffffff; overflow: hidden; }
+		#print-flyer .f-bg-img-bottom { position: absolute; right: 0; bottom: 0; width: 66%; height: 82%; object-fit: cover; border-radius: 220px 0 0 0; z-index: 1; }
+		#print-flyer .f-footer-content { position: relative; z-index: 3; padding: 6mm 15mm 0 15mm; height: 100%; display: flex; flex-direction: column; }
+		#print-flyer .f-region-badge { position: absolute; right: 15mm; top: 6mm; text-align: right; font-family: 'Montserrat', sans-serif; font-size: 9pt; font-weight: 800; color: var(--f-primary); letter-spacing: 0.1em; line-height: 1.3; z-index: 5; }
+		#print-flyer .f-region-badge::after { content: ''; display: block; width: 25mm; height: 2px; background: var(--f-accent); margin-top: 2mm; margin-left: auto; }
+		#print-flyer .f-contact-block { max-width: 58%; margin-top: 5mm; }
+		#print-flyer .f-contact-pre { font-family: 'Montserrat', sans-serif; font-size: 11pt; font-weight: 800; color: var(--f-primary); margin-bottom: 2mm; }
+		#print-flyer .f-contact-phone-wrapper { display: flex; align-items: center; gap: 4mm; margin-bottom: 4mm; }
+		#print-flyer .f-phone-icon { width: 40px; height: 40px; background: var(--f-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; flex-shrink: 0; }
+		#print-flyer .f-phone-number { font-family: 'Montserrat', sans-serif; font-size: 24pt; font-weight: 900; color: var(--f-primary); line-height: 1; letter-spacing: -0.5px; white-space: nowrap; }
+		#print-flyer .f-location-info { display: flex; align-items: flex-start; gap: 3mm; font-size: 10pt; color: var(--f-primary); font-weight: 600; line-height: 1.4; margin-left: 2mm; }
+		#print-flyer .f-location-info i { font-size: 16pt; margin-top: 1px; flex-shrink: 0; }
+		#print-flyer .f-bottom-bar { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--f-primary); padding: 5mm 15mm; font-family: 'Montserrat', sans-serif; font-size: 8.5pt; color: white; letter-spacing: 0.1em; font-weight: 600; text-transform: uppercase; z-index: 4; display: flex; align-items: center; justify-content: center; gap: 4mm; }
+		#print-flyer .f-bottom-bar::before, #print-flyer .f-bottom-bar::after { content: ''; width: 10mm; height: 1.5px; background: var(--f-accent); }
 	</style>
 </head>
 <body class="selection:bg-accent-400/30 selection:text-white bg-dark-950">
@@ -1011,60 +1009,81 @@
 	<div id="print-flyer">
 		<div class="flyer-a4">
 			<div class="f-header">
-				<div class="f-badge">Particuliers & Professionnels</div>
-				<h1 class="f-title">L'artisanat numérique au service de vos projets</h1>
-				<p class="f-subtitle">Création de sites web professionnels et assistance à domicile. Un accompagnement de confiance pour simplifier votre quotidien.</p>
-				<div class="f-author">Nathan Marzilli • Ingénieur Diplômé</div>
+				<div class="f-header-content">
+					<div class="f-accent-line"></div>
+					<h2 class="f-brand-name">NATHAN MARZILLI</h2>
+					<div class="f-brand-subtitle">Ingénieur Diplômé</div>
+
+					<h1 class="f-main-title">Le numérique,<br><span class="f-highlight">sans prise de tête.</span></h1>
+					
+					<p class="f-subtitle">
+						Sites web, dépannage, automatisation<br>
+						et accompagnement à domicile.<br>
+						Des solutions simples et efficaces,<br>
+						adaptées à vos besoins.
+					</p>
+
+					<div class="f-targets">
+						<div class="f-target-item"><i class="ph-bold ph-users text-[14pt]"></i> PARTICULIERS</div>
+						<div class="f-target-divider"></div>
+						<div class="f-target-item"><i class="ph-bold ph-buildings text-[14pt]"></i> PROFESSIONNELS</div>
+					</div>
+				</div>
+				<div class="f-header-image">
+					<img src="images/flyer/01.jpeg" class="f-bg-img-top" alt="">
+					<div class="f-header-overlay"></div>
+				</div>
+				<div class="f-badge-bubble">
+					À DOMICILE<br>OU À DISTANCE
+				</div>
 			</div>
 
 			<div class="f-content">
-				<p class="f-intro">« De la création de vos outils professionnels à la sérénité numérique à la maison. »</p>
-
 				<div class="f-services-grid">
-					<div class="f-service-card">
+					<div class="f-service-item">
 						<div class="f-service-header">
-							<div class="f-service-icon"><i class="ph-bold ph-globe"></i></div>
-							<h3 class="f-service-title">Création de Sites Web</h3>
+							<div class="f-service-icon"><i class="ph-bold ph-desktop"></i></div>
+							<h3 class="f-service-title">Création de<br>Sites Web</h3>
 						</div>
 						<p class="f-service-desc">Sites vitrines sur-mesure, performants et optimisés (SEO). Mettez en valeur votre savoir-faire professionnel.</p>
 					</div>
 
-					<div class="f-service-card">
+					<div class="f-service-item">
 						<div class="f-service-header">
 							<div class="f-service-icon"><i class="ph-bold ph-file-text"></i></div>
-							<h3 class="f-service-title">Outils & Automatisation</h3>
+							<h3 class="f-service-title">Outils &<br>Automatisation</h3>
 						</div>
 						<p class="f-service-desc">Génération automatique de devis, factures, bails (PDF). Gagnez un temps précieux sur l'administratif.</p>
 					</div>
 
-					<div class="f-service-card">
+					<div class="f-service-item">
 						<div class="f-service-header">
 							<div class="f-service-icon"><i class="ph-bold ph-wrench"></i></div>
-							<h3 class="f-service-title">Dépannage & Installation</h3>
+							<h3 class="f-service-title">Dépannage &<br>Installation</h3>
 						</div>
 						<p class="f-service-desc">Configuration de Box Internet, Wi-Fi, imprimantes, nouvelle TV. Je me déplace et vous explique sans jargon.</p>
 					</div>
 
-					<div class="f-service-card">
+					<div class="f-service-item">
 						<div class="f-service-header">
 							<div class="f-service-icon"><i class="ph-bold ph-shield-check"></i></div>
-							<h3 class="f-service-title">Sécurité & Démarches</h3>
+							<h3 class="f-service-title">Sécurité &<br>Démarches</h3>
 						</div>
-						<p class="f-service-desc">Protection antivirus, prévention des arnaques et accompagnement en ligne (Doctolib, espaces personnels).</p>
+						<p class="f-service-desc">Protection antivirus, prévention des arnaques et accompagnement en ligne (Doctolib, espaces personnels...).</p>
 					</div>
 
-					<div class="f-service-card">
+					<div class="f-service-item">
 						<div class="f-service-header">
-							<div class="f-service-icon"><i class="ph-bold ph-chalkboard-teacher"></i></div>
-							<h3 class="f-service-title">Formation à votre rythme</h3>
+							<div class="f-service-icon"><i class="ph-bold ph-graduation-cap"></i></div>
+							<h3 class="f-service-title">Formation<br>à votre rythme</h3>
 						</div>
 						<p class="f-service-desc">Prise en main de votre site internet, de votre ordinateur ou smartphone. Apprenez en toute bienveillance.</p>
 					</div>
 					
-					<div class="f-service-card">
+					<div class="f-service-item">
 						<div class="f-service-header">
 							<div class="f-service-icon"><i class="ph-bold ph-cassette-tape"></i></div>
-							<h3 class="f-service-title">Sauvegarde de souvenirs</h3>
+							<h3 class="f-service-title">Sauvegarde<br>de souvenirs</h3>
 						</div>
 						<p class="f-service-desc">Ne perdez plus vos précieux moments. Numérisation sur clé USB de vos cassettes (VHS, Hi8) et photos.</p>
 					</div>
@@ -1072,37 +1091,39 @@
 
 				<div class="f-pricing-section">
 					<div class="f-price-col">
-						<div style="width: 100%;">
-							<div class="f-price-title">Création Web & Pros</div>
-							<div class="f-pack-item">
-								<span class="f-pack-name">Site Vitrine Complet</span>
-								<span class="f-pack-price">Dès 990€</span>
-							</div>
-							<div class="f-pack-item">
-								<span class="f-pack-name">Automatisation Devis/Facture</span>
-								<span class="f-pack-price">Dès 250€</span>
-							</div>
-							<div class="f-pack-item">
-								<span class="f-pack-name">Pack Maintenance Sérénité</span>
-								<span class="f-pack-price">49.90€ / mois</span>
-							</div>
+						<div class="f-price-title">Création Web & Pros</div>
+						<div class="f-pack-item">
+							<span class="f-pack-name">Site Vitrine Complet</span>
+							<div class="f-pack-dots"></div>
+							<span class="f-pack-price">Dès 990€</span>
+						</div>
+						<div class="f-pack-item">
+							<span class="f-pack-name">Automatisation Devis/Facture</span>
+							<div class="f-pack-dots"></div>
+							<span class="f-pack-price">Dès 250€</span>
+						</div>
+						<div class="f-pack-item">
+							<span class="f-pack-name">Pack Maintenance Sécurité</span>
+							<div class="f-pack-dots"></div>
+							<span class="f-pack-price">49,90€ / mois</span>
 						</div>
 					</div>
 					<div class="f-price-col">
-						<div style="width: 100%;">
-							<div class="f-price-title">Interventions à Domicile</div>
-							<div class="f-pack-item">
-								<span class="f-pack-name">Tarif Horaire (Dépannage)</span>
-								<span class="f-pack-price">70€ / heure</span>
-							</div>
-							<div class="f-pack-item">
-								<span class="f-pack-name">Diagnostic (1h30)</span>
-								<span class="f-pack-price">90€</span>
-							</div>
-							<div class="f-pack-item">
-								<span class="f-pack-name">Numérisation Cassette</span>
-								<span class="f-pack-price">70€ / pièce</span>
-							</div>
+						<div class="f-price-title">Interventions à Domicile</div>
+						<div class="f-pack-item">
+							<span class="f-pack-name">Tarif Horaire (Dépannage/Cours)</span>
+							<div class="f-pack-dots"></div>
+							<span class="f-pack-price">70€ / heure</span>
+						</div>
+						<div class="f-pack-item">
+							<span class="f-pack-name">Diagnostic Première Rencontre (1h30)</span>
+							<div class="f-pack-dots"></div>
+							<span class="f-pack-price">90€</span>
+						</div>
+						<div class="f-pack-item">
+							<span class="f-pack-name">Numérisation Cassette</span>
+							<div class="f-pack-dots"></div>
+							<span class="f-pack-price">50€ / pièce</span>
 						</div>
 					</div>
 				</div>
@@ -1110,8 +1131,28 @@
 			</div>
 
 			<div class="f-footer">
-				<div id="flyer-phone" class="f-phone">06 25 96 51 12</div>
-				<div class="f-footer-text">Déplacement sur Évian-les-Bains et tout le bassin lémanique</div>
+				<img src="images/flyer/02.jfif" class="f-bg-img-bottom" alt="">
+				<div class="f-footer-content">
+					<div class="f-region-badge">
+						ÉVIAN-LES-BAINS<br>ET LES ALENTOURS
+					</div>
+
+					<div class="f-contact-block">
+						<div class="f-contact-pre">Besoin d'aide ? Contactez-moi !</div>
+						<div class="f-contact-phone-wrapper">
+							<div class="f-phone-icon"><i class="ph-fill ph-phone"></i></div>
+							<div class="f-phone-number" id="flyer-phone">06 25 96 51 12</div>
+						</div>
+						<div class="f-location-info">
+							<i class="ph-fill ph-map-pin"></i>
+							<span>J'interviens sur Évian-les-Bains<br>et tout le bassin lémanique.</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="f-bottom-bar">
+					Un accompagnement de confiance, tout simplement.
+				</div>
 			</div>
 		</div>
 	</div>

@@ -683,7 +683,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				const msg = document.createElement('span');
 				msg.id = 'forced-msg';
 				msg.className = 'text-[9px] text-blue-300 absolute top-1 right-2 uppercase font-bold tracking-widest';
-				msg.innerText = 'Inclus (12 mois)';
+				msg.innerText = 'Engagement : 1 an';
 				btnSimple.classList.add('relative');
 				btnSimple.appendChild(msg);
 			}

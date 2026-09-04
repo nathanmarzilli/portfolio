@@ -6,87 +6,87 @@
     <title>Prospectus - Nathan Marzilli</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
         :root {
-            --primary: #0f172a;
+            --primary: #0a192f;
             --accent: #14B8A6;
-            --accent-light: #f0fdfa; 
             --text-main: #334155;
-            --text-muted: #64748b;
-            --surface: #f8fafc;
-            --border: #e2e8f0;
         }
 
         * { box-sizing: border-box; }
 
-        body {
-            margin: 0; padding: 2rem; background: #cbd5e1;
-            font-family: 'Inter', sans-serif; display: flex; justify-content: center;
-            -webkit-print-color-adjust: exact; print-color-adjust: exact;
-        }
+        body { margin: 0; padding: 2rem; background: #cbd5e1; font-family: 'Inter', sans-serif; display: flex; justify-content: center; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
-        .flyer-a4 {
-            width: 210mm; height: 297mm; background: white;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative;
-            overflow: hidden; display: flex; flex-direction: column;
-        }
+        .flyer-a4 { width: 210mm; height: 297mm; background: white; box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative; overflow: hidden; display: flex; flex-direction: column; }
 
-        .header {
-            padding: 12mm 15mm; background: var(--surface); border-bottom: 2px solid var(--accent);
-            text-align: center; position: relative;
-        }
+        /* --- HEADER --- */
+        .header { height: 84mm; position: relative; display: flex; background: #ffffff; }
+        .header-content { position: relative; z-index: 3; width: 60%; padding: 11mm 4mm 8mm 15mm; display: flex; flex-direction: column; justify-content: center; }
+        .header-image { position: relative; width: 40%; height: 100%; overflow: hidden; }
+        .bg-img-top { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; z-index: 1; }
+        .header-overlay { position: absolute; top: 0; left: 0; width: 30%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%); z-index: 2; }
+
+        .accent-line { width: 9mm; height: 2.5px; background: var(--accent); margin-bottom: 4mm; }
+        .brand-name { font-family: 'Montserrat', sans-serif; font-size: 13pt; font-weight: 900; letter-spacing: 0.14em; color: var(--primary); margin: 0; }
+        .brand-subtitle { font-family: 'Montserrat', sans-serif; font-size: 7.5pt; font-weight: 600; letter-spacing: 0.1em; color: #64748b; margin-top: 1mm; text-transform: uppercase; }
+
+        .main-title { font-family: 'Montserrat', sans-serif; font-size: 23pt; font-weight: 900; line-height: 1.12; margin: 6mm 0 4mm 0; color: var(--primary); letter-spacing: -0.5px; }
+        .main-title .highlight { color: var(--accent); }
+
+        .subtitle { font-size: 9.5pt; color: var(--text-main); font-weight: 500; line-height: 1.5; margin-bottom: 6mm; max-width: 92%; }
+
+        .targets { display: flex; align-items: center; gap: 3mm; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 8pt; color: var(--primary); flex-wrap: wrap; }
+        .target-item { display: flex; align-items: center; gap: 2mm; white-space: nowrap; }
+        .target-divider { width: 1px; height: 15px; background: #94a3b8; }
+
+        .badge-bubble { position: absolute; right: 12mm; bottom: 10mm; width: 32mm; padding: 4mm 2mm; background: #ccf3ec; border-radius: 30px 30px 6px 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: 'Montserrat', sans-serif; font-size: 7.5pt; font-weight: 800; letter-spacing: 0.03em; color: var(--primary); box-shadow: 0 6px 16px rgba(0,0,0,0.12); z-index: 10; line-height: 1.4; }
+
+        /* --- SERVICES (MIDDLE) --- */
+        .content { padding: 8mm 15mm 5mm 15mm; flex-grow: 1; z-index: 5; background: white; position: relative; }
+        .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm 4mm; margin-bottom: 8mm; }
         
-        .badge {
-            display: inline-block; background: var(--primary); color: white;
-            font-size: 8.5pt; font-weight: 700; letter-spacing: 0.15em;
-            text-transform: uppercase; padding: 4px 16px; border-radius: 20px; margin-bottom: 4mm;
-        }
-
-        .title {
-            font-family: 'Playfair Display', serif; font-size: 24pt; font-weight: 700;
-            color: var(--primary); line-height: 1.15; margin: 0 0 3mm 0;
-        }
-
-        .subtitle {
-            font-size: 11pt; color: var(--text-main); max-width: 85%; margin: 0 auto; line-height: 1.5;
-        }
-
-        .author { margin-top: 4mm; font-size: 9pt; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-        
-        .content { padding: 8mm 15mm; flex-grow: 1; }
-        
-        .intro { text-align: center; font-size: 11pt; color: var(--text-main); margin-bottom: 8mm; font-style: italic; }
-
-        .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; margin-bottom: 8mm; }
-        .service-card { border: 1px solid var(--border); border-radius: 8px; padding: 5mm; background: white; }
+        .service-item { display: flex; flex-direction: column; }
         .service-header { display: flex; align-items: center; gap: 3mm; margin-bottom: 2mm; }
-        .service-icon {
-            width: 32px; height: 32px; background: var(--accent-light); color: var(--accent);
-            border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px;
-        }
-        .service-title { font-size: 10pt; font-weight: 700; color: var(--primary); margin: 0; }
-        .service-desc { font-size: 8.5pt; color: var(--text-muted); line-height: 1.4; margin: 0; }
+        .service-icon { width: 44px; height: 44px; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--primary); background: #ccf3ec; flex-shrink: 0; }
+        .service-title { font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 800; color: var(--primary); margin: 0; line-height: 1.2; }
+        .service-desc { font-size: 8.5pt; color: var(--text-main); line-height: 1.4; margin: 0; }
 
-        .pricing-section {
-            background: var(--primary); color: white; border-radius: 12px; padding: 7mm;
-            display: flex; justify-content: space-between; align-items: stretch; gap: 6mm;
-        }
-        .price-col { flex: 1; display: flex; flex-col; justify-content: center; }
-        .price-col:first-child { border-right: 1px solid rgba(255,255,255,0.1); padding-right: 6mm; }
+        /* --- PRICING SECTION --- */
+        .pricing-section { background: var(--primary); color: white; border-radius: 12px; padding: 7mm 8mm; display: flex; gap: 8mm; }
+        .price-col { flex: 1; display: flex; flex-direction: column; }
+        .price-col:first-child { border-right: 1px solid rgba(255,255,255,0.15); padding-right: 8mm; }
         
-        .price-title { font-size: 8.5pt; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 2mm; }
+        .price-title { font-family: 'Montserrat', sans-serif; font-size: 9pt; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; margin-bottom: 5mm; }
         
-        .pack-item { display: flex; justify-content: space-between; align-items: center; padding: 1.5mm 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .pack-item:last-child { border: none; }
-        .pack-name { font-size: 9pt; font-weight: 600; }
-        .pack-price { font-size: 9.5pt; font-weight: 700; color: var(--accent); }
-        .price-note { font-size: 7pt; color: #94a3b8; margin-top: 3mm; text-align: center; width: 100%; }
+        .pack-item { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4mm; }
+        .pack-item:last-child { margin-bottom: 0; }
+        .pack-name { font-size: 9.5pt; font-weight: 500; }
+        .pack-dots { flex-grow: 1; border-bottom: 1px dotted rgba(255,255,255,0.3); margin: 0 3mm 1.5mm 3mm; }
+        .pack-price { font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 800; color: var(--accent); white-space: nowrap; }
+        
+        .price-note { font-size: 8pt; color: #94a3b8; margin-top: 3mm; text-align: center; width: 100%; }
 
-        .footer { margin-top: auto; text-align: center; padding: 6mm 15mm; }
-        .phone { font-family: 'Playfair Display', serif; font-size: 24pt; font-weight: 700; color: var(--primary); margin-bottom: 1mm; }
-        .footer-text { font-size: 9pt; color: var(--text-muted); }
+        /* --- FOOTER --- */
+        .footer { height: 84mm; position: relative; background: #ffffff; overflow: hidden; }
+        .bg-img-bottom { position: absolute; right: 0; bottom: 0; width: 66%; height: 82%; object-fit: cover; border-radius: 220px 0 0 0; z-index: 1; }
+        .footer-content { position: relative; z-index: 3; padding: 6mm 15mm 0 15mm; height: 100%; display: flex; flex-direction: column; }
+
+        .region-badge { position: absolute; right: 15mm; top: 6mm; text-align: right; font-family: 'Montserrat', sans-serif; font-size: 9pt; font-weight: 800; color: var(--primary); letter-spacing: 0.1em; line-height: 1.3; z-index: 5; }
+        .region-badge::after { content: ''; display: block; width: 25mm; height: 2px; background: var(--accent); margin-top: 2mm; margin-left: auto; }
+
+        .contact-block { max-width: 58%; margin-top: 5mm; }
+        .contact-pre { font-family: 'Montserrat', sans-serif; font-size: 11pt; font-weight: 800; color: var(--primary); margin-bottom: 2mm; }
+        .contact-phone-wrapper { display: flex; align-items: center; gap: 4mm; margin-bottom: 4mm; }
+        .phone-icon { width: 40px; height: 40px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; flex-shrink: 0; }
+        .phone-number { font-family: 'Montserrat', sans-serif; font-size: 24pt; font-weight: 900; color: var(--primary); line-height: 1; letter-spacing: -0.5px; white-space: nowrap; }
+        
+        .location-info { display: flex; align-items: flex-start; gap: 3mm; font-size: 10pt; color: var(--primary); font-weight: 600; line-height: 1.4; margin-left: 2mm; }
+        .location-info i { font-size: 16pt; margin-top: 1px; flex-shrink: 0; }
+
+        .bottom-bar { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--primary); padding: 5mm 15mm; font-family: 'Montserrat', sans-serif; font-size: 8.5pt; color: white; letter-spacing: 0.1em; font-weight: 600; text-transform: uppercase; z-index: 4; display: flex; align-items: center; justify-content: center; gap: 4mm; }
+        .bottom-bar::before, .bottom-bar::after { content: ''; width: 10mm; height: 1.5px; background: var(--accent); }
 
         @media print {
             body { background: white; padding: 0; margin: 0; }
@@ -98,61 +98,84 @@
 <body>
 
 <div class="flyer-a4">
+    <!-- HAUT DE PAGE -->
     <div class="header">
-        <div class="badge">Particuliers & Professionnels</div>
-        <h1 class="title">L'artisanat numérique au service de vos projets</h1>
-        <p class="subtitle">Création de sites web professionnels et assistance à domicile. Un accompagnement de confiance pour simplifier votre quotidien.</p>
-        <div class="author">Nathan Marzilli • Ingénieur Diplômé</div>
+        <div class="header-content">
+            <div class="accent-line"></div>
+            <h2 class="brand-name">NATHAN MARZILLI</h2>
+            <div class="brand-subtitle">Ingénieur Diplômé</div>
+
+            <h1 class="main-title">Le numérique,<br><span class="highlight">sans prise de tête.</span></h1>
+            
+            <p class="subtitle">
+                Sites web, dépannage, automatisation<br>
+                et accompagnement à domicile.<br>
+                Des solutions simples et efficaces,<br>
+                adaptées à vos besoins.
+            </p>
+
+            <div class="targets">
+                <div class="target-item"><i class="ph-bold ph-users text-[14pt]"></i> PARTICULIERS</div>
+                <div class="target-divider"></div>
+                <div class="target-item"><i class="ph-bold ph-buildings text-[14pt]"></i> PROFESSIONNELS</div>
+            </div>
+        </div>
+        <div class="header-image">
+            <img src="images/flyer/01.jpeg" class="bg-img-top" alt="">
+            <div class="header-overlay"></div>
+        </div>
+        <div class="badge-bubble">
+            À DOMICILE<br>OU À DISTANCE
+        </div>
     </div>
 
+    <!-- SERVICES (MILIEU) -->
     <div class="content">
-        <p class="intro">« De la création de vos outils professionnels à la sérénité numérique à la maison. »</p>
-
         <div class="services-grid">
-            <div class="service-card">
+            <div class="service-item">
                 <div class="service-header">
-                    <div class="service-icon"><i class="ph-bold ph-globe"></i></div>
-                    <h3 class="service-title">Création de Sites Web</h3>
+                    <div class="service-icon"><i class="ph-bold ph-desktop"></i></div>
+                    <h3 class="service-title">Création de<br>Sites Web</h3>
                 </div>
                 <p class="service-desc">Sites vitrines sur-mesure, performants et optimisés (SEO). Mettez en valeur votre savoir-faire professionnel.</p>
             </div>
 
-            <div class="service-card">
+            <div class="service-item">
                 <div class="service-header">
                     <div class="service-icon"><i class="ph-bold ph-file-text"></i></div>
-                    <h3 class="service-title">Outils & Automatisation</h3>
+                    <h3 class="service-title">Outils &<br>Automatisation</h3>
                 </div>
                 <p class="service-desc">Génération automatique de devis, factures, bails (PDF). Gagnez un temps précieux sur l'administratif.</p>
             </div>
 
-            <div class="service-card">
+            <div class="service-item">
                 <div class="service-header">
                     <div class="service-icon"><i class="ph-bold ph-wrench"></i></div>
-                    <h3 class="service-title">Dépannage & Installation</h3>
+                    <h3 class="service-title">Dépannage &<br>Installation</h3>
                 </div>
                 <p class="service-desc">Configuration de Box Internet, Wi-Fi, imprimantes, nouvelle TV. Je me déplace et vous explique sans jargon.</p>
             </div>
 
-            <div class="service-card">
+            <div class="service-item">
                 <div class="service-header">
                     <div class="service-icon"><i class="ph-bold ph-shield-check"></i></div>
-                    <h3 class="service-title">Sécurité & Démarches</h3>
+                    <h3 class="service-title">Sécurité &<br>Démarches</h3>
                 </div>
-                <p class="service-desc">Protection antivirus, prévention des arnaques et accompagnement en ligne (Doctolib, espaces personnels).</p>
+                <p class="service-desc">Protection antivirus, prévention des arnaques et accompagnement en ligne (Doctolib, espaces personnels...).</p>
             </div>
 
-            <div class="service-card">
+            <div class="service-item">
                 <div class="service-header">
-                    <div class="service-icon"><i class="ph-bold ph-chalkboard-teacher"></i></div>
-                    <h3 class="service-title">Formation à votre rythme</h3>
+                    <div class="service-icon"><i class="ph-bold ph-graduation-cap"></i></div>
+                    <h3 class="service-title">Formation<br>à votre rythme</h3>
                 </div>
                 <p class="service-desc">Prise en main de votre site internet, de votre ordinateur ou smartphone. Apprenez en toute bienveillance.</p>
             </div>
             
-            <div class="service-card">
+            <div class="service-item">
                 <div class="service-header">
                     <div class="service-icon"><i class="ph-bold ph-cassette-tape"></i></div>
-                    <h3 class="service-title">Sauvegarde de souvenirs</h3>
+                    <h3 class="service-title">Sauvegarde<br>de souvenirs</h3>
                 </div>
                 <p class="service-desc">Ne perdez plus vos précieux moments. Numérisation sur clé USB de vos cassettes (VHS, Hi8) et photos.</p>
             </div>
@@ -160,46 +183,68 @@
 
         <div class="pricing-section">
             <div class="price-col">
-                <div style="width: 100%;">
-                    <div class="price-title">Création Web & Pros</div>
-                    <div class="pack-item">
-                        <span class="pack-name">Site Vitrine Complet</span>
-                        <span class="pack-price">Dès 990€</span>
-                    </div>
-                    <div class="pack-item">
-                        <span class="pack-name">Automatisation Devis/Facture</span>
-                        <span class="pack-price">Dès 250€</span>
-                    </div>
-                    <div class="pack-item">
-                        <span class="pack-name">Pack Maintenance Sérénité</span>
-                        <span class="pack-price">49.90€ / mois</span>
-                    </div>
+                <div class="price-title">Création Web & Pros</div>
+                <div class="pack-item">
+                    <span class="pack-name">Site Vitrine Complet</span>
+                    <div class="pack-dots"></div>
+                    <span class="pack-price">Dès 990€</span>
+                </div>
+                <div class="pack-item">
+                    <span class="pack-name">Automatisation Devis/Facture</span>
+                    <div class="pack-dots"></div>
+                    <span class="pack-price">Dès 250€</span>
+                </div>
+                <div class="pack-item">
+                    <span class="pack-name">Pack Maintenance Sécurité</span>
+                    <div class="pack-dots"></div>
+                    <span class="pack-price">49,90€ / mois</span>
                 </div>
             </div>
             <div class="price-col">
-                <div style="width: 100%;">
-                    <div class="price-title">Interventions à Domicile</div>
-                    <div class="pack-item">
-                        <span class="pack-name">Tarif Horaire (Dépannage/Cours)</span>
-                        <span class="pack-price">70€ / heure</span>
-                    </div>
-                    <div class="pack-item">
-                        <span class="pack-name">Diagnostic Première Rencontre (1h30)</span>
-                        <span class="pack-price">90€</span>
-                    </div>
-                    <div class="pack-item">
-                        <span class="pack-name">Numérisation Cassette</span>
-                        <span class="pack-price">70€ / pièce</span>
-                    </div>
+                <div class="price-title">Interventions à Domicile</div>
+                <div class="pack-item">
+                    <span class="pack-name">Tarif Horaire (Dépannage/Cours)</span>
+                    <div class="pack-dots"></div>
+                    <span class="pack-price">70€ / heure</span>
+                </div>
+                <div class="pack-item">
+                    <span class="pack-name">Diagnostic Première Rencontre (1h30)</span>
+                    <div class="pack-dots"></div>
+                    <span class="pack-price">90€</span>
+                </div>
+                <div class="pack-item">
+                    <span class="pack-name">Numérisation Cassette</span>
+                    <div class="pack-dots"></div>
+                    <span class="pack-price">50€ / pièce</span>
                 </div>
             </div>
         </div>
         <div class="price-note">TVA non applicable (art. 293B du CGI)</div>
     </div>
 
+    <!-- PIED DE PAGE -->
     <div class="footer">
-        <div class="phone">06 25 96 51 12</div>
-        <div class="footer-text">Déplacement sur Évian-les-Bains et tout le bassin lémanique</div>
+        <img src="images/flyer/02.jfif" class="bg-img-bottom" alt="">
+        <div class="footer-content">
+            <div class="region-badge">
+                ÉVIAN-LES-BAINS<br>ET LES ALENTOURS
+            </div>
+
+            <div class="contact-block">
+                <div class="contact-pre">Besoin d'aide ? Contactez-moi !</div>
+                <div class="contact-phone-wrapper">
+                    <div class="phone-icon"><i class="ph-fill ph-phone"></i></div>
+                    <div class="phone-number">06 25 96 51 12</div>
+                </div>
+                <div class="location-info">
+                    <i class="ph-fill ph-map-pin"></i>
+                    <span>J'interviens sur Évian-les-Bains<br>et tout le bassin lémanique.</span>
+                </div>
+            </div>
+        </div>
+        <div class="bottom-bar">
+            Un accompagnement de confiance, tout simplement.
+        </div>
     </div>
 </div>
 
