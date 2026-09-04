@@ -3,197 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ConnectSéniors - Assistance Numérique Évian-les-Bains</title>
+    <title>Prospectus - Nathan Marzilli</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
-        /* Couleurs principales */
         :root {
-            --bleu-marine: #1A2B4C;
-            --rose-doux: #F9E0E3;
-            --rose-vif: #D16B7B;
-            --blanc: #FFFFFF;
-            --texte-fonce: #333333;
+            --primary: #0f172a;
+            --accent: #14B8A6;
+            --accent-light: #f0fdfa; 
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --surface: #f8fafc;
+            --border: #e2e8f0;
         }
+
+        * { box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--blanc);
-            color: var(--texte-fonce);
-            font-size: 18px; /* Texte plus grand pour les seniors */
-            line-height: 1.6;
+            margin: 0; padding: 2rem; background: #cbd5e1;
+            font-family: 'Inter', sans-serif; display: flex; justify-content: center;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
         }
 
-        /* En-tête avec image de lac et montagne en fond */
-        header {
-            background: linear-gradient(rgba(26, 43, 76, 0.85), rgba(26, 43, 76, 0.85)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
-            color: var(--blanc);
-            text-align: center;
-            padding: 60px 20px;
+        .flyer-a4 {
+            width: 210mm; height: 297mm; background: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative;
+            overflow: hidden; display: flex; flex-direction: column;
         }
 
-        h1 {
-            font-size: 3em;
-            margin: 0;
-            color: var(--rose-doux);
+        .header {
+            padding: 12mm 15mm; background: var(--surface); border-bottom: 2px solid var(--accent);
+            text-align: center; position: relative;
+        }
+        
+        .badge {
+            display: inline-block; background: var(--primary); color: white;
+            font-size: 8.5pt; font-weight: 700; letter-spacing: 0.15em;
+            text-transform: uppercase; padding: 4px 16px; border-radius: 20px; margin-bottom: 4mm;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif; font-size: 24pt; font-weight: 700;
+            color: var(--primary); line-height: 1.15; margin: 0 0 3mm 0;
         }
 
         .subtitle {
-            font-size: 1.5em;
-            margin-top: 10px;
-            font-weight: 300;
+            font-size: 11pt; color: var(--text-main); max-width: 85%; margin: 0 auto; line-height: 1.5;
         }
 
-        /* Badge Service à la personne */
-        .sap-badge {
-            background-color: var(--rose-vif);
-            color: var(--blanc);
-            display: inline-block;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-top: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-        }
+        .author { margin-top: 4mm; font-size: 9pt; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        .content { padding: 8mm 15mm; flex-grow: 1; }
+        
+        .intro { text-align: center; font-size: 11pt; color: var(--text-main); margin-bottom: 8mm; font-style: italic; }
 
-        /* Section principale */
-        .container {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 0 20px;
+        .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; margin-bottom: 8mm; }
+        .service-card { border: 1px solid var(--border); border-radius: 8px; padding: 5mm; background: white; }
+        .service-header { display: flex; align-items: center; gap: 3mm; margin-bottom: 2mm; }
+        .service-icon {
+            width: 32px; height: 32px; background: var(--accent-light); color: var(--accent);
+            border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px;
         }
+        .service-title { font-size: 10pt; font-weight: 700; color: var(--primary); margin: 0; }
+        .service-desc { font-size: 8.5pt; color: var(--text-muted); line-height: 1.4; margin: 0; }
 
-        .intro {
-            text-align: center;
-            font-size: 1.3em;
-            margin-bottom: 50px;
-            color: var(--bleu-marine);
-            font-weight: bold;
+        .pricing-section {
+            background: var(--primary); color: white; border-radius: 12px; padding: 7mm;
+            display: flex; justify-content: space-between; align-items: stretch; gap: 6mm;
         }
+        .price-col { flex: 1; display: flex; flex-col; justify-content: center; }
+        .price-col:first-child { border-right: 1px solid rgba(255,255,255,0.1); padding-right: 6mm; }
+        
+        .price-title { font-size: 8.5pt; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 2mm; }
+        
+        .pack-item { display: flex; justify-content: space-between; align-items: center; padding: 1.5mm 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .pack-item:last-child { border: none; }
+        .pack-name { font-size: 9pt; font-weight: 600; }
+        .pack-price { font-size: 9.5pt; font-weight: 700; color: var(--accent); }
+        .price-note { font-size: 7pt; color: #94a3b8; margin-top: 3mm; text-align: center; width: 100%; }
 
-        /* Grille des services */
-        .services-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 25px;
-        }
+        .footer { margin-top: auto; text-align: center; padding: 6mm 15mm; }
+        .phone { font-family: 'Playfair Display', serif; font-size: 24pt; font-weight: 700; color: var(--primary); margin-bottom: 1mm; }
+        .footer-text { font-size: 9pt; color: var(--text-muted); }
 
-        .service-card {
-            background-color: var(--rose-doux);
-            border-left: 8px solid var(--bleu-marine);
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .service-title {
-            color: var(--bleu-marine);
-            font-size: 1.4em;
-            margin-top: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .service-desc {
-            margin: 10px 0;
-        }
-
-        .service-price {
-            font-weight: bold;
-            color: var(--rose-vif);
-            font-size: 1.1em;
-            background: var(--blanc);
-            display: inline-block;
-            padding: 8px 15px;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-
-        /* Pied de page */
-        footer {
-            background-color: var(--bleu-marine);
-            color: var(--blanc);
-            text-align: center;
-            padding: 40px 20px;
-            margin-top: 60px;
-            font-size: 1.2em;
-        }
-
-        .contact-info {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: var(--rose-doux);
-            margin: 20px 0;
-        }
-
-        /* Adaptation pour les tablettes et grands écrans */
-        @media (min-width: 768px) {
-            .services-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .service-card:nth-child(5) {
-                grid-column: span 2; /* Centrer le dernier élément s'il y en a 5 */
-                max-width: 50%;
-                margin: 0 auto;
-            }
+        @media print {
+            body { background: white; padding: 0; margin: 0; }
+            .flyer-a4 { box-shadow: none; width: 100%; height: 100%; }
+            @page { size: A4 portrait; margin: 0; }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>ConnectSéniors</h1>
-        <div class="subtitle">Votre accompagnement numérique simple et sans souci à domicile</div>
-        <p>Intervention sur Évian-les-Bains et tout le Chablais</p>
-        <div class="sap-badge">💡 Profitez de 50% de crédit d'impôt immédiat !</div>
-    </header>
-
-    <div class="container">
-        <p class="intro">Un service patient, pour enfin comprendre la technologie à votre rythme.</p>
-
-        <div class="services-grid">
-            
-            <div class="service-card">
-                <h2 class="service-title">📱 1. Communiquer avec vos proches</h2>
-                <p class="service-desc">Appels vidéo, WhatsApp, e-mails, transfert de photos et réglages simplifiés (gros caractères, son fort).</p>
-                <div class="service-price">45€ / h (Soit 22,50€ après déduction fiscale)</div>
-            </div>
-
-            <div class="service-card">
-                <h2 class="service-title">📺 2. Divertissement Numérique</h2>
-                <p class="service-desc">Installation et réglage simple de votre TV, Box Internet, chaînes, Netflix ou YouTube.</p>
-                <div class="service-price">Forfait 50€ (Soit 25€ après déduction fiscale)</div>
-            </div>
-
-            <div class="service-card">
-                <h2 class="service-title">📼 3. Vos Souvenirs Précieux</h2>
-                <p class="service-desc">Ne perdez plus vos souvenirs ! Numérisation de vos anciennes cassettes (VHS, audio) et scan de vos photos papier sur clé USB.</p>
-                <div class="service-price">15€ / cassette VHS — 0,30€ / photo</div>
-            </div>
-
-            <div class="service-card">
-                <h2 class="service-title">🛡️ 4. Entretien & Protection</h2>
-                <p class="service-desc">Mise en sécurité de vos appareils : Wi-Fi, antivirus, prévention des arnaques, et installation simplifiée de caméras connectées pour votre tranquillité.</p>
-                <div class="service-price">Forfait 60€ (Soit 30€ après déduction fiscale)</div>
-            </div>
-
-            <div class="service-card">
-                <h2 class="service-title">📝 5. Gestion Quotidienne Simplifiée</h2>
-                <p class="service-desc">Gagnez du temps : création de modèles "prêts à remplir" pour vos courriers ou e-mails récurrents (assurances, abonnements).</p>
-                <div class="service-price">40€ / h (Soit 20€ après déduction fiscale)</div>
-            </div>
-
-        </div>
+<div class="flyer-a4">
+    <div class="header">
+        <div class="badge">Particuliers & Professionnels</div>
+        <h1 class="title">L'artisanat numérique au service de vos projets</h1>
+        <p class="subtitle">Création de sites web professionnels et assistance à domicile. Un accompagnement de confiance pour simplifier votre quotidien.</p>
+        <div class="author">Nathan Marzilli • Ingénieur Diplômé</div>
     </div>
 
-    <footer>
-        <p>Prenez rendez-vous pour un premier diagnostic gratuit :</p>
-        <div class="contact-info">📞 06 XX XX XX XX</div>
-        <p>✉️ contact@connectseniors.fr</p>
-        <p>📍 Déplacement à Évian-les-Bains et ses environs</p>
-    </footer>
+    <div class="content">
+        <p class="intro">« De la création de vos outils professionnels à la sérénité numérique à la maison. »</p>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon"><i class="ph-bold ph-globe"></i></div>
+                    <h3 class="service-title">Création de Sites Web</h3>
+                </div>
+                <p class="service-desc">Sites vitrines sur-mesure, performants et optimisés (SEO). Mettez en valeur votre savoir-faire professionnel.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon"><i class="ph-bold ph-file-text"></i></div>
+                    <h3 class="service-title">Outils & Automatisation</h3>
+                </div>
+                <p class="service-desc">Génération automatique de devis, factures, bails (PDF). Gagnez un temps précieux sur l'administratif.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon"><i class="ph-bold ph-wrench"></i></div>
+                    <h3 class="service-title">Dépannage & Installation</h3>
+                </div>
+                <p class="service-desc">Configuration de Box Internet, Wi-Fi, imprimantes, nouvelle TV. Je me déplace et vous explique sans jargon.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon"><i class="ph-bold ph-shield-check"></i></div>
+                    <h3 class="service-title">Sécurité & Démarches</h3>
+                </div>
+                <p class="service-desc">Protection antivirus, prévention des arnaques et accompagnement en ligne (Doctolib, espaces personnels).</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon"><i class="ph-bold ph-chalkboard-teacher"></i></div>
+                    <h3 class="service-title">Formation à votre rythme</h3>
+                </div>
+                <p class="service-desc">Prise en main de votre site internet, de votre ordinateur ou smartphone. Apprenez en toute bienveillance.</p>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon"><i class="ph-bold ph-cassette-tape"></i></div>
+                    <h3 class="service-title">Sauvegarde de souvenirs</h3>
+                </div>
+                <p class="service-desc">Ne perdez plus vos précieux moments. Numérisation sur clé USB de vos cassettes (VHS, Hi8) et photos.</p>
+            </div>
+        </div>
+
+        <div class="pricing-section">
+            <div class="price-col">
+                <div style="width: 100%;">
+                    <div class="price-title">Création Web & Pros</div>
+                    <div class="pack-item">
+                        <span class="pack-name">Site Vitrine Complet</span>
+                        <span class="pack-price">Dès 990€</span>
+                    </div>
+                    <div class="pack-item">
+                        <span class="pack-name">Automatisation Devis/Facture</span>
+                        <span class="pack-price">Dès 250€</span>
+                    </div>
+                    <div class="pack-item">
+                        <span class="pack-name">Pack Maintenance Sérénité</span>
+                        <span class="pack-price">49.90€ / mois</span>
+                    </div>
+                </div>
+            </div>
+            <div class="price-col">
+                <div style="width: 100%;">
+                    <div class="price-title">Interventions à Domicile</div>
+                    <div class="pack-item">
+                        <span class="pack-name">Tarif Horaire (Dépannage/Cours)</span>
+                        <span class="pack-price">70€ / heure</span>
+                    </div>
+                    <div class="pack-item">
+                        <span class="pack-name">Diagnostic Première Rencontre (1h30)</span>
+                        <span class="pack-price">90€</span>
+                    </div>
+                    <div class="pack-item">
+                        <span class="pack-name">Numérisation Cassette</span>
+                        <span class="pack-price">70€ / pièce</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="price-note">TVA non applicable (art. 293B du CGI)</div>
+    </div>
+
+    <div class="footer">
+        <div class="phone">06 25 96 51 12</div>
+        <div class="footer-text">Déplacement sur Évian-les-Bains et tout le bassin lémanique</div>
+    </div>
+</div>
 
 </body>
 </html>

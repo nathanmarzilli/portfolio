@@ -1,6 +1,6 @@
 // ============================================================
 // IMPORTS FIREBASE
-// ============================================================
+// ============================================================currentBasePrice 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -414,6 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	let serenityTier = null; // null | 'simple' | 'plus'
 	let isDocumentSelected = false;
 	let requestType = 'newsite'; // 'newsite' | 'existing'
+	let selectedIntervention = null; // { type, price } | null
 	const SERENITY_PRICES = { simple: 49.90, plus: 94.90 };
 	const DOC_PRICE = 250;
 
@@ -709,6 +710,10 @@ document.addEventListener('DOMContentLoaded', () => {
 			totalOneShot += docTotal;
 		}
 
+		if (selectedIntervention) {
+			totalOneShot += selectedIntervention.price;
+		}
+
 		const priceTag = document.getElementById('docs-price-tag');
 		if(priceTag) {
 			if(isDocumentSelected) {
@@ -731,9 +736,13 @@ document.addEventListener('DOMContentLoaded', () => {
 		const labelEl = document.getElementById('total-label');
 
 		if(displayEl) {
-			let text = totalOneShot > 0
-				? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(totalOneShot)
-				: '—';
+			let text;
+			if (totalOneShot > 0) {
+				const prefix = (selectedIntervention && selectedIntervention.type === 'relifting') ? 'Dès ' : '';
+				text = prefix + new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(totalOneShot);
+			} else {
+				text = '—';
+			}
 
 			if (serenityTier) {
 				const monthly = SERENITY_PRICES[serenityTier];
@@ -745,7 +754,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		if(labelEl) {
 			labelEl.innerHTML = requestType === 'existing'
-				? 'Total Estimé <span class="text-[10px] font-normal lowercase">(Abonnement)</span>'
+				? 'Total Estimé <span class="text-[10px] font-normal lowercase">(Intervention / Abonnement)</span>'
 				: 'Total Estimé <span class="text-[10px] font-normal lowercase">(Création)</span>';
 		}
 	}
@@ -943,8 +952,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 			
-			if (requestType === 'existing' && !serenityTier) {
-				alert("Merci de choisir une formule (Sérénité ou Sérénité+) pour votre site existant.");
+			if (requestType === 'existing' && !serenityTier && !selectedIntervention) {
+				alert("Merci de choisir une intervention ponctuelle et/ou une formule Sérénité pour votre site existant.");
 				return;
 			}
 
@@ -1004,7 +1013,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     phone: document.getElementById('client-phone').value,
                     pack: selectedPack,
 					request_type: requestType, // 'newsite' | 'existing'
-                    
+					intervention_type: selectedIntervention ? selectedIntervention.type : null,
+					intervention_price: selectedIntervention ? selectedIntervention.price : null,
+					rdv_label: `${dateStr} à ${timeInput.value}`, // ex: "lundi 26 janvier à 09:00" — texte brut, zéro risque de conversion
+										
                     option_serenite: hasSerenity,
 					option_serenite_tier: serenityTier, // null | 'simple' | 'plus'
                     
@@ -1381,6 +1393,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		const btnNew = document.getElementById('request-type-newsite');
 		const btnExisting = document.getElementById('request-type-existing');
 		const packBlock = document.getElementById('pack-selection-block');
+		const interventionBlock = document.getElementById('intervention-selection-block');
 
 		btnNew?.classList.remove('active-request-type');
 		btnExisting?.classList.remove('active-request-type');
@@ -1388,8 +1401,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (type === 'existing') {
 			btnExisting?.classList.add('active-request-type');
 			packBlock?.classList.add('hidden');
+			interventionBlock?.classList.remove('hidden');
 
-			// On désélectionne le pack de création et on retire le forçage Sérénité de l'Essentiel
 			document.querySelectorAll('input[name="project_pack"]').forEach(r => r.checked = false);
 			currentBasePrice = 0;
 			forceSerenity(false);
@@ -1397,6 +1410,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		} else {
 			btnNew?.classList.add('active-request-type');
 			packBlock?.classList.remove('hidden');
+			interventionBlock?.classList.add('hidden');
+
+			// On retire l'intervention ponctuelle si on repart sur une création
+			selectedIntervention = null;
+			document.querySelectorAll('.intervention-btn').forEach(b => b.classList.remove('active-intervention'));
 
 			const checkedRadio = document.querySelector('input[name="project_pack"]:checked');
 			if (checkedRadio) {
@@ -1406,6 +1424,25 @@ document.addEventListener('DOMContentLoaded', () => {
 				document.getElementById('pack-vitrine').checked = true;
 				window.updateCardSelection('Vitrine', 1790);
 			}
+		}
+
+		updateTotal();
+	};
+	
+	window.selectIntervention = function(btnElement) {
+		window.vibrate();
+		const type = btnElement.getAttribute('data-type');
+		const price = parseInt(btnElement.getAttribute('data-price'));
+
+		const isAlreadyActive = selectedIntervention && selectedIntervention.type === type;
+
+		document.querySelectorAll('.intervention-btn').forEach(b => b.classList.remove('active-intervention'));
+
+		if (isAlreadyActive) {
+			selectedIntervention = null;
+		} else {
+			selectedIntervention = { type, price };
+			btnElement.classList.add('active-intervention');
 		}
 
 		updateTotal();

@@ -17,6 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
 
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
@@ -254,31 +255,87 @@
 			background: rgba(45, 212, 191, 0.1) !important;
 			box-shadow: 0 0 15px rgba(45, 212, 191, 0.15);
 		}
+		.intervention-btn.active-intervention {
+			background-color: #2DD4BF !important;
+			border-color: #2DD4BF !important;
+			box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
+		}
+		.intervention-btn.active-intervention span {
+			color: #020617 !important;
+		}
     </style>
 	
 	<style>
-	/* --- STYLES D'IMPRESSION (GÉNÉRATION DU FLYER A5) --- */
-		@media print {
-			@page {
-				size: A5 portrait;
-				margin: 0;
-			}
-			body > *:not(#print-flyer) {
-				display: none !important;
-			}
-			#print-flyer {
-				display: block !important;
-				position: fixed;
-				inset: 0;
-				width: 148mm;
-				height: 210mm;
-			}
-			#print-flyer > div {
-				-webkit-print-color-adjust: exact !important;
-				print-color-adjust: exact !important;
-			}
+		/* --- MASQUAGE SUR ÉCRAN (Plus robuste que la classe Tailwind) --- */
+		@media screen {
+			#print-flyer { display: none !important; }
 		}
 
+		/* --- STYLES D'IMPRESSION (CORRECTION BUG PAGE BLANCHE) --- */
+		@media print {
+			@page { size: A4 portrait; margin: 0; }
+			
+			/* On force le navigateur à oublier les restrictions de hauteur/scroll de Tailwind */
+			html, body { 
+				background: white !important; 
+				padding: 0 !important; 
+				margin: 0 !important;
+				height: auto !important; 
+				min-height: auto !important;
+				overflow: visible !important; 
+			}
+			
+			body > *:not(#print-flyer) { display: none !important; }
+			
+			/* Changement du position absolute en relative pour éviter que la page ne se coupe */
+			#print-flyer {
+				display: block !important;
+				position: relative !important;
+				width: 210mm !important;
+				height: 297mm !important;
+				background: white !important;
+				-webkit-print-color-adjust: exact !important;
+				print-color-adjust: exact !important;
+				overflow: hidden !important;
+			}
+			
+			.spotlight-overlay, .noise-overlay, .scroll-progress, #image-preview-modal { display: none !important; }
+		}
+
+		/* --- STYLES SPÉCIFIQUES DU FLYER --- */
+		#print-flyer {
+			--f-primary: #0f172a; --f-accent: #14B8A6; --f-accent-light: #f0fdfa; 
+			--f-text-main: #334155; --f-text-muted: #64748b; --f-surface: #f8fafc; --f-border: #e2e8f0;
+		}
+
+		#print-flyer .flyer-a4 {
+			width: 100%; height: 100%; background: white; position: relative; overflow: hidden; display: flex; flex-direction: column; font-family: 'Inter', sans-serif;
+		}
+		#print-flyer .f-header { padding: 12mm 15mm; background: var(--f-surface); border-bottom: 2px solid var(--f-accent); text-align: center; position: relative; }
+		#print-flyer .f-badge { display: inline-block; background: var(--f-primary); color: white; font-size: 8.5pt; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 4px 16px; border-radius: 20px; margin-bottom: 4mm; }
+		#print-flyer .f-title { font-family: 'Playfair Display', serif; font-size: 24pt; font-weight: 700; color: var(--f-primary); line-height: 1.15; margin: 0 0 3mm 0; }
+		#print-flyer .f-subtitle { font-size: 11pt; color: var(--f-text-main); max-width: 85%; margin: 0 auto; line-height: 1.5; }
+		#print-flyer .f-author { margin-top: 4mm; font-size: 9pt; color: var(--f-accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+		#print-flyer .f-content { padding: 8mm 15mm; flex-grow: 1; }
+		#print-flyer .f-intro { text-align: center; font-size: 11pt; color: var(--f-text-main); margin-bottom: 8mm; font-style: italic; }
+		#print-flyer .f-services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; margin-bottom: 8mm; }
+		#print-flyer .f-service-card { border: 1px solid var(--f-border); border-radius: 8px; padding: 5mm; background: white; }
+		#print-flyer .f-service-header { display: flex; align-items: center; gap: 3mm; margin-bottom: 2mm; }
+		#print-flyer .f-service-icon { width: 32px; height: 32px; background: var(--f-accent-light); color: var(--f-accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+		#print-flyer .f-service-title { font-size: 10pt; font-weight: 700; color: var(--f-primary); margin: 0; }
+		#print-flyer .f-service-desc { font-size: 8.5pt; color: var(--f-text-muted); line-height: 1.4; margin: 0; }
+		#print-flyer .f-pricing-section { background: var(--f-primary); color: white; border-radius: 12px; padding: 7mm; display: flex; justify-content: space-between; align-items: stretch; gap: 6mm; }
+		#print-flyer .f-price-col { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+		#print-flyer .f-price-col:first-child { border-right: 1px solid rgba(255,255,255,0.1); padding-right: 6mm; }
+		#print-flyer .f-price-title { font-size: 8.5pt; color: var(--f-accent); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 2mm; }
+		#print-flyer .f-pack-item { display: flex; justify-content: space-between; align-items: center; padding: 1.5mm 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+		#print-flyer .f-pack-item:last-child { border: none; }
+		#print-flyer .f-pack-name { font-size: 9pt; font-weight: 600; }
+		#print-flyer .f-pack-price { font-size: 9.5pt; font-weight: 700; color: var(--f-accent); }
+		#print-flyer .f-price-note { font-size: 7pt; color: #94a3b8; margin-top: 3mm; text-align: center; width: 100%; }
+		#print-flyer .f-footer { margin-top: auto; text-align: center; padding: 6mm 15mm; }
+		#print-flyer .f-phone { font-family: 'Playfair Display', serif; font-size: 24pt; font-weight: 700; color: var(--f-primary); margin-bottom: 1mm; }
+		#print-flyer .f-footer-text { font-size: 9pt; color: var(--f-text-muted); }
 	</style>
 </head>
 <body class="selection:bg-accent-400/30 selection:text-white bg-dark-950">
@@ -779,7 +836,7 @@
 					</a>
 					<button onclick="window.print()" class="px-8 py-4 rounded-full border border-white/20 bg-white/5 text-white font-bold hover:bg-white/10 transition-all flex items-center gap-2 group">
 						<i class="ph-bold ph-printer group-hover:-translate-y-1 transition-transform"></i>
-						Imprimer le flyer A5
+						Imprimer le flyer A4
 					</button>
 				</div>
 			</div>
@@ -951,90 +1008,111 @@
 		</div>
 	</section>
 
-	<div id="print-flyer" class="hidden">
-		<div style="width:148mm;height:210mm;background:#fff;font-family:'Inter',sans-serif;display:flex;flex-direction:column;padding:8mm 9mm 7mm;box-sizing:border-box;position:relative;overflow:hidden;">
-			
-			<!-- Bande déco top -->
-			<div style="position:absolute;top:0;left:0;right:0;height:2mm;background:#14B8A6;"></div>
-
-			<!-- Header -->
-			<div style="text-align:center;margin-bottom:3.5mm;">
-				<div style="display:inline-block;background:#14B8A6;color:#fff;font-size:7pt;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;padding:3px 12px;border-radius:20px;margin-bottom:3mm;">Un clic à domicile</div>
-				<div style="font-size:15pt;font-weight:800;color:#0f172a;line-height:1.2;margin-bottom:2mm;">Oubliez vos soucis<br>avec le numérique</div>
-				<div style="font-size:7.5pt;color:#475569;line-height:1.4;">Je me déplace chez vous pour simplifier votre quotidien numérique,<br><strong>avec patience et pédagogie.</strong></div>
+	<div id="print-flyer">
+		<div class="flyer-a4">
+			<div class="f-header">
+				<div class="f-badge">Particuliers & Professionnels</div>
+				<h1 class="f-title">L'artisanat numérique au service de vos projets</h1>
+				<p class="f-subtitle">Création de sites web professionnels et assistance à domicile. Un accompagnement de confiance pour simplifier votre quotidien.</p>
+				<div class="f-author">Nathan Marzilli • Ingénieur Diplômé</div>
 			</div>
 
-			<!-- Bandeau "Qui suis-je" -->
-			<div style="background:#f1f5f9;border-left:3px solid #14B8A6;border-radius:4px;padding:3mm 4mm;margin-bottom:3.5mm;display:flex;align-items:center;gap:4mm;">
-				<div style="font-size:16pt;flex-shrink:0;">👨‍💻</div>
-				<div>
-					<div style="font-size:7.5pt;font-weight:700;color:#0f172a;margin-bottom:1mm;">Ingénieur en informatique diplômé</div>
-					<div style="font-size:6.5pt;color:#475569;line-height:1.4;">14 ans d'expérience dans de grands groupes internationaux. Aujourd'hui, je mets cette expertise au service des personnes qui ont besoin d'un accompagnement numérique bienveillant et efficace.</div>
+			<div class="f-content">
+				<p class="f-intro">« De la création de vos outils professionnels à la sérénité numérique à la maison. »</p>
+
+				<div class="f-services-grid">
+					<div class="f-service-card">
+						<div class="f-service-header">
+							<div class="f-service-icon"><i class="ph-bold ph-globe"></i></div>
+							<h3 class="f-service-title">Création de Sites Web</h3>
+						</div>
+						<p class="f-service-desc">Sites vitrines sur-mesure, performants et optimisés (SEO). Mettez en valeur votre savoir-faire professionnel.</p>
+					</div>
+
+					<div class="f-service-card">
+						<div class="f-service-header">
+							<div class="f-service-icon"><i class="ph-bold ph-file-text"></i></div>
+							<h3 class="f-service-title">Outils & Automatisation</h3>
+						</div>
+						<p class="f-service-desc">Génération automatique de devis, factures, bails (PDF). Gagnez un temps précieux sur l'administratif.</p>
+					</div>
+
+					<div class="f-service-card">
+						<div class="f-service-header">
+							<div class="f-service-icon"><i class="ph-bold ph-wrench"></i></div>
+							<h3 class="f-service-title">Dépannage & Installation</h3>
+						</div>
+						<p class="f-service-desc">Configuration de Box Internet, Wi-Fi, imprimantes, nouvelle TV. Je me déplace et vous explique sans jargon.</p>
+					</div>
+
+					<div class="f-service-card">
+						<div class="f-service-header">
+							<div class="f-service-icon"><i class="ph-bold ph-shield-check"></i></div>
+							<h3 class="f-service-title">Sécurité & Démarches</h3>
+						</div>
+						<p class="f-service-desc">Protection antivirus, prévention des arnaques et accompagnement en ligne (Doctolib, espaces personnels).</p>
+					</div>
+
+					<div class="f-service-card">
+						<div class="f-service-header">
+							<div class="f-service-icon"><i class="ph-bold ph-chalkboard-teacher"></i></div>
+							<h3 class="f-service-title">Formation à votre rythme</h3>
+						</div>
+						<p class="f-service-desc">Prise en main de votre site internet, de votre ordinateur ou smartphone. Apprenez en toute bienveillance.</p>
+					</div>
+					
+					<div class="f-service-card">
+						<div class="f-service-header">
+							<div class="f-service-icon"><i class="ph-bold ph-cassette-tape"></i></div>
+							<h3 class="f-service-title">Sauvegarde de souvenirs</h3>
+						</div>
+						<p class="f-service-desc">Ne perdez plus vos précieux moments. Numérisation sur clé USB de vos cassettes (VHS, Hi8) et photos.</p>
+					</div>
 				</div>
+
+				<div class="f-pricing-section">
+					<div class="f-price-col">
+						<div style="width: 100%;">
+							<div class="f-price-title">Création Web & Pros</div>
+							<div class="f-pack-item">
+								<span class="f-pack-name">Site Vitrine Complet</span>
+								<span class="f-pack-price">Dès 990€</span>
+							</div>
+							<div class="f-pack-item">
+								<span class="f-pack-name">Automatisation Devis/Facture</span>
+								<span class="f-pack-price">Dès 250€</span>
+							</div>
+							<div class="f-pack-item">
+								<span class="f-pack-name">Pack Maintenance Sérénité</span>
+								<span class="f-pack-price">49.90€ / mois</span>
+							</div>
+						</div>
+					</div>
+					<div class="f-price-col">
+						<div style="width: 100%;">
+							<div class="f-price-title">Interventions à Domicile</div>
+							<div class="f-pack-item">
+								<span class="f-pack-name">Tarif Horaire (Dépannage)</span>
+								<span class="f-pack-price">70€ / heure</span>
+							</div>
+							<div class="f-pack-item">
+								<span class="f-pack-name">Diagnostic (1h30)</span>
+								<span class="f-pack-price">90€</span>
+							</div>
+							<div class="f-pack-item">
+								<span class="f-pack-name">Numérisation Cassette</span>
+								<span class="f-pack-price">70€ / pièce</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="f-price-note">TVA non applicable (art. 293B du CGI)</div>
 			</div>
 
-			<!-- Grille services 2x3 -->
-			<div style="display:grid;grid-template-columns:1fr 1fr;gap:2.5mm;flex-grow:1;margin-bottom:3mm;">
-				
-				<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:3mm 3.5mm;">
-					<div style="font-size:12pt;margin-bottom:1.5mm;">📱</div>
-					<div style="font-size:7.5pt;font-weight:700;color:#0f172a;margin-bottom:1mm;">Contact avec vos proches</div>
-					<div style="font-size:6pt;color:#64748b;line-height:1.4;">Appels vidéo, WhatsApp, e-mails, photos. Réglages accessibilité (gros caractères, son fort).</div>
-					<div style="margin-top:1.5mm;font-size:6.5pt;font-weight:700;color:#14B8A6;">70€ / heure</div>
-				</div>
-
-				<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:3mm 3.5mm;">
-					<div style="font-size:12pt;margin-bottom:1.5mm;">📺</div>
-					<div style="font-size:7.5pt;font-weight:700;color:#0f172a;margin-bottom:1mm;">TV, Box & Divertissement</div>
-					<div style="font-size:6pt;color:#64748b;line-height:1.4;">Nouvelle TV connectée, Box Internet, Netflix, YouTube. Branchement et explications sans jargon.</div>
-					<div style="margin-top:1.5mm;font-size:6.5pt;font-weight:700;color:#14B8A6;">70€ / heure</div>
-				</div>
-
-				<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:3mm 3.5mm;">
-					<div style="font-size:12pt;margin-bottom:1.5mm;">🏠</div>
-					<div style="font-size:7.5pt;font-weight:700;color:#0f172a;margin-bottom:1mm;">Domotique & Maison connectée</div>
-					<div style="font-size:6pt;color:#64748b;line-height:1.4;">Enceintes connectées, volets, caméras, voiture connectée (CarPlay, Android Auto). Je configure, vous profitez.</div>
-					<div style="margin-top:1.5mm;font-size:6.5pt;font-weight:700;color:#14B8A6;">70€ / heure</div>
-				</div>
-
-				<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:3mm 3.5mm;">
-					<div style="font-size:12pt;margin-bottom:1.5mm;">🛡️</div>
-					<div style="font-size:7.5pt;font-weight:700;color:#0f172a;margin-bottom:1mm;">Sécurité & Sérénité</div>
-					<div style="font-size:6pt;color:#64748b;line-height:1.4;">Wi-Fi sécurisé, antivirus, prévention des arnaques en ligne. Je protège votre vie numérique.</div>
-					<div style="margin-top:1.5mm;font-size:6.5pt;font-weight:700;color:#14B8A6;">70€ / heure</div>
-				</div>
-
-				<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:3mm 3.5mm;">
-					<div style="font-size:12pt;margin-bottom:1.5mm;">❤️</div>
-					<div style="font-size:7.5pt;font-weight:700;color:#0f172a;margin-bottom:1mm;">Santé & Démarches</div>
-					<div style="font-size:6pt;color:#64748b;line-height:1.4;">Doctolib, Mon Espace Santé, impôts en ligne. Guidé pas-à-pas, en toute confidentialité.</div>
-					<div style="margin-top:1.5mm;font-size:6.5pt;font-weight:700;color:#14B8A6;">70€ / heure</div>
-				</div>
-
-				<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:3mm 3.5mm;">
-					<div style="font-size:12pt;margin-bottom:1.5mm;">🎓</div>
-					<div style="font-size:7.5pt;font-weight:700;color:#0f172a;margin-bottom:1mm;">Formation à votre rythme</div>
-					<div style="font-size:6pt;color:#64748b;line-height:1.4;">Cours personnalisés : ordi, smartphone, achats en ligne. Pack 5h disponible.</div>
-					<div style="margin-top:1.5mm;font-size:6.5pt;font-weight:700;color:#14B8A6;">70€ / heure · Pack 5h : 320€</div>
-				</div>
-
+			<div class="f-footer">
+				<div id="flyer-phone" class="f-phone">06 25 96 51 12</div>
+				<div class="f-footer-text">Déplacement sur Évian-les-Bains et tout le bassin lémanique</div>
 			</div>
-
-			<!-- Mention souvenirs discrète -->
-			<div style="text-align:center;font-size:6pt;color:#94a3b8;margin-bottom:3mm;">
-				📼 Numérisation cassettes VHS/Hi8 : 50€/pièce · Photos papier : 0,15€/photo
-			</div>
-
-			<!-- Bandeau CTA -->
-			<div style="background:#0f172a;border-radius:8px;padding:4mm 5mm;text-align:center;">
-				<div style="font-size:6.5pt;color:#2DD4BF;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1.5mm;">🌟 Offre première rencontre</div>
-				<div style="font-size:7.5pt;color:#e2e8f0;margin-bottom:2.5mm;">Forfait Diagnostic <strong style="color:#fff;">(1h30) à 90€</strong> — on fait le tour de vos besoins ensemble.</div>
-				<div id="flyer-phone" style="font-size:20pt;font-weight:800;color:#fff;letter-spacing:0.04em;margin-bottom:1.5mm;">06 25 96 51 12</div>
-				<div style="font-size:5.5pt;color:#64748b;text-transform:uppercase;letter-spacing:0.1em;">Nathan Marzilli · Ingénieur diplômé · Évian & Chablais</div>
-			</div>
-
-			<!-- Bande déco bottom -->
-			<div style="position:absolute;bottom:0;left:0;right:0;height:1.5mm;background:#14B8A6;opacity:0.4;"></div>
 		</div>
 	</div>
 
@@ -1876,6 +1954,33 @@
 										<span class="text-[9px] text-slate-500">Pack Sérénité seul</span>
 									</div>
 								</div>
+							</div>
+							
+							<div id="intervention-selection-block" class="space-y-2 hidden">
+								<div class="form-section-title"><i class="ph-bold ph-wrench"></i> Intervention ponctuelle (optionnel)</div>
+								<div class="grid grid-cols-2 gap-2">
+									<div class="intervention-btn cursor-pointer flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center select-none border border-white/10 bg-dark-950" data-type="simple" data-price="100" onclick="selectIntervention(this)">
+										<span class="text-xs text-slate-300 font-bold">Simple</span>
+										<span class="text-[9px] text-slate-500">Texte / Photo</span>
+										<span class="text-xs text-accent-400 font-bold mt-1">100€</span>
+									</div>
+									<div class="intervention-btn cursor-pointer flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center select-none border border-white/10 bg-dark-950" data-type="moyenne" data-price="200" onclick="selectIntervention(this)">
+										<span class="text-xs text-slate-300 font-bold">Moyenne</span>
+										<span class="text-[9px] text-slate-500">Mise en page</span>
+										<span class="text-xs text-accent-400 font-bold mt-1">200€</span>
+									</div>
+									<div class="intervention-btn cursor-pointer flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center select-none border border-white/10 bg-dark-950" data-type="complexe" data-price="300" onclick="selectIntervention(this)">
+										<span class="text-xs text-slate-300 font-bold">Complexe</span>
+										<span class="text-[9px] text-slate-500">Fonctionnalité</span>
+										<span class="text-xs text-accent-400 font-bold mt-1">300€</span>
+									</div>
+									<div class="intervention-btn cursor-pointer flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center select-none border border-white/10 bg-dark-950" data-type="relifting" data-price="690" onclick="selectIntervention(this)">
+										<span class="text-xs text-slate-300 font-bold">Relifting</span>
+										<span class="text-[9px] text-slate-500">Design moderne</span>
+										<span class="text-xs text-accent-400 font-bold mt-1">Dès 690€</span>
+									</div>
+								</div>
+								<p class="text-[10px] text-slate-500 text-center">Relifting : devis personnalisé au-delà de 5 pages · Cliquez à nouveau pour désélectionner</p>
 							</div>
 
 							<div id="pack-selection-block" class="space-y-2 pt-2">
