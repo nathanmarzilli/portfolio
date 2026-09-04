@@ -934,6 +934,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Affiche un message d'erreur inline (bannière) au lieu d'un popup alert()
+    let bookingErrorTimeout = null;
+    function showBookingError(message) {
+        const banner = document.getElementById('booking-error-banner');
+        const text = document.getElementById('booking-error-text');
+        if (!banner || !text) {
+            console.error(message);
+            return;
+        }
+        text.textContent = message;
+        banner.classList.remove('hidden');
+        banner.classList.add('flex');
+        banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        clearTimeout(bookingErrorTimeout);
+        bookingErrorTimeout = setTimeout(() => {
+            banner.classList.add('hidden');
+            banner.classList.remove('flex');
+        }, 6000);
+    }
+
     // FORM SUBMIT
     const bookingForm = document.getElementById('booking-form');
     if (bookingForm) {
@@ -948,12 +969,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const timeInput = document.getElementById('selected-time');
 
             if (!dateInput.value || !timeInput.value) {
-                alert("Veuillez sélectionner une date et une heure.");
+                showBookingError("Veuillez sélectionner une date et une heure.");
                 return;
             }
-			
+
 			if (requestType === 'existing' && !serenityTier && !selectedIntervention) {
-				alert("Merci de choisir une intervention ponctuelle et/ou une formule Sérénité pour votre site existant.");
+				showBookingError("Merci de choisir une intervention ponctuelle et/ou une formule Sérénité pour votre site existant.");
 				return;
 			}
 
@@ -997,6 +1018,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const endM = String(dateObj.getMinutes()).padStart(2, '0');
             const calculatedEndTime = `${endH}:${endM}`;
 
+            // Date formatée en toutes lettres (ex: "lundi 26 janvier") — calculée AVANT l'envoi
+            // pour être disponible dans rdv_label ci-dessous (elle était calculée trop tard,
+            // ce qui provoquait un ReferenceError et faisait échouer toute la réservation).
+            const dateObjFormatted = new Date(dateInput.value);
+            const dateStr = dateObjFormatted.toLocaleDateString('fr-FR', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long'
+            });
+
             try {
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="ph-bold ph-spinner animate-spin text-xl"></i> Envoi...';
@@ -1032,12 +1063,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 // Configuration Message Succès (AVEC REDIRECTION KICKOFF)
-                const dateObjFormatted = new Date(dateInput.value);
-                const dateStr = dateObjFormatted.toLocaleDateString('fr-FR', {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long'
-                });
                 document.getElementById('success-message-date').textContent = `Le ${dateStr} à ${timeInput.value}`;
 
                 const kickoffBtn = document.querySelector('#booking-success a[href*="kickoff"]');
@@ -1072,7 +1097,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             } catch (error) {
                 console.error("Booking error:", error);
-                alert("Une erreur est survenue lors de la réservation.");
+                showBookingError("Une erreur est survenue lors de la réservation. Merci de réessayer.");
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
             }
