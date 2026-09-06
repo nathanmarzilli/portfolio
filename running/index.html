@@ -3,468 +3,516 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Objectif Zone 2 — journal d'entraînement · nathan-web.fr</title>
-<meta name="description" content="Journal d'entraînement course à pied : suivi de la vitesse à fréquence cardiaque constante, de la dérive cardiaque et du volume hebdomadaire.">
+<meta name="robots" content="noindex, nofollow">
+<title>Running — Objectif Zone 2 · Nathan Marzilli</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,75..125,400..800;1,75..125,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
 <style>
-/* ============================================================
-   TOKENS
-   ============================================================ */
 :root{
-  --glacier:#EEF1F0;
-  --paper:#FFFFFF;
-  --ink:#132220;
-  --ink-2:#3D4F4C;
-  --muted:#6E807C;
-  --line:#D4DBD9;
-  --line-soft:#E6EAE9;
-
-  /* langage couleur repris des zones cardiaques de l'app de course */
-  --z1:#9AA3A1;
-  --z2a:#4A90E2;
-  --z2:#12B0AE;
-  --z3:#F2B705;
-  --z4:#EE6C4D;
-  --z5:#D81E5B;
-
-  --z2-wash:rgba(18,176,174,.10);
-  --z2-line:rgba(18,176,174,.35);
-
-  --r:10px;
-  --shadow:0 1px 0 var(--line-soft);
-  --mono-num:"Archivo";
+  --dark-950:#020617; --dark-900:#0B1120; --dark-850:#0f172a; --dark-800:#1E293B;
+  --accent-400:#2DD4BF; --accent-500:#14B8A6;
+  --gold-400:#FBBF24; --gold-500:#F59E0B;
+  --ink-1:#f1f5f9; --ink-2:#cbd5e1; --ink-3:#94a3b8; --ink-4:#64748b;
+  --line:rgba(255,255,255,.08); --line-soft:rgba(255,255,255,.05);
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
-  margin:0;
-  background:var(--glacier);
-  color:var(--ink);
-  font-family:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
-  font-variation-settings:"wdth" 100;
-  font-size:16px;
-  line-height:1.55;
-  -webkit-font-smoothing:antialiased;
+  margin:0; background:var(--dark-950); color:var(--ink-1);
+  font-family:'Inter',system-ui,sans-serif; line-height:1.55; -webkit-font-smoothing:antialiased;
 }
+.font-display{font-family:'Space Grotesk',sans-serif}
 .num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
-.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
-h1,h2,h3{margin:0;line-height:1.1;font-weight:700}
-h1{font-size:clamp(2rem,5.2vw,3.4rem);font-variation-settings:"wdth" 112;letter-spacing:-.02em}
-h2{font-size:clamp(1.3rem,2.6vw,1.75rem);font-variation-settings:"wdth" 108;letter-spacing:-.01em}
-h3{font-size:1.05rem;font-variation-settings:"wdth" 105}
-p{margin:0 0 1em}
-a{color:var(--ink)}
-button{font-family:inherit}
+.wrap{max-width:880px;margin:0 auto;padding:0 24px}
+h1,h2,h3{margin:0;line-height:1.15;font-weight:700}
+p{margin:0}
+button{font-family:inherit;cursor:pointer}
+[hidden]{display:none!important}
+a{color:inherit}
 
-/* ============================================================
-   EN-TÊTE
-   ============================================================ */
-.topbar{
-  border-bottom:1px solid var(--line);
-  background:var(--paper);
-  position:sticky;top:0;z-index:40;
+/* ============ AUTH GATE ============ */
+#auth-gate{
+  position:fixed; inset:0; z-index:200; background:var(--dark-950);
+  display:flex; align-items:center; justify-content:center; padding:24px;
 }
-.topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px;gap:16px}
-.brand{font-weight:700;font-variation-settings:"wdth" 112;letter-spacing:-.01em;text-decoration:none;font-size:1.02rem}
-.brand span{color:var(--z2)}
-.navlinks{display:flex;gap:22px;font-size:.88rem;color:var(--muted)}
-.navlinks a{text-decoration:none;color:var(--muted);padding:4px 0;border-bottom:2px solid transparent}
-.navlinks a:hover,.navlinks a:focus-visible{color:var(--ink);border-color:var(--z2)}
-@media(max-width:720px){.navlinks{display:none}}
-
-/* ============================================================
-   HERO
-   ============================================================ */
-.hero{background:var(--paper);border-bottom:1px solid var(--line);padding:56px 0 40px}
-.hero-lede{max-width:56ch}
-.hero h1{margin-bottom:14px}
-.hero p{color:var(--ink-2);font-size:1.06rem}
-
-.rail{margin-top:44px}
-.rail-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
-.rail-head .t{font-weight:600;font-size:.95rem}
-.rail-head .s{color:var(--muted);font-size:.85rem}
-.railbox{position:relative;padding:34px 0 6px}
-.railbar{position:relative;height:14px;border-radius:7px;overflow:hidden;display:flex}
-.railbar i{display:block;height:100%}
-.railband{
-  position:absolute;top:-9px;bottom:24px;
-  border-left:1.5px dashed var(--z2-line);border-right:1.5px dashed var(--z2-line);
-  background:var(--z2-wash);border-radius:4px;
+.gate-card{
+  width:100%; max-width:380px; background:var(--dark-900); border:1px solid var(--line);
+  border-radius:24px; padding:36px 32px; text-align:center;
 }
-.railband b{
-  position:absolute;top:-22px;left:50%;transform:translateX(-50%);
-  font-size:.72rem;font-weight:600;color:var(--z2);white-space:nowrap;
+.gate-icon{
+  width:56px; height:56px; border-radius:50%; background:rgba(45,212,191,.12);
+  display:flex; align-items:center; justify-content:center; margin:0 auto 18px;
 }
-.raildot{
-  position:absolute;top:-4px;width:15px;height:15px;border-radius:50%;
-  background:var(--paper);border:3px solid var(--z2);transform:translateX(-50%);
-  transition:transform .15s ease;cursor:default;
+.gate-icon i{font-size:26px; color:var(--accent-400)}
+.gate-card h1{font-family:'Space Grotesk',sans-serif; font-size:1.3rem; color:#fff; margin-bottom:6px}
+.gate-card p{color:var(--ink-3); font-size:.88rem; margin-bottom:24px}
+.gate-field{margin-bottom:12px; text-align:left}
+.gate-field label{font-size:.7rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-4); display:block; margin-bottom:6px}
+.gate-field input{
+  width:100%; background:var(--dark-950); border:1px solid var(--line); border-radius:12px;
+  padding:11px 14px; color:#fff; font-size:.92rem; outline:none; transition:border-color .15s;
 }
-.raildot.last{border-color:var(--ink);width:19px;height:19px;top:-6px}
-.raildot:hover{transform:translateX(-50%) scale(1.25)}
-.railticks{display:flex;justify-content:space-between;margin-top:9px;font-size:.74rem;color:var(--muted)}
-
-/* ============================================================
-   BANDEAU SEMAINE
-   ============================================================ */
-.weekstrip{background:var(--ink);color:#E9EFEE;padding:22px 0}
-.weekstrip .wrap{display:flex;gap:34px;flex-wrap:wrap;align-items:flex-end}
-.wk-main{flex:1 1 260px;min-width:220px}
-.wk-kicker{font-size:.8rem;color:#8FA5A1;margin-bottom:3px}
-.wk-title{font-size:1.5rem;font-weight:700;font-variation-settings:"wdth" 110;letter-spacing:-.01em}
-.wk-sub{font-size:.92rem;color:#A9BDB9;margin-top:4px}
-.wk-plan{flex:2 1 380px;font-size:.95rem;color:#DCE6E4}
-.wk-plan .dots{display:flex;gap:7px;margin-bottom:9px}
-.wk-plan .dots i{width:30px;height:6px;border-radius:3px;background:#33514C}
-.wk-plan .dots i.on{background:var(--z2)}
-.wk-plan .det{color:#A9BDB9;font-size:.88rem}
-
-/* ============================================================
-   SECTIONS
-   ============================================================ */
-section{padding:52px 0}
-.sec-head{margin-bottom:26px;max-width:62ch}
-.sec-head p{color:var(--muted);margin:8px 0 0;font-size:.95rem}
-
-/* KPI */
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
-.kpi{background:var(--paper);padding:20px}
-.kpi .k{font-size:.79rem;color:var(--muted);margin-bottom:7px}
-.kpi .v{font-size:1.85rem;font-weight:700;letter-spacing:-.02em;line-height:1}
-.kpi .u{font-size:.9rem;font-weight:500;color:var(--ink-2)}
-.kpi .d{font-size:.79rem;margin-top:6px;color:var(--muted)}
-.kpi .d.up{color:var(--z2)}
-.kpi .d.down{color:var(--z4)}
-
-/* graphiques */
-.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;margin-top:24px}
-.chart{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:18px}
-.chart h3{margin-bottom:2px}
-.chart .cap{font-size:.82rem;color:var(--muted);margin-bottom:12px}
-.chart svg{width:100%;height:auto;display:block;overflow:visible}
-.gridline{stroke:var(--line-soft);stroke-width:1}
-.axistext{font-size:10px;fill:var(--muted);font-family:"Archivo"}
-.trace{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-.pt{stroke:var(--paper);stroke-width:2}
-
-/* import */
-.io{display:grid;grid-template-columns:1.15fr .85fr;gap:20px}
-@media(max-width:820px){.io{grid-template-columns:1fr}}
-.drop{
-  background:var(--paper);border:2px dashed var(--line);border-radius:var(--r);
-  padding:30px 24px;text-align:center;transition:border-color .15s,background .15s;
+.gate-field input:focus{border-color:var(--accent-400)}
+.gate-btn{
+  width:100%; padding:12px; border-radius:12px; border:0; background:var(--accent-400); color:var(--dark-950);
+  font-weight:700; font-size:.92rem; margin-top:6px; transition:background .15s;
 }
-.drop.hot{border-color:var(--z2);background:var(--z2-wash)}
-.drop h3{margin-bottom:6px}
-.drop p{color:var(--muted);font-size:.9rem;margin-bottom:16px}
-.btnrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.gate-btn:hover{background:#fff}
+.gate-error{color:#f87171; font-size:.78rem; font-weight:600; margin-top:12px; display:flex; align-items:center; gap:6px; justify-content:center}
+.gate-back{display:inline-flex; align-items:center; gap:6px; color:var(--ink-4); font-size:.8rem; margin-top:22px; text-decoration:none}
+.gate-back:hover{color:var(--ink-2)}
+
+/* ============ LAYOUT ============ */
+#app{opacity:0; transition:opacity .4s ease}
+#app.ready{opacity:1}
+
+.topbar{position:sticky; top:0; z-index:40; background:rgba(2,6,23,.85); backdrop-filter:blur(12px); border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex; align-items:center; justify-content:space-between; height:60px}
+.brand{display:flex; align-items:center; gap:9px; text-decoration:none}
+.brand-dot{width:7px; height:7px; border-radius:50%; background:var(--accent-400); box-shadow:0 0 8px var(--accent-400)}
+.brand-name{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:.92rem; letter-spacing:.02em; color:#fff}
+.brand-tag{font-size:.68rem; color:var(--ink-4); text-transform:uppercase; letter-spacing:.1em; margin-left:6px; padding-left:9px; border-left:1px solid var(--line)}
+.topbar-actions{display:flex; align-items:center; gap:14px}
+.icon-btn{background:none; border:0; color:var(--ink-4); font-size:1.15rem; display:flex; padding:4px; transition:color .15s}
+.icon-btn:hover{color:var(--ink-1)}
+
+section{padding:44px 0}
+.sec-head{margin-bottom:22px}
+.sec-kicker{font-size:.7rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--accent-400); margin-bottom:6px}
+.sec-head h2{font-family:'Space Grotesk',sans-serif; font-size:1.4rem; color:#fff}
+.sec-head p{color:var(--ink-3); font-size:.88rem; margin-top:6px; max-width:56ch}
+
+/* ============ HERO / STATUT ============ */
+.hero{padding:52px 0 8px}
+.hero-top{display:flex; gap:22px; align-items:center; flex-wrap:wrap; margin-bottom:28px}
+.level-badge{
+  position:relative; width:84px; height:84px; border-radius:50%; flex-shrink:0;
+  background:conic-gradient(var(--accent-400) calc(var(--pct,0)*1%), rgba(255,255,255,.08) 0);
+  display:flex; align-items:center; justify-content:center;
+}
+.level-badge.maintien{background:conic-gradient(var(--gold-400) 100%, transparent 0)}
+.level-badge::before{
+  content:""; position:absolute; inset:6px; border-radius:50%; background:var(--dark-950);
+}
+.level-badge .lv{position:relative; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1rem; color:#fff; text-align:center; line-height:1.1}
+.level-badge .lv small{display:block; font-size:.55rem; font-weight:700; letter-spacing:.1em; color:var(--ink-4); text-transform:uppercase}
+.hero-info{flex:1; min-width:220px}
+.hero-eyebrow{font-size:.72rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-4); margin-bottom:4px}
+.hero-title{font-family:'Space Grotesk',sans-serif; font-size:1.55rem; color:#fff; margin-bottom:4px}
+.hero-title .gold{color:var(--gold-400)}
+.hero-sub{font-size:.9rem; color:var(--ink-3)}
+.hero-points{
+  display:flex; align-items:center; gap:8px; background:rgba(251,191,36,.08); border:1px solid rgba(251,191,36,.2);
+  border-radius:14px; padding:10px 16px; flex-shrink:0;
+}
+.hero-points i{color:var(--gold-400); font-size:1.2rem}
+.hero-points .pv{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.15rem; color:#fff}
+.hero-points .pl{font-size:.68rem; color:var(--ink-4); text-transform:uppercase; letter-spacing:.08em}
+
+.progress-track{height:8px; border-radius:5px; background:rgba(255,255,255,.07); overflow:hidden; margin-bottom:8px}
+.progress-fill{height:100%; border-radius:5px; background:linear-gradient(90deg,var(--accent-500),var(--accent-400)); transition:width .5s ease}
+.progress-fill.gold{background:linear-gradient(90deg,var(--gold-500),var(--gold-400))}
+.progress-caption{display:flex; justify-content:space-between; font-size:.78rem; color:var(--ink-4)}
+.progress-caption strong{color:var(--ink-2); font-weight:600}
+
+/* toast level up */
+#levelup-toast{
+  position:fixed; top:78px; left:50%; transform:translateX(-50%) translateY(-16px); z-index:150;
+  background:var(--dark-900); border:1px solid rgba(251,191,36,.4); border-radius:16px; padding:14px 22px;
+  display:flex; align-items:center; gap:12px; box-shadow:0 12px 30px rgba(0,0,0,.5);
+  opacity:0; pointer-events:none; transition:all .4s ease;
+}
+#levelup-toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+#levelup-toast i{color:var(--gold-400); font-size:1.4rem}
+#levelup-toast .tt{font-weight:700; color:#fff; font-family:'Space Grotesk',sans-serif; font-size:.92rem}
+#levelup-toast .ts{font-size:.76rem; color:var(--ink-3)}
+
+/* ============ STATS ============ */
+.stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:16px; overflow:hidden; margin-top:32px}
+.stat{background:var(--dark-900); padding:18px 20px}
+.stat .k{font-size:.72rem; color:var(--ink-4); margin-bottom:6px}
+.stat .v{font-family:'Space Grotesk',sans-serif; font-size:1.4rem; font-weight:700; color:#fff}
+.stat .v span{font-size:.8rem; font-weight:500; color:var(--ink-3)}
+
+/* ============ LEVEL PATH ============ */
+.path{position:relative; padding-left:38px}
+.path::before{content:""; position:absolute; left:15px; top:8px; bottom:8px; width:2px; background:var(--line)}
+.path-item{position:relative; padding:0 0 26px 0}
+.path-item:last-child{padding-bottom:0}
+.path-node{
+  position:absolute; left:-38px; top:0; width:32px; height:32px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:.82rem;
+  background:var(--dark-900); border:2px solid var(--line); color:var(--ink-4); z-index:2;
+}
+.path-item.done .path-node{border-color:var(--accent-400); color:var(--accent-400); background:rgba(45,212,191,.1)}
+.path-item.current .path-node{border-color:var(--gold-400); color:var(--gold-400); background:rgba(251,191,36,.12); box-shadow:0 0 0 5px rgba(251,191,36,.12)}
+.path-item.done::before{content:""; position:absolute; left:-23px; top:0; bottom:-26px; width:2px; background:var(--accent-400); z-index:1}
+.path-item:last-child.done::before{display:none}
+.path-card{
+  background:var(--dark-900); border:1px solid var(--line); border-radius:16px; padding:16px 18px;
+  display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+}
+.path-item.current .path-card{border-color:rgba(251,191,36,.35); background:rgba(251,191,36,.045)}
+.path-item.locked .path-card{opacity:.5}
+@media(max-width:480px){
+  .path-card{flex-direction:column; align-items:flex-start}
+  .path-right{text-align:left}
+}
+.path-left .pt{font-family:'Space Grotesk',sans-serif; font-weight:700; color:#fff; font-size:.98rem; display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.path-left .pt .tagline{font-size:.66rem; font-weight:700; padding:2px 8px; border-radius:10px; text-transform:uppercase; letter-spacing:.06em}
+.path-item.current .tagline{background:var(--gold-400); color:var(--dark-950)}
+.path-left .pe{font-size:.78rem; color:var(--ink-4); margin-top:2px}
+.path-right{text-align:right}
+.path-right .pv{font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--accent-400); font-size:1.05rem}
+.path-item.current .path-right .pv{color:var(--gold-400)}
+.path-right .pu{font-size:.7rem; color:var(--ink-4); text-transform:uppercase; letter-spacing:.05em}
+
+.maintien-card{
+  margin-top:20px; background:linear-gradient(155deg,rgba(251,191,36,.1),transparent); border:1px solid rgba(251,191,36,.3);
+  border-radius:16px; padding:20px 22px; display:flex; align-items:center; gap:16px;
+}
+.maintien-card i{font-size:2rem; color:var(--gold-400); flex-shrink:0}
+.maintien-card h3{font-family:'Space Grotesk',sans-serif; color:#fff; font-size:1rem; margin-bottom:3px}
+.maintien-card p{font-size:.85rem; color:var(--ink-3)}
+
+/* ============ CHART ============ */
+.chart-card{background:var(--dark-900); border:1px solid var(--line); border-radius:16px; padding:20px}
+.chart-card svg{width:100%; height:auto; display:block; overflow:visible}
+.glabel{font-size:9px; fill:var(--ink-4); font-family:'Inter'}
+.gline{stroke:var(--line); stroke-width:1}
+.gthresh{stroke:rgba(251,191,36,.35); stroke-width:1; stroke-dasharray:3 3}
+.gthresh-label{font-size:8px; fill:var(--gold-400); font-family:'Inter'; font-weight:600}
+.gtrace{fill:none; stroke:var(--accent-400); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round}
+.gpt{stroke:var(--dark-900); stroke-width:2; fill:var(--accent-400)}
+
+/* ============ JOURNAL (collapsible) ============ */
+.toggle-row{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap}
 .btn{
-  border:1px solid var(--ink);background:var(--ink);color:var(--paper);
-  padding:9px 16px;border-radius:7px;font-size:.9rem;font-weight:600;cursor:pointer;
-  transition:opacity .15s;
+  border:1px solid var(--line); background:var(--dark-900); color:var(--ink-1); padding:10px 18px;
+  border-radius:12px; font-size:.85rem; font-weight:600; transition:all .15s; display:inline-flex; align-items:center; gap:8px;
 }
-.btn:hover{opacity:.86}
-.btn.ghost{background:transparent;color:var(--ink)}
-.btn.ghost:hover{background:var(--glacier);opacity:1}
-.btn.sm{padding:6px 12px;font-size:.83rem;font-weight:500}
-.btn.danger{border-color:var(--z5);color:var(--z5);background:transparent}
-.btn.danger:hover{background:rgba(216,30,91,.08)}
-:focus-visible{outline:2px solid var(--z2);outline-offset:2px}
+.btn:hover{border-color:rgba(255,255,255,.2)}
+.btn.primary{background:var(--accent-400); color:var(--dark-950); border-color:var(--accent-400)}
+.btn.primary:hover{background:#fff; border-color:#fff}
+.btn.danger{color:#f87171; border-color:rgba(248,113,113,.3)}
+.btn.danger:hover{background:rgba(248,113,113,.08)}
+.btn.sm{padding:7px 13px; font-size:.78rem}
 
-.paste{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column}
-.paste h3{margin-bottom:6px}
-.paste p{color:var(--muted);font-size:.9rem}
+#journal-body{margin-top:22px}
+.io{display:grid; grid-template-columns:1.15fr .85fr; gap:16px; margin-bottom:20px}
+@media(max-width:720px){.io{grid-template-columns:1fr}}
+.drop{background:var(--dark-900); border:1.5px dashed var(--line); border-radius:16px; padding:26px 20px; text-align:center; transition:all .15s}
+.drop.hot{border-color:var(--accent-400); background:rgba(45,212,191,.05)}
+.drop h3{font-family:'Space Grotesk',sans-serif; color:#fff; font-size:.95rem; margin-bottom:5px}
+.drop p{color:var(--ink-4); font-size:.8rem; margin-bottom:14px}
+.btnrow{display:flex; gap:9px; flex-wrap:wrap; justify-content:center}
+.paste{background:var(--dark-900); border:1px solid var(--line); border-radius:16px; padding:18px; display:flex; flex-direction:column}
+.paste h3{font-family:'Space Grotesk',sans-serif; color:#fff; font-size:.95rem; margin-bottom:5px}
+.paste p{color:var(--ink-4); font-size:.8rem; margin-bottom:10px}
 textarea{
-  width:100%;flex:1;min-height:150px;resize:vertical;
-  border:1px solid var(--line);border-radius:7px;padding:11px;
-  font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.8rem;line-height:1.5;
-  background:var(--glacier);color:var(--ink);
+  width:100%; flex:1; min-height:110px; resize:vertical; border:1px solid var(--line); border-radius:10px; padding:11px;
+  font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.76rem; line-height:1.5; background:var(--dark-950); color:var(--ink-1);
 }
-.msg{margin-top:12px;font-size:.88rem;padding:9px 12px;border-radius:7px;display:none}
-.msg.ok{display:block;background:var(--z2-wash);color:#0B7E7C}
-.msg.err{display:block;background:rgba(216,30,91,.09);color:var(--z5)}
+.msg{margin-top:10px; font-size:.82rem; padding:9px 12px; border-radius:10px; display:none}
+.msg.ok{display:block; background:rgba(45,212,191,.1); color:var(--accent-400)}
+.msg.err{display:block; background:rgba(248,113,113,.1); color:#f87171}
 
-details.schema{margin-top:20px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:16px 20px}
-details.schema summary{cursor:pointer;font-weight:600;font-size:.95rem}
-details.schema pre{
-  background:var(--glacier);border-radius:7px;padding:14px;overflow-x:auto;
-  font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.78rem;line-height:1.6;margin:14px 0 0;
-}
-.aliases{font-size:.86rem;color:var(--ink-2);margin-top:14px}
-.aliases code{background:var(--glacier);padding:1px 5px;border-radius:4px;font-size:.82em}
-
-/* tableau */
-.tablewrap{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:820px}
-th,td{padding:11px 13px;text-align:right;border-bottom:1px solid var(--line-soft);white-space:nowrap}
-th{font-weight:600;font-size:.78rem;color:var(--muted);background:var(--glacier);position:sticky;top:0}
+.tablewrap{background:var(--dark-900); border:1px solid var(--line); border-radius:16px; overflow-x:auto}
+table{width:100%; border-collapse:collapse; font-size:.82rem; min-width:640px}
+th,td{padding:11px 13px; text-align:right; border-bottom:1px solid var(--line-soft); white-space:nowrap; color:var(--ink-2)}
+th{font-weight:600; font-size:.68rem; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-4)}
 th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
 tbody tr:last-child td{border-bottom:0}
-tbody tr:hover{background:var(--z2-wash)}
-.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.76rem;font-weight:600}
-.pill.good{background:var(--z2-wash);color:#0B7E7C}
-.pill.mid{background:rgba(242,183,5,.16);color:#8A6800}
-.pill.bad{background:rgba(238,108,77,.15);color:#B23C1E}
-.del{border:0;background:none;color:var(--muted);cursor:pointer;font-size:1.05rem;line-height:1;padding:2px 6px;border-radius:5px}
-.del:hover{background:rgba(216,30,91,.1);color:var(--z5)}
-.empty{padding:44px 24px;text-align:center;color:var(--muted);background:var(--paper);border:1px solid var(--line);border-radius:var(--r)}
-.empty strong{display:block;color:var(--ink);font-size:1.05rem;margin-bottom:6px}
+tbody tr:hover{background:rgba(255,255,255,.02)}
+.pill{display:inline-block; padding:2px 9px; border-radius:20px; font-size:.72rem; font-weight:600}
+.pill.good{background:rgba(45,212,191,.12); color:var(--accent-400)}
+.pill.mid{background:rgba(251,191,36,.14); color:var(--gold-400)}
+.pill.bad{background:rgba(248,113,113,.12); color:#f87171}
+.del{border:0; background:none; color:var(--ink-4); cursor:pointer; font-size:1.05rem; padding:2px 6px; border-radius:6px}
+.del:hover{background:rgba(248,113,113,.1); color:#f87171}
+.empty{padding:40px 20px; text-align:center; color:var(--ink-4); background:var(--dark-900); border:1px solid var(--line); border-radius:16px}
+.empty strong{display:block; color:var(--ink-1); font-size:1rem; margin-bottom:5px}
 
-/* plan */
-.phasetabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-.ptab{border:1px solid var(--line);background:var(--paper);padding:7px 14px;border-radius:20px;font-size:.86rem;cursor:pointer;color:var(--ink-2)}
-.ptab[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.weeks{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
-.wcard{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:14px 15px;position:relative}
-.wcard.past{opacity:.5}
-.wcard.now{border-color:var(--z2);border-width:2px;box-shadow:0 0 0 4px var(--z2-wash)}
-.wcard.light{background:repeating-linear-gradient(135deg,var(--paper),var(--paper) 9px,var(--glacier) 9px,var(--glacier) 18px)}
-.wc-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
-.wc-cal{font-weight:700;font-size:1rem}
-.wc-idx{font-size:.75rem;color:var(--muted)}
-.wc-dates{font-size:.76rem;color:var(--muted);margin-bottom:9px}
-.wc-sess{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:600;margin-bottom:5px}
-.wc-sess i{width:7px;height:7px;border-radius:50%;background:var(--z2);display:inline-block}
-.wc-det{font-size:.83rem;color:var(--ink-2)}
-.wc-note{font-size:.79rem;color:var(--muted);margin-top:8px;border-top:1px solid var(--line-soft);padding-top:8px}
-.tag{position:absolute;top:-8px;right:12px;background:var(--z3);color:#2B2100;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:10px}
-.tag.now{background:var(--z2);color:#fff}
+/* ============ REPÈRES accordion ============ */
+details.acc{background:var(--dark-900); border:1px solid var(--line); border-radius:16px; padding:16px 20px}
+details.acc + details.acc{margin-top:10px}
+details.acc summary{cursor:pointer; font-weight:600; font-size:.9rem; color:#fff; display:flex; align-items:center; gap:10px; list-style:none}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary i{color:var(--accent-400)}
+details.acc[open] summary{margin-bottom:10px}
+details.acc .body{font-size:.85rem; color:var(--ink-3); line-height:1.6}
+details.acc .body p{margin-bottom:.7em}
+details.acc .body ul{margin:0; padding-left:18px}
+details.acc .body li{margin-bottom:5px}
 
-/* jalons */
-.miles{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);overflow-x:auto}
-.miles table{min-width:760px;font-size:.87rem}
+footer{border-top:1px solid var(--line); padding:30px 0 40px; font-size:.8rem; color:var(--ink-4)}
+footer .wrap{display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap}
+footer a{color:var(--ink-3); text-decoration:none}
+footer a:hover{color:var(--accent-400)}
 
-/* repères */
-.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px}
-.note h3{margin-bottom:8px}
-.note p{font-size:.92rem;color:var(--ink-2);margin-bottom:.7em}
-.note ul{margin:0;padding-left:18px;font-size:.92rem;color:var(--ink-2)}
-.note li{margin-bottom:6px}
-
-footer{border-top:1px solid var(--line);background:var(--paper);padding:34px 0;font-size:.86rem;color:var(--muted)}
-footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
-
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
 </style>
 </head>
 <body>
 
+<!-- ============ AUTH GATE ============ -->
+<div id="auth-gate">
+  <div class="gate-card">
+    <div class="gate-icon"><i class="ph-bold ph-lock-key"></i></div>
+    <h1 class="font-display">Espace privé</h1>
+    <p>Connecte-toi pour accéder au suivi running.</p>
+    <div class="gate-field">
+      <label>Identifiant</label>
+      <input type="text" id="gate-id" placeholder="ID" autocomplete="username">
+    </div>
+    <div class="gate-field">
+      <label>Mot de passe</label>
+      <input type="password" id="gate-pass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="gate-btn" id="gate-submit">Connexion</button>
+    <div class="gate-error" id="gate-error" hidden><i class="ph-bold ph-warning"></i> Identifiants incorrects.</div>
+    <a class="gate-back" href="../index.html"><i class="ph-bold ph-arrow-left"></i> Retour au portfolio</a>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app" hidden>
+
+<div id="levelup-toast"><i class="ph-fill ph-trophy"></i><div><div class="tt" id="levelup-title">Niveau débloqué</div><div class="ts" id="levelup-sub"></div></div></div>
+
 <header class="topbar">
   <div class="wrap">
-    <a class="brand" href="/">nathan<span>-</span>web.fr</a>
-    <nav class="navlinks">
-      <a href="#tableau-de-bord">Tableau de bord</a>
-      <a href="#importer">Importer</a>
-      <a href="#seances">Séances</a>
-      <a href="#plan">Plan</a>
-      <a href="#reperes">Repères</a>
-    </nav>
+    <a class="brand" href="../index.html">
+      <span class="brand-dot"></span>
+      <span class="brand-name">NATHAN MARZILLI</span>
+      <span class="brand-tag">Running</span>
+    </a>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="logout-btn" title="Se déconnecter"><i class="ph-bold ph-sign-out"></i></button>
+    </div>
   </div>
 </header>
 
-<div class="hero">
-  <div class="wrap">
-    <div class="hero-lede">
-      <h1>Courir vite en ayant l'air de ne rien faire</h1>
-      <p>Journal public d'un projet simple et long&nbsp;: tenir 12&nbsp;km/h à 138 battements par minute. Toute la progression se mesure ici, une séance à la fois, sans tricher sur les chiffres.</p>
+<div class="hero wrap">
+  <div class="hero-top">
+    <div class="level-badge" id="level-badge" style="--pct:0">
+      <div class="lv"><small>Niveau</small><span id="level-num">1</span></div>
     </div>
-
-    <div class="rail">
-      <div class="rail-head">
-        <div class="t">Où sont tombées mes séances sur l'échelle cardiaque</div>
-        <div class="s" id="railCount">—</div>
-      </div>
-      <div class="railbox">
-        <div class="railband" id="railBand"><b>zone visée · 128–145 bpm</b></div>
-        <div class="railbar" id="railBar"></div>
-        <div id="railDots"></div>
-        <div class="railticks">
-          <span>100</span><span>123</span><span>140</span><span>160</span><span>173</span><span>186 bpm</span>
-        </div>
+    <div class="hero-info">
+      <div class="hero-eyebrow">Objectif long terme · 12 km/h en zone 2</div>
+      <h1 class="hero-title" id="hero-title">Premiers appuis</h1>
+      <div class="hero-sub" id="hero-sub">—</div>
+    </div>
+    <div class="hero-points">
+      <i class="ph-fill ph-lightning"></i>
+      <div>
+        <div class="pv num" id="points-value">0</div>
+        <div class="pl">points</div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="weekstrip">
-  <div class="wrap">
-    <div class="wk-main">
-      <div class="wk-kicker" id="wkKicker">—</div>
-      <div class="wk-title" id="wkTitle">—</div>
-      <div class="wk-sub" id="wkSub">—</div>
-    </div>
-    <div class="wk-plan">
-      <div class="dots" id="wkDots"></div>
-      <div id="wkDetail">—</div>
-      <div class="det" id="wkNote"></div>
-    </div>
+  <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  <div class="progress-caption">
+    <span id="progress-left">—</span>
+    <span id="progress-right">—</span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="k">Vitesse zone 2 actuelle</div><div class="v num" id="stat-speed">—</div></div>
+    <div class="stat"><div class="k">Séances enregistrées</div><div class="v num" id="stat-sessions">—</div></div>
+    <div class="stat"><div class="k">Distance totale</div><div class="v num" id="stat-km">—</div></div>
+    <div class="stat"><div class="k">Objectif de la semaine</div><div class="v num" id="stat-week">—</div></div>
   </div>
 </div>
 
-<section id="tableau-de-bord">
+<section id="progression">
   <div class="wrap">
     <div class="sec-head">
-      <h2>Tableau de bord</h2>
-      <p>La vitesse brute ment&nbsp;: elle dépend du dénivelé, de la météo et de l'heure. Les deux chiffres qui comptent sont la vitesse tenue à fréquence cardiaque constante et la dérive entre le début et la fin de séance.</p>
+      <div class="sec-kicker">La route vers 12 km/h</div>
+      <h2>Progression par niveaux</h2>
+      <p>Chaque niveau franchi correspond à une vitesse tenue en zone 2 (128–145 bpm), sur plusieurs années. Une fois le dernier niveau atteint, place au mode Maintien.</p>
     </div>
-    <div class="kpis" id="kpis"></div>
-    <div class="charts" id="charts"></div>
+    <div class="path" id="level-path"></div>
+    <div class="maintien-card" id="maintien-card" hidden>
+      <i class="ph-fill ph-trophy"></i>
+      <div><h3>Mode Maintien débloqué</h3><p>12 km/h en zone 2, tenu. L'objectif maintenant : ne pas régresser. Chaque séance continue de rapporter des points.</p></div>
+    </div>
   </div>
 </section>
 
-<section id="importer" style="background:var(--glacier)">
+<section id="graphique" style="border-top:1px solid var(--line)">
   <div class="wrap">
     <div class="sec-head">
-      <h2>Ajouter des séances</h2>
-      <p>Dépose un fichier JSON, ou colle directement le contenu. Une séance seule ou cinquante d'un coup, dans les deux cas ça passe. Les doublons de date sont écartés automatiquement.</p>
+      <div class="sec-kicker">Preuve par les chiffres</div>
+      <h2>Vitesse zone 2 dans le temps</h2>
+      <p>Vitesse tenue lors des séances en zone cardiaque cible. Les repères pointillés marquent les seuils de niveau.</p>
+    </div>
+    <div class="chart-card"><div id="chart-host"></div></div>
+  </div>
+</section>
+
+<section id="journal" style="border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="toggle-row">
+      <div class="sec-head" style="margin-bottom:0">
+        <div class="sec-kicker">Journal</div>
+        <h2>Séances enregistrées</h2>
+      </div>
+      <button class="btn primary sm" id="journal-toggle"><i class="ph-bold ph-plus"></i> Ajouter une séance</button>
     </div>
 
-    <div class="io">
-      <div class="drop" id="drop">
-        <h3>Dépose ton fichier ici</h3>
-        <p>Format <code>.json</code> — un objet ou un tableau d'objets</p>
-        <div class="btnrow">
-          <button class="btn" id="pickBtn">Choisir un fichier</button>
-          <button class="btn ghost" id="exportBtn">Exporter mes séances</button>
+    <div id="journal-body" hidden>
+      <div class="io">
+        <div class="drop" id="drop">
+          <h3>Dépose un fichier</h3>
+          <p>Format .json — un objet ou un tableau</p>
+          <div class="btnrow">
+            <button class="btn sm" id="pickBtn"><i class="ph-bold ph-upload-simple"></i> Choisir un fichier</button>
+            <button class="btn sm" id="exportBtn"><i class="ph-bold ph-download-simple"></i> Exporter</button>
+          </div>
+          <input type="file" id="file" accept=".json,application/json" multiple hidden>
         </div>
-        <input type="file" id="file" accept=".json,application/json" multiple hidden>
-      </div>
-
-      <div class="paste">
-        <h3>Ou colle le JSON</h3>
-        <p>Pratique depuis le téléphone, juste après la séance.</p>
-        <textarea id="ta" spellcheck="false" placeholder='[{"date":"2026-09-08","duree":40,"distance":4.6,"fcMoy":138,"fcMax":147,"fcDebut":131,"fcFin":141}]'></textarea>
-        <div class="btnrow" style="margin-top:12px;justify-content:flex-start">
-          <button class="btn" id="addBtn">Ajouter</button>
-          <button class="btn ghost sm" id="tplBtn">Remplir un modèle</button>
+        <div class="paste">
+          <h3>Ou colle le JSON</h3>
+          <p>Pratique depuis le téléphone, juste après la séance.</p>
+          <textarea id="ta" spellcheck="false" placeholder='[{"date":"2026-09-08","duree":40,"distance":4.6,"fcMoy":138,"fcDebut":131,"fcFin":141}]'></textarea>
+          <div class="btnrow" style="margin-top:10px; justify-content:flex-start">
+            <button class="btn sm" id="addBtn">Ajouter</button>
+            <button class="btn sm" id="tplBtn">Modèle</button>
+          </div>
         </div>
       </div>
+      <div class="msg" id="msg"></div>
     </div>
 
-    <div class="msg" id="msg"></div>
+    <div id="tableHost" style="margin-top:20px"></div>
+    <div class="btnrow" style="justify-content:flex-start; margin-top:14px">
+      <button class="btn danger sm" id="clearBtn"><i class="ph-bold ph-trash"></i> Tout effacer</button>
+    </div>
+  </div>
+</section>
 
-    <details class="schema">
-      <summary>Le format attendu, en détail</summary>
-      <pre id="schemaCode">[
-  {
-    "date":     "2026-09-05",   // requis
-    "type":     "Zone 2 continu",
-    "lieu":     "Tapis",
-    "duree":    50.2,           // minutes, ou "50:10"
-    "distance": 5.35,           // km
-    "fcMoy":    138,
-    "fcMax":    151,
-    "fcDebut":  133,            // FC moyenne des 10 premières minutes
-    "fcFin":    139,            // FC moyenne des 10 dernières minutes
-    "denivele": 33,             // m D+
-    "ressenti": 4,              // 1 à 5
-    "notes":    "Sensations excellentes"
-  }
-]</pre>
-      <div class="aliases">
-        Les noms de champs sont tolérants&nbsp;: <code>duration</code>, <code>duree_min</code>, <code>minutes</code> fonctionnent aussi bien que <code>duree</code>&nbsp;; <code>hr_avg</code>, <code>fc_moy</code>, <code>fcMoyenne</code> valent <code>fcMoy</code>&nbsp;; <code>km</code> vaut <code>distance</code>. Seule la date est obligatoire, tout le reste se remplit au mieux.
+<section id="reperes" style="border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">Discipline</div>
+      <h2>Mes repères</h2>
+    </div>
+    <details class="acc">
+      <summary><i class="ph-bold ph-ruler"></i> La règle des dix minutes & l'échauffement</summary>
+      <div class="body">
+        <p>Le tapis impose une vitesse, pas une fréquence cardiaque. Vitesse réglée pour être à 130 bpm à la dixième minute, pas 140. Au-dessus de 145, je baisse de 0,3 km/h — sans discussion.</p>
+        <p>Échauffement : cinq minutes de marche à 5 km/h, puis trois minutes à 6 km/h.</p>
+      </div>
+    </details>
+    <details class="acc">
+      <summary><i class="ph-bold ph-treadmill"></i> Le tapis n'est pas la route</summary>
+      <div class="body">
+        <ul>
+          <li>Inclinaison à 1 % pour compenser l'absence de résistance de l'air.</li>
+          <li>Ventilateur en face, bouteille à portée : cinq à huit battements gagnés gratuitement.</li>
+          <li>En intérieur, la fréquence monte de cinq à huit battements à effort égal.</li>
+        </ul>
+      </div>
+    </details>
+    <details class="acc">
+      <summary><i class="ph-bold ph-warning-octagon"></i> Ce qui ferait échouer le projet</summary>
+      <div class="body">
+        <ul>
+          <li>La coupure. Sept semaines d'arrêt ont déjà coûté plus que n'importe quel mauvais choix de séance.</li>
+          <li>Les tendons : le cœur progresse plus vite que le tissu conjonctif — deux fois vingt minutes de renforcement par semaine.</li>
+          <li>Le cumul badminton + séance qualité dans la même semaine : la séance intense saute.</li>
+        </ul>
       </div>
     </details>
   </div>
 </section>
 
-<section id="seances">
-  <div class="wrap">
-    <div class="sec-head">
-      <h2>Toutes les séances</h2>
-      <p>La colonne dérive est la plus parlante&nbsp;: c'est l'écart entre la fréquence cardiaque des dix premières minutes et celle des dix dernières, à vitesse constante. En dessous de quatre battements, le moteur aérobie fait son travail.</p>
-    </div>
-    <div id="tableHost"></div>
-    <div class="btnrow" style="justify-content:flex-start;margin-top:16px">
-      <button class="btn danger sm" id="clearBtn">Tout effacer</button>
-    </div>
-  </div>
-</section>
-
-<section id="plan" style="background:var(--glacier)">
-  <div class="wrap">
-    <div class="sec-head">
-      <h2>Le plan, semaine par semaine</h2>
-      <p id="planRange">Cinquante-deux semaines calendaires. Le nombre de séances est fixe, les jours sont libres&nbsp;: il faut seulement 24 heures entre deux sorties et 48 avant la longue.</p>
-    </div>
-    <div class="phasetabs" id="ptabs"></div>
-    <div class="weeks" id="weeks"></div>
-  </div>
-</section>
-
-<section id="jalons">
-  <div class="wrap">
-    <div class="sec-head">
-      <h2>Ce que ça devrait donner</h2>
-      <p>Projections calées sur les deux premières séances réelles. La fourchette basse suppose une assiduité correcte, la haute suppose aucune coupure.</p>
-    </div>
-    <div class="miles">
-      <table>
-        <thead><tr>
-          <th>Échéance</th><th>Volume hebdo</th><th>Vitesse zone 2</th><th>Allure</th><th>Dérive visée</th><th>10&nbsp;km estimé</th><th>Ce qui est acquis</th>
-        </tr></thead>
-        <tbody id="milesBody"></tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<section id="reperes" style="background:var(--glacier)">
-  <div class="wrap">
-    <div class="sec-head"><h2>Les repères que je ne négocie pas</h2></div>
-    <div class="notes">
-      <div class="note">
-        <h3>La règle des dix minutes</h3>
-        <p>Le tapis impose une vitesse, pas une fréquence cardiaque. Je règle la vitesse pour être à 130 bpm à la dixième minute, pas à 140. La dérive naturelle m'amène à 140–143 en fin de séance toute seule.</p>
-        <p>Au-dessus de 145, je baisse de 0,3 km/h. Sans discussion.</p>
-      </div>
-      <div class="note">
-        <h3>Huit minutes d'échauffement</h3>
-        <p>Cinq minutes de marche à 5 km/h, puis trois minutes à 6 km/h. La séance du 6 septembre, partie directement à 8:51/km, a coûté 34 secondes au kilomètre sur la seconde moitié.</p>
-      </div>
-      <div class="note">
-        <h3>Le tapis n'est pas la route</h3>
-        <ul>
-          <li>Inclinaison à 1 % pour compenser l'absence de résistance de l'air.</li>
-          <li>Ventilateur en face et bouteille à portée&nbsp;: cinq à huit battements gagnés gratuitement.</li>
-          <li>En intérieur, la fréquence monte de cinq à huit battements à effort égal.</li>
-        </ul>
-      </div>
-      <div class="note">
-        <h3>Ce qui ferait échouer le projet</h3>
-        <ul>
-          <li>La coupure. Sept semaines d'arrêt ont déjà coûté plus que n'importe quel mauvais choix de séance.</li>
-          <li>Les tendons. Le cœur progresse plus vite que le tissu conjonctif&nbsp;: deux fois vingt minutes de renforcement par semaine.</li>
-          <li>Le cumul badminton et séance qualité. Deux entraînements de bad dans la semaine, et la séance intense saute.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
 <footer>
   <div class="wrap">
-    <div>Journal d'entraînement — mis à jour à chaque séance.</div>
-    <div>Fréquence cardiaque maximale mesurée&nbsp;: 186 bpm · zone visée 128–145 bpm</div>
+    <div>Journal privé — mis à jour à chaque séance.</div>
+    <a href="../index.html"><i class="ph-bold ph-arrow-left"></i> Retour au portfolio</a>
   </div>
 </footer>
+
+</div><!-- /#app -->
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyD6Q-HVto8eybwGo9YgcFx4hu7rWBLNYfg",
+    authDomain: "portfolio-nathan-e148f.firebaseapp.com",
+    projectId: "portfolio-nathan-e148f",
+    storageBucket: "portfolio-nathan-e148f.firebasestorage.app",
+    messagingSenderId: "61408006418",
+    appId: "1:61408006418:web:8a448e8ca60ec77bf523cb"
+};
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+
+const gate = document.getElementById('auth-gate');
+const appEl = document.getElementById('app');
+const gateError = document.getElementById('gate-error');
+let appBooted = false;
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    gate.style.display = 'none';
+    appEl.hidden = false;
+    requestAnimationFrame(() => appEl.classList.add('ready'));
+    if (!appBooted) { appBooted = true; window.__bootRunningApp(); }
+  } else {
+    gate.style.display = 'flex';
+    appEl.hidden = true;
+    appEl.classList.remove('ready');
+  }
+});
+
+function doLogin(){
+  const idInput = document.getElementById('gate-id').value.trim();
+  const passInput = document.getElementById('gate-pass').value.trim();
+  if (!idInput || !passInput) return;
+  const emailToUse = idInput.includes('@') ? idInput : idInput + '@gmail.com';
+  gateError.hidden = true;
+  signInWithEmailAndPassword(auth, emailToUse, passInput).catch(() => { gateError.hidden = false; });
+}
+document.getElementById('gate-submit').addEventListener('click', doLogin);
+document.getElementById('gate-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('gate-id').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+</script>
 
 <script>
 "use strict";
 
+window.__bootRunningApp = function(){
+
 /* ============================================================
    CONSTANTES
    ============================================================ */
-const HR_MAX = 186, Z2_LOW = 128, Z2_HIGH = 145;
-const RAIL_MIN = 100, RAIL_MAX = 186;
-const START_YEAR = 2026, START_WEEK = 36;
+const Z2_LOW = 128, Z2_HIGH = 145;
 const STORE_KEY = "nw_running_log_v1";
+const LEVEL_STORE_KEY = "nw_running_level_seen";
+
+const LEVELS = [
+  { n:1, title:"Premiers appuis",     eta:"Aujourd'hui",   threshold:6.7,  range:"6,7 – 7,0 km/h" },
+  { n:2, title:"Rodage",              eta:"~1 mois",       threshold:6.9,  range:"6,9 – 7,2 km/h" },
+  { n:3, title:"Fondations",          eta:"~3 mois",       threshold:7.0,  range:"7,0 – 7,6 km/h" },
+  { n:4, title:"Élan",                eta:"~6 mois",       threshold:7.6,  range:"7,6 – 8,5 km/h" },
+  { n:5, title:"Régularité",          eta:"~9 mois",       threshold:8.2,  range:"8,2 – 9,3 km/h" },
+  { n:6, title:"Endurance",           eta:"~12 mois",      threshold:8.8,  range:"8,8 – 10,0 km/h" },
+  { n:7, title:"Rythme de croisière", eta:"~24 mois",      threshold:10.0, range:"10,0 – 11,0 km/h" },
+  { n:8, title:"Zone 2 maîtrisée",    eta:"~36–48 mois",   threshold:11.0, range:"11,0 – 12,0 km/h" }
+];
+const MAINTIEN_THRESHOLD = 12.0;
 
 /* ============================================================
-   STOCKAGE (dégradé en mémoire si indisponible)
+   STOCKAGE
    ============================================================ */
 const store = (() => {
   let mem = null;
@@ -478,9 +526,11 @@ const store = (() => {
     return { read(){ return mem || []; }, write(v){ mem = v; } };
   }
 })();
+function safeGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+function safeSet(k,v){ try { localStorage.setItem(k, v); } catch(e){} }
 
 /* ============================================================
-   SEMAINES ISO
+   SEMAINES ISO (pour le regroupement hebdo)
    ============================================================ */
 function isoWeek(d){
   const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -489,90 +539,7 @@ function isoWeek(d){
   const y0 = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
   return { year: t.getUTCFullYear(), week: Math.ceil(((t - y0) / 86400000 + 1) / 7) };
 }
-function isoWeekStart(year, week){
-  const jan4 = new Date(Date.UTC(year, 0, 4));
-  const day = jan4.getUTCDay() || 7;
-  const monday1 = new Date(jan4); monday1.setUTCDate(jan4.getUTCDate() - day + 1);
-  const d = new Date(monday1); d.setUTCDate(monday1.getUTCDate() + (week - 1) * 7);
-  return d;
-}
-function addWeeks(year, week, n){
-  const d = isoWeekStart(year, week); d.setUTCDate(d.getUTCDate() + n * 7);
-  const w = isoWeek(new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
-  return w;
-}
 const MONTHS = ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
-function weekRangeLabel(year, week){
-  const a = isoWeekStart(year, week); const b = new Date(a); b.setUTCDate(a.getUTCDate() + 6);
-  const f = d => d.getUTCDate() + " " + MONTHS[d.getUTCMonth()];
-  return f(a) + " – " + f(b);
-}
-/* index 1..52 du programme -> {year, week} */
-function progWeekToCal(i){ return addWeeks(START_YEAR, START_WEEK, i - 1); }
-/* {year,week} -> index programme, ou null hors plan */
-function calToProgWeek(year, week){
-  for (let i = 1; i <= 52; i++){ const c = progWeekToCal(i); if (c.year === year && c.week === week) return i; }
-  return null;
-}
-
-/* ============================================================
-   PLAN 52 SEMAINES
-   ============================================================ */
-function targetSpeed(i){ return Math.round((6.8 + (9.0 - 6.8) * Math.pow((i - 1) / 51, 0.85)) * 10) / 10; }
-
-const PLAN = (() => {
-  const out = [];
-  const P1 = [
-    [3,"35 / 30 / 40",105,"Normale","Trouver la vitesse qui donne 130 bpm à la dixième minute."],
-    [3,"35 / 30 / 45",110,"Normale","Même vitesse que la semaine passée, cinq minutes de plus sur la longue."],
-    [3,"40 / 30 / 50",120,"Normale","Première semaine à deux heures de course."],
-    [3,"30 / 25 / 35",90,"Allégée","Semaine allégée. On ne cherche rien, on récupère."],
-    [3,"40 / 35 / 55",130,"Normale","Test mensuel sur la séance longue."],
-    [3,"40 / 35 / 60",135,"Normale","Première heure continue en zone 2."],
-    [3,"45 / 35 / 60",140,"Normale","Pic de la phase. La course continue doit être installée."],
-    [3,"30 / 30 / 40",100,"Allégée","Allégée et bilan de phase."]
-  ];
-  P1.forEach((r,k) => out.push({ i:k+1, phase:1, phaseName:"Fondation", n:r[0], detail:r[1], total:r[2], type:r[3], note:r[4], speed:targetSpeed(k+1) }));
-
-  const long2 = [70,75,80,0,80,85,90,0,85,90,95,0,90,95,100,0];
-  const std2  = [45,45,45,0,45,45,50,0,50,50,50,0,50,50,55,0];
-  for (let k = 0; k < 16; k++){
-    const i = 9 + k;
-    if ((k + 1) % 4 === 0){
-      out.push({ i, phase:2, phaseName:"Volume", n:3, detail:"40 / 40 / 45", total:125, type:"Allégée",
-        note:"Semaine allégée, aucune accélération.", speed:targetSpeed(i) });
-    } else {
-      const s = std2[k], l = long2[k];
-      let note = "Sortie longue dehors si possible.";
-      if (k % 4 === 1) note = "Six lignes droites rapides de vingt secondes en fin de deux séances, récupération complète.";
-      if (i === 13 || i === 21) note = "Test mensuel sur la séance longue.";
-      out.push({ i, phase:2, phaseName:"Volume", n:4, detail:`${s} / ${s} / ${s} / ${l}`, total:s*3+l, type:"Normale", note, speed:targetSpeed(i) });
-    }
-  }
-
-  const QUAL = [
-    "Seuil : deux fois dix minutes à 160–165 bpm, trois minutes de trot entre.",
-    "Vitesse maximale aérobie : huit fois 400 m rapides, une minute de récupération.",
-    "Côtes : huit fois quarante-cinq secondes en montée, retour en trot."
-  ];
-  let qi = 0;
-  for (let k = 0; k < 28; k++){
-    const i = 25 + k;
-    if ((k + 1) % 4 === 0){
-      out.push({ i, phase:3, phaseName:"Intensité", n:4, detail:"45 / 45 / 45 / 60", total:195, type:"Allégée",
-        note:"Semaine allégée, pas de séance qualité.", speed:targetSpeed(i) });
-    } else {
-      const longue = Math.min(80 + Math.floor(k / 4) * 5, 110);
-      const s = i < 39 ? 50 : 55;
-      let note = QUAL[qi % 3]; qi++;
-      if ([29,37,45,52].includes(i)) note = "Test mensuel. " + note;
-      out.push({ i, phase:3, phaseName:"Intensité", n:5, detail:`${s} / ${s} / ${s} / 45 qualité / ${longue}`,
-        total:s*3+longue+45, type:"Normale", note, speed:targetSpeed(i) });
-    }
-  }
-  out.forEach(w => { const c = progWeekToCal(w.i); w.calYear = c.year; w.calWeek = c.week; });
-  return out;
-})();
 
 /* ============================================================
    NORMALISATION DES DONNÉES IMPORTÉES
@@ -643,13 +610,12 @@ function normalize(raw){
   if (s.speed && s.fcMoy) s.eff = (s.speed / s.fcMoy) * 1000;
   const w = isoWeek(new Date(date + "T12:00:00"));
   s.calYear = w.year; s.calWeek = w.week;
-  s.progWeek = calToProgWeek(w.year, w.week);
   return s;
 }
 function paceLabel(speed){
   if (!speed || speed <= 0) return "—";
   const t = 60 / speed, m = Math.floor(t), sec = Math.round((t - m) * 60);
-  return `${m}:${String(sec === 60 ? 0 : sec).padStart(2,"0")}${sec===60?"":""}`;
+  return `${m}:${String(sec === 60 ? 0 : sec).padStart(2,"0")}`;
 }
 function dateLabel(iso){
   const d = new Date(iso + "T12:00:00");
@@ -659,9 +625,6 @@ function dateLabel(iso){
 /* ============================================================
    ÉTAT
    ============================================================ */
-let sessions = store.read().map(normalize).filter(Boolean);
-if (!sessions.length) sessions = SEED().map(normalize).filter(Boolean);
-
 function SEED(){
   return [
     { date:"2026-09-05", type:"Alternance course / marche", lieu:"Extérieur", duree:50.17, distance:5.35,
@@ -672,301 +635,220 @@ function SEED(){
       notes:"Départ trop rapide au premier kilomètre. Pic à 163 bpm à vérifier." }
   ];
 }
+let sessions = store.read().map(normalize).filter(Boolean);
+if (!sessions.length) sessions = SEED().map(normalize).filter(Boolean);
 function save(){ store.write(sessions); }
 function sorted(){ return [...sessions].sort((a,b) => a.date.localeCompare(b.date)); }
 
 /* ============================================================
-   RAIL CARDIAQUE
+   MOTEUR DE JEU — niveaux & points
    ============================================================ */
-function renderRail(){
-  const bands = [[100,123,"var(--z1)"],[123,128,"var(--z2a)"],[128,140,"var(--z2)"],[140,160,"var(--z3)"],[160,173,"var(--z4)"],[173,186,"var(--z5)"]];
-  const pct = v => ((v - RAIL_MIN) / (RAIL_MAX - RAIL_MIN)) * 100;
-  document.getElementById("railBar").innerHTML =
-    bands.map(b => `<i style="width:${pct(b[1])-pct(b[0])}%;background:${b[2]}"></i>`).join("");
-  const band = document.getElementById("railBand");
-  band.style.left = pct(Z2_LOW) + "%";
-  band.style.width = (pct(Z2_HIGH) - pct(Z2_LOW)) + "%";
-
-  const list = sorted().filter(s => s.fcMoy);
-  document.getElementById("railDots").innerHTML = list.map((s, k) => {
-    const last = k === list.length - 1;
-    return `<div class="raildot${last?" last":""}" style="left:${pct(s.fcMoy)}%" title="${dateLabel(s.date)} · ${s.fcMoy} bpm"></div>`;
-  }).join("");
-  document.getElementById("railCount").textContent =
-    list.length ? `${list.length} séance${list.length>1?"s":""} · dernière à ${list[list.length-1].fcMoy} bpm` : "aucune séance enregistrée";
+function bestZone2Speed(){
+  const list = sorted().filter(s => s.speed && s.fcMoy && s.fcMoy >= Z2_LOW - 6 && s.fcMoy <= Z2_HIGH + 6);
+  return list.length ? list[list.length - 1].speed : null;
 }
+function currentLevelIndex(speed){
+  if (speed == null) return 1;
+  let lvl = 1;
+  for (let i = 1; i < LEVELS.length; i++){ if (speed >= LEVELS[i].threshold) lvl = LEVELS[i].n; }
+  return lvl;
+}
+function isMaintien(speed){ return speed != null && speed >= MAINTIEN_THRESHOLD; }
+function sessionPoints(s){
+  let pts = 10;
+  if (s.distance) pts += Math.round(s.distance * 2);
+  if (s.drift !== undefined){ if (s.drift <= 4) pts += 5; else if (s.drift <= 7) pts += 2; }
+  return pts;
+}
+function totalPoints(lvl){
+  const base = sessions.reduce((a,s) => a + sessionPoints(s), 0);
+  return base + (lvl - 1) * 100;
+}
+function levelProgress(speed, lvl){
+  if (lvl >= 8) return 1;
+  const cur = LEVELS[lvl-1].threshold;
+  const next = LEVELS[lvl].threshold;
+  if (speed == null) return 0;
+  return Math.max(0, Math.min(1, (speed - cur) / (next - cur)));
+}
+function weeklyTarget(lvl){ return lvl <= 2 ? 3 : (lvl <= 4 ? 4 : 5); }
 
 /* ============================================================
-   BANDEAU SEMAINE COURANTE
+   RENDU — HERO
    ============================================================ */
-function renderWeek(){
+function renderHero(){
+  const speed = bestZone2Speed();
+  const lvl = currentLevelIndex(speed);
+  const maintien = isMaintien(speed);
+  const info = LEVELS[lvl-1];
+  const pts = totalPoints(lvl);
+  const prog = levelProgress(speed, lvl);
+
+  const badge = document.getElementById('level-badge');
+  badge.style.setProperty('--pct', Math.round(prog*100));
+  badge.classList.toggle('maintien', maintien);
+  document.getElementById('level-num').textContent = maintien ? '★' : lvl;
+
+  document.getElementById('hero-title').innerHTML = maintien
+    ? `<span class="gold">Mode Maintien</span>`
+    : info.title;
+  document.getElementById('hero-sub').textContent = maintien
+    ? `12 km/h en zone 2 tenu — objectif : ne pas régresser.`
+    : `Niveau ${lvl} sur 8 · ${info.eta} · objectif ${info.range}`;
+
+  document.getElementById('points-value').textContent = pts.toLocaleString('fr-FR');
+
+  const fill = document.getElementById('progress-fill');
+  fill.classList.toggle('gold', maintien);
+  fill.style.width = (maintien ? 100 : Math.round(prog*100)) + '%';
+  document.getElementById('progress-left').innerHTML =
+    speed != null ? `Vitesse actuelle : <strong>${speed.toFixed(2).replace('.',',')} km/h</strong>` : `Aucune séance en zone 2 pour l'instant`;
+  document.getElementById('progress-right').textContent =
+    maintien ? 'Objectif final dépassé' : (lvl < 8 ? `Prochain seuil : ${LEVELS[lvl].threshold.toFixed(1).replace('.',',')} km/h` : `Seuil maintien : 12,0 km/h`);
+
+  document.getElementById('stat-speed').innerHTML = speed != null ? `${speed.toFixed(2).replace('.',',')}<span> km/h</span>` : '—';
+  document.getElementById('stat-sessions').textContent = sessions.length;
+  const totKm = sessions.reduce((a,s) => a + (s.distance||0), 0);
+  document.getElementById('stat-km').innerHTML = `${totKm.toFixed(1).replace('.',',')}<span> km</span>`;
   const now = isoWeek(new Date());
-  let idx = calToProgWeek(now.year, now.week);
-  let w, status;
-  if (idx){ w = PLAN[idx-1]; status = "en cours"; }
-  else {
-    const first = PLAN[0];
-    const beforeStart = (now.year < first.calYear) || (now.year === first.calYear && now.week < first.calWeek);
-    w = beforeStart ? first : PLAN[PLAN.length-1];
-    status = beforeStart ? "à venir" : "plan terminé";
-  }
-  document.getElementById("wkKicker").textContent =
-    `Semaine ${w.calWeek} de ${w.calYear} · ${weekRangeLabel(w.calYear, w.calWeek)}`;
-  document.getElementById("wkTitle").textContent =
-    `Phase ${w.phase} — ${w.phaseName}${w.type === "Allégée" ? " · semaine allégée" : ""}`;
-  document.getElementById("wkSub").textContent =
-    `${w.i}\u1D49 semaine du plan sur 52 · ${status} · vitesse cible ${String(w.speed).replace(".", ",")} km/h`;
+  const doneThisWeek = sessions.filter(s => s.calYear===now.year && s.calWeek===now.week).length;
+  document.getElementById('stat-week').innerHTML = `${doneThisWeek}<span> / ${weeklyTarget(lvl)} séances</span>`;
 
-  const done = sessions.filter(s => s.calYear === w.calYear && s.calWeek === w.calWeek).length;
-  document.getElementById("wkDots").innerHTML =
-    Array.from({length:w.n}, (_,k) => `<i class="${k < done ? "on" : ""}"></i>`).join("");
-  document.getElementById("wkDetail").innerHTML =
-    `<strong>${w.n} séances</strong> — ${w.detail} minutes · ${done} faite${done>1?"s":""} cette semaine`;
-  document.getElementById("wkNote").textContent = w.note;
+  checkLevelUp(lvl, maintien);
+  return { lvl, maintien };
+}
+function checkLevelUp(lvl, maintien){
+  const seen = parseInt(safeGet(LEVEL_STORE_KEY) || '1', 10);
+  const effectiveLvl = maintien ? 9 : lvl;
+  if (effectiveLvl > seen){
+    safeSet(LEVEL_STORE_KEY, String(effectiveLvl));
+    const toast = document.getElementById('levelup-toast');
+    document.getElementById('levelup-title').textContent = maintien ? 'Mode Maintien débloqué !' : `Niveau ${lvl} débloqué !`;
+    document.getElementById('levelup-sub').textContent = maintien ? '12 km/h en zone 2, tenu.' : LEVELS[lvl-1].title;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4500);
+  } else if (seen === 1 && effectiveLvl === 1 && !safeGet(LEVEL_STORE_KEY)) {
+    safeSet(LEVEL_STORE_KEY, '1');
+  }
 }
 
 /* ============================================================
-   INDICATEURS
+   RENDU — CHEMIN DE NIVEAUX
    ============================================================ */
-function renderKpis(){
-  const all = sorted();
-  const host = document.getElementById("kpis");
-  if (!all.length){ host.innerHTML = `<div class="kpi"><div class="k">Aucune donnée</div><div class="v">—</div></div>`; return; }
-
-  const withSpeed = all.filter(s => s.speed && s.fcMoy);
-  const last = withSpeed[withSpeed.length-1];
-  const first = withSpeed[0];
-  const totKm = all.reduce((a,s) => a + (s.distance || 0), 0);
-  const totMin = all.reduce((a,s) => a + (s.duree || 0), 0);
-  const drifts = all.filter(s => s.drift !== undefined);
-  const lastDrift = drifts.length ? drifts[drifts.length-1].drift : null;
-  const gain = (first && last && first !== last) ? ((last.eff - first.eff) / first.eff) * 100 : null;
-
-  const cards = [
-    { k:"Séances enregistrées", v:all.length, u:"", d:`${Math.round(totMin)} minutes cumulées` },
-    { k:"Distance totale", v:totKm.toFixed(1).replace(".", ","), u:" km", d:`moyenne ${(totKm/all.length).toFixed(2).replace(".", ",")} km par séance` },
-    { k:"Dernière vitesse zone 2", v:last ? last.speed.toFixed(2).replace(".", ",") : "—", u:" km/h",
-      d:last ? `${paceLabel(last.speed)}/km à ${last.fcMoy} bpm` : "" },
-    { k:"Dernière dérive cardiaque", v:lastDrift !== null ? (lastDrift > 0 ? "+" + lastDrift : lastDrift) : "—", u:" bpm",
-      d:lastDrift !== null ? (lastDrift <= 4 ? "objectif atteint" : "objectif : moins de +4") : "renseigne fcDebut et fcFin",
-      cls: lastDrift !== null ? (lastDrift <= 4 ? "up" : "down") : "" },
-    { k:"Progression cardio-vitesse", v: gain === null ? "—" : (gain >= 0 ? "+" : "") + gain.toFixed(1).replace(".", ","), u:" %",
-      d:"vitesse rapportée à la fréquence cardiaque", cls: gain === null ? "" : (gain >= 0 ? "up" : "down") }
-  ];
-  host.innerHTML = cards.map(c => `
-    <div class="kpi">
-      <div class="k">${c.k}</div>
-      <div class="v num">${c.v}<span class="u">${c.u}</span></div>
-      <div class="d ${c.cls||""}">${c.d}</div>
-    </div>`).join("");
-}
-
-/* ============================================================
-   GRAPHIQUES SVG
-   ============================================================ */
-function lineChart(pts, opts){
-  const W = 520, H = 200, P = { t:14, r:16, b:26, l:38 };
-  if (pts.length === 0) return `<div class="cap">Pas encore de données.</div>`;
-  const xs = pts.map((_,i) => i);
-  const ys = pts.map(p => p.y);
-  let min = Math.min(...ys), max = Math.max(...ys);
-  if (opts.zeroBand){ min = Math.min(min, opts.zeroBand[0]); max = Math.max(max, opts.zeroBand[1]); }
-  const pad = (max - min) * 0.25 || 1; min -= pad; max += pad;
-  const X = i => P.l + (pts.length === 1 ? (W - P.l - P.r)/2 : (i/(pts.length-1)) * (W - P.l - P.r));
-  const Y = v => P.t + (1 - (v - min)/(max - min)) * (H - P.t - P.b);
-
-  let g = "";
-  for (let k = 0; k <= 3; k++){
-    const v = min + (k/3)*(max-min);
-    g += `<line class="gridline" x1="${P.l}" y1="${Y(v)}" x2="${W-P.r}" y2="${Y(v)}"/>
-          <text class="axistext" x="${P.l-7}" y="${Y(v)+3.5}" text-anchor="end">${opts.fmt(v)}</text>`;
-  }
-  let band = "";
-  if (opts.zeroBand){
-    band = `<rect x="${P.l}" y="${Y(opts.zeroBand[1])}" width="${W-P.l-P.r}"
-            height="${Math.max(0,Y(opts.zeroBand[0])-Y(opts.zeroBand[1]))}" fill="var(--z2-wash)"/>`;
-  }
-  const d = pts.map((p,i) => (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(p.y).toFixed(1)).join(" ");
-  const dots = pts.map((p,i) =>
-    `<circle class="pt" cx="${X(i).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="4.5" fill="${opts.color}"><title>${p.label} — ${opts.fmt(p.y)}</title></circle>`).join("");
-  const step = Math.max(1, Math.ceil(pts.length / 6));
-  const lab = pts.map((p,i) => (i % step === 0 || i === pts.length-1)
-    ? `<text class="axistext" x="${X(i).toFixed(1)}" y="${H-P.b+16}" text-anchor="middle">${p.x}</text>` : "").join("");
-
-  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${opts.aria}">
-    ${band}${g}
-    <path class="trace" d="${d}" stroke="${opts.color}"/>
-    ${dots}${lab}
-  </svg>`;
-}
-
-function barChart(bars){
-  const W = 520, H = 200, P = { t:14, r:16, b:26, l:38 };
-  if (!bars.length) return `<div class="cap">Pas encore de données.</div>`;
-  const max = Math.max(...bars.map(b => Math.max(b.done, b.target))) * 1.15 || 1;
-  const Y = v => P.t + (1 - v/max) * (H - P.t - P.b);
-  const bw = (W - P.l - P.r) / bars.length;
-  let g = "";
-  for (let k = 0; k <= 3; k++){
-    const v = (k/3)*max;
-    g += `<line class="gridline" x1="${P.l}" y1="${Y(v)}" x2="${W-P.r}" y2="${Y(v)}"/>
-          <text class="axistext" x="${P.l-7}" y="${Y(v)+3.5}" text-anchor="end">${v.toFixed(0)}</text>`;
-  }
-  const body = bars.map((b,i) => {
-    const x = P.l + i*bw, inner = Math.min(bw*0.58, 30);
-    const cx = x + bw/2;
-    const tY = Y(b.target);
-    return `
-      <rect x="${cx-inner/2}" y="${Y(b.done)}" width="${inner}" height="${Math.max(0,H-P.b-Y(b.done))}"
-            fill="var(--z2)" rx="3"><title>Semaine ${b.x} — ${b.done.toFixed(1)} km réalisés</title></rect>
-      <line x1="${cx-inner/2-4}" x2="${cx+inner/2+4}" y1="${tY}" y2="${tY}" stroke="var(--ink)" stroke-width="2" stroke-dasharray="4 3"><title>Cible ${b.target.toFixed(1)} km</title></line>
-      <text class="axistext" x="${cx}" y="${H-P.b+16}" text-anchor="middle">${b.x}</text>`;
-  }).join("");
-  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Volume hebdomadaire réalisé et cible">${g}${body}</svg>`;
-}
-
-function renderCharts(){
-  const all = sorted();
-  const eff = all.filter(s => s.eff).map(s => ({ x:dateLabel(s.date), y:s.eff, label:dateLabel(s.date) }));
-  const dr  = all.filter(s => s.drift !== undefined).map(s => ({ x:dateLabel(s.date), y:s.drift, label:dateLabel(s.date) }));
-
-  const byWeek = {};
-  all.forEach(s => { const k = s.calYear + "-" + s.calWeek; (byWeek[k] = byWeek[k] || { y:s.calYear, w:s.calWeek, km:0 }).km += (s.distance||0); });
-  const bars = Object.values(byWeek).sort((a,b) => a.y - b.y || a.w - b.w).slice(-10).map(v => {
-    const p = PLAN.find(x => x.calYear === v.y && x.calWeek === v.w);
-    return { x:"S"+v.w, done:v.km, target: p ? (p.total * p.speed) / 60 : 0 };
-  });
-
-  document.getElementById("charts").innerHTML = `
-    <div class="chart">
-      <h3>Vitesse rapportée à la fréquence cardiaque</h3>
-      <div class="cap">Vitesse divisée par la fréquence moyenne. C'est l'indicateur le moins bruité : il monte quand le moteur s'améliore, quel que soit le terrain.</div>
-      ${lineChart(eff, { color:"var(--z2)", fmt:v => v.toFixed(1), aria:"Indice cardio-vitesse par séance" })}
-    </div>
-    <div class="chart">
-      <h3>Dérive cardiaque</h3>
-      <div class="cap">Écart entre les dix premières et les dix dernières minutes. La bande claire marque la zone visée, de zéro à quatre battements.</div>
-      ${lineChart(dr, { color:"var(--z4)", zeroBand:[0,4], fmt:v => (v>0?"+":"")+v.toFixed(0), aria:"Dérive cardiaque par séance" })}
-    </div>
-    <div class="chart" style="grid-column:1/-1">
-      <h3>Volume hebdomadaire</h3>
-      <div class="cap">Kilomètres réalisés par semaine calendaire. Le trait pointillé marque la cible du plan.</div>
-      ${barChart(bars)}
+function renderPath(lvl, maintien){
+  const host = document.getElementById('level-path');
+  host.innerHTML = LEVELS.map(l => {
+    const state = l.n < lvl || maintien ? 'done' : (l.n === lvl && !maintien ? 'current' : 'locked');
+    const icon = state === 'done' ? 'ph-bold ph-check' : (state === 'current' ? 'ph-bold ph-flag-checkered' : 'ph-bold ph-lock-simple');
+    return `<div class="path-item ${state}">
+      <div class="path-node"><i class="${icon}"></i></div>
+      <div class="path-card">
+        <div class="path-left">
+          <div class="pt">Niveau ${l.n} — ${l.title} ${state==='current' ? '<span class="tagline">en cours</span>' : ''}</div>
+          <div class="pe">${l.eta}</div>
+        </div>
+        <div class="path-right">
+          <div class="pv num">${l.range}</div>
+          <div class="pu">vitesse zone 2</div>
+        </div>
+      </div>
     </div>`;
+  }).join('');
+  document.getElementById('maintien-card').hidden = !maintien;
+}
+
+/* ============================================================
+   GRAPHIQUE
+   ============================================================ */
+function renderChart(){
+  const pts = sorted().filter(s => s.speed && s.fcMoy).map(s => ({ x: dateLabel(s.date), y: s.speed }));
+  const host = document.getElementById('chart-host');
+  if (!pts.length){ host.innerHTML = `<div style="color:var(--ink-4);font-size:.85rem">Pas encore de données.</div>`; return; }
+
+  const W = 780, H = 220, P = { t:16, r:20, b:26, l:36 };
+  const dataMax = Math.max(...pts.map(p => p.y));
+
+  /* On ne garde que les seuils à venir les plus proches, pour ne pas noyer
+     le graphe sous huit repères alors que l'écart avec la vitesse actuelle
+     se compte parfois en années. */
+  const upcoming = LEVELS.filter(l => l.threshold > dataMax - 0.35).slice(0, 3);
+  const marks = upcoming.map(l => ({ v: l.threshold, label: `N${l.n}` }));
+  if (!upcoming.length || dataMax >= MAINTIEN_THRESHOLD - 1.5){
+    marks.push({ v: MAINTIEN_THRESHOLD, label: "Maintien" });
+  }
+
+  const ys = pts.map(p => p.y).concat(marks.map(m => m.v));
+  let min = Math.min(...ys), max = Math.max(...ys);
+  const pad = (max - min) * 0.18 || 1; min -= pad; max += pad;
+  const X = i => P.l + (pts.length === 1 ? (W-P.l-P.r)/2 : (i/(pts.length-1)) * (W-P.l-P.r));
+  const Y = v => P.t + (1 - (v-min)/(max-min)) * (H-P.t-P.b);
+
+  let grid = "";
+  for (let k=0;k<=3;k++){
+    const v = min + (k/3)*(max-min);
+    grid += `<line class="gline" x1="${P.l}" y1="${Y(v)}" x2="${W-P.r}" y2="${Y(v)}"/><text class="glabel" x="${P.l-7}" y="${Y(v)+3}" text-anchor="end">${v.toFixed(1)}</text>`;
+  }
+  let thresh = "";
+  marks.forEach(m => {
+    thresh += `<line class="gthresh" x1="${P.l}" y1="${Y(m.v)}" x2="${W-P.r}" y2="${Y(m.v)}"/>
+      <text class="gthresh-label" x="${W-P.r}" y="${Y(m.v)-3}" text-anchor="end">${m.label}</text>`;
+  });
+  const d = pts.map((p,i) => (i?"L":"M") + X(i).toFixed(1) + " " + Y(p.y).toFixed(1)).join(" ");
+  const dots = pts.map((p,i) => `<circle class="gpt" cx="${X(i).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="4"><title>${p.x} — ${p.y.toFixed(2)} km/h</title></circle>`).join("");
+  const step = Math.max(1, Math.ceil(pts.length/7));
+  const labels = pts.map((p,i) => (i%step===0 || i===pts.length-1) ? `<text class="glabel" x="${X(i).toFixed(1)}" y="${H-P.b+16}" text-anchor="middle">${p.x}</text>` : "").join("");
+
+  host.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Vitesse zone 2 dans le temps">${grid}${thresh}<path class="gtrace" d="${d}"/>${dots}${labels}</svg>`;
 }
 
 /* ============================================================
    TABLEAU
    ============================================================ */
 function driftPill(d){
-  if (d === undefined) return `<span style="color:var(--muted)">—</span>`;
+  if (d === undefined) return `<span style="color:var(--ink-4)">—</span>`;
   const cls = d <= 4 ? "good" : (d <= 7 ? "mid" : "bad");
-  return `<span class="pill ${cls}">${d > 0 ? "+" : ""}${d}</span>`;
+  return `<span class="pill ${cls}">${d>0?"+":""}${d}</span>`;
 }
 function renderTable(){
   const all = sorted().reverse();
-  const host = document.getElementById("tableHost");
+  const host = document.getElementById('tableHost');
   if (!all.length){
-    host.innerHTML = `<div class="empty"><strong>Aucune séance pour l'instant</strong>Importe un fichier ou colle du JSON pour démarrer le journal.</div>`;
+    host.innerHTML = `<div class="empty"><strong>Aucune séance pour l'instant</strong>Ajoute une séance pour démarrer le journal.</div>`;
     return;
   }
   host.innerHTML = `<div class="tablewrap"><table>
-    <thead><tr>
-      <th>Date</th><th>Séance</th><th>Sem.</th><th>Durée</th><th>Dist.</th>
-      <th>Vitesse</th><th>Allure</th><th>FC moy</th><th>FC max</th><th>Dérive</th><th>D+</th><th></th>
-    </tr></thead><tbody>
+    <thead><tr><th>Date</th><th>Séance</th><th>Dist.</th><th>Vitesse</th><th>Allure</th><th>FC moy</th><th>Dérive</th><th>Pts</th><th></th></tr></thead>
+    <tbody>
     ${all.map(s => `<tr>
       <td class="num">${dateLabel(s.date)}</td>
-      <td>${s.type}${s.lieu ? ` <span style="color:var(--muted)">· ${s.lieu}</span>` : ""}</td>
-      <td class="num">S${s.calWeek}</td>
-      <td class="num">${s.duree ? s.duree.toFixed(0) + " min" : "—"}</td>
+      <td>${s.type}${s.lieu ? ` <span style="color:var(--ink-4)">· ${s.lieu}</span>` : ""}</td>
       <td class="num">${s.distance ? s.distance.toFixed(2).replace(".", ",") : "—"}</td>
       <td class="num">${s.speed ? s.speed.toFixed(2).replace(".", ",") : "—"}</td>
       <td class="num">${s.speed ? paceLabel(s.speed) : "—"}</td>
       <td class="num">${s.fcMoy ?? "—"}</td>
-      <td class="num">${s.fcMax ?? "—"}</td>
       <td>${driftPill(s.drift)}</td>
-      <td class="num">${s.denivele !== undefined ? s.denivele + " m" : "—"}</td>
-      <td><button class="del" data-date="${s.date}" aria-label="Supprimer la séance du ${dateLabel(s.date)}">×</button></td>
+      <td class="num">+${sessionPoints(s)}</td>
+      <td><button class="del" data-date="${s.date}" aria-label="Supprimer">×</button></td>
     </tr>`).join("")}
     </tbody></table></div>`;
-
-  host.querySelectorAll(".del").forEach(b => b.addEventListener("click", () => {
+  host.querySelectorAll('.del').forEach(b => b.addEventListener('click', () => {
     sessions = sessions.filter(s => s.date !== b.dataset.date);
     save(); renderAll();
   }));
 }
 
 /* ============================================================
-   PLAN
-   ============================================================ */
-let activePhase = null;
-function renderPlan(){
-  const now = isoWeek(new Date());
-  const cur = calToProgWeek(now.year, now.week);
-  if (activePhase === null) activePhase = cur ? PLAN[cur-1].phase : 1;
-
-  const phases = [[1,"Phase 1 · Fondation"],[2,"Phase 2 · Volume"],[3,"Phase 3 · Intensité"]];
-  document.getElementById("ptabs").innerHTML = phases.map(p =>
-    `<button class="ptab" role="tab" aria-selected="${p[0]===activePhase}" data-p="${p[0]}">${p[1]}</button>`).join("");
-  document.querySelectorAll(".ptab").forEach(b => b.addEventListener("click", () => {
-    activePhase = +b.dataset.p; renderPlan();
-  }));
-
-  const list = PLAN.filter(w => w.phase === activePhase);
-  document.getElementById("weeks").innerHTML = list.map(w => {
-    const isNow = cur === w.i;
-    const isPast = cur !== null && w.i < cur;
-    const test = /Test mensuel/.test(w.note);
-    return `<div class="wcard ${isNow?"now":""} ${isPast?"past":""} ${w.type==="Allégée"?"light":""}">
-      ${isNow ? `<span class="tag now">cette semaine</span>` : (test ? `<span class="tag">test</span>` : "")}
-      <div class="wc-top">
-        <span class="wc-cal num">Semaine ${w.calWeek}</span>
-        <span class="wc-idx num">${w.i}/52 · ${w.calYear}</span>
-      </div>
-      <div class="wc-dates">${weekRangeLabel(w.calYear, w.calWeek)}</div>
-      <div class="wc-sess"><i></i>${w.n} séances · ${Math.round(w.total/60*10)/10} h</div>
-      <div class="wc-det">${w.detail} min · cible ${String(w.speed).replace(".", ",")} km/h</div>
-      <div class="wc-note">${w.note}</div>
-    </div>`;
-  }).join("");
-}
-
-/* ============================================================
-   JALONS
-   ============================================================ */
-const MILES = [
-  ["Aujourd'hui","12 km","6,7 – 7,0 km/h","8:34/km","+7 à +8 bpm","non testé","Alternance course-marche sur 50 minutes"],
-  ["1 mois","14 km","6,9 – 7,2 km/h","8:20/km","+6 bpm","—","Quarante minutes de course continue, sans marche"],
-  ["3 mois","22 km","7,0 – 7,6 km/h","7:54/km","+6 bpm","72 – 78 min","Une heure continue, quatre séances par semaine"],
-  ["6 mois","32 km","7,6 – 8,5 km/h","7:04/km","+4 bpm","64 – 70 min","Sortie longue de 90 minutes, début du travail au seuil"],
-  ["9 mois","40 km","8,2 – 9,3 km/h","6:27/km","moins de +4","56 – 62 min","Cinq séances, répartition 80/20 installée"],
-  ["12 mois","45 km","8,8 – 10,0 km/h","6:00/km","moins de +4","50 – 58 min","Base aérobie solide, vitesse exploitable"],
-  ["24 mois","55 km","10,0 – 11,0 km/h","5:27/km","moins de +3","44 – 48 min","Volume de coureur confirmé"],
-  ["36 à 48 mois","55 – 60 km","11,0 – 12,0 km/h","5:00/km","moins de +3","38 – 42 min","L'objectif : 12 km/h en zone 2"]
-];
-function renderMiles(){
-  document.getElementById("milesBody").innerHTML = MILES.map((m,i) => {
-    const lastRow = i === MILES.length - 1;
-    return `<tr${lastRow ? ' style="background:var(--z2-wash);font-weight:600"' : ""}>
-      <td>${m[0]}</td><td class="num">${m[1]}</td><td class="num">${m[2]}</td><td class="num">${m[3]}</td>
-      <td class="num">${m[4]}</td><td class="num">${m[5]}</td><td style="text-align:left;white-space:normal">${m[6]}</td>
-    </tr>`;
-  }).join("");
-}
-
-/* ============================================================
    IMPORT / EXPORT
    ============================================================ */
 function flash(text, ok){
-  const m = document.getElementById("msg");
+  const m = document.getElementById('msg');
   m.textContent = text; m.className = "msg " + (ok ? "ok" : "err");
   clearTimeout(flash._t); flash._t = setTimeout(() => { m.className = "msg"; }, 6000);
 }
 function ingest(text){
   let data;
   try { data = JSON.parse(text); }
-  catch(e){ flash("Ce JSON n'est pas valide. Vérifie les virgules et les guillemets.", false); return; }
+  catch(e){ flash("Ce JSON n'est pas valide.", false); return; }
   const arr = Array.isArray(data) ? data : (Array.isArray(data.sessions) ? data.sessions : [data]);
   const parsed = arr.map(normalize).filter(Boolean);
   if (!parsed.length){ flash("Aucune séance exploitable : le champ date est obligatoire.", false); return; }
@@ -975,7 +857,7 @@ function ingest(text){
   const dupes = parsed.length - fresh.length;
   sessions = sessions.concat(fresh);
   save(); renderAll();
-  flash(`${fresh.length} séance${fresh.length>1?"s":""} ajoutée${fresh.length>1?"s":""}${dupes ? ` · ${dupes} doublon${dupes>1?"s":""} de date ignoré${dupes>1?"s":""}` : ""}.`, true);
+  flash(`${fresh.length} séance${fresh.length>1?"s":""} ajoutée${fresh.length>1?"s":""}${dupes ? ` · ${dupes} doublon${dupes>1?"s":""} ignoré${dupes>1?"s":""}` : ""}.`, true);
 }
 function readFiles(files){
   [...files].forEach(f => {
@@ -986,55 +868,59 @@ function readFiles(files){
   });
 }
 
-const drop = document.getElementById("drop");
-["dragenter","dragover"].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.add("hot"); }));
-["dragleave","drop"].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.remove("hot"); }));
-drop.addEventListener("drop", ev => { if (ev.dataTransfer.files.length) readFiles(ev.dataTransfer.files); });
-document.getElementById("pickBtn").addEventListener("click", () => document.getElementById("file").click());
-document.getElementById("file").addEventListener("change", e => { readFiles(e.target.files); e.target.value = ""; });
-document.getElementById("addBtn").addEventListener("click", () => {
-  const t = document.getElementById("ta").value.trim();
-  if (!t){ flash("Colle d'abord un peu de JSON dans la zone de texte.", false); return; }
-  ingest(t); document.getElementById("ta").value = "";
+document.getElementById('journal-toggle').addEventListener('click', () => {
+  const body = document.getElementById('journal-body');
+  body.hidden = !body.hidden;
 });
-document.getElementById("tplBtn").addEventListener("click", () => {
+
+const drop = document.getElementById('drop');
+["dragenter","dragover"].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.add('hot'); }));
+["dragleave","drop"].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.remove('hot'); }));
+drop.addEventListener('drop', ev => { if (ev.dataTransfer.files.length) readFiles(ev.dataTransfer.files); });
+document.getElementById('pickBtn').addEventListener('click', () => document.getElementById('file').click());
+document.getElementById('file').addEventListener('change', e => { readFiles(e.target.files); e.target.value = ""; });
+document.getElementById('addBtn').addEventListener('click', () => {
+  const t = document.getElementById('ta').value.trim();
+  if (!t){ flash("Colle d'abord un peu de JSON.", false); return; }
+  ingest(t); document.getElementById('ta').value = "";
+});
+document.getElementById('tplBtn').addEventListener('click', () => {
   const d = new Date().toISOString().slice(0,10);
-  document.getElementById("ta").value = JSON.stringify([{
+  document.getElementById('ta').value = JSON.stringify([{
     date:d, type:"Zone 2 continu", lieu:"Tapis", duree:40, distance:4.6,
     fcMoy:138, fcMax:147, fcDebut:131, fcFin:141, denivele:0, ressenti:4, notes:""
   }], null, 2);
 });
-document.getElementById("exportBtn").addEventListener("click", () => {
+document.getElementById('exportBtn').addEventListener('click', () => {
   const clean = sorted().map(s => ({
     date:s.date, type:s.type, lieu:s.lieu, duree:s.duree, distance:s.distance,
     fcMoy:s.fcMoy, fcMax:s.fcMax, fcDebut:s.fcDebut, fcFin:s.fcFin,
     denivele:s.denivele, ressenti:s.ressenti, notes:s.notes
   }));
   const blob = new Blob([JSON.stringify(clean, null, 2)], { type:"application/json" });
-  const a = document.createElement("a");
+  const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = "seances-course-" + new Date().toISOString().slice(0,10) + ".json";
   a.click(); URL.revokeObjectURL(a.href);
 });
-document.getElementById("clearBtn").addEventListener("click", () => {
+document.getElementById('clearBtn').addEventListener('click', () => {
   if (!confirm("Effacer toutes les séances enregistrées ? Pense à exporter avant.")) return;
   sessions = []; save(); renderAll();
-  flash("Journal vidé. Importe un fichier pour repartir.", true);
+  flash("Journal vidé.", true);
 });
 
 /* ============================================================
-   RENDU
+   RENDU GLOBAL
    ============================================================ */
-function renderRange(){
-  const a = PLAN[0], b = PLAN[PLAN.length-1];
-  document.getElementById("planRange").innerHTML =
-    `Cinquante-deux semaines calendaires, de la semaine ${a.calWeek} de ${a.calYear} à la semaine ${b.calWeek} de ${b.calYear}. ` +
-    `Le nombre de séances est fixe, les jours sont libres&nbsp;: il faut seulement 24 heures entre deux sorties et 48 avant la longue.`;
-}
 function renderAll(){
-  renderRail(); renderWeek(); renderKpis(); renderCharts(); renderTable(); renderPlan(); renderMiles(); renderRange();
+  const { lvl, maintien } = renderHero();
+  renderPath(lvl, maintien);
+  renderChart();
+  renderTable();
 }
 renderAll();
+
+}; // fin __bootRunningApp
 </script>
 </body>
 </html>
