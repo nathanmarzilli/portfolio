@@ -218,6 +218,50 @@ section{padding:44px 0}
 @keyframes badgePulse{0%{transform:scale(1)}35%{transform:scale(1.12)}65%{transform:scale(.97)}100%{transform:scale(1)}}
 .level-badge.pulse{animation:badgePulse .8s ease}
 
+.stat-note{font-size:.68rem; color:var(--gold-400); margin-top:6px; line-height:1.3}
+
+/* ============ PLAN DE SÉANCES (pastilles par niveau) ============ */
+.plan-pips{display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 10px}
+.plan-pip{display:flex; flex-direction:column; align-items:center; gap:4px; width:32px}
+.plan-pip .pip-dot{width:14px; height:14px; border-radius:50%; background:transparent; border:2px solid var(--line); display:block}
+.plan-pip.done .pip-dot{background:var(--accent-400); border-color:var(--accent-400)}
+.plan-pip .pip-week{font-size:.6rem; color:var(--ink-4)}
+.plan-pip.done .pip-week{color:var(--accent-400)}
+.plan-legend{font-size:.72rem; color:var(--ink-4)}
+.legend-dot{display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:4px; vertical-align:middle}
+.legend-dot.done{background:var(--accent-400)}
+.legend-dot.todo{background:transparent; border:2px solid var(--line)}
+
+/* ============ CHARGE & RÉCUPÉRATION ============ */
+.charge-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:18px}
+@media(max-width:720px){.charge-grid{grid-template-columns:1fr}}
+.charge-card{background:var(--dark-900); border:1px solid var(--line); border-radius:16px; padding:20px}
+.charge-card h3{display:flex; align-items:center; gap:8px; font-family:'Space Grotesk',sans-serif; color:#fff; font-size:.95rem; margin-bottom:4px}
+.charge-card h3 i{color:var(--accent-400)}
+.charge-sub{color:var(--ink-4); font-size:.8rem; margin-bottom:14px}
+.stepper{display:inline-flex; align-items:center; gap:16px; background:var(--dark-950); border:1px solid var(--line); border-radius:12px; padding:6px 18px; margin-bottom:12px}
+.step-btn{width:26px; height:26px; border-radius:50%; border:1px solid var(--line); background:var(--dark-900); color:#fff; font-size:1rem; line-height:1; display:flex; align-items:center; justify-content:center; padding:0}
+.step-btn:hover{border-color:var(--accent-400); color:var(--accent-400)}
+.step-val{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.1rem; color:#fff; min-width:16px; text-align:center}
+.chk-row{display:flex; align-items:center; gap:8px; font-size:.82rem; color:var(--ink-3); margin-bottom:10px}
+.chk-row input[type=checkbox]{accent-color:var(--accent-400); width:15px; height:15px}
+.tag-input{display:flex; flex-wrap:wrap; align-items:center; gap:6px; background:var(--dark-950); border:1px solid var(--line); border-radius:12px; padding:8px 10px; margin-bottom:12px; min-height:42px}
+.tag-input:focus-within{border-color:var(--accent-400)}
+.tag-chip{display:inline-flex; align-items:center; gap:6px; background:rgba(45,212,191,.12); color:var(--accent-400); border-radius:20px; padding:4px 10px; font-size:.78rem; font-weight:600}
+.tag-chip button{background:none; border:0; color:inherit; cursor:pointer; font-size:.95rem; line-height:1; padding:0}
+#ex-input{flex:1; min-width:120px; background:none; border:0; color:#fff; font-size:.85rem; outline:none; padding:4px}
+.load-banner{margin-top:4px; background:rgba(45,212,191,.06); border:1px solid rgba(45,212,191,.2); border-radius:14px; padding:14px 18px; font-size:.85rem; color:var(--ink-2); display:flex; gap:10px; align-items:flex-start}
+.load-banner i{color:var(--accent-400); margin-top:2px; flex-shrink:0}
+.load-banner.warn{background:rgba(251,191,36,.08); border-color:rgba(251,191,36,.25)}
+.load-banner.warn i{color:var(--gold-400)}
+.sh-item{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; background:var(--dark-900); border:1px solid var(--line); border-radius:14px; padding:14px 16px}
+.sh-item + .sh-item{margin-top:8px}
+.sh-date{font-family:'Space Grotesk',sans-serif; font-weight:700; color:#fff; font-size:.85rem; margin-bottom:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.sh-tags{display:flex; flex-wrap:wrap; gap:6px}
+.sh-tag{background:rgba(255,255,255,.06); color:var(--ink-2); border-radius:20px; padding:3px 9px; font-size:.72rem}
+.sh-tag.legs{background:rgba(251,191,36,.12); color:var(--gold-400)}
+.sh-legs-badge{font-size:.66rem; font-weight:700; color:var(--gold-400); text-transform:uppercase; letter-spacing:.05em; display:inline-flex; gap:4px; align-items:center}
+
 .maintien-card{
   margin-top:20px; background:linear-gradient(155deg,rgba(251,191,36,.1),transparent); border:1px solid rgba(251,191,36,.3);
   border-radius:16px; padding:20px 22px; display:flex; align-items:center; gap:16px;
@@ -375,11 +419,58 @@ footer a:hover{color:var(--accent-400)}
     <div class="stat"><div class="k">Vitesse zone 2 actuelle</div><div class="v num"><span id="stat-speed-num">—</span><span id="stat-speed-unit"></span></div></div>
     <div class="stat"><div class="k">Séances enregistrées</div><div class="v num" id="stat-sessions">—</div></div>
     <div class="stat"><div class="k">Distance totale</div><div class="v num"><span id="stat-km-num">0</span><span id="stat-km-unit"> km</span></div></div>
-    <div class="stat"><div class="k">Objectif de la semaine</div><div class="v num"><span id="stat-week-num">0</span><span id="stat-week-den"></span></div></div>
+    <div class="stat"><div class="k">Objectif de la semaine</div><div class="v num"><span id="stat-week-num">0</span><span id="stat-week-den"></span></div><div class="stat-note" id="stat-week-note"></div></div>
   </div>
 </div>
 
-<section id="progression">
+<section id="charge" style="border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">Charge & récupération</div>
+      <h2>Badminton et renforcement</h2>
+      <p>Le badminton et le renforcement musculaire fatiguent aussi les jambes : ils ajustent automatiquement l'objectif de course de la semaine en cours.</p>
+    </div>
+
+    <div class="charge-grid">
+      <div class="charge-card">
+        <h3><i class="ph-bold ph-racquet"></i> Badminton — <span id="bd-week-label"></span></h3>
+        <p class="charge-sub">Combien de fois cette semaine ?</p>
+        <div class="stepper">
+          <button class="step-btn" id="bd-minus" type="button">−</button>
+          <span class="step-val" id="bd-val">0</span>
+          <button class="step-btn" id="bd-plus" type="button">+</button>
+        </div>
+        <label class="chk-row"><input type="checkbox" id="bd-tournoi"> Tournoi ce week-end</label>
+        <div class="chk-row" id="bd-tournoi-days-row" hidden>
+          <span>Jours de tournoi</span>
+          <div class="stepper sm" style="margin-bottom:0">
+            <button class="step-btn" id="bdt-minus" type="button">−</button>
+            <span class="step-val" id="bdt-val">1</span>
+            <button class="step-btn" id="bdt-plus" type="button">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="charge-card">
+        <h3><i class="ph-bold ph-barbell"></i> Renforcement musculaire</h3>
+        <p class="charge-sub">Ajoute les exercices de la séance (Entrée pour valider), retire-les si besoin.</p>
+        <div class="tag-input" id="ex-tags">
+          <input type="text" id="ex-input" placeholder="ex. squat bulgare ↵">
+        </div>
+        <label class="chk-row"><input type="checkbox" id="ex-legs"> Travail des jambes / bas du corps</label>
+        <div class="btnrow" style="justify-content:flex-start">
+          <button class="btn primary sm" id="ex-submit"><i class="ph-bold ph-check"></i> Enregistrer la séance</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="load-banner" id="load-banner"></div>
+
+    <div id="strength-history" style="margin-top:16px"></div>
+  </div>
+</section>
+
+<section id="progression" style="border-top:1px solid var(--line)">
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-kicker">La route vers 12 km/h</div>
@@ -622,6 +713,9 @@ window.__bootRunningApp = function(){
 const Z2_LOW = 128, Z2_HIGH = 145;
 const STORE_KEY = "nw_running_log_v1";
 const LEVEL_STORE_KEY = "nw_running_level_seen";
+const XTRAIN_KEY = "nw_running_xtrain_v1";
+const STRENGTH_KEY = "nw_running_strength_v1";
+const LEG_KEYWORDS = ["squat","fente","jambe","mollet","ischio","quadriceps","saut","pliomet","chaise","fessier","hip thrust","step","cuisse"];
 
 const LEVELS = [
   { n:1, title:"Premiers appuis",     months:0,  threshold:6.7,  range:"6,7 – 7,0 km/h" },
@@ -652,6 +746,14 @@ const store = (() => {
 })();
 function safeGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
 function safeSet(k,v){ try { localStorage.setItem(k, v); } catch(e){} }
+
+function loadXTrain(){ try { return JSON.parse(safeGet(XTRAIN_KEY) || "{}"); } catch(e){ return {}; } }
+function saveXTrain(){ safeSet(XTRAIN_KEY, JSON.stringify(xtrain)); }
+let xtrain = loadXTrain();
+
+function loadStrength(){ try { return JSON.parse(safeGet(STRENGTH_KEY) || "[]"); } catch(e){ return []; } }
+function saveStrength(){ safeSet(STRENGTH_KEY, JSON.stringify(strength)); }
+let strength = loadStrength();
 
 /* ============================================================
    SEMAINES ISO (pour le regroupement hebdo)
@@ -834,9 +936,81 @@ function levelProgress(speed, lvl){
 function weeklyTarget(lvl){ return lvl <= 2 ? 3 : (lvl <= 4 ? 4 : 5); }
 
 /* ============================================================
+   CHARGE EXTERNE — badminton & renforcement musculaire
+   Ces activités fatiguent aussi les jambes : elles réduisent
+   automatiquement l'objectif de course de la semaine concernée.
+   ============================================================ */
+function weekKeyFor(d){ const w = isoWeek(d); return `${w.year}-W${w.week}`; }
+function currentWeekKey(){ return weekKeyFor(new Date()); }
+function weekLoad(wKey){
+  const wk = xtrain[wKey] || { badminton:0, tournamentDays:0 };
+  const inWeek = strength.filter(s => weekKeyFor(new Date(s.date + "T12:00:00")) === wKey);
+  const legCount = inWeek.filter(s => s.legs).length;
+  const otherCount = inWeek.length - legCount;
+  const units = (wk.badminton||0)*1 + (wk.tournamentDays||0)*2 + legCount*2 + otherCount*0.5;
+  return { units, badminton: wk.badminton||0, tournamentDays: wk.tournamentDays||0, legCount, otherCount, strengthCount: inWeek.length };
+}
+function adjustedWeeklyTarget(lvl, wKey){
+  const base = weeklyTarget(lvl);
+  const { units } = weekLoad(wKey);
+  return Math.max(1, base - Math.floor(units/2));
+}
+function levelWeeksSpan(l){
+  const next = LEVELS[l.n];
+  const endMonths = next ? next.months : l.months + 6;
+  const start = programStartDate();
+  const d0 = new Date(start); d0.setMonth(d0.getMonth() + l.months);
+  const d1 = new Date(start); d1.setMonth(d1.getMonth() + endMonths);
+  return { weeks: Math.max(1, Math.round((d1 - d0) / (7*86400000))) };
+}
+
+/* ============================================================
    DÉTAIL D'UN NIVEAU — fait / restant à faire
    ============================================================ */
 function fmtSpeed(v){ return v.toFixed(2).replace('.', ','); }
+
+/* Pastilles de séances restantes pour le niveau en cours : une pastille par
+   séance planifiée, colorée différemment si déjà faite, avec sa semaine. */
+function levelPlanHTML(l, speed){
+  const next = LEVELS[l.n];
+  if (!next) return '';
+  const slope = recentTrendPerWeek();
+  const gap = Math.max(0, next.threshold - (speed||0));
+  let weeks;
+  if (slope && slope > 0.005) weeks = Math.max(1, Math.ceil(gap/slope));
+  else weeks = levelWeeksSpan(l).weeks;
+  weeks = Math.min(Math.max(weeks, 1), 26);
+
+  const base = weeklyTarget(l.n);
+  const week0Target = adjustedWeeklyTarget(l.n, currentWeekKey());
+  const startDate = l.n > 1 ? achievedDateFor(LEVELS[l.n-2].threshold) : null;
+  const doneCount = qualifyingChrono().filter(s => !startDate || s.date > startDate).length;
+
+  const todayRef = new Date();
+  const items = [];
+  let i = 0;
+  for (let w = 0; w < weeks; w++){
+    const size = w === 0 ? week0Target : base;
+    for (let k = 0; k < size; k++){
+      const d = new Date(todayRef); d.setDate(d.getDate() + w*7);
+      const iso = isoWeek(d);
+      const done = i < doneCount;
+      items.push(`<div class="plan-pip ${done?'done':'todo'}" title="Semaine ${iso.week} · ${iso.year}"><span class="pip-dot"></span><span class="pip-week">S${iso.week}</span></div>`);
+      i++;
+    }
+  }
+  while (i < doneCount){
+    const w = Math.floor(i / base);
+    const d = new Date(todayRef); d.setDate(d.getDate() + w*7);
+    const iso = isoWeek(d);
+    items.push(`<div class="plan-pip done" title="Semaine ${iso.week} · ${iso.year}"><span class="pip-dot"></span><span class="pip-week">S${iso.week}</span></div>`);
+    i++;
+  }
+  return `<div class="pd-row"><i class="ph-bold ph-list-checks"></i><span>Séances restantes pour ce niveau — <strong>${doneCount}/${items.length}</strong> faites :</span></div>
+    <div class="plan-pips">${items.join('')}</div>
+    <div class="plan-legend"><span class="legend-dot done"></span>faite &nbsp; <span class="legend-dot todo"></span>à faire</div>`;
+}
+
 function levelDetailHTML(l, state, speed){
   if (state === 'done'){
     const dt = achievedDateFor(l.threshold);
@@ -864,6 +1038,7 @@ function levelDetailHTML(l, state, speed){
     return `<div class="path-detail">
       <div class="pd-row"><i class="ph-bold ph-flag-checkered"></i><span>${gapMsg}</span></div>
       <div class="pd-row"><i class="ph-bold ph-trend-up"></i><span>${etaMsg}</span></div>
+      ${levelPlanHTML(l, speed)}
     </div>`;
   }
   return `<div class="path-detail">
@@ -990,8 +1165,13 @@ function renderHero(){
   animateNumber(document.getElementById('stat-km-num'), totKm, { decimals:1 });
   const now = isoWeek(new Date());
   const doneThisWeek = sessions.filter(s => s.calYear===now.year && s.calWeek===now.week).length;
+  const wKeyNow = currentWeekKey();
+  const baseTarget = weeklyTarget(lvl);
+  const adjTarget = adjustedWeeklyTarget(lvl, wKeyNow);
   animateInt(document.getElementById('stat-week-num'), doneThisWeek);
-  document.getElementById('stat-week-den').textContent = ` / ${weeklyTarget(lvl)} séances`;
+  document.getElementById('stat-week-den').textContent = ` / ${adjTarget} séance${adjTarget>1?'s':''}`;
+  const weekNote = document.getElementById('stat-week-note');
+  weekNote.textContent = adjTarget < baseTarget ? `Ajusté (base ${baseTarget}) — charge élevée` : '';
 
   checkLevelUp(lvl, maintien);
   return { lvl, maintien };
@@ -1180,6 +1360,56 @@ function renderTable(){
 }
 
 /* ============================================================
+   CHARGE & RÉCUPÉRATION — rendu
+   ============================================================ */
+function renderCharge(){
+  const wKey = currentWeekKey();
+  const w = isoWeek(new Date());
+  document.getElementById('bd-week-label').textContent = `Semaine ${w.week} · ${w.year}`;
+  const entry = xtrain[wKey] || { badminton:0, tournamentDays:0 };
+  document.getElementById('bd-val').textContent = entry.badminton || 0;
+  document.getElementById('bdt-val').textContent = entry.tournamentDays || 1;
+  document.getElementById('bd-tournoi').checked = !!entry.tournamentDays;
+  document.getElementById('bd-tournoi-days-row').hidden = !entry.tournamentDays;
+
+  const host = document.getElementById('strength-history');
+  const list = [...strength].sort((a,b) => b.date.localeCompare(a.date));
+  if (!list.length){
+    host.innerHTML = `<div class="empty"><strong>Aucune séance de renforcement</strong>Ajoute ta première séance ci-dessus.</div>`;
+  } else {
+    host.innerHTML = list.map(s => `<div class="sh-item">
+      <div>
+        <div class="sh-date">${dateLabel(s.date)}${s.legs ? '<span class="sh-legs-badge"><i class="ph-bold ph-warning"></i> Jambes sollicitées</span>' : ''}</div>
+        <div class="sh-tags">${s.exercises.length ? s.exercises.map(e => `<span class="sh-tag ${s.legs?'legs':''}">${e}</span>`).join('') : '<span class="sh-tag">Séance libre</span>'}</div>
+      </div>
+      <button class="del" data-strength-id="${s.id}" aria-label="Supprimer">×</button>
+    </div>`).join('');
+    host.querySelectorAll('[data-strength-id]').forEach(b => b.addEventListener('click', () => {
+      strength = strength.filter(s => s.id !== b.dataset.strengthId);
+      saveStrength(); renderAll();
+    }));
+  }
+
+  const lvlNow = currentLevelIndex(bestZone2Speed());
+  const base = weeklyTarget(lvlNow);
+  const adj = adjustedWeeklyTarget(lvlNow, wKey);
+  const load = weekLoad(wKey);
+  const banner = document.getElementById('load-banner');
+  if (adj < base){
+    const parts = [];
+    if (load.badminton) parts.push(`${load.badminton} badminton`);
+    if (load.tournamentDays) parts.push(`tournoi (${load.tournamentDays} j)`);
+    if (load.legCount) parts.push(`${load.legCount} séance${load.legCount>1?'s':''} jambes`);
+    if (load.otherCount) parts.push(`${load.otherCount} renforcement`);
+    banner.className = 'load-banner warn';
+    banner.innerHTML = `<i class="ph-bold ph-battery-low"></i><span>Charge élevée cette semaine (${parts.join(' + ')}) : objectif course ramené à <strong>${adj} séance${adj>1?'s':''}</strong> au lieu de ${base}. Laisse les jambes récupérer avant la prochaine sortie.</span>`;
+  } else {
+    banner.className = 'load-banner';
+    banner.innerHTML = `<i class="ph-bold ph-battery-full"></i><span>Charge normale cette semaine : objectif course inchangé, ${base} séance${base>1?'s':''}.</span>`;
+  }
+}
+
+/* ============================================================
    IMPORT / EXPORT
    ============================================================ */
 function flash(text, ok){
@@ -1317,6 +1547,78 @@ document.getElementById('clearBtn').addEventListener('click', () => {
 });
 
 /* ============================================================
+   CHARGE & RÉCUPÉRATION — interactions
+   ============================================================ */
+function bumpBadminton(delta){
+  const wKey = currentWeekKey();
+  const entry = xtrain[wKey] || { badminton:0, tournamentDays:0 };
+  entry.badminton = Math.max(0, Math.min(4, (entry.badminton||0) + delta));
+  xtrain[wKey] = entry; saveXTrain();
+  renderAll();
+}
+document.getElementById('bd-minus').addEventListener('click', () => bumpBadminton(-1));
+document.getElementById('bd-plus').addEventListener('click', () => bumpBadminton(1));
+document.getElementById('bd-tournoi').addEventListener('change', (e) => {
+  const wKey = currentWeekKey();
+  const entry = xtrain[wKey] || { badminton:0, tournamentDays:0 };
+  entry.tournamentDays = e.target.checked ? (entry.tournamentDays || 1) : 0;
+  xtrain[wKey] = entry; saveXTrain();
+  renderAll();
+});
+function bumpTournamentDays(delta){
+  const wKey = currentWeekKey();
+  const entry = xtrain[wKey] || { badminton:0, tournamentDays:1 };
+  entry.tournamentDays = Math.max(1, Math.min(2, (entry.tournamentDays||1) + delta));
+  xtrain[wKey] = entry; saveXTrain();
+  renderAll();
+}
+document.getElementById('bdt-minus').addEventListener('click', () => bumpTournamentDays(-1));
+document.getElementById('bdt-plus').addEventListener('click', () => bumpTournamentDays(1));
+
+let currentExerciseTags = [];
+function renderExerciseTags(){
+  const box = document.getElementById('ex-tags');
+  const input = document.getElementById('ex-input');
+  box.querySelectorAll('.tag-chip').forEach(c => c.remove());
+  currentExerciseTags.forEach((tag, idx) => {
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.innerHTML = `${tag} <button type="button" aria-label="Retirer">×</button>`;
+    chip.querySelector('button').addEventListener('click', () => { currentExerciseTags.splice(idx,1); renderExerciseTags(); });
+    box.insertBefore(chip, input);
+  });
+}
+function autoDetectLegs(){
+  const hit = currentExerciseTags.some(t => LEG_KEYWORDS.some(k => t.toLowerCase().includes(k)));
+  if (hit) document.getElementById('ex-legs').checked = true;
+}
+document.getElementById('ex-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ','){
+    e.preventDefault();
+    const v = e.target.value.trim().replace(/,$/,'');
+    if (v){ currentExerciseTags.push(v); e.target.value = ''; renderExerciseTags(); autoDetectLegs(); }
+  } else if (e.key === 'Backspace' && !e.target.value && currentExerciseTags.length){
+    currentExerciseTags.pop(); renderExerciseTags();
+  }
+});
+document.getElementById('ex-submit').addEventListener('click', () => {
+  const input = document.getElementById('ex-input');
+  const v = input.value.trim();
+  if (v){ currentExerciseTags.push(v); input.value = ''; }
+  const legs = document.getElementById('ex-legs').checked;
+  const today = new Date().toISOString().slice(0,10);
+  strength.push({ id: Date.now() + Math.random().toString(36).slice(2), date: today, exercises:[...currentExerciseTags], legs, notes:"" });
+  saveStrength();
+  currentExerciseTags = []; renderExerciseTags();
+  document.getElementById('ex-legs').checked = false;
+  flash("Séance de renforcement enregistrée.", true);
+  renderAll();
+  if (legs){
+    queueToast('ph-fill ph-barbell', 'Séance jambes enregistrée', "L'objectif de course de la semaine vient d'être recalculé.");
+  }
+});
+
+/* ============================================================
    RENDU GLOBAL
    ============================================================ */
 function renderAll(){
@@ -1324,6 +1626,7 @@ function renderAll(){
   renderPath(lvl, maintien);
   renderChart();
   renderTable();
+  renderCharge();
 }
 const qfDateEl = document.getElementById('qf-date');
 if (qfDateEl) qfDateEl.value = new Date().toISOString().slice(0,10);
