@@ -168,6 +168,55 @@ section{padding:44px 0}
 .path-right .pv{font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--accent-400); font-size:1.05rem}
 .path-item.current .path-right .pv{color:var(--gold-400)}
 .path-right .pu{font-size:.7rem; color:var(--ink-4); text-transform:uppercase; letter-spacing:.05em}
+.path-item summary{list-style:none; cursor:pointer; outline:none}
+.path-item summary::-webkit-details-marker{display:none}
+.path-item summary::marker{display:none}
+.path-caret{color:var(--ink-4); font-size:1.05rem; transition:transform .25s ease; flex-shrink:0; margin-left:2px}
+.path-item[open] .path-caret{transform:rotate(180deg)}
+.path-detail{padding:14px 18px 2px 56px}
+.pd-row{display:flex; gap:10px; align-items:flex-start; font-size:.84rem; color:var(--ink-3); margin-bottom:12px; line-height:1.5}
+.pd-row i{color:var(--accent-400); font-size:1rem; margin-top:2px; flex-shrink:0}
+.path-item.locked .pd-row i{color:var(--ink-4)}
+.path-item.locked .pd-row{color:var(--ink-4)}
+
+@keyframes fadeInUp{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:translateY(0)} }
+@keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+.path-item{opacity:0; animation:fadeInUp .45s ease forwards; animation-delay:calc(var(--i,0) * 70ms)}
+.path-detail{animation:fadeInUp .3s ease}
+
+/* ============ QUICK FORM ============ */
+.quickform{background:var(--dark-900); border:1px solid var(--line); border-radius:16px; padding:20px; margin-bottom:18px}
+.qf-title{font-family:'Space Grotesk',sans-serif; color:#fff; font-size:1rem; display:flex; align-items:center; gap:8px; margin-bottom:4px}
+.qf-title i{color:var(--accent-400)}
+.qf-sub{color:var(--ink-4); font-size:.8rem; margin-bottom:16px; max-width:60ch}
+.qf-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; margin-bottom:12px}
+.qf-field{display:flex; flex-direction:column; gap:6px; font-size:.7rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-4)}
+.qf-field em{text-transform:none; font-style:normal; font-weight:500; color:var(--ink-4); opacity:.75}
+.qf-field input, .qf-field select, .qf-field textarea{
+  background:var(--dark-950); border:1px solid var(--line); border-radius:10px; padding:9px 11px; color:#fff;
+  font-size:.86rem; font-weight:500; font-family:inherit; outline:none; transition:border-color .15s;
+}
+.qf-field input:focus, .qf-field select:focus, .qf-field textarea:focus{border-color:var(--accent-400)}
+.qf-notes{margin-bottom:14px}
+.qf-notes textarea{resize:vertical; min-height:56px}
+.ta-prompt{min-height:230px}
+
+/* ============ IMPACT / DETAIL ROW ============ */
+.pill.info{background:rgba(255,255,255,.08); color:var(--ink-3)}
+.data-row{cursor:pointer}
+.detail-row td{background:rgba(255,255,255,.02); padding:14px 16px}
+.pd-explain{display:flex; gap:9px; align-items:flex-start; font-size:.82rem; color:var(--ink-3); line-height:1.5; white-space:normal; max-width:70ch; animation:fadeIn .25s ease}
+.pd-explain i{color:var(--accent-400); margin-top:2px; flex-shrink:0}
+
+/* ============ TOASTS / CONFETTI / MICRO-ANIM ============ */
+#confetti-layer{position:fixed; inset:0; pointer-events:none; z-index:160; overflow:hidden}
+.confetti-piece{position:absolute; top:70px; width:7px; height:10px; border-radius:2px; opacity:0; animation:confettiFall 1.1s ease-out forwards}
+@keyframes confettiFall{
+  0%{opacity:1; transform:translate(0,0) rotate(0deg)}
+  100%{opacity:0; transform:translate(var(--dx,0),170px) rotate(280deg)}
+}
+@keyframes badgePulse{0%{transform:scale(1)}35%{transform:scale(1.12)}65%{transform:scale(.97)}100%{transform:scale(1)}}
+.level-badge.pulse{animation:badgePulse .8s ease}
 
 .maintien-card{
   margin-top:20px; background:linear-gradient(155deg,rgba(251,191,36,.1),transparent); border:1px solid rgba(251,191,36,.3);
@@ -226,6 +275,7 @@ th{font-weight:600; font-size:.68rem; text-transform:uppercase; letter-spacing:.
 th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
 tbody tr:last-child td{border-bottom:0}
 tbody tr:hover{background:rgba(255,255,255,.02)}
+.data-row{opacity:0; animation:fadeIn .35s ease forwards; animation-delay:calc(var(--i,0) * 35ms)}
 .pill{display:inline-block; padding:2px 9px; border-radius:20px; font-size:.72rem; font-weight:600}
 .pill.good{background:rgba(45,212,191,.12); color:var(--accent-400)}
 .pill.mid{background:rgba(251,191,36,.14); color:var(--gold-400)}
@@ -280,6 +330,7 @@ footer a:hover{color:var(--accent-400)}
 <!-- ============ APP ============ -->
 <div id="app" hidden>
 
+<div id="confetti-layer"></div>
 <div id="levelup-toast"><i class="ph-fill ph-trophy"></i><div><div class="tt" id="levelup-title">Niveau débloqué</div><div class="ts" id="levelup-sub"></div></div></div>
 
 <header class="topbar">
@@ -321,10 +372,10 @@ footer a:hover{color:var(--accent-400)}
   </div>
 
   <div class="stats">
-    <div class="stat"><div class="k">Vitesse zone 2 actuelle</div><div class="v num" id="stat-speed">—</div></div>
+    <div class="stat"><div class="k">Vitesse zone 2 actuelle</div><div class="v num"><span id="stat-speed-num">—</span><span id="stat-speed-unit"></span></div></div>
     <div class="stat"><div class="k">Séances enregistrées</div><div class="v num" id="stat-sessions">—</div></div>
-    <div class="stat"><div class="k">Distance totale</div><div class="v num" id="stat-km">—</div></div>
-    <div class="stat"><div class="k">Objectif de la semaine</div><div class="v num" id="stat-week">—</div></div>
+    <div class="stat"><div class="k">Distance totale</div><div class="v num"><span id="stat-km-num">0</span><span id="stat-km-unit"> km</span></div></div>
+    <div class="stat"><div class="k">Objectif de la semaine</div><div class="v num"><span id="stat-week-num">0</span><span id="stat-week-den"></span></div></div>
   </div>
 </div>
 
@@ -365,26 +416,99 @@ footer a:hover{color:var(--accent-400)}
     </div>
 
     <div id="journal-body" hidden>
-      <div class="io">
-        <div class="drop" id="drop">
-          <h3>Dépose un fichier</h3>
-          <p>Format .json — un objet ou un tableau</p>
-          <div class="btnrow">
-            <button class="btn sm" id="pickBtn"><i class="ph-bold ph-upload-simple"></i> Choisir un fichier</button>
-            <button class="btn sm" id="exportBtn"><i class="ph-bold ph-download-simple"></i> Exporter</button>
-          </div>
-          <input type="file" id="file" accept=".json,application/json" multiple hidden>
+      <div class="quickform">
+        <h3 class="qf-title"><i class="ph-bold ph-play"></i> Enregistrer une séance</h3>
+        <p class="qf-sub">Ceinture cardiaque oubliée ? Laisse les champs FC vides — la séance compte quand même dans le volume et les points, même si elle ne fait pas progresser de niveau.</p>
+        <div class="qf-grid">
+          <label class="qf-field"><span>Date</span><input type="date" id="qf-date"></label>
+          <label class="qf-field"><span>Durée (min)</span><input type="number" step="0.1" min="0" id="qf-duree" placeholder="ex. 40"></label>
+          <label class="qf-field"><span>Distance (km)</span><input type="number" step="0.01" min="0" id="qf-distance" placeholder="ex. 4.6"></label>
+          <label class="qf-field"><span>Lieu</span><input type="text" id="qf-lieu" placeholder="Tapis, extérieur…"></label>
+          <label class="qf-field"><span>FC moyenne <em>(optionnel)</em></span><input type="number" min="0" id="qf-fcmoy" placeholder="ex. 138"></label>
+          <label class="qf-field"><span>FC 10 premières min <em>(optionnel)</em></span><input type="number" min="0" id="qf-fcdebut" placeholder=""></label>
+          <label class="qf-field"><span>FC 10 dernières min <em>(optionnel)</em></span><input type="number" min="0" id="qf-fcfin" placeholder=""></label>
+          <label class="qf-field"><span>Dénivelé (m) <em>(optionnel)</em></span><input type="number" min="0" id="qf-denivele" placeholder=""></label>
+          <label class="qf-field"><span>Ressenti <em>(optionnel)</em></span>
+            <select id="qf-ressenti">
+              <option value="">—</option>
+              <option value="1">1 · difficile</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5 · facile</option>
+            </select>
+          </label>
         </div>
-        <div class="paste">
-          <h3>Ou colle le JSON</h3>
-          <p>Pratique depuis le téléphone, juste après la séance.</p>
-          <textarea id="ta" spellcheck="false" placeholder='[{"date":"2026-09-08","duree":40,"distance":4.6,"fcMoy":138,"fcDebut":131,"fcFin":141}]'></textarea>
-          <div class="btnrow" style="margin-top:10px; justify-content:flex-start">
-            <button class="btn sm" id="addBtn">Ajouter</button>
-            <button class="btn sm" id="tplBtn">Modèle</button>
-          </div>
+        <label class="qf-field qf-notes"><span>Notes <em>(optionnel)</em></span><textarea id="qf-notes" rows="2" placeholder="Sensations, météo, points à retenir…"></textarea></label>
+        <div class="btnrow" style="justify-content:flex-start">
+          <button class="btn primary sm" id="qfSubmit"><i class="ph-bold ph-check"></i> Enregistrer la séance</button>
         </div>
       </div>
+
+      <details class="acc">
+        <summary><i class="ph-bold ph-upload-simple"></i> Import avancé (fichier ou JSON)</summary>
+        <div class="body">
+          <div class="io">
+            <div class="drop" id="drop">
+              <h3>Dépose un fichier</h3>
+              <p>Format .json — un objet ou un tableau</p>
+              <div class="btnrow">
+                <button class="btn sm" id="pickBtn"><i class="ph-bold ph-upload-simple"></i> Choisir un fichier</button>
+                <button class="btn sm" id="exportBtn"><i class="ph-bold ph-download-simple"></i> Exporter</button>
+              </div>
+              <input type="file" id="file" accept=".json,application/json" multiple hidden>
+            </div>
+            <div class="paste">
+              <h3>Ou colle le JSON</h3>
+              <p>Pratique depuis le téléphone, juste après la séance.</p>
+              <textarea id="ta" spellcheck="false" placeholder='[{"date":"2026-09-08","duree":40,"distance":4.6,"fcMoy":138,"fcDebut":131,"fcFin":141}]'></textarea>
+              <div class="btnrow" style="margin-top:10px; justify-content:flex-start">
+                <button class="btn sm" id="addBtn">Ajouter</button>
+                <button class="btn sm" id="tplBtn">Modèle</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="acc">
+        <summary><i class="ph-bold ph-magic-wand"></i> Générer le JSON avec une IA</summary>
+        <div class="body">
+          <p style="margin-bottom:10px">Colle ce prompt dans un assistant IA avec tes données brutes (montre, appli, capture d'écran retranscrite), pour obtenir directement un JSON prêt à coller ci-dessus.</p>
+          <textarea id="promptText" class="ta-prompt" readonly spellcheck="false" rows="14">Tu es un assistant qui convertit des données brutes de course à pied en JSON structuré.
+
+Analyse les données numériques de séance que je te fournis (résumé de montre connectée, capture d'écran retranscrite, notes brutes...) et renvoie UNIQUEMENT un tableau JSON, sans texte autour, avec un objet par séance, au format suivant :
+
+[
+  {
+    "date": "AAAA-MM-JJ",
+    "type": "description courte du type de séance (ex: Zone 2 continu, Alternance course / marche, Fractionné)",
+    "lieu": "Extérieur / Tapis / nom du lieu",
+    "duree": durée totale en minutes (nombre décimal accepté, ex: 49.8),
+    "distance": distance en kilomètres (nombre décimal),
+    "fcMoy": fréquence cardiaque moyenne en bpm (nombre — OMETTRE ce champ si pas de ceinture cardiaque),
+    "fcMax": fréquence cardiaque maximale en bpm (nombre, optionnel),
+    "fcDebut": fréquence cardiaque moyenne des 10 premières minutes (nombre, optionnel),
+    "fcFin": fréquence cardiaque moyenne des 10 dernières minutes (nombre, optionnel),
+    "denivele": dénivelé positif en mètres (nombre, optionnel),
+    "ressenti": note de ressenti de 1 (très difficile) à 5 (très facile) (nombre, optionnel),
+    "notes": remarques libres sur la séance (texte, optionnel)
+  }
+]
+
+Règles importantes :
+- La date doit être la date réelle de la séance, au format AAAA-MM-JJ. Ne jamais inventer ou décaler une date.
+- Si je n'ai pas porté de ceinture cardiaque, omets simplement fcMoy, fcMax, fcDebut et fcFin plutôt que d'inventer des valeurs.
+- N'ajoute aucun champ en dehors de cette liste et ne renvoie aucun texte explicatif : seulement le tableau JSON.
+
+Voici mes données brutes à convertir :
+[colle ici les données de ta montre / appli / capture d'écran]</textarea>
+          <div class="btnrow" style="margin-top:10px; justify-content:flex-start">
+            <button class="btn sm" id="copyPromptBtn"><i class="ph-bold ph-copy"></i> Copier le prompt</button>
+          </div>
+        </div>
+      </details>
+
       <div class="msg" id="msg"></div>
     </div>
 
@@ -500,14 +624,14 @@ const STORE_KEY = "nw_running_log_v1";
 const LEVEL_STORE_KEY = "nw_running_level_seen";
 
 const LEVELS = [
-  { n:1, title:"Premiers appuis",     eta:"Aujourd'hui",   threshold:6.7,  range:"6,7 – 7,0 km/h" },
-  { n:2, title:"Rodage",              eta:"~1 mois",       threshold:6.9,  range:"6,9 – 7,2 km/h" },
-  { n:3, title:"Fondations",          eta:"~3 mois",       threshold:7.0,  range:"7,0 – 7,6 km/h" },
-  { n:4, title:"Élan",                eta:"~6 mois",       threshold:7.6,  range:"7,6 – 8,5 km/h" },
-  { n:5, title:"Régularité",          eta:"~9 mois",       threshold:8.2,  range:"8,2 – 9,3 km/h" },
-  { n:6, title:"Endurance",           eta:"~12 mois",      threshold:8.8,  range:"8,8 – 10,0 km/h" },
-  { n:7, title:"Rythme de croisière", eta:"~24 mois",      threshold:10.0, range:"10,0 – 11,0 km/h" },
-  { n:8, title:"Zone 2 maîtrisée",    eta:"~36–48 mois",   threshold:11.0, range:"11,0 – 12,0 km/h" }
+  { n:1, title:"Premiers appuis",     months:0,  threshold:6.7,  range:"6,7 – 7,0 km/h" },
+  { n:2, title:"Rodage",              months:1,  threshold:6.9,  range:"6,9 – 7,2 km/h" },
+  { n:3, title:"Fondations",          months:3,  threshold:7.0,  range:"7,0 – 7,6 km/h" },
+  { n:4, title:"Élan",                months:6,  threshold:7.6,  range:"7,6 – 8,5 km/h" },
+  { n:5, title:"Régularité",          months:9,  threshold:8.2,  range:"8,2 – 9,3 km/h" },
+  { n:6, title:"Endurance",           months:12, threshold:8.8,  range:"8,8 – 10,0 km/h" },
+  { n:7, title:"Rythme de croisière", months:24, threshold:10.0, range:"10,0 – 11,0 km/h" },
+  { n:8, title:"Zone 2 maîtrisée",    months:42, threshold:11.0, range:"11,0 – 12,0 km/h" }
 ];
 const MAINTIEN_THRESHOLD = 12.0;
 
@@ -540,6 +664,20 @@ function isoWeek(d){
   return { year: t.getUTCFullYear(), week: Math.ceil(((t - y0) / 86400000 + 1) / 7) };
 }
 const MONTHS = ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+
+/* Semaine de référence du programme = date de la toute première séance
+   enregistrée. Sert à convertir les paliers ("dans 3 mois"...) en semaines
+   calendaires concrètes plutôt qu'en libellés relatifs. */
+function programStartDate(){
+  const all = sorted();
+  return all.length ? new Date(all[0].date + "T12:00:00") : new Date();
+}
+function weekLabel(months){
+  const d = programStartDate();
+  d.setMonth(d.getMonth() + months);
+  const w = isoWeek(d);
+  return `Semaine ${w.week} · ${w.year}`;
+}
 
 /* ============================================================
    NORMALISATION DES DONNÉES IMPORTÉES
@@ -630,7 +768,7 @@ function SEED(){
     { date:"2026-09-05", type:"Alternance course / marche", lieu:"Extérieur", duree:50.17, distance:5.35,
       fcMoy:138, fcMax:151, fcDebut:133, fcFin:139, denivele:33, ressenti:5,
       notes:"Quarante secondes de course, quarante de marche. Sensations excellentes." },
-    { date:"2026-09-06", type:"Alternance course / marche", lieu:"Extérieur", duree:49.82, distance:5.52,
+    { date:"2026-09-02", type:"Alternance course / marche", lieu:"Extérieur", duree:49.82, distance:5.52,
       fcMoy:139, fcMax:163, fcDebut:138, fcFin:140, denivele:11, ressenti:4,
       notes:"Départ trop rapide au premier kilomètre. Pic à 163 bpm à vérifier." }
   ];
@@ -643,9 +781,31 @@ function sorted(){ return [...sessions].sort((a,b) => a.date.localeCompare(b.dat
 /* ============================================================
    MOTEUR DE JEU — niveaux & points
    ============================================================ */
+function qualifyingChrono(){
+  return sorted().filter(s => s.speed && s.fcMoy && s.fcMoy >= Z2_LOW - 6 && s.fcMoy <= Z2_HIGH + 6);
+}
 function bestZone2Speed(){
-  const list = sorted().filter(s => s.speed && s.fcMoy && s.fcMoy >= Z2_LOW - 6 && s.fcMoy <= Z2_HIGH + 6);
+  const list = qualifyingChrono();
   return list.length ? list[list.length - 1].speed : null;
+}
+function achievedDateFor(threshold){
+  const list = qualifyingChrono();
+  for (const s of list){ if (s.speed >= threshold) return s.date; }
+  return null;
+}
+function recentTrendPerWeek(){
+  const list = qualifyingChrono();
+  if (list.length < 2) return null;
+  const recent = list.slice(-6);
+  const t0 = new Date(recent[0].date + "T12:00:00").getTime();
+  const xs = recent.map(s => (new Date(s.date + "T12:00:00").getTime() - t0) / (7*86400000));
+  const ys = recent.map(s => s.speed);
+  const n = xs.length;
+  const sumX = xs.reduce((a,b)=>a+b,0), sumY = ys.reduce((a,b)=>a+b,0);
+  const sumXY = xs.reduce((a,x,i)=>a+x*ys[i],0), sumXX = xs.reduce((a,x)=>a+x*x,0);
+  const denom = (n*sumXX - sumX*sumX);
+  if (!denom) return null;
+  return (n*sumXY - sumX*sumY) / denom; // km/h gagnés par semaine
 }
 function currentLevelIndex(speed){
   if (speed == null) return 1;
@@ -674,6 +834,115 @@ function levelProgress(speed, lvl){
 function weeklyTarget(lvl){ return lvl <= 2 ? 3 : (lvl <= 4 ? 4 : 5); }
 
 /* ============================================================
+   DÉTAIL D'UN NIVEAU — fait / restant à faire
+   ============================================================ */
+function fmtSpeed(v){ return v.toFixed(2).replace('.', ','); }
+function levelDetailHTML(l, state, speed){
+  if (state === 'done'){
+    const dt = achievedDateFor(l.threshold);
+    const when = dt ? `Atteint le ${dateLabel(dt)}` : `Déjà acquis au démarrage du journal`;
+    return `<div class="path-detail">
+      <div class="pd-row"><i class="ph-bold ph-check-circle"></i><span>${when} — objectif validé : <strong>${l.range}</strong> tenus en zone 2.</span></div>
+    </div>`;
+  }
+  if (state === 'current'){
+    const next = LEVELS[l.n];
+    const gap = next ? Math.max(0, next.threshold - (speed||0)) : 0;
+    const slope = recentTrendPerWeek();
+    let etaMsg;
+    if (next && slope && slope > 0.005){
+      const weeks = Math.max(1, Math.ceil(gap / slope));
+      etaMsg = `Au rythme actuel (+${fmtSpeed(slope)} km/h par semaine), encore environ ${weeks} semaine${weeks>1?'s':''} avant le niveau ${next.n}.`;
+    } else if (next) {
+      etaMsg = `Pas encore assez de séances régulières en zone 2 pour estimer un rythme fiable — chaque séance affine l'estimation.`;
+    } else {
+      etaMsg = `Dernier niveau avant le mode Maintien : tiens 12 km/h en zone 2 pour le débloquer.`;
+    }
+    const gapMsg = next
+      ? `Il reste <strong>${fmtSpeed(gap)} km/h</strong> à gagner pour franchir le niveau ${next.n} (${next.range}).`
+      : `Objectif final : maintenir 12,0 km/h en zone 2.`;
+    return `<div class="path-detail">
+      <div class="pd-row"><i class="ph-bold ph-flag-checkered"></i><span>${gapMsg}</span></div>
+      <div class="pd-row"><i class="ph-bold ph-trend-up"></i><span>${etaMsg}</span></div>
+    </div>`;
+  }
+  return `<div class="path-detail">
+    <div class="pd-row"><i class="ph-bold ph-calendar"></i><span>Prévu vers ${weekLabel(l.months)}, au rythme initial du programme.</span></div>
+    <div class="pd-row"><i class="ph-bold ph-lightbulb"></i><span>Concentre-toi d'abord sur le niveau en cours : chaque séance en zone 2 t'en rapproche.</span></div>
+  </div>`;
+}
+
+/* ============================================================
+   ANIMATIONS — compteurs & confettis
+   ============================================================ */
+function formatDecimal(v, decimals){ return v.toFixed(decimals).replace('.', ','); }
+function animateNumber(el, target, { decimals=0, duration=650 } = {}){
+  if (!el) return;
+  const start = parseFloat((el.textContent||'0').replace(/\s/g,'').replace(',', '.')) || 0;
+  const t0 = performance.now();
+  function frame(t){
+    const p = Math.min(1, (t - t0) / duration);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = formatDecimal(start + (target - start) * eased, decimals);
+    if (p < 1) requestAnimationFrame(frame); else el.textContent = formatDecimal(target, decimals);
+  }
+  requestAnimationFrame(frame);
+}
+function animateInt(el, target, duration=650){
+  if (!el) return;
+  const start = parseInt((el.textContent||'0').replace(/[^\d-]/g,''), 10) || 0;
+  if (start === target){ el.textContent = target.toLocaleString('fr-FR'); return; }
+  const t0 = performance.now();
+  function frame(t){
+    const p = Math.min(1, (t - t0) / duration);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(start + (target - start) * eased).toLocaleString('fr-FR');
+    if (p < 1) requestAnimationFrame(frame); else el.textContent = target.toLocaleString('fr-FR');
+  }
+  requestAnimationFrame(frame);
+}
+function spawnConfetti(){
+  const layer = document.getElementById('confetti-layer');
+  if (!layer) return;
+  const colors = ['#2DD4BF','#FBBF24','#F59E0B','#14B8A6'];
+  for (let i=0;i<16;i++){
+    const p = document.createElement('span');
+    p.className = 'confetti-piece';
+    p.style.left = (50 + (Math.random()*40-20)) + '%';
+    p.style.background = colors[i % colors.length];
+    p.style.animationDelay = (Math.random()*150) + 'ms';
+    p.style.setProperty('--dx', (Math.random()*80-40) + 'px');
+    layer.appendChild(p);
+    p.addEventListener('animationend', () => p.remove());
+  }
+}
+
+/* ============================================================
+   FÉLICITATIONS — file d'attente de toasts
+   ============================================================ */
+const toastQueue = [];
+let toastPlaying = false;
+function queueToast(icon, title, sub){
+  toastQueue.push({ icon, title, sub });
+  if (!toastPlaying) playNextToast();
+}
+function playNextToast(){
+  if (!toastQueue.length){ toastPlaying = false; return; }
+  toastPlaying = true;
+  const { icon, title, sub } = toastQueue.shift();
+  const toast = document.getElementById('levelup-toast');
+  toast.querySelector('i').className = icon;
+  document.getElementById('levelup-title').textContent = title;
+  document.getElementById('levelup-sub').textContent = sub;
+  toast.classList.add('show');
+  spawnConfetti();
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(playNextToast, 350);
+  }, 4200);
+}
+
+/* ============================================================
    RENDU — HERO
    ============================================================ */
 function renderHero(){
@@ -694,25 +963,35 @@ function renderHero(){
     : info.title;
   document.getElementById('hero-sub').textContent = maintien
     ? `12 km/h en zone 2 tenu — objectif : ne pas régresser.`
-    : `Niveau ${lvl} sur 8 · ${info.eta} · objectif ${info.range}`;
+    : `Niveau ${lvl} sur 8 · ${weekLabel(info.months)} · objectif ${info.range}`;
 
-  document.getElementById('points-value').textContent = pts.toLocaleString('fr-FR');
+  animateInt(document.getElementById('points-value'), pts);
 
   const fill = document.getElementById('progress-fill');
-  fill.classList.toggle('gold', maintien);
-  fill.style.width = (maintien ? 100 : Math.round(prog*100)) + '%';
+  fill.style.width = '0%';
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    fill.classList.toggle('gold', maintien);
+    fill.style.width = (maintien ? 100 : Math.round(prog*100)) + '%';
+  }));
   document.getElementById('progress-left').innerHTML =
     speed != null ? `Vitesse actuelle : <strong>${speed.toFixed(2).replace('.',',')} km/h</strong>` : `Aucune séance en zone 2 pour l'instant`;
   document.getElementById('progress-right').textContent =
     maintien ? 'Objectif final dépassé' : (lvl < 8 ? `Prochain seuil : ${LEVELS[lvl].threshold.toFixed(1).replace('.',',')} km/h` : `Seuil maintien : 12,0 km/h`);
 
-  document.getElementById('stat-speed').innerHTML = speed != null ? `${speed.toFixed(2).replace('.',',')}<span> km/h</span>` : '—';
-  document.getElementById('stat-sessions').textContent = sessions.length;
+  if (speed != null){
+    animateNumber(document.getElementById('stat-speed-num'), speed, { decimals:2 });
+    document.getElementById('stat-speed-unit').textContent = ' km/h';
+  } else {
+    document.getElementById('stat-speed-num').textContent = '—';
+    document.getElementById('stat-speed-unit').textContent = '';
+  }
+  animateInt(document.getElementById('stat-sessions'), sessions.length);
   const totKm = sessions.reduce((a,s) => a + (s.distance||0), 0);
-  document.getElementById('stat-km').innerHTML = `${totKm.toFixed(1).replace('.',',')}<span> km</span>`;
+  animateNumber(document.getElementById('stat-km-num'), totKm, { decimals:1 });
   const now = isoWeek(new Date());
   const doneThisWeek = sessions.filter(s => s.calYear===now.year && s.calWeek===now.week).length;
-  document.getElementById('stat-week').innerHTML = `${doneThisWeek}<span> / ${weeklyTarget(lvl)} séances</span>`;
+  animateInt(document.getElementById('stat-week-num'), doneThisWeek);
+  document.getElementById('stat-week-den').textContent = ` / ${weeklyTarget(lvl)} séances`;
 
   checkLevelUp(lvl, maintien);
   return { lvl, maintien };
@@ -722,11 +1001,10 @@ function checkLevelUp(lvl, maintien){
   const effectiveLvl = maintien ? 9 : lvl;
   if (effectiveLvl > seen){
     safeSet(LEVEL_STORE_KEY, String(effectiveLvl));
-    const toast = document.getElementById('levelup-toast');
-    document.getElementById('levelup-title').textContent = maintien ? 'Mode Maintien débloqué !' : `Niveau ${lvl} débloqué !`;
-    document.getElementById('levelup-sub').textContent = maintien ? '12 km/h en zone 2, tenu.' : LEVELS[lvl-1].title;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 4500);
+    const badge = document.getElementById('level-badge');
+    badge.classList.add('pulse');
+    setTimeout(() => badge.classList.remove('pulse'), 900);
+    queueToast('ph-fill ph-trophy', maintien ? 'Mode Maintien débloqué !' : `Niveau ${lvl} débloqué !`, maintien ? '12 km/h en zone 2, tenu.' : LEVELS[lvl-1].title);
   } else if (seen === 1 && effectiveLvl === 1 && !safeGet(LEVEL_STORE_KEY)) {
     safeSet(LEVEL_STORE_KEY, '1');
   }
@@ -736,23 +1014,26 @@ function checkLevelUp(lvl, maintien){
    RENDU — CHEMIN DE NIVEAUX
    ============================================================ */
 function renderPath(lvl, maintien){
+  const speed = bestZone2Speed();
   const host = document.getElementById('level-path');
-  host.innerHTML = LEVELS.map(l => {
+  host.innerHTML = LEVELS.map((l, idx) => {
     const state = l.n < lvl || maintien ? 'done' : (l.n === lvl && !maintien ? 'current' : 'locked');
     const icon = state === 'done' ? 'ph-bold ph-check' : (state === 'current' ? 'ph-bold ph-flag-checkered' : 'ph-bold ph-lock-simple');
-    return `<div class="path-item ${state}">
-      <div class="path-node"><i class="${icon}"></i></div>
-      <div class="path-card">
+    return `<details class="path-item ${state}" style="--i:${idx}" ${state==='current' ? 'open' : ''}>
+      <summary class="path-card">
+        <div class="path-node"><i class="${icon}"></i></div>
         <div class="path-left">
           <div class="pt">Niveau ${l.n} — ${l.title} ${state==='current' ? '<span class="tagline">en cours</span>' : ''}</div>
-          <div class="pe">${l.eta}</div>
+          <div class="pe">${weekLabel(l.months)}</div>
         </div>
         <div class="path-right">
           <div class="pv num">${l.range}</div>
           <div class="pu">vitesse zone 2</div>
         </div>
-      </div>
-    </div>`;
+        <i class="ph-bold ph-caret-down path-caret"></i>
+      </summary>
+      ${levelDetailHTML(l, state, speed)}
+    </details>`;
   }).join('');
   document.getElementById('maintien-card').hidden = !maintien;
 }
@@ -809,17 +1090,59 @@ function driftPill(d){
   const cls = d <= 4 ? "good" : (d <= 7 ? "mid" : "bad");
   return `<span class="pill ${cls}">${d>0?"+":""}${d}</span>`;
 }
+
+/* ============================================================
+   IMPACT D'UNE SÉANCE — ce qui a fait progresser ou non
+   ============================================================ */
+function fmtDelta(d){ return (d>=0?"+":"") + d.toFixed(2).replace(".", ","); }
+function sessionImpact(list, i){
+  const s = list[i];
+  if (s.speed == null){
+    return { tag:'na', label:'Sans vitesse', reason:"Distance ou durée manquante : impossible de calculer une vitesse pour cette séance." };
+  }
+  const inZone = s.fcMoy != null && s.fcMoy >= Z2_LOW - 6 && s.fcMoy <= Z2_HIGH + 6;
+  if (!inZone){
+    const why = s.fcMoy == null
+      ? "Pas de fréquence cardiaque enregistrée (ceinture oubliée ?) : cette séance compte dans le volume et les points, mais pas dans la progression en zone 2."
+      : `FC moyenne (${s.fcMoy} bpm) hors de la zone 2 (128–145 bpm) : l'effort était trop soutenu ou trop léger pour compter ici.`;
+    return { tag:'na', label:'Hors zone 2', reason: why };
+  }
+  let prev = null;
+  for (let j = i-1; j >= 0; j--){
+    const p = list[j];
+    if (p.speed != null && p.fcMoy != null && p.fcMoy >= Z2_LOW-6 && p.fcMoy <= Z2_HIGH+6){ prev = p; break; }
+  }
+  if (!prev){
+    return { tag:'normale', label:'Première référence', reason:"Première séance exploitable en zone 2 : elle sert de point de départ pour mesurer la suite." };
+  }
+  const delta = s.speed - prev.speed;
+  const driftOk = s.drift === undefined ? null : s.drift <= 5;
+  if (delta > 0.03 && driftOk !== false){
+    return { tag:'forte', label:'Forte progression', reason:`Vitesse en hausse de ${fmtDelta(delta)} km/h par rapport à la séance de référence précédente${s.drift!==undefined ? `, avec une dérive cardiaque maîtrisée (+${s.drift} bpm)` : ""} : ce rythme est bien assimilé.` };
+  }
+  if (s.drift !== undefined && s.drift > 8){
+    return { tag:'faible', label:'Progression limitée', reason:`Dérive cardiaque élevée (+${s.drift} bpm) : la vitesse a coûté cher en fin de séance, le rythme n'est pas encore stabilisé.` };
+  }
+  if (delta < -0.03){
+    const abs = Math.abs(delta).toFixed(2).replace(".", ",");
+    return { tag:'faible', label:'Progression limitée', reason:`Vitesse en retrait de ${abs} km/h par rapport à la séance de référence précédente : fatigue, chaleur ou récupération incomplète probable.` };
+  }
+  return { tag:'normale', label:'Séance stable', reason:"Vitesse et dérive cardiaque cohérentes avec la progression en cours : une brique de plus dans l'édifice." };
+}
+
 function renderTable(){
-  const all = sorted().reverse();
+  const chrono = sorted();
   const host = document.getElementById('tableHost');
-  if (!all.length){
+  if (!chrono.length){
     host.innerHTML = `<div class="empty"><strong>Aucune séance pour l'instant</strong>Ajoute une séance pour démarrer le journal.</div>`;
     return;
   }
-  host.innerHTML = `<div class="tablewrap"><table>
-    <thead><tr><th>Date</th><th>Séance</th><th>Dist.</th><th>Vitesse</th><th>Allure</th><th>FC moy</th><th>Dérive</th><th>Pts</th><th></th></tr></thead>
-    <tbody>
-    ${all.map(s => `<tr>
+  const display = [...chrono].reverse();
+  const rows = display.map((s, dispIdx) => {
+    const i = chrono.indexOf(s);
+    const impact = sessionImpact(chrono, i);
+    const pillClass = impact.tag === 'forte' ? 'good' : impact.tag === 'faible' ? 'bad' : 'info';
+    return `<tr class="data-row" data-key="${s.date}" style="--i:${dispIdx}">
       <td class="num">${dateLabel(s.date)}</td>
       <td>${s.type}${s.lieu ? ` <span style="color:var(--ink-4)">· ${s.lieu}</span>` : ""}</td>
       <td class="num">${s.distance ? s.distance.toFixed(2).replace(".", ",") : "—"}</td>
@@ -827,11 +1150,30 @@ function renderTable(){
       <td class="num">${s.speed ? paceLabel(s.speed) : "—"}</td>
       <td class="num">${s.fcMoy ?? "—"}</td>
       <td>${driftPill(s.drift)}</td>
+      <td><span class="pill ${pillClass}">${impact.label}</span></td>
       <td class="num">+${sessionPoints(s)}</td>
       <td><button class="del" data-date="${s.date}" aria-label="Supprimer">×</button></td>
-    </tr>`).join("")}
-    </tbody></table></div>`;
-  host.querySelectorAll('.del').forEach(b => b.addEventListener('click', () => {
+    </tr>
+    <tr class="detail-row" data-for="${s.date}" hidden><td colspan="10"><div class="pd-explain"><i class="ph-bold ph-info"></i><span>${impact.reason}</span></div></td></tr>`;
+  }).join("");
+  host.innerHTML = `<div class="tablewrap"><table>
+    <thead><tr><th>Date</th><th>Séance</th><th>Dist.</th><th>Vitesse</th><th>Allure</th><th>FC moy</th><th>Dérive</th><th>Impact</th><th>Pts</th><th></th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+  host.querySelectorAll('.data-row').forEach(tr => {
+    tr.addEventListener('click', (e) => {
+      if (e.target.closest('.del')) return;
+      const detail = host.querySelector(`.detail-row[data-for="${tr.dataset.key}"]`);
+      if (!detail) return;
+      const opening = detail.hidden;
+      detail.hidden = !detail.hidden;
+      if (opening){
+        const inner = detail.querySelector('.pd-explain');
+        inner.style.animation = 'none'; void inner.offsetWidth; inner.style.animation = '';
+      }
+    });
+  });
+  host.querySelectorAll('.del').forEach(b => b.addEventListener('click', (e) => {
+    e.stopPropagation();
     sessions = sessions.filter(s => s.date !== b.dataset.date);
     save(); renderAll();
   }));
@@ -855,8 +1197,35 @@ function ingest(text){
   const known = new Set(sessions.map(s => s.date));
   const fresh = parsed.filter(s => !known.has(s.date));
   const dupes = parsed.length - fresh.length;
+
+  /* instantané "avant" pour détecter les félicitations à décerner */
+  const beforeBest = bestZone2Speed();
+  const beforeCount = sessions.length;
+  const beforeWeek = isoWeek(new Date());
+  const beforeWeekCount = sessions.filter(s => s.calYear===beforeWeek.year && s.calWeek===beforeWeek.week).length;
+  const beforeLvl = currentLevelIndex(beforeBest);
+
   sessions = sessions.concat(fresh);
   save(); renderAll();
+
+  if (fresh.length){
+    const afterBest = bestZone2Speed();
+    if (afterBest != null && beforeCount > 0 && (beforeBest == null || afterBest > beforeBest + 0.001)){
+      queueToast('ph-fill ph-medal', 'Nouveau record personnel !', `${afterBest.toFixed(2).replace('.',',')} km/h tenus en zone 2.`);
+    }
+    const afterWeekCount = sessions.filter(s => s.calYear===beforeWeek.year && s.calWeek===beforeWeek.week).length;
+    const target = weeklyTarget(beforeLvl);
+    if (beforeWeekCount < target && afterWeekCount >= target){
+      queueToast('ph-fill ph-check-circle', 'Objectif de la semaine atteint !', `${afterWeekCount} séance${afterWeekCount>1?'s':''} cette semaine.`);
+    }
+    const milestones = [10,25,50,100,150,200,250,300];
+    const afterCount = sessions.length;
+    const crossed = milestones.filter(m => beforeCount < m && afterCount >= m).pop();
+    if (crossed){
+      queueToast('ph-fill ph-crown', `${crossed} séances enregistrées !`, "Une belle régularité, la clé de la progression.");
+    }
+  }
+
   flash(`${fresh.length} séance${fresh.length>1?"s":""} ajoutée${fresh.length>1?"s":""}${dupes ? ` · ${dupes} doublon${dupes>1?"s":""} ignoré${dupes>1?"s":""}` : ""}.`, true);
 }
 function readFiles(files){
@@ -891,6 +1260,44 @@ document.getElementById('tplBtn').addEventListener('click', () => {
     fcMoy:138, fcMax:147, fcDebut:131, fcFin:141, denivele:0, ressenti:4, notes:""
   }], null, 2);
 });
+document.getElementById('qfSubmit').addEventListener('click', () => {
+  const date = document.getElementById('qf-date').value || new Date().toISOString().slice(0,10);
+  const duree = document.getElementById('qf-duree').value;
+  const distance = document.getElementById('qf-distance').value;
+  if (!duree || !distance){ flash("Indique au moins la durée et la distance de la séance.", false); return; }
+  const val = id => { const v = document.getElementById(id).value; return v === "" ? undefined : parseFloat(v); };
+  const raw = {
+    date,
+    duree: parseFloat(duree),
+    distance: parseFloat(distance),
+    lieu: document.getElementById('qf-lieu').value.trim(),
+    fcMoy: val('qf-fcmoy'),
+    fcDebut: val('qf-fcdebut'),
+    fcFin: val('qf-fcfin'),
+    denivele: val('qf-denivele'),
+    ressenti: val('qf-ressenti'),
+    notes: document.getElementById('qf-notes').value.trim()
+  };
+  ingest(JSON.stringify([raw]));
+  ['qf-duree','qf-distance','qf-lieu','qf-fcmoy','qf-fcdebut','qf-fcfin','qf-denivele','qf-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('qf-ressenti').value = '';
+  document.getElementById('qf-date').value = new Date().toISOString().slice(0,10);
+});
+document.getElementById('copyPromptBtn').addEventListener('click', async () => {
+  const ta = document.getElementById('promptText');
+  try {
+    await navigator.clipboard.writeText(ta.value);
+    flash("Prompt copié dans le presse-papiers.", true);
+  } catch(e){
+    try {
+      ta.focus(); ta.select();
+      document.execCommand('copy');
+      flash("Prompt copié.", true);
+    } catch(e2){
+      flash("Impossible de copier automatiquement : sélectionne le texte manuellement.", false);
+    }
+  }
+});
 document.getElementById('exportBtn').addEventListener('click', () => {
   const clean = sorted().map(s => ({
     date:s.date, type:s.type, lieu:s.lieu, duree:s.duree, distance:s.distance,
@@ -918,6 +1325,8 @@ function renderAll(){
   renderChart();
   renderTable();
 }
+const qfDateEl = document.getElementById('qf-date');
+if (qfDateEl) qfDateEl.value = new Date().toISOString().slice(0,10);
 renderAll();
 
 }; // fin __bootRunningApp
