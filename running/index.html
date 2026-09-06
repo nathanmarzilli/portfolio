@@ -240,6 +240,21 @@ section{padding:44px 0}
 .legend-dot.badminton{background:var(--bad-400)}
 .legend-dot.strength{background:var(--str-400)}
 
+/* ============ JOURNAL — LIGNES BADMINTON / RENFORCEMENT ============ */
+.act-row td{padding:0!important}
+.act-inline{display:flex; align-items:center; gap:14px; padding:13px 16px; border-left:3px solid transparent}
+.act-row.badminton .act-inline{border-left-color:var(--bad-400); background:rgba(251,146,60,.05)}
+.act-row.strength .act-inline{border-left-color:var(--str-400); background:rgba(167,139,250,.05)}
+.act-icon{width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:.92rem}
+.act-icon.badminton{background:rgba(251,146,60,.14); color:var(--bad-400)}
+.act-icon.strength{background:rgba(167,139,250,.14); color:var(--str-400)}
+.act-body{flex:1; min-width:0}
+.act-title{font-weight:600; color:#fff; font-size:.86rem; display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.act-meta{font-size:.78rem; color:var(--ink-4); margin-top:2px}
+.note-edit{margin-top:12px; padding-top:12px; border-top:1px dashed var(--line)}
+.note-edit:first-child{margin-top:0; padding-top:0; border-top:0}
+.note-edit textarea{font-family:inherit; min-height:52px; font-size:.82rem}
+
 /* ============ PROCHAINE SÉANCE ============ */
 .next-card{display:flex; align-items:center; gap:16px; background:linear-gradient(155deg,rgba(45,212,191,.10),transparent); border:1px solid rgba(45,212,191,.28); border-radius:18px; padding:18px 22px; margin-bottom:20px}
 .next-card.wait{background:linear-gradient(155deg,rgba(251,191,36,.08),transparent); border-color:rgba(251,191,36,.25)}
@@ -323,6 +338,7 @@ section{padding:44px 0}
 .btn.danger{color:#f87171; border-color:rgba(248,113,113,.3)}
 .btn.danger:hover{background:rgba(248,113,113,.08)}
 .btn.sm{padding:7px 13px; font-size:.78rem}
+.btn.is-open{background:var(--dark-800); color:var(--ink-1); border-color:var(--line)}
 
 #journal-body{margin-top:22px}
 .io{display:grid; grid-template-columns:1.15fr .85fr; gap:16px; margin-bottom:20px}
@@ -454,54 +470,7 @@ footer a:hover{color:var(--accent-400)}
   </div>
 </div>
 
-<section id="charge" style="border-top:1px solid var(--line)">
-  <div class="wrap">
-    <div class="sec-head">
-      <div class="sec-kicker">Charge & récupération</div>
-      <h2>Badminton, renforcement & prochaine séance</h2>
-      <p>Chaque activité rejoint le fil ci-dessous, ajuste l'objectif de course de la semaine, et aide à estimer ta prochaine sortie.</p>
-    </div>
 
-    <div class="next-card" id="next-card"></div>
-    <div class="week-strip" id="week-strip"></div>
-
-    <div class="charge-grid">
-      <div class="charge-card">
-        <h3><i class="ph-bold ph-racquet" style="color:var(--bad-400)"></i> Badminton</h3>
-        <p class="charge-sub">Séance passée oubliée, ou tournoi prévu à l'avance : choisis la date.</p>
-        <div class="qf-grid" style="grid-template-columns:1fr 1fr">
-          <label class="qf-field"><span>Date</span><input type="date" id="bd-date"></label>
-          <label class="qf-field"><span>&nbsp;</span><label class="chk-row" style="margin-bottom:0; margin-top:9px"><input type="checkbox" id="bd-tournoi-chk"> Tournoi</label></label>
-        </div>
-        <label class="qf-field qf-notes"><span>Notes <em>(optionnel)</em></span><input type="text" id="bd-notes" placeholder="Adversaire, ressenti…"></label>
-        <div class="btnrow" style="justify-content:flex-start">
-          <button class="btn sm" id="bd-submit" style="background:var(--bad-400); border-color:var(--bad-400); color:var(--dark-950)"><i class="ph-bold ph-check"></i> Enregistrer</button>
-        </div>
-      </div>
-
-      <div class="charge-card">
-        <h3><i class="ph-bold ph-barbell" style="color:var(--str-400)"></i> Renforcement musculaire</h3>
-        <p class="charge-sub">Ajoute les exercices (Entrée pour valider), retire-les si besoin.</p>
-        <label class="qf-field" style="margin-bottom:12px"><span>Date</span><input type="date" id="ex-date"></label>
-        <div class="tag-input" id="ex-tags">
-          <input type="text" id="ex-input" placeholder="ex. squat bulgare ↵">
-        </div>
-        <label class="chk-row"><input type="checkbox" id="ex-legs"> Travail des jambes / bas du corps</label>
-        <div class="btnrow" style="justify-content:flex-start">
-          <button class="btn sm" id="ex-submit" style="background:var(--str-400); border-color:var(--str-400); color:var(--dark-950)"><i class="ph-bold ph-check"></i> Enregistrer</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="load-banner" id="load-banner"></div>
-
-    <div class="sec-head" style="margin-top:30px; margin-bottom:14px">
-      <div class="sec-kicker">Vue d'ensemble</div>
-      <h2 style="font-size:1.15rem">Fil d'activités</h2>
-    </div>
-    <div id="activity-feed"></div>
-  </div>
-</section>
 
 <section id="progression" style="border-top:1px solid var(--line)">
   <div class="wrap">
@@ -538,6 +507,8 @@ footer a:hover{color:var(--accent-400)}
       </div>
       <button class="btn primary sm" id="journal-toggle"><i class="ph-bold ph-plus"></i> Ajouter une séance</button>
     </div>
+
+    <div class="msg" id="msg"></div>
 
     <div id="journal-body" hidden>
       <div class="quickform">
@@ -632,14 +603,57 @@ Voici mes données brutes à convertir :
           </div>
         </div>
       </details>
-
-      <div class="msg" id="msg"></div>
     </div>
 
     <div id="tableHost" style="margin-top:20px"></div>
     <div class="btnrow" style="justify-content:flex-start; margin-top:14px">
       <button class="btn danger sm" id="clearBtn"><i class="ph-bold ph-trash"></i> Tout effacer</button>
     </div>
+  </div>
+</section>
+
+<section id="charge" style="border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">Charge & récupération</div>
+      <h2>Badminton, renforcement & prochaine séance</h2>
+      <p>Ces deux séances alimentent le journal ci-dessus, ajustent l'objectif de course de la semaine, et aident à estimer ta prochaine sortie. Chacune se sauvegarde indépendamment, pour n'importe quelle date — passée (séance oubliée) ou future (tournoi prévu à l'avance).</p>
+    </div>
+
+    <div class="next-card" id="next-card"></div>
+    <div class="week-strip" id="week-strip"></div>
+
+    <div class="charge-grid">
+      <div class="charge-card">
+        <h3><i class="ph-bold ph-racquet" style="color:var(--bad-400)"></i> Badminton</h3>
+        <p class="charge-sub">Séance passée oubliée, ou tournoi prévu à l'avance : choisis n'importe quelle date, cette séance est indépendante du renforcement.</p>
+        <div class="qf-grid" style="grid-template-columns:1fr 1fr">
+          <label class="qf-field"><span>Date</span><input type="date" id="bd-date"></label>
+          <label class="qf-field"><span>&nbsp;</span><label class="chk-row" style="margin-bottom:0; margin-top:9px"><input type="checkbox" id="bd-tournoi-chk"> Tournoi</label></label>
+        </div>
+        <label class="qf-field qf-notes"><span>Notes <em>(optionnel)</em></span><input type="text" id="bd-notes" placeholder="Adversaire, ressenti…"></label>
+        <div class="btnrow" style="justify-content:flex-start">
+          <button class="btn sm" id="bd-submit" style="background:var(--bad-400); border-color:var(--bad-400); color:var(--dark-950)"><i class="ph-bold ph-check"></i> Enregistrer la séance de badminton</button>
+        </div>
+        <div class="msg" id="bd-msg"></div>
+      </div>
+
+      <div class="charge-card">
+        <h3><i class="ph-bold ph-barbell" style="color:var(--str-400)"></i> Renforcement musculaire</h3>
+        <p class="charge-sub">Ajoute les exercices (Entrée pour valider), retire-les si besoin. N'importe quelle date, indépendante du badminton.</p>
+        <label class="qf-field" style="margin-bottom:12px"><span>Date</span><input type="date" id="ex-date"></label>
+        <div class="tag-input" id="ex-tags">
+          <input type="text" id="ex-input" placeholder="ex. squat bulgare ↵">
+        </div>
+        <label class="chk-row"><input type="checkbox" id="ex-legs"> Travail des jambes / bas du corps</label>
+        <div class="btnrow" style="justify-content:flex-start">
+          <button class="btn sm" id="ex-submit" style="background:var(--str-400); border-color:var(--str-400); color:var(--dark-950)"><i class="ph-bold ph-check"></i> Enregistrer la séance de renforcement</button>
+        </div>
+        <div class="msg" id="ex-msg"></div>
+      </div>
+    </div>
+
+    <div class="load-banner" id="load-banner"></div>
   </div>
 </section>
 
@@ -895,6 +909,9 @@ function paceLabel(speed){
 function dateLabel(iso){
   const d = new Date(iso + "T12:00:00");
   return d.getDate() + " " + MONTHS[d.getMonth()];
+}
+function escapeHtml(str){
+  return String(str||"").replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 /* ============================================================
@@ -1409,32 +1426,84 @@ function sessionImpact(list, i){
   return { tag:'normale', label:'Séance stable', reason:"Vitesse et dérive cardiaque cohérentes avec la progression en cours : une brique de plus dans l'édifice." };
 }
 
+function noteEditorHTML(kind, key, notes){
+  return `<div class="note-edit">
+    <label class="qf-field" style="margin-bottom:8px"><span>Notes</span><textarea class="note-ta" rows="2" placeholder="Ajouter une note…">${escapeHtml(notes||"")}</textarea></label>
+    <div class="btnrow" style="justify-content:flex-start">
+      <button class="btn sm note-save" data-kind="${kind}" data-key="${key}"><i class="ph-bold ph-check"></i> Enregistrer la note</button>
+    </div>
+  </div>`;
+}
 function renderTable(){
-  const chrono = sorted();
+  const chrono = sorted(); // course uniquement, ordre chrono — sert au calcul d'impact
   const host = document.getElementById('tableHost');
-  if (!chrono.length){
-    host.innerHTML = `<div class="empty"><strong>Aucune séance pour l'instant</strong>Ajoute une séance pour démarrer le journal.</div>`;
+
+  const merged = [];
+  sessions.forEach(s => merged.push({ date:s.date, kind:'run', ref:s }));
+  badminton.forEach(b => merged.push({ date:b.date, kind:'badminton', ref:b }));
+  strength.forEach(s => merged.push({ date:s.date, kind:'strength', ref:s }));
+
+  if (!merged.length){
+    host.innerHTML = `<div class="empty"><strong>Aucune séance pour l'instant</strong>Ajoute une course, une séance de badminton ou de renforcement pour démarrer le journal.</div>`;
     return;
   }
-  const display = [...chrono].reverse();
-  const rows = display.map((s, dispIdx) => {
-    const i = chrono.indexOf(s);
-    const impact = sessionImpact(chrono, i);
-    const pillClass = impact.tag === 'forte' ? 'good' : impact.tag === 'faible' ? 'bad' : 'info';
-    return `<tr class="data-row" data-key="${s.date}" style="--i:${dispIdx}">
-      <td class="num">${dateLabel(s.date)}</td>
-      <td>${s.type}${s.lieu ? ` <span style="color:var(--ink-4)">· ${s.lieu}</span>` : ""}</td>
-      <td class="num">${s.distance ? s.distance.toFixed(2).replace(".", ",") : "—"}</td>
-      <td class="num">${s.speed ? s.speed.toFixed(2).replace(".", ",") : "—"}</td>
-      <td class="num">${s.speed ? paceLabel(s.speed) : "—"}</td>
-      <td class="num">${s.fcMoy ?? "—"}</td>
-      <td>${driftPill(s.drift)}</td>
-      <td><span class="pill ${pillClass}">${impact.label}</span></td>
-      <td class="num">+${sessionPoints(s)}</td>
-      <td><button class="del" data-date="${s.date}" aria-label="Supprimer">×</button></td>
-    </tr>
-    <tr class="detail-row" data-for="${s.date}" hidden><td colspan="10"><div class="pd-explain"><i class="ph-bold ph-info"></i><span>${impact.reason}</span></div></td></tr>`;
+  merged.sort((a,b) => a.date.localeCompare(b.date));
+  const display = [...merged].reverse();
+
+  const rows = display.map((it, dispIdx) => {
+    if (it.kind === 'run'){
+      const s = it.ref;
+      const i = chrono.indexOf(s);
+      const impact = sessionImpact(chrono, i);
+      const pillClass = impact.tag === 'forte' ? 'good' : impact.tag === 'faible' ? 'bad' : 'info';
+      const key = `run-${s.date}`;
+      return `<tr class="data-row" data-key="${key}" style="--i:${dispIdx}">
+        <td class="num">${dateLabel(s.date)}</td>
+        <td>${s.type}${s.lieu ? ` <span style="color:var(--ink-4)">· ${s.lieu}</span>` : ""}</td>
+        <td class="num">${s.distance ? s.distance.toFixed(2).replace(".", ",") : "—"}</td>
+        <td class="num">${s.speed ? s.speed.toFixed(2).replace(".", ",") : "—"}</td>
+        <td class="num">${s.speed ? paceLabel(s.speed) : "—"}</td>
+        <td class="num">${s.fcMoy ?? "—"}</td>
+        <td>${driftPill(s.drift)}</td>
+        <td><span class="pill ${pillClass}">${impact.label}</span></td>
+        <td class="num">+${sessionPoints(s)}</td>
+        <td><button class="del" data-run-date="${s.date}" aria-label="Supprimer">×</button></td>
+      </tr>
+      <tr class="detail-row" data-for="${key}" hidden><td colspan="10">
+        <div class="pd-explain"><i class="ph-bold ph-info"></i><span>${impact.reason}</span></div>
+        ${noteEditorHTML('run', s.date, s.notes)}
+      </td></tr>`;
+    }
+    if (it.kind === 'badminton'){
+      const b = it.ref;
+      const key = `bad-${b.id}`;
+      return `<tr class="data-row act-row badminton" data-key="${key}" style="--i:${dispIdx}"><td colspan="10">
+        <div class="act-inline">
+          <div class="act-icon badminton"><i class="ph-bold ph-racquet"></i></div>
+          <div class="act-body">
+            <div class="act-title">Badminton${b.tournament ? ' <span class="feed-badge">Tournoi</span>' : ""}</div>
+            <div class="act-meta">${dateLabel(b.date)}${b.notes ? ` · ${b.notes}` : ""}</div>
+          </div>
+          <button class="del" data-bad-id="${b.id}" aria-label="Supprimer">×</button>
+        </div>
+      </td></tr>
+      <tr class="detail-row" data-for="${key}" hidden><td colspan="10">${noteEditorHTML('badminton', b.id, b.notes)}</td></tr>`;
+    }
+    const s = it.ref;
+    const key = `str-${s.id}`;
+    return `<tr class="data-row act-row strength" data-key="${key}" style="--i:${dispIdx}"><td colspan="10">
+      <div class="act-inline">
+        <div class="act-icon strength"><i class="ph-bold ph-barbell"></i></div>
+        <div class="act-body">
+          <div class="act-title">Renforcement${s.legs ? ' <span class="feed-badge legs">Jambes</span>' : ""}</div>
+          <div class="act-meta">${dateLabel(s.date)}${s.exercises && s.exercises.length ? ` · ${s.exercises.join(", ")}` : ""}${s.notes ? ` · ${s.notes}` : ""}</div>
+        </div>
+        <button class="del" data-strength-id="${s.id}" aria-label="Supprimer">×</button>
+      </div>
+    </td></tr>
+    <tr class="detail-row" data-for="${key}" hidden><td colspan="10">${noteEditorHTML('strength', s.id, s.notes)}</td></tr>`;
   }).join("");
+
   host.innerHTML = `<div class="tablewrap"><table>
     <thead><tr><th>Date</th><th>Séance</th><th>Dist.</th><th>Vitesse</th><th>Allure</th><th>FC moy</th><th>Dérive</th><th>Impact</th><th>Pts</th><th></th></tr></thead>
     <tbody>${rows}</tbody></table></div>`;
@@ -1446,15 +1515,28 @@ function renderTable(){
       const opening = detail.hidden;
       detail.hidden = !detail.hidden;
       if (opening){
-        const inner = detail.querySelector('.pd-explain');
-        inner.style.animation = 'none'; void inner.offsetWidth; inner.style.animation = '';
+        const inner = detail.querySelector('.pd-explain') || detail.querySelector('.note-edit');
+        if (inner){ inner.style.animation = 'none'; void inner.offsetWidth; inner.style.animation = ''; }
       }
     });
   });
   host.querySelectorAll('.del').forEach(b => b.addEventListener('click', (e) => {
     e.stopPropagation();
-    sessions = sessions.filter(s => s.date !== b.dataset.date);
-    save(); renderAll();
+    if (b.dataset.runDate !== undefined){ sessions = sessions.filter(s => s.date !== b.dataset.runDate); save(); }
+    else if (b.dataset.badId !== undefined){ badminton = badminton.filter(x => x.id !== b.dataset.badId); saveBadminton(); }
+    else if (b.dataset.strengthId !== undefined){ strength = strength.filter(x => x.id !== b.dataset.strengthId); saveStrength(); }
+    renderAll();
+  }));
+  host.querySelectorAll('.note-save').forEach(b => b.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const ta = b.closest('.note-edit').querySelector('.note-ta');
+    const val = ta.value.trim();
+    const kind = b.dataset.kind, key = b.dataset.key;
+    if (kind === 'run'){ const s = sessions.find(x => x.date === key); if (s){ s.notes = val; save(); } }
+    else if (kind === 'badminton'){ const item = badminton.find(x => x.id === key); if (item){ item.notes = val; saveBadminton(); } }
+    else { const item = strength.find(x => x.id === key); if (item){ item.notes = val; saveStrength(); } }
+    flash("Note enregistrée.", true);
+    renderTable();
   }));
 }
 
@@ -1490,67 +1572,9 @@ function renderWeekStrip(){
   }
   host.innerHTML = cells.join('');
 }
-function renderActivityFeed(){
-  const host = document.getElementById('activity-feed');
-  const items = [];
-  sessions.forEach(s => items.push({ date:s.date, kind:'run', ref:s }));
-  badminton.forEach(b => items.push({ date:b.date, kind:'badminton', ref:b }));
-  strength.forEach(s => items.push({ date:s.date, kind:'strength', ref:s }));
-  items.sort((a,b) => b.date.localeCompare(a.date));
-  if (!items.length){
-    host.innerHTML = `<div class="empty"><strong>Aucune activité enregistrée</strong>Course, badminton, renforcement : tout apparaîtra ici.</div>`;
-    return;
-  }
-  host.innerHTML = items.slice(0, 30).map((it, idx) => {
-    if (it.kind === 'run'){
-      const s = it.ref;
-      return `<div class="feed-item" style="--i:${idx}">
-        <div class="feed-icon run"><i class="ph-bold ph-person-simple-run"></i></div>
-        <div class="feed-body">
-          <div class="feed-title">Course — ${s.type}${s.lieu ? ` · ${s.lieu}` : ""}</div>
-          <div class="feed-meta">${dateLabel(s.date)}${s.speed ? ` · ${s.speed.toFixed(2).replace(".", ",")} km/h` : ""}${s.distance ? ` · ${s.distance.toFixed(2).replace(".", ",")} km` : ""}</div>
-        </div>
-        <button class="del" data-run-date="${s.date}" aria-label="Supprimer">×</button>
-      </div>`;
-    }
-    if (it.kind === 'badminton'){
-      const b = it.ref;
-      return `<div class="feed-item" style="--i:${idx}">
-        <div class="feed-icon badminton"><i class="ph-bold ph-racquet"></i></div>
-        <div class="feed-body">
-          <div class="feed-title">Badminton${b.tournament ? ' <span class="feed-badge">Tournoi</span>' : ""}</div>
-          <div class="feed-meta">${dateLabel(b.date)}${b.notes ? ` · ${b.notes}` : ""}</div>
-        </div>
-        <button class="del" data-bad-id="${b.id}" aria-label="Supprimer">×</button>
-      </div>`;
-    }
-    const s = it.ref;
-    return `<div class="feed-item" style="--i:${idx}">
-      <div class="feed-icon strength"><i class="ph-bold ph-barbell"></i></div>
-      <div class="feed-body">
-        <div class="feed-title">Renforcement${s.legs ? ' <span class="feed-badge legs">Jambes</span>' : ""}</div>
-        <div class="feed-meta">${dateLabel(s.date)}${s.exercises.length ? ` · ${s.exercises.join(", ")}` : ""}</div>
-      </div>
-      <button class="del" data-strength-id="${s.id}" aria-label="Supprimer">×</button>
-    </div>`;
-  }).join('');
-  host.querySelectorAll('[data-run-date]').forEach(b => b.addEventListener('click', () => {
-    sessions = sessions.filter(s => s.date !== b.dataset.runDate);
-    save(); renderAll();
-  }));
-  host.querySelectorAll('[data-bad-id]').forEach(b => b.addEventListener('click', () => {
-    badminton = badminton.filter(x => x.id !== b.dataset.badId);
-    saveBadminton(); renderAll();
-  }));
-  host.querySelectorAll('[data-strength-id]').forEach(b => b.addEventListener('click', () => {
-    strength = strength.filter(x => x.id !== b.dataset.strengthId);
-    saveStrength(); renderAll();
-  }));
-}
 function renderCharge(){
   renderNextCard();
   renderWeekStrip();
-  renderActivityFeed();
 
   const wKey = currentWeekKey();
   const lvlNow = currentLevelIndex(bestZone2Speed());
@@ -1576,9 +1600,13 @@ function renderCharge(){
    IMPORT / EXPORT
    ============================================================ */
 function flash(text, ok){
-  const m = document.getElementById('msg');
+  flashOn('msg', text, ok);
+}
+function flashOn(id, text, ok){
+  const m = document.getElementById(id);
+  if (!m) return;
   m.textContent = text; m.className = "msg " + (ok ? "ok" : "err");
-  clearTimeout(flash._t); flash._t = setTimeout(() => { m.className = "msg"; }, 6000);
+  clearTimeout(m._t); m._t = setTimeout(() => { m.className = "msg"; }, 4500);
 }
 function ingest(text){
   let data;
@@ -1632,7 +1660,16 @@ function readFiles(files){
 
 document.getElementById('journal-toggle').addEventListener('click', () => {
   const body = document.getElementById('journal-body');
+  const btn = document.getElementById('journal-toggle');
   body.hidden = !body.hidden;
+  if (body.hidden){
+    btn.innerHTML = '<i class="ph-bold ph-plus"></i> Ajouter une séance';
+    btn.classList.remove('is-open');
+  } else {
+    btn.innerHTML = '<i class="ph-bold ph-x"></i> Fermer';
+    btn.classList.add('is-open');
+    document.getElementById('qf-date')?.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
 });
 
 const drop = document.getElementById('drop');
@@ -1721,7 +1758,8 @@ document.getElementById('bd-submit').addEventListener('click', () => {
   document.getElementById('bd-notes').value = '';
   document.getElementById('bd-tournoi-chk').checked = false;
   document.getElementById('bd-date').value = new Date().toISOString().slice(0,10);
-  flash("Séance de badminton enregistrée.", true);
+  const wk = isoWeek(new Date(date + "T12:00:00"));
+  flashOn('bd-msg', `✓ Badminton enregistré pour le ${dateLabel(date)} (semaine ${wk.week} · ${wk.year}).`, true);
   renderAll();
   if (tournament){
     queueToast('ph-fill ph-trophy', 'Tournoi enregistré', "L'objectif de course de la semaine concernée vient d'être recalculé.");
@@ -1765,7 +1803,8 @@ document.getElementById('ex-submit').addEventListener('click', () => {
   currentExerciseTags = []; renderExerciseTags();
   document.getElementById('ex-legs').checked = false;
   document.getElementById('ex-date').value = new Date().toISOString().slice(0,10);
-  flash("Séance de renforcement enregistrée.", true);
+  const wk = isoWeek(new Date(date + "T12:00:00"));
+  flashOn('ex-msg', `✓ Renforcement enregistré pour le ${dateLabel(date)} (semaine ${wk.week} · ${wk.year}).`, true);
   renderAll();
   if (legs){
     queueToast('ph-fill ph-barbell', 'Séance jambes enregistrée', "L'objectif de course de la semaine concernée vient d'être recalculé.");
