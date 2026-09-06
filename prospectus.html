@@ -1,252 +1,341 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prospectus - Nathan Marzilli</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <style>
-        :root {
-            --primary: #0a192f;
-            --accent: #14B8A6;
-            --text-main: #334155;
-        }
+<meta charset="UTF-8">
+<title>Nathan Marzilli — Le numérique, sans prise de tête</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<style>
+	:root {
+		--dark-950: #020617;
+		--dark-900: #0B1120;
+		--dark-850: #0f172a;
+		--dark-800: #1E293B;
+		--accent-400: #2DD4BF;
+		--accent-500: #14B8A6;
+		--gold-400: #FBBF24;
+		--gold-500: #F59E0B;
+		--ink-muted: #94a3b8;
+	}
+	@page { size: A4 portrait; margin: 0; }
+	* { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+	html, body { margin: 0; padding: 0; background: #1E293B; }
+	body { font-family: 'Inter', sans-serif; display: flex; justify-content: center; }
 
-        * { box-sizing: border-box; }
+	.flyer-a4 {
+		width: 210mm;
+		height: 297mm;
+		background: var(--dark-950);
+		position: relative;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		color: #fff;
+	}
 
-        body { margin: 0; padding: 2rem; background: #cbd5e1; font-family: 'Inter', sans-serif; display: flex; justify-content: center; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+	/* ===== HEADER ===== */
+	.header {
+		position: relative;
+		height: 76mm;
+		flex-shrink: 0;
+		overflow: hidden;
+	}
+	.header-bg {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 60% 30%;
+		opacity: 0.55;
+		filter: blur(0.5px);
+	}
+	.header-bg-fade {
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(180deg, rgba(2,6,23,0.55) 0%, rgba(2,6,23,0.86) 60%, var(--dark-950) 100%),
+			linear-gradient(90deg, rgba(2,6,23,0.65) 0%, rgba(2,6,23,0.15) 55%, rgba(2,6,23,0.55) 100%);
+	}
+	.header-noise { position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 3px 3px; opacity: .5; }
 
-        .flyer-a4 { width: 210mm; height: 297mm; background: white; box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative; overflow: hidden; display: flex; flex-direction: column; }
+	.header-content {
+		position: relative;
+		z-index: 3;
+		height: 100%;
+		padding: 8mm 15mm 6mm 15mm;
+		display: flex;
+		flex-direction: column;
+	}
+	.avail-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 2mm;
+		align-self: flex-start;
+		padding: 1.6mm 4mm;
+		border-radius: 20px;
+		border: 1px solid rgba(255,255,255,0.18);
+		background: rgba(0,0,0,0.35);
+		font-size: 7.3pt;
+		font-weight: 600;
+		letter-spacing: 0.02em;
+		color: #e2e8f0;
+	}
+	.avail-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent-400); box-shadow: 0 0 6px var(--accent-400); }
 
-        /* --- HEADER --- */
-        .header { height: 84mm; position: relative; display: flex; background: #ffffff; }
-        .header-content { position: relative; z-index: 3; width: 60%; padding: 11mm 4mm 8mm 15mm; display: flex; flex-direction: column; justify-content: center; }
-        .header-image { position: relative; width: 40%; height: 100%; overflow: hidden; }
-        .bg-img-top { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; z-index: 1; }
-        .header-overlay { position: absolute; top: 0; left: 0; width: 30%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%); z-index: 2; }
+	.brand-row { display: flex; align-items: center; gap: 4mm; margin-top: 4mm; }
+	.brand-accent-line { width: 8mm; height: 2.5px; background: var(--accent-400); flex-shrink: 0; }
+	.brand-name { font-family: 'Space Grotesk', sans-serif; font-size: 12pt; font-weight: 700; letter-spacing: 0.12em; color: #fff; }
+	.brand-sub { font-size: 7.3pt; font-weight: 500; letter-spacing: 0.05em; color: var(--ink-muted); text-transform: uppercase; margin-top: 0.8mm; }
 
-        .accent-line { width: 9mm; height: 2.5px; background: var(--accent); margin-bottom: 4mm; }
-        .brand-name { font-family: 'Montserrat', sans-serif; font-size: 13pt; font-weight: 900; letter-spacing: 0.14em; color: var(--primary); margin: 0; }
-        .brand-subtitle { font-family: 'Montserrat', sans-serif; font-size: 7.5pt; font-weight: 600; letter-spacing: 0.1em; color: #64748b; margin-top: 1mm; text-transform: uppercase; }
+	.main-title { font-family: 'Space Grotesk', sans-serif; font-size: 21pt; font-weight: 700; line-height: 1.1; margin: 4mm 0 2.5mm 0; letter-spacing: -0.02em; max-width: 78%; }
+	.main-title .accent { color: var(--accent-400); }
+	.header-subtitle { font-size: 8.8pt; line-height: 1.45; color: #cbd5e1; max-width: 68%; font-weight: 400; margin-bottom: 3mm; }
 
-        .main-title { font-family: 'Montserrat', sans-serif; font-size: 23pt; font-weight: 900; line-height: 1.12; margin: 6mm 0 4mm 0; color: var(--primary); letter-spacing: -0.5px; }
-        .main-title .highlight { color: var(--accent); }
+	.targets-row { display: flex; align-items: center; gap: 3.5mm; margin-top: auto; }
+	.target-pill { display: flex; align-items: center; gap: 2mm; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 7.8pt; letter-spacing: 0.06em; color: #fff; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); padding: 2mm 3.5mm; border-radius: 20px; }
+	.target-pill i { color: var(--accent-400); font-size: 11pt; }
 
-        .subtitle { font-size: 9.5pt; color: var(--text-main); font-weight: 500; line-height: 1.5; margin-bottom: 6mm; max-width: 92%; }
+	.profile-badge {
+		position: absolute;
+		right: 15mm;
+		bottom: -9mm;
+		z-index: 6;
+		width: 30mm;
+		height: 30mm;
+		border-radius: 50%;
+		border: 3px solid var(--accent-400);
+		box-shadow: 0 4mm 8mm rgba(0,0,0,0.45);
+		overflow: hidden;
+		background: var(--dark-900);
+	}
+	.profile-badge img { width: 100%; height: 100%; object-fit: cover; }
 
-        .targets { display: flex; align-items: center; gap: 3mm; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 8pt; color: var(--primary); flex-wrap: wrap; }
-        .target-item { display: flex; align-items: center; gap: 2mm; white-space: nowrap; }
-        .target-divider { width: 1px; height: 15px; background: #94a3b8; }
+	.ribbon-badge {
+		position: absolute;
+		top: 10mm;
+		right: 15mm;
+		z-index: 6;
+		background: var(--accent-400);
+		color: var(--dark-950);
+		font-family: 'Space Grotesk', sans-serif;
+		font-weight: 700;
+		font-size: 7.3pt;
+		letter-spacing: 0.06em;
+		padding: 2.6mm 4mm;
+		border-radius: 20px 20px 4px 20px;
+		text-align: center;
+		line-height: 1.4;
+		box-shadow: 0 3mm 6mm rgba(0,0,0,0.35);
+	}
 
-        .badge-bubble { position: absolute; right: 12mm; bottom: 10mm; width: 32mm; padding: 4mm 2mm; background: #ccf3ec; border-radius: 30px 30px 6px 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: 'Montserrat', sans-serif; font-size: 7.5pt; font-weight: 800; letter-spacing: 0.03em; color: var(--primary); box-shadow: 0 6px 16px rgba(0,0,0,0.12); z-index: 10; line-height: 1.4; }
+	/* ===== TRUST STRIP ===== */
+	.trust-strip {
+		flex-shrink: 0;
+		height: 11mm;
+		background: var(--dark-900);
+		border-top: 1px solid rgba(255,255,255,0.06);
+		border-bottom: 1px solid rgba(255,255,255,0.06);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 7mm;
+		padding: 0 15mm 0 30mm;
+	}
+	.trust-caption { font-size: 6.8pt; font-weight: 700; letter-spacing: 0.14em; color: #64748b; text-transform: uppercase; margin-right: 2mm; white-space: nowrap; }
+	.trust-item { display: flex; align-items: center; gap: 1.6mm; color: #cbd5e1; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 8.3pt; opacity: 0.85; white-space: nowrap; }
+	.trust-item i { font-size: 11pt; }
 
-        /* --- SERVICES (MIDDLE) --- */
-        .content { padding: 8mm 15mm 5mm 15mm; flex-grow: 1; z-index: 5; background: white; position: relative; }
-        .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm 4mm; margin-bottom: 8mm; }
-        
-        .service-item { display: flex; flex-direction: column; }
-        .service-header { display: flex; align-items: center; gap: 3mm; margin-bottom: 2mm; }
-        .service-icon { width: 44px; height: 44px; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--primary); background: #ccf3ec; flex-shrink: 0; }
-        .service-title { font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 800; color: var(--primary); margin: 0; line-height: 1.2; }
-        .service-desc { font-size: 8.5pt; color: var(--text-main); line-height: 1.4; margin: 0; }
+	/* ===== CONTENT ===== */
+	.content { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 4.5mm 15mm 0 15mm; min-height: 0; }
 
-        /* --- PRICING SECTION --- */
-        .pricing-section { background: var(--primary); color: white; border-radius: 12px; padding: 7mm 8mm; display: flex; gap: 8mm; }
-        .price-col { flex: 1; display: flex; flex-direction: column; }
-        .price-col:first-child { border-right: 1px solid rgba(255,255,255,0.15); padding-right: 8mm; }
-        
-        .price-title { font-family: 'Montserrat', sans-serif; font-size: 9pt; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; margin-bottom: 5mm; }
-        
-        .pack-item { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4mm; }
-        .pack-item:last-child { margin-bottom: 0; }
-        .pack-name { font-size: 9.5pt; font-weight: 500; }
-        .pack-dots { flex-grow: 1; border-bottom: 1px dotted rgba(255,255,255,0.3); margin: 0 3mm 1.5mm 3mm; }
-        .pack-price { font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 800; color: var(--accent); white-space: nowrap; }
-        
-        .price-note { font-size: 8pt; color: #94a3b8; margin-top: 3mm; text-align: center; width: 100%; }
+	.section-label { font-size: 7pt; font-weight: 700; letter-spacing: 0.18em; color: var(--accent-400); text-transform: uppercase; margin-bottom: 2mm; }
 
-        /* --- FOOTER --- */
-        .footer { height: 84mm; position: relative; background: #ffffff; overflow: hidden; }
-        .bg-img-bottom { position: absolute; right: 0; bottom: 0; width: 66%; height: 82%; object-fit: cover; border-radius: 220px 0 0 0; z-index: 1; }
-        .footer-content { position: relative; z-index: 3; padding: 6mm 15mm 0 15mm; height: 100%; display: flex; flex-direction: column; }
+	.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin-bottom: 3.5mm; }
+	.service-card { background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.08); border-radius: 9px; padding: 2.8mm 3mm 3mm 3mm; }
+	.service-icon { width: 7mm; height: 7mm; border-radius: 50%; background: rgba(45,212,191,0.14); display: flex; align-items: center; justify-content: center; margin-bottom: 1.6mm; }
+	.service-icon i { color: var(--accent-400); font-size: 10.5pt; }
+	.service-title { font-family: 'Space Grotesk', sans-serif; font-size: 8.4pt; font-weight: 700; color: #fff; margin: 0 0 0.9mm 0; line-height: 1.2; }
+	.service-desc { font-size: 7.1pt; color: #94a3b8; line-height: 1.3; margin: 0; }
 
-        .region-badge { position: absolute; right: 15mm; top: 6mm; text-align: right; font-family: 'Montserrat', sans-serif; font-size: 9pt; font-weight: 800; color: var(--primary); letter-spacing: 0.1em; line-height: 1.3; z-index: 5; }
-        .region-badge::after { content: ''; display: block; width: 25mm; height: 2px; background: var(--accent); margin-top: 2mm; margin-left: auto; }
+	.pricing-section {
+		background: linear-gradient(155deg, var(--dark-900) 0%, var(--dark-850) 100%);
+		border: 1px solid rgba(45,212,191,0.25);
+		border-radius: 11px;
+		padding: 4mm 6mm;
+		display: flex;
+		gap: 7mm;
+		margin-bottom: 3mm;
+	}
+	.price-col { flex: 1; display: flex; flex-direction: column; }
+	.price-col:first-child { border-right: 1px solid rgba(255,255,255,0.1); padding-right: 7mm; }
+	.price-col-title { font-family: 'Space Grotesk', sans-serif; font-size: 7.8pt; color: var(--gold-400); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; margin-bottom: 2.4mm; }
+	.pack-item { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.8mm; gap: 2mm; }
+	.pack-item:last-child { margin-bottom: 0; }
+	.pack-name { font-size: 7.9pt; font-weight: 500; color: #e2e8f0; line-height: 1.22; }
+	.pack-sub { display: block; font-size: 6.8pt; color: var(--accent-400); font-weight: 600; margin-top: 0.5mm; }
+	.pack-dots { flex-grow: 1; border-bottom: 1px dotted rgba(255,255,255,0.22); margin: 0 1.5mm 1.3mm 1.5mm; min-width: 4mm; }
+	.pack-price { font-family: 'Space Grotesk', sans-serif; font-size: 9pt; font-weight: 700; color: var(--accent-400); white-space: nowrap; }
+	.price-note { font-size: 6.8pt; color: #64748b; text-align: center; width: 100%; margin: 1.8mm 0 0 0; letter-spacing: 0.02em; }
 
-        .contact-block { max-width: 58%; margin-top: 5mm; }
-        .contact-pre { font-family: 'Montserrat', sans-serif; font-size: 11pt; font-weight: 800; color: var(--primary); margin-bottom: 2mm; }
-        .contact-phone-wrapper { display: flex; align-items: center; gap: 4mm; margin-bottom: 4mm; }
-        .phone-icon { width: 40px; height: 40px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; flex-shrink: 0; }
-        .phone-number { font-family: 'Montserrat', sans-serif; font-size: 24pt; font-weight: 900; color: var(--primary); line-height: 1; letter-spacing: -0.5px; white-space: nowrap; }
-        
-        .location-info { display: flex; align-items: flex-start; gap: 3mm; font-size: 10pt; color: var(--primary); font-weight: 600; line-height: 1.4; margin-left: 2mm; }
-        .location-info i { font-size: 16pt; margin-top: 1px; flex-shrink: 0; }
+	.testimonial { display: flex; align-items: flex-start; gap: 3.5mm; background: rgba(251,191,36,0.045); border: 1px solid rgba(251,191,36,0.18); border-radius: 9px; padding: 2.8mm 4.5mm; margin-bottom: 3mm; margin-top: 3mm; }
+	.testimonial-stars { color: var(--gold-400); font-size: 7.3pt; letter-spacing: 0.5px; white-space: nowrap; margin-bottom: 0.8mm; }
+	.testimonial-text { font-size: 7.3pt; color: #cbd5e1; font-style: italic; line-height: 1.32; margin: 0; }
+	.testimonial-author { font-size: 6.8pt; color: #64748b; margin-top: 1mm; }
+	.testimonial-author strong { color: #e2e8f0; font-weight: 700; }
 
-        .bottom-bar { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--primary); padding: 5mm 15mm; font-family: 'Montserrat', sans-serif; font-size: 8.5pt; color: white; letter-spacing: 0.1em; font-weight: 600; text-transform: uppercase; z-index: 4; display: flex; align-items: center; justify-content: center; gap: 4mm; }
-        .bottom-bar::before, .bottom-bar::after { content: ''; width: 10mm; height: 1.5px; background: var(--accent); }
+	/* ===== FOOTER ===== */
+	.footer {
+		flex-shrink: 0;
+		position: relative;
+		background: var(--dark-900);
+		border-top: 1px solid rgba(255,255,255,0.08);
+		padding: 6mm 15mm 5mm 15mm;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8mm;
+	}
+	.footer-left { flex: 1; min-width: 0; }
+	.footer-tagline { font-family: 'Space Grotesk', sans-serif; font-size: 9.3pt; font-weight: 600; color: #fff; line-height: 1.35; margin-bottom: 4mm; max-width: 95mm; }
+	.footer-tagline .accent { color: var(--accent-400); }
+	.contact-phone-wrapper { display: flex; align-items: center; gap: 3.5mm; margin-bottom: 3mm; }
+	.phone-icon { width: 10mm; height: 10mm; background: var(--accent-400); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--dark-950); font-size: 13pt; flex-shrink: 0; }
+	.phone-number { font-family: 'Space Grotesk', sans-serif; font-size: 17pt; font-weight: 700; color: #fff; line-height: 1; }
+	.location-info { display: flex; align-items: flex-start; gap: 2.5mm; font-size: 8pt; color: #94a3b8; font-weight: 500; line-height: 1.4; }
+	.location-info i { color: var(--accent-400); font-size: 11pt; margin-top: 0.5px; flex-shrink: 0; }
 
-        @media print {
-            body { background: white; padding: 0; margin: 0; }
-            .flyer-a4 { box-shadow: none; width: 100%; height: 100%; }
-            @page { size: A4 portrait; margin: 0; }
-        }
-    </style>
+	.footer-right { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 1.6mm; }
+	.qr-box { width: 24mm; height: 24mm; background: #fff; border-radius: 6px; padding: 1.6mm; display: flex; align-items: center; justify-content: center; }
+	.qr-box img { width: 100%; height: 100%; object-fit: contain; }
+	.qr-caption { font-size: 6.4pt; font-weight: 700; color: #cbd5e1; text-align: center; letter-spacing: 0.02em; max-width: 26mm; line-height: 1.3; }
+	.qr-url { font-size: 6pt; color: var(--accent-400); font-weight: 600; }
+
+	.bottom-bar { flex-shrink: 0; background: var(--dark-950); padding: 2.6mm 15mm; text-align: center; font-size: 6.8pt; color: #475569; letter-spacing: 0.06em; }
+</style>
 </head>
 <body>
-
 <div class="flyer-a4">
-    <!-- HAUT DE PAGE -->
-    <div class="header">
-        <div class="header-content">
-            <div class="accent-line"></div>
-            <h2 class="brand-name">NATHAN MARZILLI</h2>
-            <div class="brand-subtitle">Ingénieur Diplômé</div>
 
-            <h1 class="main-title">Le numérique,<br><span class="highlight">sans prise de tête.</span></h1>
-            
-            <p class="subtitle">
-                Sites web, dépannage, automatisation<br>
-                et accompagnement à domicile.<br>
-                Des solutions simples et efficaces,<br>
-                adaptées à vos besoins.
-            </p>
+	<div class="header">
+		<img src="images/hero.jpg" class="header-bg" alt="">
+		<div class="header-bg-fade"></div>
+		<div class="header-noise"></div>
 
-            <div class="targets">
-                <div class="target-item"><i class="ph-bold ph-users text-[14pt]"></i> PARTICULIERS</div>
-                <div class="target-divider"></div>
-                <div class="target-item"><i class="ph-bold ph-buildings text-[14pt]"></i> PROFESSIONNELS</div>
-            </div>
-        </div>
-        <div class="header-image">
-            <img src="images/flyer/01.jpeg" class="bg-img-top" alt="">
-            <div class="header-overlay"></div>
-        </div>
-        <div class="badge-bubble">
-            À DOMICILE<br>OU À DISTANCE
-        </div>
-    </div>
+		<div class="ribbon-badge">À DOMICILE<br>OU À DISTANCE</div>
 
-    <!-- SERVICES (MILIEU) -->
-    <div class="content">
-        <div class="services-grid">
-            <div class="service-item">
-                <div class="service-header">
-                    <div class="service-icon"><i class="ph-bold ph-desktop"></i></div>
-                    <h3 class="service-title">Création de<br>Sites Web</h3>
-                </div>
-                <p class="service-desc">Sites vitrines sur-mesure, performants et optimisés (SEO). Mettez en valeur votre savoir-faire professionnel.</p>
-            </div>
+		<div class="header-content">
+			<div class="avail-badge"><span class="avail-dot"></span> Disponibilité immédiate — France / Suisse</div>
 
-            <div class="service-item">
-                <div class="service-header">
-                    <div class="service-icon"><i class="ph-bold ph-file-text"></i></div>
-                    <h3 class="service-title">Outils &<br>Automatisation</h3>
-                </div>
-                <p class="service-desc">Génération automatique de devis, factures, bails (PDF). Gagnez un temps précieux sur l'administratif.</p>
-            </div>
+			<div class="brand-row">
+				<div class="brand-accent-line"></div>
+				<div>
+					<div class="brand-name">NATHAN MARZILLI</div>
+					<div class="brand-sub">Ingénieur Diplômé (CTI) · 14 ans d'expérience</div>
+				</div>
+			</div>
 
-            <div class="service-item">
-                <div class="service-header">
-                    <div class="service-icon"><i class="ph-bold ph-wrench"></i></div>
-                    <h3 class="service-title">Dépannage &<br>Installation</h3>
-                </div>
-                <p class="service-desc">Configuration de Box Internet, Wi-Fi, imprimantes, nouvelle TV. Je me déplace et vous explique sans jargon.</p>
-            </div>
+			<h1 class="main-title">Le numérique,<br><span class="accent">sans prise de tête.</span></h1>
+			<p class="header-subtitle">Sites web, automatisation, dépannage et accompagnement à domicile. La rigueur d'un ingénieur, la proximité d'un artisan — au prix juste.</p>
 
-            <div class="service-item">
-                <div class="service-header">
-                    <div class="service-icon"><i class="ph-bold ph-shield-check"></i></div>
-                    <h3 class="service-title">Sécurité &<br>Démarches</h3>
-                </div>
-                <p class="service-desc">Protection antivirus, prévention des arnaques et accompagnement en ligne (Doctolib, espaces personnels...).</p>
-            </div>
+			<div class="targets-row">
+				<div class="target-pill"><i class="ph-bold ph-users"></i> PARTICULIERS</div>
+				<div class="target-pill"><i class="ph-bold ph-buildings"></i> PROFESSIONNELS</div>
+			</div>
+		</div>
 
-            <div class="service-item">
-                <div class="service-header">
-                    <div class="service-icon"><i class="ph-bold ph-graduation-cap"></i></div>
-                    <h3 class="service-title">Formation<br>à votre rythme</h3>
-                </div>
-                <p class="service-desc">Prise en main de votre site internet, de votre ordinateur ou smartphone. Apprenez en toute bienveillance.</p>
-            </div>
-            
-            <div class="service-item">
-                <div class="service-header">
-                    <div class="service-icon"><i class="ph-bold ph-cassette-tape"></i></div>
-                    <h3 class="service-title">Sauvegarde<br>de souvenirs</h3>
-                </div>
-                <p class="service-desc">Ne perdez plus vos précieux moments. Numérisation sur clé USB de vos cassettes (VHS, Hi8) et photos.</p>
-            </div>
-        </div>
+		<div class="profile-badge"><img src="images/profile.jpg" alt="Nathan Marzilli"></div>
+	</div>
 
-        <div class="pricing-section">
-            <div class="price-col">
-                <div class="price-title">Création Web & Pros</div>
-                <div class="pack-item">
-                    <span class="pack-name">Site Vitrine Complet</span>
-                    <div class="pack-dots"></div>
-                    <span class="pack-price">Dès 990€</span>
-                </div>
-                <div class="pack-item">
-                    <span class="pack-name">Automatisation Devis/Facture</span>
-                    <div class="pack-dots"></div>
-                    <span class="pack-price">Dès 250€</span>
-                </div>
-                <div class="pack-item">
-                    <span class="pack-name">Pack Maintenance Sécurité</span>
-                    <div class="pack-dots"></div>
-                    <span class="pack-price">49,90€ / mois</span>
-                </div>
-            </div>
-            <div class="price-col">
-                <div class="price-title">Interventions à Domicile</div>
-                <div class="pack-item">
-                    <span class="pack-name">Tarif Horaire (Dépannage/Cours)</span>
-                    <div class="pack-dots"></div>
-                    <span class="pack-price">70€ / heure</span>
-                </div>
-                <div class="pack-item">
-                    <span class="pack-name">Diagnostic Première Rencontre (1h30)</span>
-                    <div class="pack-dots"></div>
-                    <span class="pack-price">90€</span>
-                </div>
-                <div class="pack-item">
-                    <span class="pack-name">Numérisation Cassette</span>
-                    <div class="pack-dots"></div>
-                    <span class="pack-price">50€ / pièce</span>
-                </div>
-            </div>
-        </div>
-        <div class="price-note">TVA non applicable (art. 293B du CGI)</div>
-    </div>
+	<div class="trust-strip">
+		<div class="trust-caption">Rigueur d'ingénieur éprouvée par</div>
+		<div class="trust-item"><i class="ph-fill ph-lightning" style="color:#f97316;"></i> EDF</div>
+		<div class="trust-item"><i class="ph-fill ph-hexagon" style="color:#ef4444;"></i> ELCA</div>
+		<div class="trust-item"><i class="ph-fill ph-seal-check" style="color:#2DD4BF;"></i> Ingénieur CTI</div>
+		<div class="trust-item"><i class="ph-fill ph-racquet" style="color:#22c55e;"></i> BE 74</div>
+	</div>
 
-    <!-- PIED DE PAGE -->
-    <div class="footer">
-        <img src="images/flyer/02.jfif" class="bg-img-bottom" alt="">
-        <div class="footer-content">
-            <div class="region-badge">
-                ÉVIAN-LES-BAINS<br>ET LES ALENTOURS
-            </div>
+	<div class="content">
+		<div class="section-label">Ce que je propose</div>
+		<div class="services-grid">
+			<div class="service-card">
+				<div class="service-icon"><i class="ph-bold ph-desktop"></i></div>
+				<h3 class="service-title">Création de Sites Web</h3>
+				<p class="service-desc">Sites vitrines sur-mesure, performants et optimisés (SEO), pour valoriser votre savoir-faire.</p>
+			</div>
+			<div class="service-card">
+				<div class="service-icon"><i class="ph-bold ph-file-text"></i></div>
+				<h3 class="service-title">Outils & Automatisation</h3>
+				<p class="service-desc">Génération automatique de devis, factures, contrats. Gagnez du temps sur l'administratif.</p>
+			</div>
+			<div class="service-card">
+				<div class="service-icon"><i class="ph-bold ph-wrench"></i></div>
+				<h3 class="service-title">Dépannage & Installation</h3>
+				<p class="service-desc">Box internet, Wi-Fi, imprimantes, TV. Je me déplace et j'explique sans jargon.</p>
+			</div>
+			<div class="service-card">
+				<div class="service-icon"><i class="ph-bold ph-shield-check"></i></div>
+				<h3 class="service-title">Sécurité & Démarches</h3>
+				<p class="service-desc">Protection antivirus, prévention des arnaques, accompagnement en ligne (Doctolib...).</p>
+			</div>
+			<div class="service-card">
+				<div class="service-icon"><i class="ph-bold ph-graduation-cap"></i></div>
+				<h3 class="service-title">Formation à votre rythme</h3>
+				<p class="service-desc">Prise en main de votre site, ordinateur ou smartphone, en toute bienveillance.</p>
+			</div>
+			<div class="service-card">
+				<div class="service-icon"><i class="ph-bold ph-cassette-tape"></i></div>
+				<h3 class="service-title">Sauvegarde de souvenirs</h3>
+				<p class="service-desc">Numérisation sur clé USB de vos cassettes (VHS, Hi8) et de vos photos papier.</p>
+			</div>
+		</div>
 
-            <div class="contact-block">
-                <div class="contact-pre">Besoin d'aide ? Contactez-moi !</div>
-                <div class="contact-phone-wrapper">
-                    <div class="phone-icon"><i class="ph-fill ph-phone"></i></div>
-                    <div class="phone-number">06 25 96 51 12</div>
-                </div>
-                <div class="location-info">
-                    <i class="ph-fill ph-map-pin"></i>
-                    <span>J'interviens sur Évian-les-Bains<br>et tout le bassin lémanique.</span>
-                </div>
-            </div>
-        </div>
-        <div class="bottom-bar">
-            Un accompagnement de confiance, tout simplement.
-        </div>
-    </div>
+		<div class="pricing-section">
+			<div class="price-col">
+				<div class="price-col-title">Création Web & Pros</div>
+				<div class="pack-item"><span class="pack-name">Site Vitrine Complet</span><div class="pack-dots"></div><span class="pack-price">Dès 990€</span></div>
+				<div class="pack-item"><span class="pack-name">Automatisation Devis / Factures</span><div class="pack-dots"></div><span class="pack-price">Dès 250€</span></div>
+				<div class="pack-item"><span class="pack-name">Pack Sérénité (suivi mensuel)</span><div class="pack-dots"></div><span class="pack-price">49,90€ / mois</span></div>
+			</div>
+			<div class="price-col">
+				<div class="price-col-title">Interventions à Domicile</div>
+				<div class="pack-item"><span class="pack-name">Tarif Horaire (dépannage / cours)</span><div class="pack-dots"></div><span class="pack-price">70€ / heure</span></div>
+				<div class="pack-item"><span class="pack-name">Diagnostic 1ère rencontre (1h30)</span><div class="pack-dots"></div><span class="pack-price">90€</span></div>
+				<div class="pack-item"><span class="pack-name">Numérisation Cassette<span class="pack-sub">+ 0,15€ / photo numérisée</span></span><div class="pack-dots"></div><span class="pack-price">70€ / pièce</span></div>
+			</div>
+		</div>
+		<div class="price-note">TVA non applicable (art. 293B du CGI)</div>
+
+		<div class="testimonial">
+			<div style="flex:1;">
+				<div class="testimonial-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+				<p class="testimonial-text">"Un immense merci à Nathan pour la création de notre site. Son investissement et son travail remarquable ont transformé notre vision en un outil performant."</p>
+				<div class="testimonial-author"><strong>Norène & William</strong> — Badminton Club Évian</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="footer">
+		<div class="footer-left">
+			<div class="footer-tagline">La qualité d'une agence, la proximité d'un artisan, <span class="accent">au prix juste.</span></div>
+			<div class="contact-phone-wrapper">
+				<div class="phone-icon"><i class="ph-fill ph-phone"></i></div>
+				<div class="phone-number">06 25 96 51 12</div>
+			</div>
+			<div class="location-info"><i class="ph-fill ph-map-pin"></i><span>Évian-les-Bains & tout le bassin lémanique — France / Suisse</span></div>
+		</div>
+		<div class="footer-right">
+			<div class="qr-box"><img src="images/flyer/qr-site.png" alt="QR code"></div>
+			<div class="qr-caption">Scannez pour découvrir mon site</div>
+			<div class="qr-url">nathanmarzilli.github.io/portfolio</div>
+		</div>
+	</div>
+
+	<div class="bottom-bar">NATHANMARZILLI.GITHUB.IO/PORTFOLIO · NATHAN.MARZILLI@GMAIL.COM</div>
+
 </div>
-
 </body>
 </html>

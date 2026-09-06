@@ -266,74 +266,259 @@
     </style>
 	
 	<style>
-		@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
+		@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 		@media screen {
 			#print-flyer { display: none !important; }
+			#print-cards { display: none !important; }
 		}
 
 		@media print {
 			@page { size: A4 portrait; margin: 0; }
 			html, body { background: white !important; padding: 0 !important; margin: 0 !important; height: auto !important; min-height: auto !important; overflow: visible !important; }
-			body > *:not(#print-flyer) { display: none !important; }
-			#print-flyer { display: block !important; position: relative !important; width: 210mm !important; height: 297mm !important; background: white !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; overflow: hidden !important; }
+			body > *:not(#print-flyer):not(#print-cards) { display: none !important; }
+			#print-flyer { display: block !important; position: relative !important; width: 210mm !important; height: 297mm !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; overflow: hidden !important; }
+			#print-cards { display: block !important; width: 210mm !important; page-break-before: always !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 			.spotlight-overlay, .noise-overlay, .scroll-progress, #image-preview-modal { display: none !important; }
 		}
 
-		#print-flyer { --f-primary: #0a192f; --f-accent: #14B8A6; --f-text-main: #334155; }
-		#print-flyer .flyer-a4 { width: 100%; height: 100%; background: white; position: relative; overflow: hidden; display: flex; flex-direction: column; font-family: 'Inter', sans-serif; }
-
-		#print-flyer .f-header { height: 84mm; position: relative; display: flex; background: #ffffff; }
-		#print-flyer .f-header-content { position: relative; z-index: 3; width: 60%; padding: 11mm 4mm 8mm 15mm; display: flex; flex-direction: column; justify-content: center; }
-		#print-flyer .f-header-image { position: relative; width: 40%; height: 100%; overflow: hidden; }
-		#print-flyer .f-bg-img-top { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; z-index: 1; }
-		#print-flyer .f-header-overlay { position: absolute; top: 0; left: 0; width: 30%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%); z-index: 2; }
-
-		#print-flyer .f-accent-line { width: 9mm; height: 2.5px; background: var(--f-accent); margin-bottom: 4mm; }
-		#print-flyer .f-brand-name { font-family: 'Montserrat', sans-serif; font-size: 13pt; font-weight: 900; letter-spacing: 0.14em; color: var(--f-primary); margin: 0; }
-		#print-flyer .f-brand-subtitle { font-family: 'Montserrat', sans-serif; font-size: 7.5pt; font-weight: 600; letter-spacing: 0.1em; color: #64748b; margin-top: 1mm; text-transform: uppercase; }
-		#print-flyer .f-main-title { font-family: 'Montserrat', sans-serif; font-size: 23pt; font-weight: 900; line-height: 1.12; margin: 6mm 0 4mm 0; color: var(--f-primary); letter-spacing: -0.5px; }
-		#print-flyer .f-highlight { color: var(--f-accent); }
-		#print-flyer .f-subtitle { font-size: 9.5pt; color: var(--f-text-main); font-weight: 500; line-height: 1.5; margin-bottom: 6mm; max-width: 92%; }
-		#print-flyer .f-targets { display: flex; align-items: center; gap: 3mm; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 8pt; color: var(--f-primary); flex-wrap: wrap; }
-		#print-flyer .f-target-item { display: flex; align-items: center; gap: 2mm; white-space: nowrap; }
-		#print-flyer .f-target-divider { width: 1px; height: 15px; background: #94a3b8; }
-
-		#print-flyer .f-badge-bubble { position: absolute; right: 12mm; bottom: 10mm; width: 32mm; padding: 4mm 2mm; background: #ccf3ec; border-radius: 30px 30px 6px 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: 'Montserrat', sans-serif; font-size: 7.5pt; font-weight: 800; letter-spacing: 0.03em; color: var(--f-primary); box-shadow: 0 6px 16px rgba(0,0,0,0.12); z-index: 10; line-height: 1.4; }
-
-		#print-flyer .f-content { padding: 8mm 15mm 5mm 15mm; flex-grow: 1; z-index: 5; background: white; position: relative; }
-		#print-flyer .f-services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm 4mm; margin-bottom: 8mm; }
-		#print-flyer .f-service-item { display: flex; flex-direction: column; }
-		#print-flyer .f-service-header { display: flex; align-items: center; gap: 3mm; margin-bottom: 2mm; }
-		#print-flyer .f-service-icon { width: 44px; height: 44px; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--f-primary); background: #ccf3ec; flex-shrink: 0; }
-		#print-flyer .f-service-title { font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 800; color: var(--f-primary); margin: 0; line-height: 1.2; }
-		#print-flyer .f-service-desc { font-size: 8.5pt; color: var(--f-text-main); line-height: 1.4; margin: 0; }
-
-		#print-flyer .f-pricing-section { background: var(--f-primary); color: white; border-radius: 12px; padding: 7mm 8mm; display: flex; gap: 8mm; }
+		#print-flyer {
+		--dark-950: #020617;
+		--dark-900: #0B1120;
+		--dark-850: #0f172a;
+		--dark-800: #1E293B;
+		--accent-400: #2DD4BF;
+		--accent-500: #14B8A6;
+		--gold-400: #FBBF24;
+		--gold-500: #F59E0B;
+		--ink-muted: #94a3b8;
+	}
+		#print-flyer .flyer-a4 {
+		width: 210mm;
+		height: 297mm;
+		background: var(--dark-950);
+		position: relative;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		color: #fff;
+	}
+		#print-flyer .f-header {
+		position: relative;
+		height: 76mm;
+		flex-shrink: 0;
+		overflow: hidden;
+	}
+		#print-flyer .f-header-bg {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 60% 30%;
+		opacity: 0.55;
+		filter: blur(0.5px);
+	}
+		#print-flyer .f-header-bg-fade {
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(180deg, rgba(2,6,23,0.55) 0%, rgba(2,6,23,0.86) 60%, var(--dark-950) 100%),
+			linear-gradient(90deg, rgba(2,6,23,0.65) 0%, rgba(2,6,23,0.15) 55%, rgba(2,6,23,0.55) 100%);
+	}
+		#print-flyer .f-header-noise { position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 3px 3px; opacity: .5; }
+		#print-flyer .f-header-content {
+		position: relative;
+		z-index: 3;
+		height: 100%;
+		padding: 8mm 15mm 6mm 15mm;
+		display: flex;
+		flex-direction: column;
+	}
+		#print-flyer .f-avail-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 2mm;
+		align-self: flex-start;
+		padding: 1.6mm 4mm;
+		border-radius: 20px;
+		border: 1px solid rgba(255,255,255,0.18);
+		background: rgba(0,0,0,0.35);
+		font-size: 7.3pt;
+		font-weight: 600;
+		letter-spacing: 0.02em;
+		color: #e2e8f0;
+	}
+		#print-flyer .f-avail-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent-400); box-shadow: 0 0 6px var(--accent-400); }
+		#print-flyer .f-brand-row { display: flex; align-items: center; gap: 4mm; margin-top: 4mm; }
+		#print-flyer .f-brand-accent-line { width: 8mm; height: 2.5px; background: var(--accent-400); flex-shrink: 0; }
+		#print-flyer .f-brand-name { font-family: 'Space Grotesk', sans-serif; font-size: 12pt; font-weight: 700; letter-spacing: 0.12em; color: #fff; }
+		#print-flyer .f-brand-sub { font-size: 7.3pt; font-weight: 500; letter-spacing: 0.05em; color: var(--ink-muted); text-transform: uppercase; margin-top: 0.8mm; }
+		#print-flyer .f-main-title { font-family: 'Space Grotesk', sans-serif; font-size: 21pt; font-weight: 700; line-height: 1.1; margin: 4mm 0 2.5mm 0; letter-spacing: -0.02em; max-width: 78%; }
+		#print-flyer .f-main-title .f-accent { color: var(--accent-400); }
+		#print-flyer .f-header-subtitle { font-size: 8.8pt; line-height: 1.45; color: #cbd5e1; max-width: 68%; font-weight: 400; margin-bottom: 3mm; }
+		#print-flyer .f-targets-row { display: flex; align-items: center; gap: 3.5mm; margin-top: auto; }
+		#print-flyer .f-target-pill { display: flex; align-items: center; gap: 2mm; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 7.8pt; letter-spacing: 0.06em; color: #fff; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); padding: 2mm 3.5mm; border-radius: 20px; }
+		#print-flyer .f-target-pill i { color: var(--accent-400); font-size: 11pt; }
+		#print-flyer .f-profile-badge {
+		position: absolute;
+		right: 15mm;
+		bottom: -9mm;
+		z-index: 6;
+		width: 30mm;
+		height: 30mm;
+		border-radius: 50%;
+		border: 3px solid var(--accent-400);
+		box-shadow: 0 4mm 8mm rgba(0,0,0,0.45);
+		overflow: hidden;
+		background: var(--dark-900);
+	}
+		#print-flyer .f-profile-badge img { width: 100%; height: 100%; object-fit: cover; }
+		#print-flyer .f-ribbon-badge {
+		position: absolute;
+		top: 10mm;
+		right: 15mm;
+		z-index: 6;
+		background: var(--accent-400);
+		color: var(--dark-950);
+		font-family: 'Space Grotesk', sans-serif;
+		font-weight: 700;
+		font-size: 7.3pt;
+		letter-spacing: 0.06em;
+		padding: 2.6mm 4mm;
+		border-radius: 20px 20px 4px 20px;
+		text-align: center;
+		line-height: 1.4;
+		box-shadow: 0 3mm 6mm rgba(0,0,0,0.35);
+	}
+		#print-flyer .f-trust-strip {
+		flex-shrink: 0;
+		height: 11mm;
+		background: var(--dark-900);
+		border-top: 1px solid rgba(255,255,255,0.06);
+		border-bottom: 1px solid rgba(255,255,255,0.06);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 7mm;
+		padding: 0 15mm 0 30mm;
+	}
+		#print-flyer .f-trust-caption { font-size: 6.8pt; font-weight: 700; letter-spacing: 0.14em; color: #64748b; text-transform: uppercase; margin-right: 2mm; white-space: nowrap; }
+		#print-flyer .f-trust-item { display: flex; align-items: center; gap: 1.6mm; color: #cbd5e1; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 8.3pt; opacity: 0.85; white-space: nowrap; }
+		#print-flyer .f-trust-item i { font-size: 11pt; }
+		#print-flyer .f-content { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 4.5mm 15mm 0 15mm; min-height: 0; }
+		#print-flyer .f-section-label { font-size: 7pt; font-weight: 700; letter-spacing: 0.18em; color: var(--accent-400); text-transform: uppercase; margin-bottom: 2mm; }
+		#print-flyer .f-services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin-bottom: 3.5mm; }
+		#print-flyer .f-service-card { background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.08); border-radius: 9px; padding: 2.8mm 3mm 3mm 3mm; }
+		#print-flyer .f-service-icon { width: 7mm; height: 7mm; border-radius: 50%; background: rgba(45,212,191,0.14); display: flex; align-items: center; justify-content: center; margin-bottom: 1.6mm; }
+		#print-flyer .f-service-icon i { color: var(--accent-400); font-size: 10.5pt; }
+		#print-flyer .f-service-title { font-family: 'Space Grotesk', sans-serif; font-size: 8.4pt; font-weight: 700; color: #fff; margin: 0 0 0.9mm 0; line-height: 1.2; }
+		#print-flyer .f-service-desc { font-size: 7.1pt; color: #94a3b8; line-height: 1.3; margin: 0; }
+		#print-flyer .f-pricing-section {
+		background: linear-gradient(155deg, var(--dark-900) 0%, var(--dark-850) 100%);
+		border: 1px solid rgba(45,212,191,0.25);
+		border-radius: 11px;
+		padding: 4mm 6mm;
+		display: flex;
+		gap: 7mm;
+		margin-bottom: 3mm;
+	}
 		#print-flyer .f-price-col { flex: 1; display: flex; flex-direction: column; }
-		#print-flyer .f-price-col:first-child { border-right: 1px solid rgba(255,255,255,0.15); padding-right: 8mm; }
-		#print-flyer .f-price-title { font-family: 'Montserrat', sans-serif; font-size: 9pt; color: var(--f-accent); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; margin-bottom: 5mm; }
-		#print-flyer .f-pack-item { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4mm; }
+		#print-flyer .f-price-col:first-child { border-right: 1px solid rgba(255,255,255,0.1); padding-right: 7mm; }
+		#print-flyer .f-price-col-title { font-family: 'Space Grotesk', sans-serif; font-size: 7.8pt; color: var(--gold-400); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; margin-bottom: 2.4mm; }
+		#print-flyer .f-pack-item { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.8mm; gap: 2mm; }
 		#print-flyer .f-pack-item:last-child { margin-bottom: 0; }
-		#print-flyer .f-pack-name { font-size: 9.5pt; font-weight: 500; }
-		#print-flyer .f-pack-dots { flex-grow: 1; border-bottom: 1px dotted rgba(255,255,255,0.3); margin: 0 3mm 1.5mm 3mm; }
-		#print-flyer .f-pack-price { font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 800; color: var(--f-accent); white-space: nowrap; }
-		#print-flyer .f-price-note { font-size: 8pt; color: #94a3b8; margin-top: 3mm; text-align: center; width: 100%; }
+		#print-flyer .f-pack-name { font-size: 7.9pt; font-weight: 500; color: #e2e8f0; line-height: 1.22; }
+		#print-flyer .f-pack-sub { display: block; font-size: 6.8pt; color: var(--accent-400); font-weight: 600; margin-top: 0.5mm; }
+		#print-flyer .f-pack-dots { flex-grow: 1; border-bottom: 1px dotted rgba(255,255,255,0.22); margin: 0 1.5mm 1.3mm 1.5mm; min-width: 4mm; }
+		#print-flyer .f-pack-price { font-family: 'Space Grotesk', sans-serif; font-size: 9pt; font-weight: 700; color: var(--accent-400); white-space: nowrap; }
+		#print-flyer .f-price-note { font-size: 6.8pt; color: #64748b; text-align: center; width: 100%; margin: 1.8mm 0 0 0; letter-spacing: 0.02em; }
+		#print-flyer .f-testimonial { display: flex; align-items: flex-start; gap: 3.5mm; background: rgba(251,191,36,0.045); border: 1px solid rgba(251,191,36,0.18); border-radius: 9px; padding: 2.8mm 4.5mm; margin-bottom: 3mm; margin-top: 3mm; }
+		#print-flyer .f-testimonial-stars { color: var(--gold-400); font-size: 7.3pt; letter-spacing: 0.5px; white-space: nowrap; margin-bottom: 0.8mm; }
+		#print-flyer .f-testimonial-text { font-size: 7.3pt; color: #cbd5e1; font-style: italic; line-height: 1.32; margin: 0; }
+		#print-flyer .f-testimonial-author { font-size: 6.8pt; color: #64748b; margin-top: 1mm; }
+		#print-flyer .f-testimonial-author strong { color: #e2e8f0; font-weight: 700; }
+		#print-flyer .f-footer {
+		flex-shrink: 0;
+		position: relative;
+		background: var(--dark-900);
+		border-top: 1px solid rgba(255,255,255,0.08);
+		padding: 6mm 15mm 5mm 15mm;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8mm;
+	}
+		#print-flyer .f-footer-left { flex: 1; min-width: 0; }
+		#print-flyer .f-footer-tagline { font-family: 'Space Grotesk', sans-serif; font-size: 9.3pt; font-weight: 600; color: #fff; line-height: 1.35; margin-bottom: 4mm; max-width: 95mm; }
+		#print-flyer .f-footer-tagline .f-accent { color: var(--accent-400); }
+		#print-flyer .f-contact-phone-wrapper { display: flex; align-items: center; gap: 3.5mm; margin-bottom: 3mm; }
+		#print-flyer .f-phone-icon { width: 10mm; height: 10mm; background: var(--accent-400); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--dark-950); font-size: 13pt; flex-shrink: 0; }
+		#print-flyer .f-phone-number { font-family: 'Space Grotesk', sans-serif; font-size: 17pt; font-weight: 700; color: #fff; line-height: 1; }
+		#print-flyer .f-location-info { display: flex; align-items: flex-start; gap: 2.5mm; font-size: 8pt; color: #94a3b8; font-weight: 500; line-height: 1.4; }
+		#print-flyer .f-location-info i { color: var(--accent-400); font-size: 11pt; margin-top: 0.5px; flex-shrink: 0; }
+		#print-flyer .f-footer-right { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 1.6mm; }
+		#print-flyer .f-qr-box { width: 24mm; height: 24mm; background: #fff; border-radius: 6px; padding: 1.6mm; display: flex; align-items: center; justify-content: center; }
+		#print-flyer .f-qr-box img { width: 100%; height: 100%; object-fit: contain; }
+		#print-flyer .f-qr-caption { font-size: 6.4pt; font-weight: 700; color: #cbd5e1; text-align: center; letter-spacing: 0.02em; max-width: 26mm; line-height: 1.3; }
+		#print-flyer .f-qr-url { font-size: 6pt; color: var(--accent-400); font-weight: 600; }
+		#print-flyer .f-bottom-bar { flex-shrink: 0; background: var(--dark-950); padding: 2.6mm 15mm; text-align: center; font-size: 6.8pt; color: #475569; letter-spacing: 0.06em; }
 
-		#print-flyer .f-footer { height: 84mm; position: relative; background: #ffffff; overflow: hidden; }
-		#print-flyer .f-bg-img-bottom { position: absolute; right: 0; bottom: 0; width: 66%; height: 82%; object-fit: cover; border-radius: 220px 0 0 0; z-index: 1; }
-		#print-flyer .f-footer-content { position: relative; z-index: 3; padding: 6mm 15mm 0 15mm; height: 100%; display: flex; flex-direction: column; }
-		#print-flyer .f-region-badge { position: absolute; right: 15mm; top: 6mm; text-align: right; font-family: 'Montserrat', sans-serif; font-size: 9pt; font-weight: 800; color: var(--f-primary); letter-spacing: 0.1em; line-height: 1.3; z-index: 5; }
-		#print-flyer .f-region-badge::after { content: ''; display: block; width: 25mm; height: 2px; background: var(--f-accent); margin-top: 2mm; margin-left: auto; }
-		#print-flyer .f-contact-block { max-width: 58%; margin-top: 5mm; }
-		#print-flyer .f-contact-pre { font-family: 'Montserrat', sans-serif; font-size: 11pt; font-weight: 800; color: var(--f-primary); margin-bottom: 2mm; }
-		#print-flyer .f-contact-phone-wrapper { display: flex; align-items: center; gap: 4mm; margin-bottom: 4mm; }
-		#print-flyer .f-phone-icon { width: 40px; height: 40px; background: var(--f-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; flex-shrink: 0; }
-		#print-flyer .f-phone-number { font-family: 'Montserrat', sans-serif; font-size: 24pt; font-weight: 900; color: var(--f-primary); line-height: 1; letter-spacing: -0.5px; white-space: nowrap; }
-		#print-flyer .f-location-info { display: flex; align-items: flex-start; gap: 3mm; font-size: 10pt; color: var(--f-primary); font-weight: 600; line-height: 1.4; margin-left: 2mm; }
-		#print-flyer .f-location-info i { font-size: 16pt; margin-top: 1px; flex-shrink: 0; }
-		#print-flyer .f-bottom-bar { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--f-primary); padding: 5mm 15mm; font-family: 'Montserrat', sans-serif; font-size: 8.5pt; color: white; letter-spacing: 0.1em; font-weight: 600; text-transform: uppercase; z-index: 4; display: flex; align-items: center; justify-content: center; gap: 4mm; }
-		#print-flyer .f-bottom-bar::before, #print-flyer .f-bottom-bar::after { content: ''; width: 10mm; height: 1.5px; background: var(--f-accent); }
+		#print-cards {
+		--dark-950: #020617;
+		--dark-900: #0B1120;
+		--accent-400: #2DD4BF;
+		--accent-500: #14B8A6;
+		--accent-tint: #ccf3ec;
+		--gold-400: #FBBF24;
+		--ink-navy: #0a192f;
+	}
+		#print-cards .c-cards-page { width: 210mm; min-height: 160mm; background: #fff; padding: 16mm 9mm; display: flex; flex-direction: column; align-items: center; }
+		#print-cards .c-cards-page-title { font-size: 8pt; font-weight: 700; letter-spacing: 0.14em; color: #94a3b8; text-transform: uppercase; margin-bottom: 8mm; text-align: center; }
+		#print-cards .c-cards-wrap { display: flex; gap: 6mm; flex-wrap: nowrap; justify-content: center; }
+		#print-cards .c-card-slot { padding: 3mm; border: 1px dashed #cbd5e1; border-radius: 2mm; flex-shrink: 0; }
+		#print-cards .c-card-slot-label { font-size: 6.5pt; font-weight: 700; letter-spacing: 0.12em; color: #94a3b8; text-transform: uppercase; text-align: center; margin-bottom: 2mm; }
+		#print-cards .c-card { width: 85mm; height: 55mm; position: relative; overflow: hidden; }
+		#print-cards .c-card-front { background: #ffffff; }
+		#print-cards .c-front-photo { position: absolute; inset: 0; z-index: 1; }
+		#print-cards .c-front-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 45%; }
+		#print-cards .c-front-white-panel { position: absolute; top: 0; left: 0; width: 57%; height: 100%; background: #ffffff; z-index: 2; }
+		#print-cards .c-front-white-blob { position: absolute; top: 50%; left: 57%; width: 38mm; height: 38mm; background: #ffffff; border-radius: 50%; transform: translate(-50%,-50%); z-index: 2; }
+		#print-cards .c-front-content { position: relative; z-index: 3; width: 56%; height: 100%; padding: 4mm 0 4mm 5mm; display: flex; flex-direction: column; }
+		#print-cards .c-front-line { width: 9mm; height: 1.4px; background: var(--accent-500); }
+		#print-cards .c-front-name { font-family: 'Space Grotesk', sans-serif; font-size: 11.5pt; font-weight: 700; letter-spacing: 0.06em; color: var(--ink-navy); margin: 1.4mm 0 0.6mm 0; }
+		#print-cards .c-front-role { font-size: 6.2pt; font-weight: 600; letter-spacing: 0.08em; color: #64748b; text-transform: uppercase; margin-bottom: 1.6mm; }
+		#print-cards .c-front-line2 { width: 9mm; height: 1.4px; background: var(--accent-500); margin-bottom: 2.4mm; }
+		#print-cards .c-front-tagline { font-size: 7.6pt; font-weight: 700; color: var(--ink-navy); line-height: 1.3; margin-bottom: 3mm; max-width: 33mm; }
+		#print-cards .c-front-icons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.2mm 1.5mm; max-width: 40mm; }
+		#print-cards .c-front-icon-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
+		#print-cards .c-front-icon-badge { width: 7mm; height: 7mm; border-radius: 50%; background: var(--accent-tint); display: flex; align-items: center; justify-content: center; margin-bottom: 0.9mm; }
+		#print-cards .c-front-icon-badge i { font-size: 9pt; color: var(--ink-navy); }
+		#print-cards .c-front-icon-label { font-size: 5.6pt; font-weight: 700; color: var(--ink-navy); line-height: 1.15; }
+		#print-cards .c-front-teal-blob {
+		position: absolute; bottom: -5mm; right: -5mm; width: 28mm; height: 28mm;
+		background: var(--accent-tint); border-radius: 50%; z-index: 4;
+		display: flex; align-items: center; justify-content: center; flex-direction: column;
+	}
+		#print-cards .c-front-teal-blob-text { font-family: 'Space Grotesk', sans-serif; font-size: 6pt; font-weight: 800; letter-spacing: 0.04em; color: var(--ink-navy); text-align: center; line-height: 1.5; margin-left: -3mm; margin-top: -3mm; }
+		#print-cards .c-front-teal-blob-line { width: 5.5mm; height: 1.4px; background: var(--accent-500); margin-top: 1mm; margin-left: -3mm; }
+		#print-cards .c-card-back { background: var(--dark-950); color: #fff; }
+		#print-cards .c-back-photo { position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; z-index: 1; }
+		#print-cards .c-back-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 70%; }
+		#print-cards .c-back-photo-fade { position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; z-index: 1; background: linear-gradient(180deg, var(--dark-950) 0%, rgba(2,6,23,0.35) 35%, rgba(2,6,23,0) 100%); }
+		#print-cards .c-back-content { position: relative; z-index: 2; height: 100%; padding: 4.5mm 5mm; display: flex; flex-direction: column; }
+		#print-cards .c-back-line { width: 9mm; height: 1.4px; background: var(--accent-400); }
+		#print-cards .c-back-name { font-family: 'Space Grotesk', sans-serif; font-size: 11.5pt; font-weight: 700; letter-spacing: 0.06em; color: #fff; margin: 1.4mm 0 0.6mm 0; }
+		#print-cards .c-back-role { font-size: 6.2pt; font-weight: 600; letter-spacing: 0.08em; color: #94a3b8; text-transform: uppercase; margin-bottom: 3mm; }
+		#print-cards .c-back-contact-list { display: flex; flex-direction: column; gap: 1.8mm; }
+		#print-cards .c-back-contact-row { display: flex; align-items: center; gap: 2.2mm; }
+		#print-cards .c-back-contact-icon { width: 5.6mm; height: 5.6mm; border-radius: 50%; background: var(--accent-400); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+		#print-cards .c-back-contact-icon i { font-size: 7.5pt; color: var(--dark-950); }
+		#print-cards .c-back-contact-text { font-size: 7.4pt; font-weight: 500; color: #e2e8f0; }
+		#print-cards .c-back-contact-text.c-strong { font-weight: 700; font-size: 8pt; }
+		#print-cards .c-back-tagline-block { position: absolute; top: 4.5mm; right: 5mm; z-index: 2; text-align: right; max-width: 26mm; }
+		#print-cards .c-back-tagline { font-family: 'Space Grotesk', sans-serif; font-size: 6.6pt; font-weight: 700; letter-spacing: 0.04em; color: #e2e8f0; line-height: 1.4; text-transform: uppercase; }
+		#print-cards .c-back-tagline-line { width: 7mm; height: 1.4px; background: var(--accent-400); margin: 1.4mm 0 0 auto; }
 	</style>
 </head>
 <body class="selection:bg-accent-400/30 selection:text-white bg-dark-950">
@@ -834,7 +1019,7 @@
 					</a>
 					<button onclick="window.print()" class="px-8 py-4 rounded-full border border-white/20 bg-white/5 text-white font-bold hover:bg-white/10 transition-all flex items-center gap-2 group">
 						<i class="ph-bold ph-printer group-hover:-translate-y-1 transition-transform"></i>
-						Imprimer le flyer A4
+						Imprimer flyer + cartes de visite
 					</button>
 				</div>
 			</div>
@@ -1008,150 +1193,179 @@
 
 	<div id="print-flyer">
 		<div class="flyer-a4">
+
 			<div class="f-header">
+				<img src="images/hero.jpg" class="f-header-bg" alt="">
+				<div class="f-header-bg-fade"></div>
+				<div class="f-header-noise"></div>
+
+				<div class="f-ribbon-badge">À DOMICILE<br>OU À DISTANCE</div>
+
 				<div class="f-header-content">
-					<div class="f-accent-line"></div>
-					<h2 class="f-brand-name">NATHAN MARZILLI</h2>
-					<div class="f-brand-subtitle">Ingénieur Diplômé</div>
+					<div class="f-avail-badge"><span class="f-avail-dot"></span> Disponibilité immédiate — France / Suisse</div>
 
-					<h1 class="f-main-title">Le numérique,<br><span class="f-highlight">sans prise de tête.</span></h1>
-					
-					<p class="f-subtitle">
-						Sites web, dépannage, automatisation<br>
-						et accompagnement à domicile.<br>
-						Des solutions simples et efficaces,<br>
-						adaptées à vos besoins.
-					</p>
+					<div class="f-brand-row">
+						<div class="f-brand-accent-line"></div>
+						<div>
+							<div class="f-brand-name">NATHAN MARZILLI</div>
+							<div class="f-brand-sub">Ingénieur Diplômé (CTI) · 14 ans d'expérience</div>
+						</div>
+					</div>
 
-					<div class="f-targets">
-						<div class="f-target-item"><i class="ph-bold ph-users text-[14pt]"></i> PARTICULIERS</div>
-						<div class="f-target-divider"></div>
-						<div class="f-target-item"><i class="ph-bold ph-buildings text-[14pt]"></i> PROFESSIONNELS</div>
+					<h1 class="f-main-title">Le numérique,<br><span class="f-accent">sans prise de tête.</span></h1>
+					<p class="f-header-subtitle">Sites web, automatisation, dépannage et accompagnement à domicile. La rigueur d'un ingénieur, la proximité d'un artisan — au prix juste.</p>
+
+					<div class="f-targets-row">
+						<div class="f-target-pill"><i class="ph-bold ph-users"></i> PARTICULIERS</div>
+						<div class="f-target-pill"><i class="ph-bold ph-buildings"></i> PROFESSIONNELS</div>
 					</div>
 				</div>
-				<div class="f-header-image">
-					<img src="images/flyer/01.jpeg" class="f-bg-img-top" alt="">
-					<div class="f-header-overlay"></div>
-				</div>
-				<div class="f-badge-bubble">
-					À DOMICILE<br>OU À DISTANCE
-				</div>
+
+				<div class="f-profile-badge"><img src="images/profile.jpg" alt="Nathan Marzilli"></div>
+			</div>
+
+			<div class="f-trust-strip">
+				<div class="f-trust-caption">Rigueur d'ingénieur éprouvée par</div>
+				<div class="f-trust-item"><i class="ph-fill ph-lightning" style="color:#f97316;"></i> EDF</div>
+				<div class="f-trust-item"><i class="ph-fill ph-hexagon" style="color:#ef4444;"></i> ELCA</div>
+				<div class="f-trust-item"><i class="ph-fill ph-seal-check" style="color:#2DD4BF;"></i> Ingénieur CTI</div>
+				<div class="f-trust-item"><i class="ph-fill ph-racquet" style="color:#22c55e;"></i> BE 74</div>
 			</div>
 
 			<div class="f-content">
+				<div class="f-section-label">Ce que je propose</div>
 				<div class="f-services-grid">
-					<div class="f-service-item">
-						<div class="f-service-header">
-							<div class="f-service-icon"><i class="ph-bold ph-desktop"></i></div>
-							<h3 class="f-service-title">Création de<br>Sites Web</h3>
-						</div>
-						<p class="f-service-desc">Sites vitrines sur-mesure, performants et optimisés (SEO). Mettez en valeur votre savoir-faire professionnel.</p>
+					<div class="f-service-card">
+						<div class="f-service-icon"><i class="ph-bold ph-desktop"></i></div>
+						<h3 class="f-service-title">Création de Sites Web</h3>
+						<p class="f-service-desc">Sites vitrines sur-mesure, performants et optimisés (SEO), pour valoriser votre savoir-faire.</p>
 					</div>
-
-					<div class="f-service-item">
-						<div class="f-service-header">
-							<div class="f-service-icon"><i class="ph-bold ph-file-text"></i></div>
-							<h3 class="f-service-title">Outils &<br>Automatisation</h3>
-						</div>
-						<p class="f-service-desc">Génération automatique de devis, factures, bails (PDF). Gagnez un temps précieux sur l'administratif.</p>
+					<div class="f-service-card">
+						<div class="f-service-icon"><i class="ph-bold ph-file-text"></i></div>
+						<h3 class="f-service-title">Outils & Automatisation</h3>
+						<p class="f-service-desc">Génération automatique de devis, factures, contrats. Gagnez du temps sur l'administratif.</p>
 					</div>
-
-					<div class="f-service-item">
-						<div class="f-service-header">
-							<div class="f-service-icon"><i class="ph-bold ph-wrench"></i></div>
-							<h3 class="f-service-title">Dépannage &<br>Installation</h3>
-						</div>
-						<p class="f-service-desc">Configuration de Box Internet, Wi-Fi, imprimantes, nouvelle TV. Je me déplace et vous explique sans jargon.</p>
+					<div class="f-service-card">
+						<div class="f-service-icon"><i class="ph-bold ph-wrench"></i></div>
+						<h3 class="f-service-title">Dépannage & Installation</h3>
+						<p class="f-service-desc">Box internet, Wi-Fi, imprimantes, TV. Je me déplace et j'explique sans jargon.</p>
 					</div>
-
-					<div class="f-service-item">
-						<div class="f-service-header">
-							<div class="f-service-icon"><i class="ph-bold ph-shield-check"></i></div>
-							<h3 class="f-service-title">Sécurité &<br>Démarches</h3>
-						</div>
-						<p class="f-service-desc">Protection antivirus, prévention des arnaques et accompagnement en ligne (Doctolib, espaces personnels...).</p>
+					<div class="f-service-card">
+						<div class="f-service-icon"><i class="ph-bold ph-shield-check"></i></div>
+						<h3 class="f-service-title">Sécurité & Démarches</h3>
+						<p class="f-service-desc">Protection antivirus, prévention des arnaques, accompagnement en ligne (Doctolib...).</p>
 					</div>
-
-					<div class="f-service-item">
-						<div class="f-service-header">
-							<div class="f-service-icon"><i class="ph-bold ph-graduation-cap"></i></div>
-							<h3 class="f-service-title">Formation<br>à votre rythme</h3>
-						</div>
-						<p class="f-service-desc">Prise en main de votre site internet, de votre ordinateur ou smartphone. Apprenez en toute bienveillance.</p>
+					<div class="f-service-card">
+						<div class="f-service-icon"><i class="ph-bold ph-graduation-cap"></i></div>
+						<h3 class="f-service-title">Formation à votre rythme</h3>
+						<p class="f-service-desc">Prise en main de votre site, ordinateur ou smartphone, en toute bienveillance.</p>
 					</div>
-					
-					<div class="f-service-item">
-						<div class="f-service-header">
-							<div class="f-service-icon"><i class="ph-bold ph-cassette-tape"></i></div>
-							<h3 class="f-service-title">Sauvegarde<br>de souvenirs</h3>
-						</div>
-						<p class="f-service-desc">Ne perdez plus vos précieux moments. Numérisation sur clé USB de vos cassettes (VHS, Hi8) et photos.</p>
+					<div class="f-service-card">
+						<div class="f-service-icon"><i class="ph-bold ph-cassette-tape"></i></div>
+						<h3 class="f-service-title">Sauvegarde de souvenirs</h3>
+						<p class="f-service-desc">Numérisation sur clé USB de vos cassettes (VHS, Hi8) et de vos photos papier.</p>
 					</div>
 				</div>
 
 				<div class="f-pricing-section">
 					<div class="f-price-col">
-						<div class="f-price-title">Création Web & Pros</div>
-						<div class="f-pack-item">
-							<span class="f-pack-name">Site Vitrine Complet</span>
-							<div class="f-pack-dots"></div>
-							<span class="f-pack-price">Dès 990€</span>
-						</div>
-						<div class="f-pack-item">
-							<span class="f-pack-name">Automatisation Devis/Facture</span>
-							<div class="f-pack-dots"></div>
-							<span class="f-pack-price">Dès 250€</span>
-						</div>
-						<div class="f-pack-item">
-							<span class="f-pack-name">Pack Maintenance Sécurité</span>
-							<div class="f-pack-dots"></div>
-							<span class="f-pack-price">49,90€ / mois</span>
-						</div>
+						<div class="f-price-col-title">Création Web & Pros</div>
+						<div class="f-pack-item"><span class="f-pack-name">Site Vitrine Complet</span><div class="f-pack-dots"></div><span class="f-pack-price">Dès 990€</span></div>
+						<div class="f-pack-item"><span class="f-pack-name">Automatisation Devis / Factures</span><div class="f-pack-dots"></div><span class="f-pack-price">Dès 250€</span></div>
+						<div class="f-pack-item"><span class="f-pack-name">Pack Sérénité (suivi mensuel)</span><div class="f-pack-dots"></div><span class="f-pack-price">49,90€ / mois</span></div>
 					</div>
 					<div class="f-price-col">
-						<div class="f-price-title">Interventions à Domicile</div>
-						<div class="f-pack-item">
-							<span class="f-pack-name">Tarif Horaire (Dépannage/Cours)</span>
-							<div class="f-pack-dots"></div>
-							<span class="f-pack-price">70€ / heure</span>
-						</div>
-						<div class="f-pack-item">
-							<span class="f-pack-name">Diagnostic Première Rencontre (1h30)</span>
-							<div class="f-pack-dots"></div>
-							<span class="f-pack-price">90€</span>
-						</div>
-						<div class="f-pack-item">
-							<span class="f-pack-name">Numérisation Cassette</span>
-							<div class="f-pack-dots"></div>
-							<span class="f-pack-price">50€ / pièce</span>
-						</div>
+						<div class="f-price-col-title">Interventions à Domicile</div>
+						<div class="f-pack-item"><span class="f-pack-name">Tarif Horaire (dépannage / cours)</span><div class="f-pack-dots"></div><span class="f-pack-price">70€ / heure</span></div>
+						<div class="f-pack-item"><span class="f-pack-name">Diagnostic 1ère rencontre (1h30)</span><div class="f-pack-dots"></div><span class="f-pack-price">90€</span></div>
+						<div class="f-pack-item"><span class="f-pack-name">Numérisation Cassette<span class="f-pack-sub">+ 0,15€ / photo numérisée</span></span><div class="f-pack-dots"></div><span class="f-pack-price">70€ / pièce</span></div>
 					</div>
 				</div>
 				<div class="f-price-note">TVA non applicable (art. 293B du CGI)</div>
+
+				<div class="f-testimonial">
+					<div style="flex:1;">
+						<div class="f-testimonial-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+						<p class="f-testimonial-text">"Un immense merci à Nathan pour la création de notre site. Son investissement et son travail remarquable ont transformé notre vision en un outil performant."</p>
+						<div class="f-testimonial-author"><strong>Norène & William</strong> — Badminton Club Évian</div>
+					</div>
+				</div>
 			</div>
 
 			<div class="f-footer">
-				<img src="images/flyer/02.jfif" class="f-bg-img-bottom" alt="">
-				<div class="f-footer-content">
-					<div class="f-region-badge">
-						ÉVIAN-LES-BAINS<br>ET LES ALENTOURS
+				<div class="f-footer-left">
+					<div class="f-footer-tagline">La qualité d'une agence, la proximité d'un artisan, <span class="f-accent">au prix juste.</span></div>
+					<div class="f-contact-phone-wrapper">
+						<div class="f-phone-icon"><i class="ph-fill ph-phone"></i></div>
+						<div class="f-phone-number">06 25 96 51 12</div>
 					</div>
+					<div class="f-location-info"><i class="ph-fill ph-map-pin"></i><span>Évian-les-Bains & tout le bassin lémanique — France / Suisse</span></div>
+				</div>
+				<div class="f-footer-right">
+					<div class="f-qr-box"><img src="images/flyer/qr-site.png" alt="QR code"></div>
+					<div class="f-qr-caption">Scannez pour découvrir mon site</div>
+					<div class="f-qr-url">nathanmarzilli.github.io/portfolio</div>
+				</div>
+			</div>
 
-					<div class="f-contact-block">
-						<div class="f-contact-pre">Besoin d'aide ? Contactez-moi !</div>
-						<div class="f-contact-phone-wrapper">
-							<div class="f-phone-icon"><i class="ph-fill ph-phone"></i></div>
-							<div class="f-phone-number" id="flyer-phone">06 25 96 51 12</div>
+			<div class="f-bottom-bar">NATHANMARZILLI.GITHUB.IO/PORTFOLIO · NATHAN.MARZILLI@GMAIL.COM</div>
+
+		</div>
+	</div>
+
+	<div id="print-cards">
+		<div class="c-cards-page">
+			<div class="c-cards-page-title">Cartes de visite — Nathan Marzilli</div>
+			<div class="c-cards-wrap">
+				<div class="c-card-slot">
+					<div class="c-card-slot-label">Recto</div>
+					<div class="c-card c-card-front">
+						<div class="c-front-photo"><img src="images/flyer/02.jfif" alt=""></div>
+						<div class="c-front-white-panel"></div>
+						<div class="c-front-white-blob"></div>
+						<div class="c-front-content">
+							<div class="c-front-line"></div>
+							<div class="c-front-name">NATHAN MARZILLI</div>
+							<div class="c-front-role">Ingénieur Diplômé</div>
+							<div class="c-front-line2"></div>
+							<div class="c-front-tagline">Solutions numériques pour particuliers &amp; professionnels</div>
+							<div class="c-front-icons">
+								<div class="c-front-icon-item"><div class="c-front-icon-badge"><i class="ph-bold ph-desktop"></i></div><div class="c-front-icon-label">Sites web</div></div>
+								<div class="c-front-icon-item"><div class="c-front-icon-badge"><i class="ph-bold ph-file-text"></i></div><div class="c-front-icon-label">Automatisation</div></div>
+								<div class="c-front-icon-item"><div class="c-front-icon-badge"><i class="ph-bold ph-wrench"></i></div><div class="c-front-icon-label">Dépannage</div></div>
+								<div class="c-front-icon-item"><div class="c-front-icon-badge"><i class="ph-bold ph-shield-check"></i></div><div class="c-front-icon-label">Sécurité</div></div>
+								<div class="c-front-icon-item"><div class="c-front-icon-badge"><i class="ph-bold ph-graduation-cap"></i></div><div class="c-front-icon-label">Formation</div></div>
+								<div class="c-front-icon-item"><div class="c-front-icon-badge"><i class="ph-bold ph-cassette-tape"></i></div><div class="c-front-icon-label">Numérisation</div></div>
+							</div>
 						</div>
-						<div class="f-location-info">
-							<i class="ph-fill ph-map-pin"></i>
-							<span>J'interviens sur Évian-les-Bains<br>et tout le bassin lémanique.</span>
+						<div class="c-front-teal-blob">
+							<div class="c-front-teal-blob-text">À DOMICILE<br>OU À DISTANCE</div>
+							<div class="c-front-teal-blob-line"></div>
 						</div>
 					</div>
 				</div>
 
-				<div class="f-bottom-bar">
-					Un accompagnement de confiance, tout simplement.
+				<div class="c-card-slot">
+					<div class="c-card-slot-label">Verso</div>
+					<div class="c-card c-card-back">
+						<div class="c-back-photo"><img src="images/flyer/04.png" alt=""></div>
+						<div class="c-back-photo-fade"></div>
+						<div class="c-back-content">
+							<div class="c-back-line"></div>
+							<div class="c-back-name">NATHAN MARZILLI</div>
+							<div class="c-back-role">Ingénieur Diplômé</div>
+							<div class="c-back-contact-list">
+								<div class="c-back-contact-row"><div class="c-back-contact-icon"><i class="ph-fill ph-phone"></i></div><div class="c-back-contact-text c-strong">06 25 96 51 12</div></div>
+								<div class="c-back-contact-row"><div class="c-back-contact-icon"><i class="ph-fill ph-envelope-simple"></i></div><div class="c-back-contact-text">nathan.marzilli@gmail.com</div></div>
+								<div class="c-back-contact-row"><div class="c-back-contact-icon"><i class="ph-fill ph-map-pin"></i></div><div class="c-back-contact-text">Évian-les-Bains et alentours</div></div>
+								<div class="c-back-contact-row"><div class="c-back-contact-icon"><i class="ph-fill ph-globe"></i></div><div class="c-back-contact-text">nathanmarzilli.github.io/portfolio</div></div>
+							</div>
+						</div>
+						<div class="c-back-tagline-block">
+							<div class="c-back-tagline">La qualité d'une agence,<br>la proximité d'un artisan</div>
+							<div class="c-back-tagline-line"></div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
