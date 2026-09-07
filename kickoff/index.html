@@ -146,6 +146,14 @@
         .pack-radio-label:hover {
             background: rgba(255,255,255,0.05);
         }
+        /* Eclair (Ambre) */
+        input[value="Eclair"]:checked + label {
+            background: rgba(251, 191, 36, 0.15);
+            color: #FBBF24;
+            border-color: #FBBF24;
+            font-weight: 700;
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.1);
+        }
         /* Essentiel & Vitrine (Bleu Ciel / Cyan) */
         input[value="Essentiel"]:checked + label,
         input[value="Vitrine"]:checked + label {
@@ -223,17 +231,21 @@
                 
                 <div class="space-y-2 pt-2">
                     <label class="text-xs text-slate-400 uppercase font-bold ml-1">Pack Sélectionné</label>
-                    <div class="grid grid-cols-3 gap-2">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         <div class="relative">
-                            <input type="radio" name="project_pack" id="pack-essentiel" value="Essentiel" data-price="900" class="hidden pack-radio-input" onchange="updateCardSelection('Essentiel', 900)">
+                            <input type="radio" name="project_pack" id="pack-eclair" value="Eclair" data-price="690" class="hidden pack-radio-input" onchange="updateCardSelection('Eclair', 690)">
+                            <label for="pack-eclair" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Éclair</label>
+                        </div>
+                        <div class="relative">
+                            <input type="radio" name="project_pack" id="pack-essentiel" value="Essentiel" data-price="990" class="hidden pack-radio-input" onchange="updateCardSelection('Essentiel', 990)">
                             <label for="pack-essentiel" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Essentiel</label>
                         </div>
                         <div class="relative">
-                            <input type="radio" name="project_pack" id="pack-vitrine" value="Vitrine" data-price="1700" class="hidden pack-radio-input" checked onchange="updateCardSelection('Vitrine', 1700)">
+                            <input type="radio" name="project_pack" id="pack-vitrine" value="Vitrine" data-price="1790" class="hidden pack-radio-input" checked onchange="updateCardSelection('Vitrine', 1790)">
                             <label for="pack-vitrine" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Vitrine</label>
                         </div>
                         <div class="relative">
-                            <input type="radio" name="project_pack" id="pack-premium" value="Premium" data-price="2500" class="hidden pack-radio-input" onchange="updateCardSelection('Premium', 2500)">
+                            <input type="radio" name="project_pack" id="pack-premium" value="Premium" data-price="2990" class="hidden pack-radio-input" onchange="updateCardSelection('Premium', 2990)">
                             <label for="pack-premium" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Premium</label>
                         </div>
                     </div>
