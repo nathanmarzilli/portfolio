@@ -18,7 +18,100 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// ============================================================
+// ESPACE DE PARAMÉTRAGE CENTRALISÉ (PRIX & OFFRES)
+// ============================================================
+const SITE_CONFIG = {
+    // Tarifs de base (Hors promotions)
+    prices: {
+        eclair: 690,
+        essentiel: 990,
+        vitrine: 1790,
+        premium: 2990
+    },
+    // Offre de lancement
+    launchPromo: {
+        active: true,             // Passe à false pour désactiver la promo
+        discountPercent: 20,      // Le pourcentage de réduction
+        totalPacks: 9            // Le nombre de packs mis en vente
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
+	// --- INITIALISATION DYNAMIQUE DES TARIFS ET PROMOTIONS ---
+    function initPricing() {
+        const promo = SITE_CONFIG.launchPromo;
+        const isPromoValid = promo.active && promo.totalPacks > 0;
+
+        // 1. Gestion de la bannière Promo
+        const bannerContainer = document.getElementById('promo-banner-container');
+        if (bannerContainer && isPromoValid) {
+            bannerContainer.innerHTML = `
+                <div class="p-1 rounded-2xl bg-gradient-to-r from-accent-400 via-blue-500 to-purple-500 animate-gradient-x shadow-[0_0_30px_rgba(45,212,191,0.2)] mb-8">
+                    <div class="bg-dark-950 rounded-xl p-6 text-center relative overflow-hidden flex flex-col items-center">
+                        <div class="absolute top-0 right-0 p-24 bg-accent-400/10 blur-3xl rounded-full pointer-events-none"></div>
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-400/20 text-accent-400 text-xs font-bold uppercase tracking-wider mb-3">
+                            <i class="ph-bold ph-rocket-launch"></i> Opportunité Nouveaux Clients
+                        </span>
+                        <h3 class="text-xl sm:text-2xl font-display font-bold text-white mb-2">
+                            Offre de lancement : -${promo.discountPercent}% sur les créations Essentiel & Vitrine !
+                        </h3>
+                        <p class="text-slate-400 text-sm font-medium flex items-center gap-2">
+                            Pour fêter le lancement de mon activité. 
+                            <span class="text-dark-950 bg-accent-400 px-3 py-1 rounded-full animate-pulse font-bold ml-2 shadow-[0_0_15px_rgba(45,212,191,0.5)]">
+                               réservé aux ${promo.totalPacks} prochains projets
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            `;
+            bannerContainer.classList.remove('hidden');
+        } else if (bannerContainer) {
+            bannerContainer.classList.add('hidden');
+        }
+
+        // 2. Helper de calcul
+        const getPrice = (basePrice, applyDiscount) => {
+            if (applyDiscount && isPromoValid) {
+                return Math.round(basePrice * (1 - (promo.discountPercent / 100)));
+            }
+            return basePrice;
+        };
+
+        // 3. Mise à jour HTML des prix
+        const displayEclair = document.getElementById('price-eclair-display');
+        if (displayEclair) displayEclair.innerHTML = `${SITE_CONFIG.prices.eclair}€`;
+
+        const displayEssentiel = document.getElementById('price-essentiel-display');
+        if (displayEssentiel) {
+            if (isPromoValid) {
+                displayEssentiel.innerHTML = `<span class="line-through text-slate-500 text-xl mr-2">${SITE_CONFIG.prices.essentiel}€</span><span class="text-3xl font-bold text-accent-400">${getPrice(SITE_CONFIG.prices.essentiel, true)}€</span> <span class="text-sm font-normal text-slate-400">à la création</span>`;
+            } else {
+                displayEssentiel.innerHTML = `<span class="text-3xl font-bold text-accent-400">${SITE_CONFIG.prices.essentiel}€</span> <span class="text-sm font-normal text-slate-400">à la création</span>`;
+            }
+        }
+
+        const displayVitrine = document.getElementById('price-vitrine-display');
+        if (displayVitrine) {
+            if (isPromoValid) {
+                displayVitrine.innerHTML = `<span class="line-through text-slate-500 text-xl mr-2">${SITE_CONFIG.prices.vitrine}€</span><span class="text-3xl font-bold text-accent-400">${getPrice(SITE_CONFIG.prices.vitrine, true)}€</span>`;
+            } else {
+                displayVitrine.innerHTML = `<span class="text-3xl font-bold text-accent-400">${SITE_CONFIG.prices.vitrine}€</span>`;
+            }
+        }
+
+        const displayPremium = document.getElementById('price-premium-display');
+        if (displayPremium) displayPremium.innerHTML = `${SITE_CONFIG.prices.premium}€`;
+
+        // 4. Injection des attributs data-price dans le formulaire
+        document.getElementById('pack-eclair')?.setAttribute('data-price', SITE_CONFIG.prices.eclair);
+        document.getElementById('pack-essentiel')?.setAttribute('data-price', getPrice(SITE_CONFIG.prices.essentiel, true));
+        document.getElementById('pack-vitrine')?.setAttribute('data-price', getPrice(SITE_CONFIG.prices.vitrine, true));
+        document.getElementById('pack-premium')?.setAttribute('data-price', SITE_CONFIG.prices.premium);
+    }
+    
+    // Appel immédiat
+    initPricing();	
 
     // ==============================================
     // 0. UX & DESIGN ENHANCEMENTS
@@ -624,27 +717,38 @@ document.addEventListener('DOMContentLoaded', () => {
 	window.updateCardSelection = function(packName, price) {
 		currentBasePrice = price;
 
-		['Essentiel', 'Vitrine', 'Premium'].forEach(pName => {
+		['Eclair', 'Essentiel', 'Vitrine', 'Premium'].forEach(pName => {
 			let cardId = `card-${pName.toLowerCase()}`;
 			let card = document.getElementById(cardId);
 			if(card) {
 				card.classList.remove('gold-selected-card');
 				let btn = card.querySelector('.offer-btn');
 				if(btn) {
-					btn.innerHTML = '<span>Choisir</span>';
-					btn.classList.remove('bg-accent-400', 'text-dark-950', 'bg-purple-500', 'text-white', 'shadow-[0_0_20px_rgba(45,212,191,0.4)]', 'shadow-[0_0_20px_rgba(168,85,247,0.4)]');
-					btn.classList.add('border-white/10', 'text-white');
+                    // 1. Nettoyage complet des classes actives et inactives de tous les packs
+					btn.classList.remove(
+                        'bg-accent-400', 'text-dark-950', 'shadow-[0_0_20px_rgba(45,212,191,0.4)]', // Actif Vitrine/Essentiel
+                        'bg-purple-500', 'text-white', 'shadow-[0_0_20px_rgba(168,85,247,0.4)]', // Actif Premium
+                        'bg-amber-400', 'shadow-[0_0_20px_rgba(251,191,36,0.4)]', // Actif Eclair
+                        'border-white/10', 'text-white', 'hover:bg-white', 'hover:text-dark-950', 'hover:bg-purple-400', // Inactifs Standards
+                        'border-amber-400/30', 'text-amber-400', 'hover:bg-amber-400', 'hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]' // Inactif Eclair
+                    );
+
+                    // 2. Réapplication des styles INACTIFS selon le pack
 					if(pName === 'Premium') {
-						btn.classList.add('hover:bg-purple-400');
-						btn.classList.remove('hover:bg-white', 'hover:text-dark-950');
-					} else {
-						btn.classList.add('hover:bg-white', 'hover:text-dark-950');
-						btn.classList.remove('hover:bg-purple-400');
+                        btn.innerHTML = '<span>Choisir</span>';
+						btn.classList.add('border-white/10', 'text-white', 'hover:bg-purple-400');
+					} else if (pName === 'Eclair') {
+                        btn.innerHTML = '<span>Choisir l\'Éclair</span> <i class="ph-bold ph-lightning"></i>';
+                        btn.classList.add('border-amber-400/30', 'text-amber-400', 'hover:bg-amber-400', 'hover:text-dark-950', 'hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]');
+                    } else {
+                        btn.innerHTML = '<span>Choisir</span>';
+						btn.classList.add('border-white/10', 'text-white', 'hover:bg-white', 'hover:text-dark-950');
 					}
 				}
 			}
 		});
 
+        // 3. Application des styles ACTIFS au pack sélectionné
 		let targetId = `card-${packName.toLowerCase()}`;
 		const targetEl = document.getElementById(targetId);
 		if(targetEl) {
@@ -652,10 +756,15 @@ document.addEventListener('DOMContentLoaded', () => {
 			const targetBtn = targetEl.querySelector('.offer-btn');
 			if(targetBtn) {
 				targetBtn.innerHTML = '<span>Sélectionné</span> <i class="ph-bold ph-check animate-pop-in"></i>';
-				targetBtn.classList.remove('border-white/10', 'text-white', 'hover:bg-white', 'hover:text-dark-950', 'hover:bg-purple-400');
+				
+                // On retire les classes inactives qu'on vient d'ajouter lors de la boucle ci-dessus
+                targetBtn.classList.remove('border-white/10', 'text-white', 'hover:bg-white', 'hover:text-dark-950', 'hover:bg-purple-400', 'border-amber-400/30', 'text-amber-400', 'hover:bg-amber-400', 'hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]');
+
 				if (packName === 'Premium') {
 					targetBtn.classList.add('bg-purple-500', 'text-white', 'shadow-[0_0_20px_rgba(168,85,247,0.4)]');
-				} else {
+				} else if (packName === 'Eclair') {
+                    targetBtn.classList.add('bg-amber-400', 'text-dark-950', 'shadow-[0_0_20px_rgba(251,191,36,0.4)]');
+                } else {
 					targetBtn.classList.add('bg-accent-400', 'text-dark-950', 'shadow-[0_0_20px_rgba(45,212,191,0.4)]');
 				}
 			}

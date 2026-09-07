@@ -1,0 +1,104 @@
+{
+  "offerings": [
+    {
+      "id": "site-vitrine-simple",
+      "name": "Site Vitrine Simple",
+      "basePrice": 300,
+      "isPromoEligible": true,
+      "description": "Site vitrine 5-8 pages, responsive, SEO basique",
+      "icon": "ph-lightning",
+      "deliveryDays": 7,
+      "features": [
+        "5-8 pages personnalisées",
+        "Design responsive (mobile/desktop)",
+        "Formulaire de contact",
+        "SEO basique",
+        "Intégration Google Maps"
+      ],
+      "color": "#14B8A6"
+    },
+    {
+      "id": "site-vitrine-complet",
+      "name": "Site Vitrine Complet",
+      "basePrice": 500,
+      "isPromoEligible": true,
+      "description": "Site vitrine optimisé avec CMS, analytics, et support",
+      "icon": "ph-rocket",
+      "deliveryDays": 10,
+      "features": [
+        "Jusqu'à 15 pages",
+        "CMS intégré (modification facile)",
+        "Analytics Google installés",
+        "SEO avancé + sitemap XML",
+        "Blog intégré",
+        "2 mois de support inclus"
+      ],
+      "color": "#8B5CF6"
+    },
+    {
+      "id": "site-vitrine-eclair",
+      "name": "Site Vitrine Éclair",
+      "basePrice": 690,
+      "isPromoEligible": false,
+      "description": "Livraison express en 2 jours + réunion conseil",
+      "icon": "ph-fire",
+      "deliveryDays": 2,
+      "isNew": true,
+      "features": [
+        "Livraison en 2 jours calendaires",
+        "1 réunion conseil de 1h",
+        "Design premium pré-optimisé",
+        "Responsive design",
+        "Formulaire de contact avancé",
+        "1 mois de support inclus"
+      ],
+      "color": "#F59E0B"
+    },
+    {
+      "id": "site-vitrine-premium",
+      "name": "Site Premium",
+      "basePrice": 1000,
+      "isPromoEligible": false,
+      "description": "Solution complète avec e-commerce light et consulting",
+      "icon": "ph-crown",
+      "deliveryDays": 15,
+      "features": [
+        "Jusqu'à 25 pages",
+        "E-commerce light (paiement Stripe/PayPal)",
+        "CMS avancé + gestion des droits",
+        "SEO premium + stratégie de contenu",
+        "Consultation marketing (4h incluses)",
+        "Email marketing intégré",
+        "6 mois de support technique"
+      ],
+      "color": "#FBBF24"
+    }
+  ],
+  "promotions": {
+    "launchOffer": {
+      "enabled": true,
+      "name": "Offre de Lancement",
+      "description": "Profitez de tarifs spéciaux pour les nouveaux clients",
+      "maxClients": 10,
+      "discounts": {
+        "site-vitrine-simple": 17,
+        "site-vitrine-complet": 20,
+        "site-vitrine-eclair": 0,
+        "site-vitrine-premium": 0
+      },
+      "startDate": "2026-09-06",
+      "endDate": "2026-12-31"
+    }
+  },
+  "stats": {
+    "clientsServed": 0,
+    "projectsCompleted": 18,
+    "satisfactionRate": 98,
+    "yearsInBusiness": 0.5
+  },
+  "contact": {
+    "email": "nathan.marzilli@gmail.com",
+    "phone": "+33 (votre numéro)",
+    "responseTime": "Réponse sous 24h"
+  }
+}

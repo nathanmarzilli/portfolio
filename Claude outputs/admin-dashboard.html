@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard — Tarifs & Promotions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #0f172a;
+      color: #f1f5f9;
+      font-family: 'Inter', sans-serif;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 2rem;
+      margin: 0 0 30px 0;
+      color: #fff;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    .card {
+      background: #1e293b;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+      color: #2dd4bf;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 8px;
+      background: rgba(255,255,255,.05);
+      color: #f1f5f9;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #2dd4bf;
+      background: rgba(45,212,191,.08);
+    }
+    button {
+      background: #2dd4bf;
+      color: #020617;
+      border: 0;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+      width: 100%;
+    }
+    button:hover {
+      background: #14B8A6;
+    }
+    .promo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .discount-input {
+      text-align: center;
+    }
+    .discount-input input {
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-align: center;
+    }
+    .stats-box {
+      background: rgba(45,212,191,.1);
+      border: 1px solid #2dd4bf;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .stats-box .label {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .stats-box .value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #2dd4bf;
+    }
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    .alert-success {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid #22c55e;
+      color: #86efac;
+    }
+    .alert-info {
+      background: rgba(45, 212, 191, 0.1);
+      border: 1px solid #2dd4bf;
+      color: #5eead4;
+    }
+    .offering-box {
+      background: rgba(255,255,255,.05);
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      border-left: 3px solid #2dd4bf;
+    }
+    .offering-box strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #2dd4bf;
+    }
+    small {
+      display: block;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+    .export-section {
+      margin-top: 30px;
+      border-top: 1px solid rgba(255,255,255,.1);
+      padding-top: 20px;
+    }
+    .btn-secondary {
+      background: #64748b;
+    }
+    .btn-secondary:hover {
+      background: #475569;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⚙️ Admin Dashboard — Tarifs & Promotions</h1>
+
+    <div class="grid">
+      <!-- Promotion Configuration -->
+      <div class="card">
+        <div class="card-title">🎯 Offre de Lancement</div>
+
+        <div class="alert alert-info">
+          <strong>✓ Configuration centralisée</strong>
+          Tous les paramètres affectent automatiquement votre page de tarifs.
+        </div>
+
+        <div class="form-group">
+          <label>Places Disponibles</label>
+          <input type="number" id="maxClients" min="1" max="100" value="10">
+          <small>Nombre total de clients pouvant bénéficier de la réduction</small>
+        </div>
+
+        <div class="form-group">
+          <label>Places Restantes (le système gère automatiquement)</label>
+          <input type="number" id="clientsRemaining" min="0" readonly style="background: rgba(255,255,255,.03); cursor: not-allowed;">
+        </div>
+
+        <div class="form-group">
+          <label>Promotion Active ?</label>
+          <select id="promoEnabled">
+            <option value="true">✓ OUI - Afficher les réductions</option>
+            <option value="false">✗ NON - Masquer les réductions</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Date de Fin (optionnel)</label>
+          <input type="date" id="promoEndDate" value="2026-12-31">
+          <small>Après cette date, la promo disparaît automatiquement</small>
+        </div>
+
+        <button onclick="savePromoSettings()">💾 Enregistrer Paramètres Promotion</button>
+      </div>
+
+      <!-- Tarifs Offres -->
+      <div class="card">
+        <div class="card-title">💰 Tarifs des Offres</div>
+
+        <div class="alert alert-success">
+          <strong>✓ Les deux offres les moins chères bénéficient de la réduction</strong>
+          Simple (17%) et Complet (20%)
+        </div>
+
+        <div id="offeringsContainer"></div>
+
+        <button onclick="savePricing()" style="margin-top: 16px;">💾 Enregistrer Tarifs</button>
+      </div>
+
+      <!-- Réductions par Offre -->
+      <div class="card">
+        <div class="card-title">🏷️ Réductions Applicables</div>
+
+        <div class="alert alert-info">
+          <strong>Personnalisez les % de réduction</strong> pour chaque offre (seulement les éligibles)
+        </div>
+
+        <div id="discountsContainer" class="promo-grid"></div>
+
+        <button onclick="saveDiscounts()" style="margin-top: 16px;">💾 Enregistrer Réductions</button>
+      </div>
+
+      <!-- Statistiques -->
+      <div class="card">
+        <div class="card-title">📊 Statistiques Affichées</div>
+
+        <div class="stats-box">
+          <div class="label">Clients Servis</div>
+          <div class="value" id="statClientsServed">0</div>
+        </div>
+
+        <div class="form-group">
+          <input type="number" id="newClientsServed" min="0" placeholder="Nombre de clients servis">
+        </div>
+
+        <div class="stats-box">
+          <div class="label">Projets Complétés</div>
+          <div class="value" id="statProjectsCompleted">18</div>
+        </div>
+
+        <div class="form-group">
+          <input type="number" id="newProjectsCompleted" min="0" placeholder="Nombre de projets">
+        </div>
+
+        <div class="stats-box">
+          <div class="label">Satisfaction</div>
+          <div class="value" id="statSatisfaction">98%</div>
+        </div>
+
+        <div class="form-group">
+          <input type="number" id="newSatisfaction" min="0" max="100" placeholder="% satisfaction">
+        </div>
+
+        <button onclick="saveStats()">💾 Enregistrer Stats</button>
+      </div>
+    </div>
+
+    <!-- Export & Import -->
+    <div class="card export-section">
+      <div class="card-title">📤 Export / Import Configuration</div>
+
+      <div class="alert alert-info">
+        Téléchargez et partagez votre configuration, ou importez une sauvegarde.
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <button onclick="exportConfig()" class="btn-secondary">📥 Télécharger Config (JSON)</button>
+        <button onclick="importConfig()" class="btn-secondary">📤 Importer Config</button>
+      </div>
+
+      <input type="file" id="importFile" accept=".json" style="display:none;" onchange="loadImportedFile()">
+
+      <div style="margin-top: 16px; padding: 12px; background: rgba(255,255,255,.03); border-radius: 8px;">
+        <small style="color: #94a3b8;">
+          <strong>👉 Intégration :</strong> Votre page de tarifs charge automatiquement cette config depuis le localStorage.
+          Toute modification ici est visible immédiatement sur le site.
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CONFIG_KEY = 'websitePricingConfig';
+
+    // Charger la config au démarrage
+    function loadConfig() {
+      let config = localStorage.getItem(CONFIG_KEY);
+      if (!config) {
+        // Config par défaut
+        config = {
+          offerings: [
+            { id: 'site-vitrine-simple', name: 'Site Vitrine Simple', basePrice: 300, isPromoEligible: true },
+            { id: 'site-vitrine-complet', name: 'Site Vitrine Complet', basePrice: 500, isPromoEligible: true },
+            { id: 'site-vitrine-eclair', name: 'Site Vitrine Éclair', basePrice: 690, isPromoEligible: false },
+            { id: 'site-vitrine-premium', name: 'Site Premium', basePrice: 1000, isPromoEligible: false }
+          ],
+          promotions: {
+            launchOffer: {
+              enabled: true,
+              maxClients: 10,
+              clientsUsed: 0,
+              discounts: {
+                'site-vitrine-simple': 17,
+                'site-vitrine-complet': 20,
+                'site-vitrine-eclair': 0,
+                'site-vitrine-premium': 0
+              },
+              endDate: '2026-12-31'
+            }
+          },
+          stats: {
+            clientsServed: 0,
+            projectsCompleted: 18,
+            satisfactionRate: 98
+          }
+        };
+        localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+      } else {
+        config = JSON.parse(config);
+      }
+      return config;
+    }
+
+    function renderUI() {
+      const config = loadConfig();
+      const promo = config.promotions.launchOffer;
+
+      // Offres
+      const offeringsHTML = config.offerings.map(o => `
+        <div class="offering-box">
+          <strong>${o.name}</strong>
+          <small>ID: ${o.id}</small>
+          <div class="form-group">
+            <label>Prix (€)</label>
+            <input type="number" class="offering-price" data-id="${o.id}" value="${o.basePrice}" min="0">
+          </div>
+          <div style="font-size: 0.8rem; color: #94a3b8;">
+            ${o.isPromoEligible ? '✓ Éligible à la réduction' : '✗ Pas de réduction (Premium)'}
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('offeringsContainer').innerHTML = offeringsHTML;
+
+      // Réductions
+      const discountsHTML = Object.entries(promo.discounts).map(([id, discount]) => {
+        const offering = config.offerings.find(o => o.id === id);
+        return offering && offering.isPromoEligible ? `
+          <div class="discount-input">
+            <label>${offering.name}</label>
+            <input type="number" class="discount-value" data-id="${id}" value="${discount}" min="0" max="50">
+            <small>%</small>
+          </div>
+        ` : '';
+      }).join('');
+      document.getElementById('discountsContainer').innerHTML = discountsHTML;
+
+      // Stats
+      document.getElementById('statClientsServed').textContent = config.stats.clientsServed;
+      document.getElementById('newClientsServed').value = config.stats.clientsServed;
+      document.getElementById('statProjectsCompleted').textContent = config.stats.projectsCompleted;
+      document.getElementById('newProjectsCompleted').value = config.stats.projectsCompleted;
+      document.getElementById('statSatisfaction').textContent = config.stats.satisfactionRate + '%';
+      document.getElementById('newSatisfaction').value = config.stats.satisfactionRate;
+
+      // Promo
+      document.getElementById('maxClients').value = promo.maxClients;
+      document.getElementById('clientsRemaining').value = promo.maxClients - promo.clientsUsed;
+      document.getElementById('promoEnabled').value = promo.enabled ? 'true' : 'false';
+      document.getElementById('promoEndDate').value = promo.endDate;
+    }
+
+    function savePromoSettings() {
+      const config = loadConfig();
+      const promo = config.promotions.launchOffer;
+
+      promo.maxClients = parseInt(document.getElementById('maxClients').value);
+      promo.enabled = document.getElementById('promoEnabled').value === 'true';
+      promo.endDate = document.getElementById('promoEndDate').value;
+
+      localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+      alert('✓ Paramètres de promotion enregistrés !');
+      renderUI();
+    }
+
+    function savePricing() {
+      const config = loadConfig();
+      document.querySelectorAll('.offering-price').forEach(input => {
+        const id = input.dataset.id;
+        const offering = config.offerings.find(o => o.id === id);
+        if (offering) offering.basePrice = parseFloat(input.value);
+      });
+      localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+      alert('✓ Tarifs enregistrés !');
+    }
+
+    function saveDiscounts() {
+      const config = loadConfig();
+      const promo = config.promotions.launchOffer;
+
+      document.querySelectorAll('.discount-value').forEach(input => {
+        const id = input.dataset.id;
+        promo.discounts[id] = parseInt(input.value);
+      });
+
+      localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+      alert('✓ Réductions enregistrées !');
+    }
+
+    function saveStats() {
+      const config = loadConfig();
+      config.stats.clientsServed = parseInt(document.getElementById('newClientsServed').value);
+      config.stats.projectsCompleted = parseInt(document.getElementById('newProjectsCompleted').value);
+      config.stats.satisfactionRate = parseInt(document.getElementById('newSatisfaction').value);
+
+      localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+      alert('✓ Statistiques enregistrées !');
+      renderUI();
+    }
+
+    function exportConfig() {
+      const config = loadConfig();
+      const json = JSON.stringify(config, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `pricing-config-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importConfig() {
+      document.getElementById('importFile').click();
+    }
+
+    function loadImportedFile() {
+      const file = document.getElementById('importFile').files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const config = JSON.parse(e.target.result);
+          localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+          alert('✓ Configuration importée avec succès !');
+          renderUI();
+        } catch {
+          alert('✗ Erreur : fichier JSON invalide');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Init
+    renderUI();
+  </script>
+</body>
+</html>

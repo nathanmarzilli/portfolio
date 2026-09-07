@@ -1,0 +1,391 @@
+<!--
+PRICING COMPONENT v1.0
+À intégrer dans votre page de tarifs (section <section id="pricing">)
+Charge automatiquement depuis le dashboard admin via localStorage
+-->
+
+<section id="pricing" style="padding: 60px 0; background: linear-gradient(135deg, rgba(45,212,191,.08) 0%, rgba(139,92,246,.08) 100%);">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">🚀 OFFRE DE LANCEMENT</div>
+      <h2>Tarifs Transparents pour Artisans</h2>
+      <p>Profitez de réductions jusqu'à 20% si vous êtes parmi les 10 premiers clients. Une opportunité à ne pas manquer pour démarrer votre présence en ligne.</p>
+    </div>
+
+    <!-- Alerte Offre Limitée -->
+    <div id="promoAlert" style="
+      background: linear-gradient(135deg, rgba(45,212,191,.15) 0%, rgba(139,92,246,.15) 100%);
+      border: 1px solid rgba(45,212,191,.3);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 40px;
+      display: none;
+    ">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+        <span style="font-size: 1.4rem;">⏰</span>
+        <span style="font-weight: 700; color: #2dd4bf;">Offre limitée aux 10 premiers clients</span>
+      </div>
+      <div style="color: #cbd5e1; font-size: 0.9rem;">
+        <span id="clientsRemainingText">9 places restantes</span> — Cette réduction expire le <span id="promoEndDateText">31 décembre 2026</span>
+      </div>
+    </div>
+
+    <!-- Grille de Tarification -->
+    <div id="pricingGrid" style="
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    "></div>
+  </div>
+</section>
+
+<style>
+  .pricing-card {
+    background: linear-gradient(135deg, rgba(30,41,59,.6) 0%, rgba(15,23,42,.6) 100%);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 16px;
+    padding: 32px 24px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+  }
+
+  .pricing-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(45,212,191,.3);
+    box-shadow: 0 12px 48px rgba(45,212,191,.1);
+  }
+
+  .pricing-card.featured {
+    border: 2px solid #2dd4bf;
+    box-shadow: 0 0 32px rgba(45,212,191,.2);
+  }
+
+  .pricing-card.featured::before {
+    content: "POPULAIRE";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2dd4bf;
+    color: #020617;
+    padding: 4px 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    border-radius: 0 0 8px 8px;
+  }
+
+  .pricing-card.is-new::after {
+    content: "NOUVEAU";
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: linear-gradient(135deg, #F59E0B, #F97316);
+    color: #fff;
+    padding: 4px 10px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    border-radius: 4px;
+  }
+
+  .pricing-icon {
+    font-size: 2.4rem;
+    margin-bottom: 12px;
+    height: 48px;
+  }
+
+  .pricing-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 8px 0;
+  }
+
+  .pricing-subtitle {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin: 0 0 20px 0;
+    line-height: 1.4;
+  }
+
+  .pricing-value {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  .pricing-price {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .pricing-currency {
+    font-size: 1.2rem;
+    color: #cbd5e1;
+  }
+
+  .pricing-period {
+    font-size: 0.85rem;
+    color: #94a3b8;
+  }
+
+  .pricing-discount {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid #22c55e;
+    color: #86efac;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: inline-block;
+  }
+
+  .pricing-original {
+    text-decoration: line-through;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    margin-left: 8px;
+  }
+
+  .pricing-features {
+    flex: 1;
+    margin-bottom: 24px;
+  }
+
+  .pricing-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    color: #cbd5e1;
+    line-height: 1.4;
+  }
+
+  .pricing-feature::before {
+    content: "✓";
+    flex-shrink: 0;
+    color: #22c55e;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+
+  .pricing-delivery {
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    color: #c4b5fd;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pricing-delivery::before {
+    content: "⚡";
+  }
+
+  .pricing-cta {
+    background: #2dd4bf;
+    color: #020617;
+    border: 0;
+    border-radius: 8px;
+    padding: 14px 20px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+  }
+
+  .pricing-cta:hover {
+    background: #14B8A6;
+    transform: scale(1.02);
+  }
+
+  .pricing-cta.secondary {
+    background: rgba(139, 92, 246, 0.2);
+    color: #c4b5fd;
+    border: 1px solid rgba(139, 92, 246, 0.4);
+  }
+
+  .pricing-cta.secondary:hover {
+    background: rgba(139, 92, 246, 0.3);
+  }
+
+  @media (max-width: 768px) {
+    .pricing-card {
+      padding: 24px 20px;
+    }
+
+    .pricing-price {
+      font-size: 2.2rem;
+    }
+  }
+</style>
+
+<script>
+  const PRICING_CONFIG_KEY = 'websitePricingConfig';
+
+  function loadPricingConfig() {
+    let config = localStorage.getItem(PRICING_CONFIG_KEY);
+    if (!config) {
+      // Configuration par défaut si pas de admin dashboard
+      config = {
+        offerings: [
+          {
+            id: 'site-vitrine-simple',
+            name: 'Site Vitrine Simple',
+            basePrice: 300,
+            isPromoEligible: true,
+            description: 'Site vitrine 5-8 pages, responsive, SEO basique',
+            icon: '⚡',
+            deliveryDays: 7,
+            features: ['5-8 pages personnalisées', 'Design responsive', 'Formulaire contact', 'SEO basique', 'Google Maps']
+          },
+          {
+            id: 'site-vitrine-complet',
+            name: 'Site Vitrine Complet',
+            basePrice: 500,
+            isPromoEligible: true,
+            description: 'Site vitrine optimisé avec CMS, analytics et support',
+            icon: '🚀',
+            deliveryDays: 10,
+            features: ['Jusqu\'à 15 pages', 'CMS intégré', 'Analytics', 'SEO avancé', 'Blog', '2 mois support']
+          },
+          {
+            id: 'site-vitrine-eclair',
+            name: 'Site Vitrine Éclair',
+            basePrice: 690,
+            isPromoEligible: false,
+            description: 'Livraison express en 2 jours + réunion conseil',
+            icon: '🔥',
+            deliveryDays: 2,
+            isNew: true,
+            features: ['Livraison en 2 jours', 'Réunion conseil 1h', 'Design premium', 'Responsive', 'Formulaire avancé', '1 mois support']
+          },
+          {
+            id: 'site-vitrine-premium',
+            name: 'Site Premium',
+            basePrice: 1000,
+            isPromoEligible: false,
+            description: 'Solution complète avec e-commerce et consulting',
+            icon: '👑',
+            deliveryDays: 15,
+            features: ['Jusqu\'à 25 pages', 'E-commerce light', 'CMS avancé', 'SEO premium', 'Consulting 4h', 'Email marketing', '6 mois support']
+          }
+        ],
+        promotions: {
+          launchOffer: {
+            enabled: true,
+            maxClients: 10,
+            clientsUsed: 1,
+            discounts: {
+              'site-vitrine-simple': 17,
+              'site-vitrine-complet': 20,
+              'site-vitrine-eclair': 0,
+              'site-vitrine-premium': 0
+            },
+            endDate: '2026-12-31'
+          }
+        }
+      };
+    } else {
+      config = JSON.parse(config);
+    }
+    return config;
+  }
+
+  function renderPricingCards() {
+    const config = loadPricingConfig();
+    const promo = config.promotions.launchOffer;
+    const clientsRemaining = Math.max(0, promo.maxClients - promo.clientsUsed);
+
+    // Afficher l'alerte si la promo est active
+    const promoAlert = document.getElementById('promoAlert');
+    if (promo.enabled && clientsRemaining > 0) {
+      promoAlert.style.display = 'block';
+      document.getElementById('clientsRemainingText').textContent =
+        clientsRemaining === 1
+          ? 'Dernière place !'
+          : `${clientsRemaining} place${clientsRemaining > 1 ? 's' : ''} restante${clientsRemaining > 1 ? 's' : ''}`;
+      document.getElementById('promoEndDateText').textContent = new Date(promo.endDate).toLocaleDateString('fr-FR', { month: 'long', day: 'numeric', year: 'numeric' });
+    } else {
+      promoAlert.style.display = 'none';
+    }
+
+    // Rendre les cartes
+    const grid = document.getElementById('pricingGrid');
+    grid.innerHTML = config.offerings.map((offering, idx) => {
+      const discount = promo.enabled && offering.isPromoEligible ? promo.discounts[offering.id] : 0;
+      const discountedPrice = discount > 0 ? Math.round(offering.basePrice * (1 - discount / 100)) : offering.basePrice;
+      const isFeatured = idx === 1; // L'offre "Complet" est la plus populaire
+
+      return `
+        <div class="pricing-card ${isFeatured ? 'featured' : ''} ${offering.isNew ? 'is-new' : ''}">
+          <div class="pricing-icon">${offering.icon}</div>
+          <h3 class="pricing-title">${offering.name}</h3>
+          <p class="pricing-subtitle">${offering.description}</p>
+
+          ${offering.deliveryDays === 2 ? `<div class="pricing-delivery">Livraison en ${offering.deliveryDays} jours</div>` : ''}
+
+          <div class="pricing-value">
+            <span class="pricing-currency">€</span>
+            <span class="pricing-price">${discountedPrice}</span>
+            ${discount > 0 ? `<span class="pricing-original">~${offering.basePrice}€</span>` : ''}
+          </div>
+
+          ${discount > 0 ? `<div class="pricing-discount">💰 -${discount}% Offre de lancement</div>` : ''}
+
+          <div class="pricing-features">
+            ${offering.features.map(f => `<div class="pricing-feature">${f}</div>`).join('')}
+          </div>
+
+          <button class="pricing-cta ${!isFeatured ? 'secondary' : ''}" onclick="handlePricingCTA('${offering.id}', ${discountedPrice})">
+            Demander un devis
+          </button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function handlePricingCTA(offeringId, price) {
+    const config = loadPricingConfig();
+    const offering = config.offerings.find(o => o.id === offeringId);
+    const promo = config.promotions.launchOffer;
+
+    // Vérifier si la promo s'applique
+    const hasPromo = promo.enabled && offering.isPromoEligible && (promo.maxClients - promo.clientsUsed) > 0;
+
+    // Créer le message
+    let message = `Bonjour, je suis intéressé par l'offre "${offering.name}" à ${price}€`;
+    if (hasPromo) {
+      message += ` (avec la réduction de lancement)`;
+      // Incrémenter le compteur
+      promo.clientsUsed++;
+      localStorage.setItem(PRICING_CONFIG_KEY, JSON.stringify(config));
+    }
+    message += `. Pouvez-vous me faire un devis ?`;
+
+    // Ouvrir l'email (vous pouvez aussi rediriger vers un formulaire)
+    window.location.href = `mailto:nathan.marzilli@gmail.com?subject=Demande de devis - ${offering.name}&body=${encodeURIComponent(message)}`;
+
+    // Re-render pour mettre à jour le comptage
+    setTimeout(renderPricingCards, 500);
+  }
+
+  // Render au chargement
+  document.addEventListener('DOMContentLoaded', renderPricingCards);
+  // Écouter les changements du localStorage (mis à jour par le dashboard)
+  window.addEventListener('storage', renderPricingCards);
+</script>

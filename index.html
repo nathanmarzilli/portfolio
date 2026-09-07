@@ -153,6 +153,10 @@
         }
 
         /* Couleurs spécifiques quand sélectionné dans le formulaire */
+		.pack-radio-input[value="Eclair"]:checked + .pack-radio-label {
+            background-color: #FBBF24; color: #020617; border-color: #FBBF24;
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+        }
         .pack-radio-input[value="Essentiel"]:checked + .pack-radio-label {
             background-color: #2DD4BF; color: #020617; border-color: #2DD4BF;
             box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
@@ -1384,115 +1388,175 @@
 				</div>
 			</div>
 
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+			<!-- Conteneur pour la bannière de promotion générée par JS -->
+			<div id="promo-banner-container" class="hidden"></div>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+    
+			<!-- 1. OFFRE ÉCLAIR (NOUVEAU) -->
+			<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover border-amber-400/20 bg-gradient-to-br from-amber-400/5 to-transparent relative overflow-visible pricing-card transition-all duration-300" id="card-eclair">
 				
-				<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-essentiel">
-					<h3 class="text-xl font-display font-bold text-white mb-2">L'Essentiel & Suivi</h3>
+				<!-- Symbole Éclair de fond enfermé dans un conteneur pour ne pas couper l'étiquette -->
+				<div class="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
+					<i class="ph-fill ph-lightning text-8xl text-amber-400/5 absolute -top-4 -right-4 transform rotate-12"></i>
+				</div>
+				
+				<h3 class="text-xl font-display font-bold text-white mb-2 flex items-center gap-2 relative z-10">
+					<i class="ph-fill ph-lightning text-amber-400 text-2xl drop-shadow-[0_0_10px_rgba(251,191,36,0.6)]"></i>
+					Vitrine Éclair
+				</h3>
+				
+				<div class="flex flex-col mb-6 relative z-10">
+					<span class="text-3xl font-bold text-amber-400" id="price-eclair-display">690€</span>
+					<span class="text-[10px] text-amber-400/80 mt-2 flex items-center gap-1.5 font-bold tracking-wide uppercase">
+						<i class="ph-bold ph-timer text-sm"></i> Livraison sous 48h chrono
+					</span>
+				</div>
+
+				<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow relative z-10">
+					<!-- Badge de mise en avant -->
+					<li class="flex items-center gap-2 font-bold text-white bg-amber-400/10 border border-amber-400/20 p-2.5 rounded-xl -ml-1 mb-4 shadow-inner">
+						<i class="ph-bold ph-rocket-launch text-amber-400 text-lg"></i> 
+						Le tremplin parfait pour débuter son activité
+					</li>
 					
-					<div class="flex flex-col mb-6">
-						<span class="text-3xl font-bold text-accent-400">990€ <span class="text-sm font-normal text-slate-400">à la création</span></span>
-						<div class="flex items-center gap-2 mt-1 flex-wrap">
-							<span class="text-sm font-bold text-white">+ Pack Sérénité</span>
-							<span class="text-[10px] font-bold text-dark-950 bg-accent-400 px-2 py-0.5 rounded text-center">49.90€ / MOIS</span>
-						</div>
-						<span class="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
-							<i class="ph-bold ph-lock-simple"></i> Engagement 12 mois minimum
+					<li class="flex items-start gap-2"><i class="ph-bold ph-check text-amber-400 mt-0.5"></i> <span>Réunion de cadrage (on va à l'essentiel)</span></li>
+					<li class="flex items-start gap-2"><i class="ph-bold ph-check text-amber-400 mt-0.5"></i> <span>Design pro clé en main & sans compromis</span></li>
+					<li class="flex items-start gap-2"><i class="ph-bold ph-check text-amber-400 mt-0.5"></i> <span>Formulaire de contact & Bouton d'appel direct</span></li>
+					<li class="flex items-start gap-2"><i class="ph-bold ph-check text-amber-400 mt-0.5"></i> <span>Structure technique saine pour Google</span></li>
+					
+					<li class="flex items-center gap-2 cursor-pointer group mt-2" onclick="toggleHosting(true)">
+						<i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-amber-400"></i>
+						<span class="text-slate-200">
+							Hébergement OVH<br>
+							<strong class="text-amber-400 text-xs hover:underline">
+								~22€/an (Détails)
+							</strong>
+							<span class="block text-xs text-slate-400">
+								1ère année offerte
+							</span>
 						</span>
-					</div>
-
-					<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
-						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site One-Page personnalisé</li>
-						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne adapté à votre activité</li>
-						
-						<li class="flex items-center gap-2 font-bold text-white bg-white/5 p-1 rounded pr-2 -ml-1">
-							<i class="ph-bold ph-shield-check text-accent-400 pl-1"></i> Maintenance & Mises à jour incluses
-						</li>
-						<li class="flex items-center gap-2 font-bold text-white bg-white/5 p-1 rounded pr-2 -ml-1">
-							<i class="ph-bold ph-life-buoy text-accent-400 pl-1"></i> Assistance prioritaire en cas de panne
-						</li>
-
-						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Optimisation mobile & performance</li>
-						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne clé en main</li>
-						<li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
-							<i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-accent-400"></i>
-							<span class="text-slate-200">
-								Hébergement OVH<br>
-								<strong class="text-accent-400 text-xs hover:underline">
-									~22€/an (Détails)
-								</strong>
-								<span class="block text-xs text-slate-400">
-									1ère année offerte
-								</span>
-							</span>
-						</li>
-					</ul>
-					<button onclick="selectOffer(this, 'Essentiel', 990)" class="offer-btn w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-all font-medium relative z-10 flex items-center justify-center gap-2">
-						<span>Choisir</span>
-					</button>
-				</div>
-
-				<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover border-accent-400/30 bg-accent-400/5 relative overflow-visible pricing-card transition-all duration-300 gold-selected-card" id="card-vitrine">
-					<div class="absolute top-4 right-4 text-xs font-bold text-accent-400 bg-accent-400/10 px-2 py-1 rounded tag-populaire">POPULAIRE</div>
-					<h3 class="text-xl font-display font-bold text-white mb-2">Vitrine Artisan</h3>
-					<div class="text-3xl font-bold text-accent-400 mb-6">1 790€</div>
-					<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
-						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site jusqu’à 5 pages personnalisé</li>
-						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Option Site Multilingue incluse</li>
-						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Galerie de réalisations pour mettre en valeur vos projets</li>
-						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Formulaire de contact intégré</li>
-						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne et responsive mobile & tablette</li>
-						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne et configuration technique</li>
-						<li class="flex items-center gap-2 text-slate-500 italic">
-							<i class="ph-bold ph-shield-plus"></i> Pack Sérénité en option (engagement 12 mois)
-						</li>
-						<li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
-								<i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-accent-400"></i>
-							<span class="text-slate-200">
-								Hébergement OVH<br>
-								<strong class="text-accent-400 text-xs hover:underline">
-									~22€/an (Détails)
-								</strong>
-								<span class="block text-xs text-slate-400">
-									1ère année offerte
-								</span>
-							</span>
-						</li>
-					</ul>
-					<button onclick="selectOffer(this, 'Vitrine', 1790)" class="offer-btn w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10 flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(45,212,191,0.4)] transition-all">
-						<span>Sélectionné</span> <i class="ph-bold ph-check"></i>
-					</button>
-				</div>
-
-				<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-premium">
-					<h3 class="text-xl font-display font-bold text-white mb-2">Premium</h3>
-					<div class="text-3xl font-bold text-purple-400 mb-6">2 990€</div>
-					<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
-						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Design 100% sur-mesure adapté à votre identité</li>
-						<li class="flex items-center gap-2 font-bold text-white bg-white/5 p-1 rounded pr-2 -ml-1">
-							<i class="ph-bold ph-pencil-simple-line text-purple-400 pl-1"></i> Blog en autonomie : rédigez et publiez vos articles vous-même
-						</li>
-						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Pagination automatique de vos articles (organisation claire dès que le blog grandit)</li>
-						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Intégration des avis Google pour renforcer la confiance</li>
-						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Statistiques & suivi de performance pour mesurer vos résultats</li>
-						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Site responsive mobile & tablette</li>
-						<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Mise en ligne et configuration technique</li>
-						<li class="flex items-center gap-2 text-slate-500 italic">
-							<i class="ph-bold ph-shield-plus"></i> Pack Sérénité en option (engagement 12 mois)
-						</li>
-						<li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
-							<i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-purple-400"></i>
-							<span class="text-slate-200">
-								Hébergement OVH<br>
-								<strong class="text-purple-400 text-xs hover:underline">~55€/an (Détails)</strong>
-								<span class="block text-xs text-slate-400">1ère année offerte</span>
-							</span>
-						</li>
-					</ul>
-					<button onclick="selectOffer(this, 'Premium', 2990)" class="offer-btn w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10 flex items-center justify-center gap-2">
-						<span>Choisir</span>
-					</button>
-				</div>
+					</li>
+				</ul>
+				<button onclick="selectOffer(this, 'Eclair', document.getElementById('pack-eclair').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-amber-400/30 text-center text-amber-400 hover:bg-amber-400 hover:text-dark-950 hover:shadow-[0_0_20px_rgba(251,191,36,0.3)] transition-all font-bold relative z-10 flex items-center justify-center gap-2">
+					<span>Choisir l'Éclair</span> <i class="ph-bold ph-lightning"></i>
+				</button>
 			</div>
+
+			<!-- 2. OFFRE ESSENTIEL -->
+			<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-essentiel">
+				<h3 class="text-xl font-display font-bold text-white mb-2">L'Essentiel & Suivi</h3>
+				
+				<div class="flex flex-col mb-6">
+					<div id="price-essentiel-display" class="mb-1"></div>
+					<div class="flex items-center gap-2 mt-1 flex-wrap">
+						<span class="text-sm font-bold text-white">+ Pack Sérénité</span>
+						<span class="text-[10px] font-bold text-dark-950 bg-accent-400 px-2 py-0.5 rounded text-center">49.90€ / MOIS</span>
+					</div>
+					<span class="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+						<i class="ph-bold ph-lock-simple"></i> Engagement 12 mois minimum
+					</span>
+				</div>
+
+				<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
+					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site One-Page personnalisé</li>
+					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne adapté à votre activité</li>
+					
+					<li class="flex items-center gap-2 font-bold text-white bg-white/5 p-1 rounded pr-2 -ml-1">
+						<i class="ph-bold ph-shield-check text-accent-400 pl-1"></i> Maintenance & Mises à jour incluses
+					</li>
+					<li class="flex items-center gap-2 font-bold text-white bg-white/5 p-1 rounded pr-2 -ml-1">
+						<i class="ph-bold ph-life-buoy text-accent-400 pl-1"></i> Assistance prioritaire en cas de panne
+					</li>
+
+					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Optimisation mobile & performance</li>
+					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne clé en main</li>
+					<li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
+						<i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-accent-400"></i>
+						<span class="text-slate-200">
+							Hébergement OVH<br>
+							<strong class="text-accent-400 text-xs hover:underline">
+								~22€/an (Détails)
+							</strong>
+							<span class="block text-xs text-slate-400">
+								1ère année offerte
+							</span>
+						</span>
+					</li>
+				</ul>
+				<button onclick="selectOffer(this, 'Essentiel', document.getElementById('pack-essentiel').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-all font-medium relative z-10 flex items-center justify-center gap-2">
+					<span>Choisir</span>
+				</button>
+			</div>
+
+			<!-- 3. OFFRE VITRINE (POPULAIRE) -->
+			<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover border-accent-400/30 bg-accent-400/5 relative overflow-visible pricing-card transition-all duration-300 gold-selected-card" id="card-vitrine">
+				<div class="absolute top-4 right-4 text-xs font-bold text-accent-400 bg-accent-400/10 px-2 py-1 rounded tag-populaire">POPULAIRE</div>
+				<h3 class="text-xl font-display font-bold text-white mb-2">Vitrine Artisan</h3>
+				
+				<div id="price-vitrine-display" class="mb-6"></div>
+
+				<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
+					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site jusqu’à 5 pages personnalisé</li>
+					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Option Site Multilingue incluse</li>
+					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Galerie de réalisations pour mettre en valeur vos projets</li>
+					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Formulaire de contact intégré</li>
+					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne et responsive mobile & tablette</li>
+					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne et configuration technique</li>
+					<li class="flex items-center gap-2 text-slate-500 italic">
+						<i class="ph-bold ph-shield-plus"></i> Pack Sérénité en option (engagement 12 mois)
+					</li>
+					<li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
+							<i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-accent-400"></i>
+						<span class="text-slate-200">
+							Hébergement OVH<br>
+							<strong class="text-accent-400 text-xs hover:underline">
+								~22€/an (Détails)
+							</strong>
+							<span class="block text-xs text-slate-400">
+								1ère année offerte
+							</span>
+						</span>
+					</li>
+				</ul>
+				<button onclick="selectOffer(this, 'Vitrine', document.getElementById('pack-vitrine').dataset.price)" class="offer-btn w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10 flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(45,212,191,0.4)] transition-all">
+					<span>Sélectionné</span> <i class="ph-bold ph-check"></i>
+				</button>
+			</div>
+
+			<!-- 4. OFFRE PREMIUM -->
+			<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-premium">
+				<h3 class="text-xl font-display font-bold text-white mb-2">Premium</h3>
+				
+				<div id="price-premium-display" class="text-3xl font-bold text-purple-400 mb-6"></div>
+
+				<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
+					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Design 100% sur-mesure adapté à votre identité</li>
+					<li class="flex items-center gap-2 font-bold text-white bg-white/5 p-1 rounded pr-2 -ml-1">
+						<i class="ph-bold ph-pencil-simple-line text-purple-400 pl-1"></i> Blog en autonomie : rédigez et publiez vos articles vous-même
+					</li>
+					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Pagination automatique de vos articles (organisation claire dès que le blog grandit)</li>
+					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Intégration des avis Google pour renforcer la confiance</li>
+					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Statistiques & suivi de performance pour mesurer vos résultats</li>
+					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Site responsive mobile & tablette</li>
+					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Mise en ligne et configuration technique</li>
+					<li class="flex items-center gap-2 text-slate-500 italic">
+						<i class="ph-bold ph-shield-plus"></i> Pack Sérénité en option (engagement 12 mois)
+					</li>
+					<li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
+						<i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-purple-400"></i>
+						<span class="text-slate-200">
+							Hébergement OVH<br>
+							<strong class="text-purple-400 text-xs hover:underline">~55€/an (Détails)</strong>
+							<span class="block text-xs text-slate-400">1ère année offerte</span>
+						</span>
+					</li>
+				</ul>
+				<button onclick="selectOffer(this, 'Premium', document.getElementById('pack-premium').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10 flex items-center justify-center gap-2">
+					<span>Choisir</span>
+				</button>
+			</div>
+		</div>
 			
 			<div class="mb-16 reveal">
 				<div class="glass-card p-6 md:p-8 rounded-3xl border border-white/10 bg-gradient-to-br from-dark-900 to-dark-950 relative overflow-hidden">
@@ -2240,17 +2304,21 @@
 
 							<div id="pack-selection-block" class="space-y-2 pt-2">
 								<label class="text-xs text-slate-400 uppercase font-bold ml-1">Pack Sélectionné</label>
-								<div class="grid grid-cols-3 gap-2">
+								<div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
 									<div class="relative">
-										<input type="radio" name="project_pack" id="pack-essentiel" value="Essentiel" data-price="990" class="hidden pack-radio-input" onchange="updateCardSelection('Essentiel', 990)">
+										<input type="radio" name="project_pack" id="pack-eclair" value="Eclair" class="hidden pack-radio-input" onchange="updateCardSelection('Eclair', parseInt(this.getAttribute('data-price')))">
+										<label for="pack-eclair" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Éclair</label>
+									</div>
+									<div class="relative">
+										<input type="radio" name="project_pack" id="pack-essentiel" value="Essentiel" class="hidden pack-radio-input" onchange="updateCardSelection('Essentiel', parseInt(this.getAttribute('data-price')))">
 										<label for="pack-essentiel" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Essentiel</label>
 									</div>
 									<div class="relative">
-										<input type="radio" name="project_pack" id="pack-vitrine" value="Vitrine" data-price="1790" class="hidden pack-radio-input" checked onchange="updateCardSelection('Vitrine', 1790)">
+										<input type="radio" name="project_pack" id="pack-vitrine" value="Vitrine" class="hidden pack-radio-input" checked onchange="updateCardSelection('Vitrine', parseInt(this.getAttribute('data-price')))">
 										<label for="pack-vitrine" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Vitrine</label>
 									</div>
 									<div class="relative">
-										<input type="radio" name="project_pack" id="pack-premium" value="Premium" data-price="2990" class="hidden pack-radio-input" onchange="updateCardSelection('Premium', 2990)">
+										<input type="radio" name="project_pack" id="pack-premium" value="Premium" class="hidden pack-radio-input" onchange="updateCardSelection('Premium', parseInt(this.getAttribute('data-price')))">
 										<label for="pack-premium" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Premium</label>
 									</div>
 								</div>
