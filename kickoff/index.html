@@ -226,7 +226,7 @@
 
         <form action="https://formspree.io/f/mwvbqozd" method="POST" id="projectForm" class="space-y-6 fade-in" style="animation-delay: 0.2s;">
 
-            <div class="glass-card p-6 border-accent-400/30 relative overflow-hidden">
+            <div id="pack-section" class="glass-card p-6 border-accent-400/30 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-accent-400/10 blur-2xl rounded-full"></div>
                 
                 <div class="space-y-2 pt-2">
@@ -251,6 +251,26 @@
                     </div>
                 </div>
             </div>
+			
+			<!-- NOUVEAU BLOC : Affichage pour "J'ai déjà un site / Sérénité" -->
+			<div id="existing-site-section" class="glass-card p-6 border-blue-500/30 relative overflow-hidden hidden">
+				<div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 blur-2xl rounded-full"></div>
+				<div class="space-y-2 pt-2 relative z-10">
+					<label class="text-xs text-blue-400 uppercase font-bold ml-1">Type de demande</label>
+					<div class="text-white font-medium text-sm p-4 bg-dark-950 rounded-xl border border-white/10">
+						<div class="flex items-center gap-2 mb-2 font-bold text-base">
+							<i class="ph-bold ph-shield-check text-blue-400"></i> J'ai déjà un site
+						</div>
+						<ul id="existing-site-details" class="space-y-2 text-slate-400 text-sm list-disc pl-5">
+							<!-- Les détails seront injectés ici par JS -->
+						</ul>
+					</div>
+				</div>
+				<!-- Champs cachés pour la génération de l'email -->
+				<input type="hidden" id="hidden-request-type" value="newsite">
+				<input type="hidden" id="hidden-intervention" value="">
+				<input type="hidden" id="hidden-serenite" value="">
+			</div>
 
             <div class="glass-card p-6 lg:p-8">
                 <div class="section-title mt-0"><i class="ph-duotone ph-identification-card"></i> 1. Informations Générales</div>

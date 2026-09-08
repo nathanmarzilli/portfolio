@@ -1186,12 +1186,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     // MODIFICATION ICI : AU LIEU DE PARAMS URL -> LOCALSTORAGE
                     // -----------------------------------------------------------
                     const kickoffData = {
-                        pack: selectedPack,
-                        name: `${firstname} ${name}`,
-                        email: email,
-                        date: dateStr + ' à ' + timeInput.value,
-                        documents: docsStr
-                    };
+						pack: selectedPack,
+						name: `${firstname} ${name}`,
+						email: email,
+						date: dateStr + ' à ' + timeInput.value,
+						documents: docsStr,
+						// Nouveaux champs pour gérer "J'ai déjà un site" et les interventions
+						requestType: requestType, 
+						intervention: selectedIntervention ? selectedIntervention.type : null,
+						serenite: serenityTier
+					};
                     
                     // Sauvegarde dans le stockage local du navigateur
                     localStorage.setItem('kickoffData', JSON.stringify(kickoffData));
