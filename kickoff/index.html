@@ -285,7 +285,7 @@
                     </div>
                     <div>
                         <label class="label-premium">Site actuel (si existant)</label>
-                        <input type="url" name="current_website" id="currentUrl" placeholder="https://..." class="input-premium">
+                        <input type="text" name="current_website" id="currentUrl" placeholder="Ex: www.monsite.fr" class="input-premium">
                     </div>
                     <div class="col-span-1 md:col-span-2">
                         <label class="label-premium">Activité & Zone Géographique</label>
@@ -496,9 +496,9 @@
     </main>
 
     <div id="toast" class="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-dark-900 border border-accent-400 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300 z-50">
-        <i class="ph-fill ph-check-circle text-accent-400 text-xl"></i>
-        <span class="font-medium text-sm">Contenu copié dans le presse-papier !</span>
-    </div>
+		<i id="toast-icon" class="ph-fill ph-check-circle text-accent-400 text-xl"></i>
+		<span id="toast-message" class="font-medium text-sm">Contenu copié dans le presse-papier !</span>
+	</div>
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
