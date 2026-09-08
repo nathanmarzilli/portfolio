@@ -531,7 +531,47 @@
         }
 
         // --- APPLICATION DES DONNÉES ---
+        
+        // NOUVEAU : Gestion de l'affichage si "J'ai déjà un site" ou "Sérénité seul"
+        if (data.requestType === 'existing' || data.pack === 'Site existant (Sérénité seul)') {
+            // Cacher les packs de création
+            const packSection = document.getElementById('pack-section');
+            if(packSection) packSection.classList.add('hidden');
+            
+            // Afficher la section "Site existant"
+            const existingSection = document.getElementById('existing-site-section');
+            if(existingSection) existingSection.classList.remove('hidden');
+            
+            const hiddenReqType = document.getElementById('hidden-request-type');
+            if(hiddenReqType) hiddenReqType.value = 'existing';
 
+            const detailsList = document.getElementById('existing-site-details');
+            if(detailsList) {
+                detailsList.innerHTML = ''; // Reset
+                
+                // Si une intervention a été sélectionnée
+                if(data.intervention) {
+                    const hiddenIntervention = document.getElementById('hidden-intervention');
+                    if(hiddenIntervention) hiddenIntervention.value = data.intervention;
+                    detailsList.innerHTML += `<li>Intervention ponctuelle : <strong class="text-accent-400 capitalize">${data.intervention}</strong></li>`;
+                }
+                
+                // Si un pack Sérénité a été sélectionné
+                if(data.serenite) {
+                    const hiddenSerenite = document.getElementById('hidden-serenite');
+                    if(hiddenSerenite) hiddenSerenite.value = data.serenite;
+                    const sereniteName = data.serenite === 'plus' ? 'Sérénité+' : 'Sérénité';
+                    detailsList.innerHTML += `<li>Abonnement de maintenance : <strong class="text-blue-400">${sereniteName}</strong></li>`;
+                }
+            }
+        } else {
+            // Sélection du Pack normal (Radio Button)
+            if(data.pack) {
+                const radio = document.querySelector(`input[name="project_pack"][value="${data.pack}"]`);
+                if (radio) radio.checked = true;
+            }
+        }
+		
         // Remplissage Nom et Email
         if(data.name) {
             const el = document.getElementById('contactName');
@@ -591,8 +631,19 @@
         window.getRadio = function(name) { const r = document.querySelector(`input[name="${name}"]:checked`); return r ? r.value : ''; }
 
         window.buildMessage = function() {
-            let pack = window.getRadio('project_pack') || 'Non défini';
-            let body = `PACK: ${pack}\n\n`;
+            let body = '';
+            let reqType = window.getVal('hidden-request-type') || 'newsite';
+
+            if (reqType === 'existing') {
+                body += `DEMANDE : J'ai déjà un site\n`;
+                let intervention = window.getVal('hidden-intervention');
+                if (intervention) body += `INTERVENTION : ${intervention}\n`;
+                let serenite = window.getVal('hidden-serenite');
+                if (serenite) body += `MAINTENANCE : ${serenite === 'plus' ? 'Sérénité+' : 'Sérénité'}\n\n`;
+            } else {
+                let pack = window.getRadio('project_pack') || 'Non défini';
+                body += `PACK SÉLECTIONNÉ : ${pack}\n\n`;
+            }
             
             // Ajout des documents dans la copie
             const docsList = window.getVal('selectedDocsInput');
