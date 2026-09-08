@@ -1197,6 +1197,8 @@ document.addEventListener('DOMContentLoaded', () => {
 						serenite: serenityTier
 					};
                     
+					console.log(kickoffData);
+					
                     // Sauvegarde dans le stockage local du navigateur
                     localStorage.setItem('kickoffData', JSON.stringify(kickoffData));
 
