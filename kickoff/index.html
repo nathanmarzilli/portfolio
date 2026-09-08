@@ -512,27 +512,27 @@
         if (storedData) {
             try {
                 data = JSON.parse(storedData);
-                // Une fois lu, on peut nettoyer le stockage pour éviter que les données persistent 
-                // si l'utilisateur revient plus tard sans passer par la réservation.
                 localStorage.removeItem('kickoffData');
             } catch (e) {
                 console.error("Erreur lecture data", e);
             }
         }
         
-        // B. Fallback : Vérifier les URL params au cas où (Ancienne méthode)
-        // Cela permet de ne pas casser les anciens liens si quelqu'un en a gardé un
+        // B. Fallback URL (Indispensable pour tester en actualisant la page)
         const params = new URLSearchParams(window.location.search);
-        if (Object.keys(data).length === 0 && params.has('email')) {
+        if (Object.keys(data).length === 0 && (params.has('email') || params.has('test'))) {
              if(params.has('name')) data.name = params.get('name');
              if(params.has('email')) data.email = params.get('email');
              if(params.has('pack')) data.pack = params.get('pack');
              if(params.has('documents')) data.documents = params.get('documents');
+             // AJOUT DES NOUVEAUX PARAMÈTRES ICI :
+             if(params.has('requestType')) data.requestType = params.get('requestType');
+             if(params.has('intervention')) data.intervention = params.get('intervention');
+             if(params.has('serenite')) data.serenite = params.get('serenite');
         }
 
         // --- APPLICATION DES DONNÉES ---
         
-        // NOUVEAU : Gestion de l'affichage si "J'ai déjà un site" ou "Sérénité seul"
         if (data.requestType === 'existing' || data.pack === 'Site existant (Sérénité seul)') {
             // Cacher les packs de création
             const packSection = document.getElementById('pack-section');
@@ -549,14 +549,12 @@
             if(detailsList) {
                 detailsList.innerHTML = ''; // Reset
                 
-                // Si une intervention a été sélectionnée
                 if(data.intervention) {
                     const hiddenIntervention = document.getElementById('hidden-intervention');
                     if(hiddenIntervention) hiddenIntervention.value = data.intervention;
                     detailsList.innerHTML += `<li>Intervention ponctuelle : <strong class="text-accent-400 capitalize">${data.intervention}</strong></li>`;
                 }
                 
-                // Si un pack Sérénité a été sélectionné
                 if(data.serenite) {
                     const hiddenSerenite = document.getElementById('hidden-serenite');
                     if(hiddenSerenite) hiddenSerenite.value = data.serenite;
@@ -572,7 +570,7 @@
             }
         }
 		
-        // Remplissage Nom et Email
+        // Remplissage Nom et Email (commun aux deux cas)
         if(data.name) {
             const el = document.getElementById('contactName');
             if(el) el.value = data.name;
@@ -581,6 +579,8 @@
             const el = document.getElementById('contactEmail');
             if(el) el.value = data.email;
         }
+
+        // (La suite reste identique : // Gestion des Documents sélectionnés...)
         
         // Sélection du Pack (Radio Button)
         if(data.pack) {
