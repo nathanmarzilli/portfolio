@@ -259,8 +259,14 @@
 					'</select>' +
 				'</td>' +
 				'<td class="whitespace-nowrap text-right">' +
-					'<button class="btn-ghost !py-1.5 !px-2.5 !text-[11px]" data-action="lead-convert" data-id="' + lead.id + '" title="Créer la fiche client à partir de cette demande">' +
-						'<i class="ph-bold ph-user-plus" aria-hidden="true"></i> Fiche client</button>' +
+					'<div class="flex flex-wrap items-center justify-end gap-1.5">' +
+						'<button class="btn-ghost !py-1.5 !px-2.5 !text-[11px]" data-action="lead-quote" data-id="' + lead.id + '" title="Créer un devis pré-rempli à partir de cette demande">' +
+							'<i class="ph-bold ph-file-text" aria-hidden="true"></i> Devis</button>' +
+						'<button class="btn-ghost !py-1.5 !px-2.5 !text-[11px]" data-action="lead-invoice" data-id="' + lead.id + '" title="Créer une facture pré-remplie à partir de cette demande">' +
+							'<i class="ph-bold ph-receipt" aria-hidden="true"></i> Facture</button>' +
+						'<button class="btn-ghost !py-1.5 !px-2.5 !text-[11px]" data-action="lead-convert" data-id="' + lead.id + '" title="Créer la fiche client à partir de cette demande">' +
+							'<i class="ph-bold ph-user-plus" aria-hidden="true"></i> Fiche client</button>' +
+					'</div>' +
 				'</td>' +
 			'</tr>';
 		}).join('');
@@ -273,9 +279,21 @@
 			sel.addEventListener('change', async function () {
 				var id = sel.dataset.leadStatus;
 				var value = sel.value;
+				var lead = state.leads.filter(function (l) { return l.id === id; })[0];
+
+				// Passer une demande sur « Client » ne doit pas se contenter
+				// de changer une étiquette : ça n'aurait créé aucune fiche
+				// client. On ouvre directement la fiche pré-remplie ; le
+				// statut ne change vraiment qu'une fois qu'elle est
+				// enregistrée (sinon on revient à l'ancien statut affiché).
+				if (value === 'converti') {
+					sel.value = (lead && lead.status) || 'nouveau';
+					if (lead) openClientModal(leadToClient(lead), lead);
+					return;
+				}
+
 				try {
 					await db.updateLead(id, { status: value });
-					var lead = state.leads.filter(function (l) { return l.id === id; })[0];
 					if (lead) lead.status = value;
 					toast('Statut mis à jour : ' + (LEAD_STATUS[value] || {}).label + '.');
 					renderStats();
@@ -579,6 +597,45 @@
 		};
 	}
 
+	/**
+	 * Retrouve la fiche client déjà liée à cette demande, ou en crée une
+	 * automatiquement (sans passer par la modale) pour permettre le
+	 * « un clic → devis pré-rempli » depuis la liste des demandes.
+	 */
+	async function getOrCreateClientForLead(lead) {
+		if (lead.client_id) {
+			var existing = state.clients.filter(function (c) { return c.id === lead.client_id; })[0];
+			if (existing) return existing;
+			try {
+				var fetched = await db.getClient(lead.client_id);
+				if (fetched) { state.clients.push(fetched); return fetched; }
+			} catch (e) { /* fiche introuvable (supprimée ?) : on en recrée une */ }
+		}
+
+		var payload = leadToClient(lead);
+		delete payload.lead_id; // nm_clients n'a pas cette colonne — voir saveClientFromModal.
+
+		var offer = (CFG.offers || {})[payload.pack === 'club' ? CFG.club.baseOfferKey : payload.pack];
+		var packPrice = offer && offer.type === 'one_time' ? offer.price.EUR : null;
+		var optionsTotal = (payload.options || []).reduce(function (s, o) { return s + o.price; }, 0);
+		payload.pack_label = payload.pack ? packLabel(payload.pack) : null;
+		payload.pack_price = packPrice;
+		payload.currency = 'EUR';
+		payload.options_total = optionsTotal;
+		payload.total_one_time = (packPrice || 0) + optionsTotal;
+
+		var saved = await db.saveClient(payload);
+		await db.updateLead(lead.id, { status: 'converti', client_id: saved.id });
+		lead.status = 'converti';
+		lead.client_id = saved.id;
+		state.clients.unshift(saved);
+		renderStats();
+		renderClients();
+		renderLeads();
+		toast('Fiche client créée automatiquement à partir de la demande.');
+		return saved;
+	}
+
 	async function saveClientFromModal(e) {
 		e.preventDefault();
 		var options = collectOptions();
@@ -614,12 +671,17 @@
 			notes: $('#cf-notes').value.trim() || null
 		};
 		if ($('#cf-id').value) record.id = $('#cf-id').value;
-		if ($('#cf-lead').value) record.lead_id = $('#cf-lead').value;
+		// Remarque : nm_clients n'a pas de colonne lead_id — le lien se
+		// fait dans l'autre sens (nm_leads.client_id). L'envoyer ici
+		// faisait échouer silencieusement TOUT enregistrement de fiche
+		// client venant d'une demande (colonne inexistante refusée par
+		// Supabase) : c'était la cause du « aucun client enregistré ».
+		var originLeadId = $('#cf-lead').value || '';
 
 		try {
-			await db.saveClient(record);
-			if ($('#cf-lead').value) {
-				await db.updateLead($('#cf-lead').value, { status: 'converti' });
+			var savedClient = await db.saveClient(record);
+			if (originLeadId) {
+				await db.updateLead(originLeadId, { status: 'converti', client_id: savedClient.id });
 			}
 			$('#client-modal').close();
 			toast('Fiche client enregistrée.');
@@ -780,6 +842,16 @@
 			if (action === 'lead-convert') {
 				var lead = state.leads.filter(function (l) { return l.id === id; })[0];
 				if (lead) openClientModal(leadToClient(lead), lead);
+			} else if (action === 'lead-quote' || action === 'lead-invoice') {
+				var leadForDoc = state.leads.filter(function (l) { return l.id === id; })[0];
+				if (!leadForDoc) return;
+				try {
+					var clientForDoc = await getOrCreateClientForLead(leadForDoc);
+					await createDocumentForClient(clientForDoc, action === 'lead-quote' ? 'devis' : 'facture');
+				} catch (err) {
+					console.error(err);
+					toast('Création impossible : ' + (err.message || 'erreur inconnue'), 'error');
+				}
 			} else if (action === 'client-edit') {
 				openClientModal(state.clients.filter(function (c) { return c.id === id; })[0], null);
 			} else if (action === 'client-quote' || action === 'client-invoice') {
@@ -849,10 +921,10 @@
 		settingsHint('Envoi d’un test…');
 		try {
 			var res = await db.client.from('nm_leads').insert({
-				source: 'test-zapier',
+				source: 'test-notification',
 				request_type: 'newsite',
 				first_name: 'Test',
-				last_name: 'Zapier',
+				last_name: 'Notification',
 				email: 'test@example.com',
 				phone: '00 00 00 00 00',
 				rdv_label: 'Test de branchement — à ignorer',

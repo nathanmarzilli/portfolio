@@ -117,6 +117,7 @@
                     <span class="leading-tight">
                         <span class="font-display font-bold text-base tracking-wide text-white block">Devis &amp; factures</span>
                         <span class="block text-[10px] text-accent-400 font-bold uppercase tracking-wider" id="doc-context-label">Nouveau document</span>
+                        <span class="block text-[10px] text-slate-500" id="doc-link-info"></span>
                     </span>
                 </a>
                 <div class="flex items-center gap-2">
@@ -220,6 +221,10 @@
                             <i class="ph-bold ph-download-simple" aria-hidden="true"></i> Télécharger le PDF
                         </button>
                     </div>
+                    <button type="button" id="btn-transform-invoice" class="btn-ghost w-full hidden" onclick="transformToInvoice()">
+                        <i class="ph-bold ph-arrows-left-right" aria-hidden="true"></i>
+                        Transformer ce devis en facture
+                    </button>
                     <button type="button" id="btn-send-invoice" class="btn-primary w-full hidden !bg-transparent" onclick="sendInvoiceByEmail()"
                             style="background: rgb(var(--t-blue-500)); color:#fff;">
                         <i class="ph-bold ph-paper-plane-right" aria-hidden="true"></i>
@@ -481,6 +486,7 @@
             document.getElementById('pSigBlock').style.display = isQuote ? 'block' : 'none';
             document.getElementById('sign-section').style.display = isQuote ? 'block' : 'none';
             document.getElementById('btn-send-invoice').classList.toggle('hidden', isQuote);
+            document.getElementById('btn-transform-invoice').classList.toggle('hidden', !isQuote);
 
             const numberField = document.getElementById('docNumber');
             const wrongPrefix = isQuote ? 'FAC' : 'DEV';
@@ -712,6 +718,7 @@
             document.getElementById('docDate').valueAsDate = new Date();
             if (typeof clearPad === 'function') clearPad();
             document.getElementById('doc-context-label').textContent = 'Nouveau document';
+            updateDocLinkInfo(null);
             renderItems();
             suggestNumber();
             updatePreview();
@@ -782,6 +789,7 @@
                 else { sigImg.src = ''; sigImg.style.display = 'none'; }
 
                 document.getElementById('doc-context-label').textContent = d.number;
+                updateDocLinkInfo(d);
                 renderItems();
                 updatePreview();
                 renderSavedList();
@@ -793,6 +801,73 @@
             }
         }
         window.openDocument = openDocument;
+
+        // ------------------------------------------------------------
+        // Lien devis ↔ facture (colonne nm_documents.quote_id)
+        // ------------------------------------------------------------
+        function updateDocLinkInfo(d) {
+            const el = document.getElementById('doc-link-info');
+            if (!el) return;
+            if (!d) { el.textContent = ''; return; }
+
+            if (d.kind === 'facture' && d.quote_id) {
+                const origin = savedDocuments.filter(function (x) { return x.id === d.quote_id; })[0];
+                el.textContent = origin ? ('Issue du devis ' + origin.number) : 'Issue d’un devis';
+                return;
+            }
+            if (d.kind === 'devis') {
+                const child = savedDocuments.filter(function (x) { return x.quote_id === d.id; })[0];
+                if (child) { el.textContent = 'Déjà transformé en facture ' + child.number; return; }
+            }
+            el.textContent = '';
+        }
+
+        // ------------------------------------------------------------
+        // Transformer un devis enregistré en facture (nouveau document
+        // lié via quote_id — le devis d'origine n'est pas modifié).
+        // ------------------------------------------------------------
+        window.transformToInvoice = async function () {
+            if (!currentDocId) {
+                hint('Enregistrez d’abord ce devis avant de le transformer en facture.', true);
+                return;
+            }
+            if (!items.length) {
+                hint('Ajoutez au moins une prestation.', true);
+                return;
+            }
+            if (!window.confirm('Créer une facture à partir de ce devis ? Le devis reste inchangé ; une nouvelle facture liée est créée.')) return;
+
+            try {
+                const db = await window.NM.dbReady;
+                const origin = savedDocuments.filter(function (x) { return x.id === currentDocId; })[0];
+                const number = await db.nextDocumentNumber('facture');
+                const tvaActive = document.getElementById('tvaToggle').checked;
+                const totalHT = items.reduce(function (s, it) { return s + it.qty * it.price; }, 0);
+
+                const saved = await db.saveDocument({
+                    kind: 'facture',
+                    number: number,
+                    client_id: document.getElementById('clientPicker').value || null,
+                    lead_id: (origin && origin.lead_id) || null,
+                    quote_id: currentDocId,
+                    client_name: document.getElementById('clientName').value.trim(),
+                    client_email: document.getElementById('clientEmail').value.trim() || null,
+                    client_address: document.getElementById('clientAddr').value.trim(),
+                    issue_date: new Date().toISOString().slice(0, 10),
+                    items: items,
+                    vat_applied: tvaActive,
+                    total_ht: Math.round(totalHT * 100) / 100,
+                    total_ttc: Math.round(totalHT * (tvaActive ? 1.2 : 1) * 100) / 100,
+                    currency: 'EUR',
+                    status: 'brouillon'
+                });
+                hint('Facture ' + number + ' créée à partir du devis — ouverture…');
+                window.location.href = '?doc=' + encodeURIComponent(saved.id);
+            } catch (e) {
+                console.error(e);
+                hint('Transformation impossible : ' + (e.message || 'erreur inconnue'), true);
+            }
+        };
 
         // ------------------------------------------------------------
         // Envoi de la facture par Stripe (e-mail + lien de paiement)
