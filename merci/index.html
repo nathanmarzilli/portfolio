@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Merci ! | Nathan Marzilli</title>
+	<meta name="description" content="Votre demande a bien été enregistrée. Voici la suite du parcours.">
+	<meta name="theme-color" content="#f6f8fb">
+	<link rel="icon" href="../images/profile-40.jpg">
+
+	<link rel="stylesheet" href="../assets/css/theme.css">
+	<link rel="stylesheet" href="../assets/css/app.css">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script src="../assets/js/tailwind-theme.js"></script>
+	<script src="../assets/js/nm-boot.js"></script>
+	<script src="../assets/js/theme.js"></script>
+	<script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="selection:bg-accent-400/30">
+
+	<nav class="w-full nav-glass sticky top-0 z-40">
+		<div class="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+			<a href="../" class="flex items-center gap-3 group shrink-0" title="Retour à l’accueil">
+				<span class="w-9 h-9 rounded-full overflow-hidden border border-slate-500/20 group-hover:border-accent-400 transition-colors block shrink-0">
+					<img src="../images/profile-96.jpg" srcset="../images/profile-96.jpg 1x, ../images/profile-192.jpg 2x" width="36" height="36" alt="" class="w-full h-full object-cover">
+				</span>
+				<span class="font-display font-bold text-base tracking-wide text-white">Nathan Marzilli</span>
+			</a>
+			<div class="flex items-center gap-2">
+				<div data-theme-toggle></div>
+				<a href="../" class="btn-ghost"><i class="ph-bold ph-arrow-left" aria-hidden="true"></i> <span class="hidden sm:inline">Retour à l’accueil</span></a>
+			</div>
+		</div>
+	</nav>
+
+	<main class="max-w-3xl mx-auto px-4 py-12 space-y-8">
+
+		<section class="glass-card p-8 text-center fade-in">
+			<div class="w-16 h-16 rounded-full bg-emerald-500/15 flex items-center justify-center mx-auto mb-5">
+				<i class="ph-fill ph-check-circle text-4xl text-emerald-400" aria-hidden="true"></i>
+			</div>
+			<h1 class="font-display text-2xl sm:text-3xl font-bold text-white mb-3">Merci, votre demande est bien enregistrée</h1>
+			<p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+				Je reviens vers vous très vite. En attendant, une seule chose à faire pour gagner du temps :
+				remplir le formulaire de préparation. Cinq minutes qui nous en feront gagner beaucoup au téléphone.
+			</p>
+			<p id="rdv-recap" class="hidden mt-4 text-accent-400 font-bold"></p>
+
+			<a href="../kickoff/" class="btn-primary mt-7 inline-flex text-base !px-7 !py-4">
+				<i class="ph-bold ph-pencil-simple" aria-hidden="true"></i> Préparer la réunion
+			</a>
+		</section>
+
+		<section class="glass-card p-7 fade-in" style="animation-delay:.1s">
+			<h2 class="font-display font-bold text-lg text-white mb-5">La suite, étape par étape</h2>
+			<ol class="space-y-5 list-none">
+				<li class="flex gap-4">
+					<span class="funnel-step__num">1</span>
+					<div>
+						<strong class="text-white text-sm block">Vous préparez le rendez-vous</strong>
+						<span class="text-xs text-slate-400">Le formulaire ci-dessus cadre votre projet : activité, objectifs, style, contenus.</span>
+					</div>
+				</li>
+				<li class="flex gap-4">
+					<span class="funnel-step__num">2</span>
+					<div>
+						<strong class="text-white text-sm block">On échange 20 à 30 minutes</strong>
+						<span class="text-xs text-slate-400">Je vous appelle au créneau choisi. Objectif : cadrer le projet et comprendre votre besoin réel, sans jargon.</span>
+					</div>
+				</li>
+				<li class="flex gap-4">
+					<span class="funnel-step__num">3</span>
+					<div>
+						<strong class="text-white text-sm block">Vous recevez votre devis</strong>
+						<span class="text-xs text-slate-400">Détaillé ligne à ligne, valable 30 jours. Aucun engagement tant qu'il n'est pas signé.</span>
+					</div>
+				</li>
+				<li class="flex gap-4">
+					<span class="funnel-step__num">4</span>
+					<div>
+						<strong class="text-white text-sm block">On construit, puis vous réglez à la livraison</strong>
+						<span class="text-xs text-slate-400">Facture envoyée par e-mail avec son lien de paiement sécurisé, ou par virement si vous préférez.</span>
+					</div>
+				</li>
+			</ol>
+
+			<p class="mt-6 pt-5 border-t border-slate-500/15 text-[11px] text-slate-500 flex items-start gap-2">
+				<i class="ph-bold ph-shield-check text-accent-400 mt-0.5 shrink-0" aria-hidden="true"></i>
+				Aucun paiement n'est demandé sur ce site. Si un e-mail vous réclame un règlement avant la signature du devis,
+				il ne vient pas de moi : écrivez-moi directement.
+			</p>
+		</section>
+
+		<section class="glass-card p-7 fade-in" style="animation-delay:.2s">
+			<h2 class="font-display font-bold text-lg text-white mb-4">Une question d'ici là ?</h2>
+			<div class="grid sm:grid-cols-2 gap-3">
+				<a href="mailto:nathan.marzilli@gmail.com" class="flex items-center gap-3 p-3.5 rounded-xl bg-slate-500/5 border border-slate-500/15 hover:bg-slate-500/10 transition-colors">
+					<i class="ph-fill ph-envelope-simple text-xl text-accent-400 shrink-0" aria-hidden="true"></i>
+					<span class="text-slate-300 text-sm truncate">nathan.marzilli@gmail.com</span>
+				</a>
+				<a href="tel:+33625965112" class="flex items-center gap-3 p-3.5 rounded-xl bg-slate-500/5 border border-slate-500/15 hover:bg-slate-500/10 transition-colors">
+					<i class="ph-fill ph-phone text-xl text-accent-400 shrink-0" aria-hidden="true"></i>
+					<span class="text-slate-300 text-sm">06 25 96 51 12</span>
+				</a>
+			</div>
+		</section>
+	</main>
+
+	<footer class="max-w-3xl mx-auto px-4 pb-12 text-center text-xs text-slate-500">
+		<a href="../" class="inline-flex items-center gap-2 hover:text-accent-400 transition-colors font-bold">
+			<i class="ph-bold ph-arrow-left" aria-hidden="true"></i> Retour à l’accueil
+		</a>
+		<p class="mt-3">© <span id="year"></span> Nathan Marzilli — TVA non applicable, article 293 B du CGI.</p>
+	</footer>
+
+	<script>
+		document.getElementById('year').textContent = new Date().getFullYear();
+
+		// Rappel du créneau choisi, si le tunnel l'a mémorisé.
+		(function () {
+			try {
+				var raw = localStorage.getItem('kickoffData');
+				if (!raw) return;
+				var data = JSON.parse(raw);
+				if (!data.date) return;
+				var el = document.getElementById('rdv-recap');
+				el.textContent = 'Votre rendez-vous : ' + data.date;
+				el.classList.remove('hidden');
+			} catch (e) { /* localStorage indisponible */ }
+		})();
+	</script>
+</body>
+</html>

@@ -5,190 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Préparation RDV Projet | Nathan Marzilli</title>
     
+    <meta name="theme-color" content="#f6f8fb">
+    <link rel="icon" href="../images/profile-40.jpg">
+
+    <link rel="stylesheet" href="../assets/css/theme.css">
+    <link rel="stylesheet" href="../assets/css/app.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="../assets/js/tailwind-theme.js"></script>
+    <script src="../assets/js/nm-boot.js"></script>
+    <script src="../assets/js/theme.js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] },
-                    colors: {
-                        dark: { 950: '#020617', 900: '#0B1120', 800: '#1E293B' },
-                        accent: { 400: '#2DD4BF', 500: '#14B8A6' }
-                    },
-                    animation: {
-                        blob: "blob 7s infinite",
-                    },
-                    keyframes: {
-                        blob: {
-                            "0%": { transform: "translate(0px, 0px) scale(1)" },
-                            "33%": { transform: "translate(30px, -50px) scale(1.1)" },
-                            "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
-                            "100%": { transform: "translate(0px, 0px) scale(1)" },
-                        },
-                    },
-                }
-            }
-        }
-    </script>
-
     <style>
-        /* --- UI APPLICATION (MODE SOMBRE) --- */
-        body { background-color: #020617; color: #E2E8F0; overflow-x: hidden; position: relative; }
-        
-        /* --- NOISE TEXTURE (AJOUTÉ) --- */
-        .noise-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 40; opacity: 0.03;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
-
-        /* Background Blobs */
-        .animate-blob { animation: blob 7s infinite; }
-        .animation-delay-2000 { animation-delay: 2s; }
-        .animation-delay-4000 { animation-delay: 4s; }
-
-        /* Glass Cards */
-        .glass-card {
-            background: rgba(30, 41, 59, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            border-radius: 1.5rem;
-            position: relative;
-            z-index: 50; /* Au dessus du noise pour intéraction */
-        }
-
-        /* Inputs Styling */
-        .input-premium, .textarea-premium, .select-premium {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            border-radius: 0.75rem;
-            padding: 0.75rem 1rem;
-            width: 100%;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-            font-family: 'Inter', sans-serif;
-            position: relative;
-            z-index: 50;
-        }
-        
-        /* AJOUT : Hauteur minimum pour les textareas sur mobile */
-        .textarea-premium {
-            min-height: 120px;
-        }
-
-        .input-premium:focus, .textarea-premium:focus, .select-premium:focus {
-            border-color: #2DD4BF;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.1);
-            background: rgba(15, 23, 42, 0.8);
-        }
-        
-        /* Labels */
-        .label-premium {
-            display: block;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #94A3B8;
-            margin-bottom: 0.35rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        /* Section Titles */
-        .section-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: white;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 0.5rem;
-            margin-top: 2rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .section-title i { color: #2DD4BF; }
-        
-        /* Ajustement marge titre section documents */
+        /* Styles propres au formulaire de préparation de projet. */
         #documents-section-title { margin-top: 0; }
 
-        /* Checkboxes */
-        .chk-label {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: background 0.2s;
-            border: 1px solid transparent;
-        }
-        .chk-label:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.05); }
-        .chk-input {
-            accent-color: #2DD4BF;
-            width: 1.1rem;
-            height: 1.1rem;
-            margin-top: 2px;
-        }
-
-        /* Styles pour les boutons Packs */
         .pack-radio-label {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease; cursor: pointer;
+            border: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2));
         }
-        .pack-radio-label:hover {
-            background: rgba(255,255,255,0.05);
-        }
-        /* Eclair (Ambre) */
+        .pack-radio-label:hover { background: rgb(var(--t-slate-500) / 0.08); }
+
         input[value="Eclair"]:checked + label {
-            background: rgba(251, 191, 36, 0.15);
-            color: #FBBF24;
-            border-color: #FBBF24;
-            font-weight: 700;
-            box-shadow: 0 0 15px rgba(251, 191, 36, 0.1);
+            background: rgb(var(--t-gold-400) / 0.15); color: rgb(var(--t-gold-400));
+            border-color: rgb(var(--t-gold-400)); font-weight: 700;
         }
-        /* Essentiel & Vitrine (Bleu Ciel / Cyan) */
         input[value="Essentiel"]:checked + label,
         input[value="Vitrine"]:checked + label {
-            background: rgba(45, 212, 191, 0.15);
-            color: #2DD4BF;
-            border-color: #2DD4BF;
-            font-weight: 700;
-            box-shadow: 0 0 15px rgba(45, 212, 191, 0.1);
+            background: rgb(var(--t-accent-400) / 0.15); color: rgb(var(--t-accent-400));
+            border-color: rgb(var(--t-accent-400)); font-weight: 700;
         }
-        /* Premium (Violet) */
         input[value="Premium"]:checked + label {
-            background: rgba(139, 92, 246, 0.15);
-            color: #A78BFA;
-            border-color: #8B5CF6;
-            font-weight: 700;
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.1);
+            background: rgb(var(--t-purple-500) / 0.15); color: rgb(var(--t-purple-400));
+            border-color: rgb(var(--t-purple-500)); font-weight: 700;
         }
-
-        /* Floating Action Bar */
-        .sticky-action-bar {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            padding: 1.5rem;
-            background: rgba(2, 6, 23, 0.90);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255,255,255,0.1);
-            z-index: 60;
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-
-        /* Animations */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
     </style>    
 </head>
 <body class="selection:bg-accent-400/30 selection:text-white pb-32">
@@ -201,17 +56,24 @@
         <div class="absolute bottom-[-10%] left-[20%] w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[100px] mix-blend-screen animate-blob animation-delay-4000"></div>
     </div>
 
-    <nav class="w-full border-b border-white/5 bg-dark-950/50 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-400 to-blue-600 flex items-center justify-center text-dark-950 font-bold">
-                    <i class="ph-bold ph-rocket-launch"></i>
-                </div>
-                <span class="font-display font-bold text-lg tracking-wide text-white">Project<span class="text-accent-400">Kickoff</span></span>
-            </div>
-            <a href="../index.html" class="text-xs font-bold text-slate-400 hover:text-white flex items-center gap-2 border border-white/10 px-3 py-1.5 rounded-lg bg-white/5">
-                <i class="ph-bold ph-arrow-left"></i> Retour
+    <nav class="w-full nav-glass sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+            <a href="../" class="flex items-center gap-3 group shrink-0" title="Retour à l’accueil">
+                <span class="w-9 h-9 rounded-full overflow-hidden border border-slate-500/20 group-hover:border-accent-400 transition-colors block shrink-0">
+                    <img src="../images/profile-96.jpg" srcset="../images/profile-96.jpg 1x, ../images/profile-192.jpg 2x"
+                         width="36" height="36" alt="Nathan Marzilli" class="w-full h-full object-cover" decoding="async">
+                </span>
+                <span class="leading-tight">
+                    <span class="font-display font-bold text-base tracking-wide text-white block">Préparation du projet</span>
+                    <span class="block text-[10px] text-accent-400 font-bold uppercase tracking-wider">Étape 2 sur 5</span>
+                </span>
             </a>
+            <div class="flex items-center gap-2">
+                <div data-theme-toggle></div>
+                <a href="../" class="text-xs font-bold text-slate-400 hover:text-white flex items-center gap-2 border border-slate-500/20 px-3 py-2 rounded-lg bg-slate-500/5 transition-all whitespace-nowrap">
+                    <i class="ph-bold ph-arrow-left" aria-hidden="true"></i> <span class="hidden sm:inline">Retour à l’accueil</span>
+                </a>
+            </div>
         </div>
     </nav>
 
@@ -225,6 +87,43 @@
         </div>
 
         <form action="https://formspree.io/f/mwvbqozd" method="POST" id="projectForm" class="space-y-6 fade-in" style="animation-delay: 0.2s;">
+
+            <!-- Récapitulatif de la demande initiale (rempli automatiquement) -->
+            <div id="recap-section" class="glass-card p-6 border border-accent-400/30 relative overflow-hidden hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-accent-400/10 blur-3xl rounded-full pointer-events-none"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
+                        <h2 class="font-display font-bold text-lg text-white flex items-center gap-2">
+                            <i class="ph-duotone ph-clipboard-text text-accent-400" aria-hidden="true"></i>
+                            Votre demande
+                        </h2>
+                        <span id="recap-source" class="nm-badge nm-badge--accent"></span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-4">
+                        Voici ce que vous avez déjà indiqué. Tout est transmis avec ce formulaire —
+                        rien à ressaisir. Une erreur ? Dites-le-moi simplement au téléphone.
+                    </p>
+                    <dl id="recap-list" class="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-sm"></dl>
+                </div>
+            </div>
+
+            <!-- Champs transmis à Formspree (remplis par le JS) -->
+            <input type="hidden" name="rdv" id="hf-rdv">
+            <input type="hidden" name="origine" id="hf-source">
+            <input type="hidden" name="type_de_demande" id="hf-request-type">
+            <input type="hidden" name="pack_choisi" id="hf-pack">
+            <input type="hidden" name="modules_club" id="hf-club-options">
+            <input type="hidden" name="documents_automatises" id="hf-documents">
+            <input type="hidden" name="formule_suivi" id="hf-serenite">
+            <input type="hidden" name="intervention_ponctuelle" id="hf-intervention">
+            <input type="hidden" name="estimation" id="hf-total">
+            <input type="hidden" name="telephone" id="hf-phone">
+            <input type="hidden" name="club_discipline" id="hf-sport">
+            <input type="hidden" name="club_ville" id="hf-city">
+            <input type="hidden" name="club_adherents" id="hf-members">
+            <input type="hidden" name="club_role" id="hf-role">
+            <input type="hidden" name="message_initial" id="hf-message">
+            <input type="hidden" name="reference_demande" id="hf-lead">
 
             <div id="pack-section" class="glass-card p-6 border-accent-400/30 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-accent-400/10 blur-2xl rounded-full"></div>
@@ -506,13 +405,17 @@
         // --- 1. GESTION DE LA RÉCUPÉRATION DE DONNÉES (LOCALSTORAGE PRIO) ---
         
         let data = {};
-        
-        // A. Essayer de récupérer depuis le localStorage (Méthode propre)
+
+        // A. Essayer de récupérer depuis le localStorage (méthode propre).
+        // IMPORTANT : on ne supprime plus la donnée ici. Si la personne
+        // quitte cette page sans envoyer le formulaire, elle retrouvera
+        // son pré-remplissage la prochaine fois qu'elle reviendra sur
+        // /kickoff/ — la sauvegarde automatique plus bas garde même ses
+        // saisies à jour. La donnée n'est effacée qu'après un envoi réussi.
         const storedData = localStorage.getItem('kickoffData');
         if (storedData) {
             try {
                 data = JSON.parse(storedData);
-                localStorage.removeItem('kickoffData');
             } catch (e) {
                 console.error("Erreur lecture data", e);
             }
@@ -530,6 +433,93 @@
              if(params.has('intervention')) data.intervention = params.get('intervention');
              if(params.has('serenite')) data.serenite = params.get('serenite');
         }
+
+        // --- RÉCAPITULATIF DE LA DEMANDE INITIALE ---------------------
+        // Tout ce qui a été renseigné sur la page d'accueil ou sur la
+        // page Offre Club est affiché ici et transmis avec le formulaire.
+        (function renderRecap() {
+            const set = (id, value) => { const el = document.getElementById(id); if (el) el.value = value || ''; };
+            const rows = [];
+            const add = (label, value) => { if (value) rows.push([label, value]); };
+
+            const clubOptions = (data.clubOptions || '').split(',').map(v => v.trim()).filter(Boolean);
+            const documents = (data.documents || '').split(',').map(v => v.trim()).filter(Boolean);
+            const isClub = data.source === 'offre-club';
+
+            const serenityLabel = data.serenite
+                ? ((data.serenite === 'plus' ? 'Pack Sérénité+' : 'Pack Sérénité') +
+                   (data.sereniteCycle === 'annual' ? ' — facturation annuelle' : ' — facturation mensuelle'))
+                : '';
+
+            const money = (n) => (typeof n === 'number' && !isNaN(n))
+                ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n)
+                : '';
+
+            add('Rendez-vous', data.date);
+            add(isClub ? 'Club / association' : 'Structure', data.company);
+            add('Contact', data.name);
+            add('E-mail', data.email);
+            add('Téléphone', data.phone);
+            add('Rôle dans le club', data.role);
+            add('Discipline', data.sport);
+            add('Ville', data.city);
+            add('Adhérents', data.members);
+            add('Formule', data.requestType === 'existing' ? 'Site existant' : (data.packLabel || data.pack));
+            add('Modules club', clubOptions.join(', '));
+            add('Documents à automatiser', documents.join(', '));
+            add('Formule de suivi', serenityLabel);
+            add('Intervention ponctuelle', data.interventionLabel || data.intervention);
+            add('Estimation', money(data.estimatedTotal));
+
+            const section = document.getElementById('recap-section');
+            const list = document.getElementById('recap-list');
+            if (section && list && rows.length) {
+                list.innerHTML = rows.map(([label, value]) =>
+                    '<div class="flex gap-2 py-1 border-b border-slate-500/10">' +
+                        '<dt class="text-slate-500 text-xs w-36 shrink-0 pt-0.5">' + label + '</dt>' +
+                        '<dd class="text-white text-xs font-medium">' + String(value)
+                            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</dd>' +
+                    '</div>').join('');
+                section.classList.remove('hidden');
+                const badge = document.getElementById('recap-source');
+                if (badge) badge.textContent = isClub ? 'Offre club & associations' : 'Site vitrine';
+            }
+
+            // Champs cachés transmis à Formspree
+            set('hf-rdv', data.date);
+            set('hf-source', isClub ? 'Page Offre Club' : 'Page d’accueil');
+            set('hf-request-type', data.requestType === 'existing' ? 'Site existant' : 'Création de site');
+            set('hf-pack', data.packLabel || data.pack);
+            set('hf-club-options', clubOptions.join(', '));
+            set('hf-documents', documents.join(', '));
+            set('hf-serenite', serenityLabel);
+            set('hf-intervention', data.interventionLabel || data.intervention);
+            set('hf-total', money(data.estimatedTotal));
+            set('hf-phone', data.phone);
+            set('hf-sport', data.sport);
+            set('hf-city', data.city);
+            set('hf-members', data.members);
+            set('hf-role', data.role);
+            set('hf-message', data.message);
+            set('hf-lead', data.leadId);
+
+            // Pré-remplissage des champs visibles du formulaire
+            const prefill = (id, value) => {
+                const el = document.getElementById(id);
+                if (el && value && !el.value) el.value = value;
+            };
+            prefill('companyName', data.company);
+            prefill('contactName', data.name);
+            prefill('contactEmail', data.email);
+            if (isClub) {
+                const activity = [
+                    data.sport ? 'Club de ' + data.sport : '',
+                    data.city ? 'à ' + data.city : '',
+                    data.members ? '(' + data.members + ' adhérents)' : ''
+                ].filter(Boolean).join(' ');
+                prefill('activityDesc', activity);
+            }
+        })();
 
         // --- APPLICATION DES DONNÉES ---
         
@@ -578,6 +568,22 @@
         if(data.email) {
             const el = document.getElementById('contactEmail');
             if(el) el.value = data.email;
+        }
+
+        // Remplissage des champs de brouillon sauvegardés automatiquement
+        // (voir persistKickoffProgress plus bas) — vide au premier passage
+        // depuis le tunnel principal, rempli si la personne revient plus tard.
+        if(data.companyName) {
+            const el = document.getElementById('companyName');
+            if(el) el.value = data.companyName;
+        }
+        if(data.currentUrl) {
+            const el = document.getElementById('currentUrl');
+            if(el) el.value = data.currentUrl;
+        }
+        if(data.activityDesc) {
+            const el = document.getElementById('activityDesc');
+            if(el) el.value = data.activityDesc;
         }
 
         // (La suite reste identique : // Gestion des Documents sélectionnés...)
@@ -656,6 +662,22 @@
                 body += `\n`;
             }
 
+            // Contexte transmis par la page d'origine (accueil ou offre club)
+            const ctx = [
+                ['RDV', window.getVal('hf-rdv')],
+                ['ORIGINE', window.getVal('hf-source')],
+                ['MODULES CLUB', window.getVal('hf-club-options')],
+                ['FORMULE DE SUIVI', window.getVal('hf-serenite')],
+                ['INTERVENTION', window.getVal('hf-intervention')],
+                ['ESTIMATION', window.getVal('hf-total')],
+                ['TÉLÉPHONE', window.getVal('hf-phone')],
+                ['DISCIPLINE', window.getVal('hf-sport')],
+                ['VILLE', window.getVal('hf-city')],
+                ['ADHÉRENTS', window.getVal('hf-members')],
+                ['RÔLE', window.getVal('hf-role')]
+            ].filter(([, v]) => v);
+            if (ctx.length) body += ctx.map(([k, v]) => `${k}: ${v}`).join('\n') + '\n\n';
+
             body += `PROJET: ${window.getVal('companyName')} (${window.getVal('contactName')})\n`;
             body += `SITE ACTUEL: ${window.getVal('currentUrl')}\n`;
             body += `ACTIVITÉ: ${window.getVal('activityDesc')}\n\n`;
@@ -686,7 +708,33 @@
         
         // --- 4. GESTION DE L'ENVOI (FORMSPREE) ---
         const form = document.getElementById("projectForm");
-        
+
+        // --- 4bis. SAUVEGARDE AUTOMATIQUE (reprise plus tard, pré-remplie) ---
+        // À chaque saisie, on met à jour 'kickoffData' dans le localStorage.
+        // Ainsi, si la personne ferme l'onglet avant d'envoyer, revenir sur
+        // /kickoff/ plus tard réaffiche automatiquement tout ce qu'elle avait
+        // déjà rempli (formulaire principal + brouillon de cette page).
+        // La donnée n'est effacée qu'après un envoi réussi (voir handleSubmit).
+        window.persistKickoffProgress = function () {
+            try {
+                const current = JSON.parse(localStorage.getItem('kickoffData') || '{}');
+                const merged = Object.assign({}, current, {
+                    name: window.getVal('contactName') || current.name,
+                    email: window.getVal('contactEmail') || current.email,
+                    companyName: window.getVal('companyName'),
+                    currentUrl: window.getVal('currentUrl'),
+                    activityDesc: window.getVal('activityDesc'),
+                    pack: window.getRadio('project_pack') || current.pack
+                });
+                localStorage.setItem('kickoffData', JSON.stringify(merged));
+            } catch (e) { /* localStorage indisponible, on ignore */ }
+        };
+
+        if (form) {
+            form.addEventListener('input', window.persistKickoffProgress);
+            form.addEventListener('change', window.persistKickoffProgress);
+        }
+
         if(form) {
             async function handleSubmit(event) {
                 event.preventDefault();
@@ -706,13 +754,67 @@
                     });
                     
                     if (response.ok) {
+                        // Enregistrement du brief dans Supabase : il alimente
+                        // l'espace d'administration et sert de base au devis
+                        // généré automatiquement (voir assets/js/quote-builder.js).
+                        try {
+                            const db = await window.NM.dbReady;
+                            const stored = JSON.parse(localStorage.getItem('kickoffData') || '{}');
+
+                            const payload = {};
+                            data.forEach((value, key) => {
+                                if (key.startsWith('_')) return;
+                                payload[key] = value;
+                            });
+
+                            const documents = (stored.documents || '')
+                                .split(',').map(v => v.trim()).filter(Boolean);
+                            const clubOptions = (stored.clubOptions || '')
+                                .split(',').map(v => v.trim()).filter(Boolean);
+
+                            const packKey = (window.getRadio('project_pack') || stored.pack || '').toLowerCase();
+                            const quoteSource = {
+                                pack: stored.requestType === 'existing' ? null : packKey,
+                                documents: documents,
+                                club_options: clubOptions,
+                                intervention_type: stored.intervention || null,
+                                serenity_tier: stored.serenite || null,
+                                serenity_cycle: stored.sereniteCycle || null
+                            };
+                            const draft = (window.NM && NM.quote) ? NM.quote.build(quoteSource) : null;
+
+                            await db.saveBrief({
+                                lead_id: stored.leadId || null,
+                                email: window.getVal('contactEmail') || stored.email || null,
+                                contact_name: window.getVal('contactName') || stored.name || null,
+                                organisation: window.getVal('companyName') || stored.company || null,
+                                pack: quoteSource.pack,
+                                payload: Object.assign({}, payload, {
+                                    source: stored.source || 'portfolio',
+                                    request_type: stored.requestType || 'newsite',
+                                    rdv: stored.date || null,
+                                    phone: stored.phone || null,
+                                    documents: documents,
+                                    club_options: clubOptions,
+                                    serenity_tier: quoteSource.serenity_tier,
+                                    serenity_cycle: quoteSource.serenity_cycle,
+                                    intervention_type: quoteSource.intervention_type,
+                                    quote_draft: draft
+                                })
+                            });
+                        } catch (e) {
+                            console.error('Brief non enregistré côté base (non bloquant) :', e);
+                        }
+
                         const toast = document.getElementById('toast');
                         if(toast) {
-                            toast.innerHTML = '<i class="ph-fill ph-check-circle text-accent-400 text-xl"></i><span class="font-medium text-sm">Bien reçu ! Je reviens vers vous vite.</span>';
+                            toast.innerHTML = '<i class="ph-fill ph-check-circle text-accent-400 text-xl"></i><span class="font-medium text-sm">Brief bien reçu ! Je prépare votre devis et je reviens vers vous.</span>';
                             toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
                             setTimeout(() => toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4'), 5000);
                         }
                         form.reset();
+                        // Envoi confirmé : on peut effacer le brouillon sauvegardé.
+                        try { localStorage.removeItem('kickoffData'); } catch (e) { /* ignore */ }
                     } else {
                         const data = await response.json();
                         if (Object.hasOwn(data, 'errors')) {
@@ -732,6 +834,32 @@
             form.addEventListener("submit", handleSubmit);
         }
     });
+    </script>
+
+    <script src="../config.js"></script>
+    <script type="module" src="../assets/js/supabase-client.js"></script>
+    <script src="../assets/js/quote-builder.js"></script>
+    <script>
+        // Synchronise les tarifs des packs avec le catalogue central
+        // (config.js) : aucun prix n'est figé dans cette page.
+        (function () {
+            var C = window.APP_CONFIG;
+            if (!C) return;
+            var map = { 'pack-eclair': 'eclair', 'pack-essentiel': 'essentiel', 'pack-vitrine': 'vitrine', 'pack-premium': 'premium' };
+            Object.keys(map).forEach(function (id) {
+                var input = document.getElementById(id);
+                var offer = C.offers[map[id]];
+                if (!input || !offer) return;
+                input.setAttribute('data-price', offer.price.EUR);
+                var label = document.querySelector('label[for="' + id + '"]');
+                if (label && label.querySelector('.pack-price') === null) {
+                    var span = document.createElement('span');
+                    span.className = 'pack-price block text-[10px] font-bold opacity-70 mt-0.5';
+                    span.textContent = Math.round(offer.price.EUR).toLocaleString('fr-FR') + ' €';
+                    label.appendChild(span);
+                }
+            });
+        })();
     </script>
 </body>
 </html>

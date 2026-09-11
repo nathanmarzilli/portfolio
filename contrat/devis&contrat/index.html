@@ -5,148 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Générateur Devis & Factures | Nathan Marzilli</title>
     
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#f6f8fb">
+    <link rel="icon" href="../../images/profile-40.jpg">
+
+    <link rel="stylesheet" href="../../assets/css/theme.css">
+    <link rel="stylesheet" href="../../assets/css/app.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../../assets/js/tailwind-theme.js"></script>
+    <script src="../../assets/js/nm-boot.js"></script>
+    <script src="../../assets/js/theme.js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] },
-                    colors: {
-                        dark: { 950: '#020617', 900: '#0B1120', 800: '#1E293B' },
-                        accent: { 400: '#2DD4BF', 500: '#14B8A6' },
-                        gold: { 400: '#FBBF24' }
-                    }
-                }
-            }
-        }
-    </script>
-
     <style>
-        body { background-color: #020617; color: #E2E8F0; }
+        /* --- Styles propres au générateur de documents --- */
+        .input-premium { border-radius: .5rem; padding: .6rem .8rem; font-size: .9rem; }
+        .label-premium { font-size: .7rem; margin-bottom: .25rem; }
+        .section-title { font-size: 1rem; margin-top: 1.5rem; margin-bottom: 1rem; }
 
-        /* SÉCURITÉ & LOADER */
-        #secure-content { display: none; }
-        #auth-loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #020617; z-index: 9999;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-        }
-        
-        .glass-card {
-            background: rgba(30, 41, 59, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            border-radius: 1.5rem;
-        }
-
-        .input-premium {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            border-radius: 0.5rem;
-            padding: 0.6rem 0.8rem;
-            width: 100%;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-        }
-        .input-premium:focus {
-            border-color: #2DD4BF;
-            outline: none;
-            background: rgba(15, 23, 42, 0.9);
-        }
-        
-        .label-premium {
-            display: block;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #94A3B8;
-            margin-bottom: 0.25rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .section-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            color: white;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 0.5rem;
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .section-title i { color: #2DD4BF; }
-
-        /* Switch Mode Styles */
         .mode-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: all 0.3s;
-            border: 1px solid transparent;
-            cursor: pointer;
+            padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600;
+            transition: all 0.3s; border: 1px solid transparent; cursor: pointer;
         }
         .mode-btn.active {
-            background: #2DD4BF;
-            color: #020617;
-            box-shadow: 0 0 15px rgba(45,212,191,0.3);
+            background: rgb(var(--t-accent-400));
+            color: rgb(var(--t-dark-950));
+            box-shadow: 0 4px 14px rgb(var(--t-accent-400) / .3);
         }
         .mode-btn.inactive {
-            background: rgba(255,255,255,0.05);
-            color: #94a3b8;
-            border-color: rgba(255,255,255,0.1);
+            background: rgb(var(--t-slate-500) / .08);
+            color: rgb(var(--t-slate-400));
+            border-color: rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2));
         }
-        .mode-btn.inactive:hover {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
+        .mode-btn.inactive:hover { background: rgb(var(--t-slate-500) / .16); color: rgb(var(--t-white)); }
 
-        /* PDF Engine Styles */
+        .quick-add {
+            font-size: 10px; padding: .25rem .5rem; border-radius: .375rem;
+            background: rgb(var(--t-slate-500) / .08);
+            border: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2));
+            color: rgb(var(--t-slate-300)); white-space: nowrap;
+            transition: background-color .2s, color .2s;
+        }
+        .quick-add:hover { background: rgb(var(--t-accent-400)); color: rgb(var(--t-dark-950)); }
+
+        /* --- Document PDF : toujours sur fond blanc, quel que soit le thème --- */
         #pdf-content {
-            background: white;
-            color: #1e293b;
-            font-family: 'Inter', sans-serif;
-            font-size: 10pt;
-            width: 210mm;
-            min-height: 297mm;
-            padding: 0;
-            margin: 0 auto;
-            /* CORRECTION LAYOUT : Flex column pour gérer le footer sticky proprement */
-            display: flex;
-            flex-direction: column;
+            background: #ffffff; color: #1e293b;
+            font-family: 'Inter', sans-serif; font-size: 10pt;
+            width: 210mm; min-height: 297mm; padding: 0; margin: 0 auto;
+            display: flex; flex-direction: column;
         }
-        
-        /* La page occupe tout l'espace et s'organise en colonne */
-        .pdf-page { 
-            padding: 15mm 15mm; 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: flex-start;
-        }
-        
-        /* Cette div pousse le footer vers le bas */
-        .content-wrapper {
-            flex: 1; /* Prend tout l'espace disponible */
-        }
-        
-        /* Footer qui s'adapte */
-        .pdf-footer {
-            margin-top: auto; /* Pousse vers le bas mais reste dans le flux */
-            padding-top: 20px;
-        }
+        .pdf-page { padding: 15mm; flex: 1; display: flex; flex-direction: column; justify-content: flex-start; }
+        .content-wrapper { flex: 1; }
+        .pdf-footer { margin-top: auto; padding-top: 20px; }
 
-        /* Table Styles within PDF */
         .doc-table { width: 100%; border-collapse: collapse; margin-top: 30px; }
         .doc-table th { text-align: left; padding: 10px; border-bottom: 2px solid #e2e8f0; color: #64748b; font-size: 8pt; text-transform: uppercase; font-weight: 600; }
         .doc-table td { padding: 12px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
@@ -155,9 +73,19 @@
         .doc-table td.price { width: 15%; text-align: right; }
         .doc-table td.total { width: 20%; text-align: right; font-weight: 600; }
 
-        /* Signature Canvas */
-        .sig-wrapper { background: white; border-radius: 0.5rem; border: 2px dashed #475569; position: relative; overflow: hidden; }
+        .sig-wrapper { background: #ffffff; border-radius: 0.5rem; border: 2px dashed rgb(var(--t-slate-600)); position: relative; overflow: hidden; }
         canvas.sig-canvas { width: 100%; height: 100px; cursor: crosshair; display: block; touch-action: none; }
+
+        /* Liste des documents enregistrés */
+        .saved-doc {
+            display: flex; align-items: center; gap: .6rem; width: 100%;
+            padding: .55rem .7rem; border-radius: .6rem; text-align: left;
+            border: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2));
+            background: rgb(var(--t-dark-950));
+            transition: border-color .2s, background-color .2s;
+        }
+        .saved-doc:hover { border-color: rgb(var(--t-accent-400) / .5); background: rgb(var(--t-slate-500) / .08); }
+        .saved-doc.is-current { border-color: rgb(var(--t-accent-400)); background: rgb(var(--t-accent-400) / .1); }
 
         @media (max-width: 1024px) {
             .app-grid { grid-template-columns: 1fr; }
@@ -180,17 +108,22 @@
             <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-accent-400/10 rounded-full blur-[100px] mix-blend-screen animate-blob animation-delay-2000"></div>
         </div>
 
-        <nav class="w-full border-b border-white/5 bg-dark-950/50 backdrop-blur-md sticky top-0 z-40">
-            <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-400 to-blue-600 flex items-center justify-center text-dark-950 font-bold">
-                        <i class="ph-bold ph-file-text"></i>
-                    </div>
-                    <span class="font-display font-bold text-lg tracking-wide text-white">Nathan<span class="text-accent-400">Docs</span></span>
-                </div>
-                <a href="../../index.html" class="text-xs font-medium text-slate-400 hover:text-white transition-colors flex items-center gap-2 border border-white/10 px-3 py-1.5 rounded-lg bg-white/5">
-                    <i class="ph-bold ph-arrow-left"></i> Retour
+        <nav class="w-full nav-glass sticky top-0 z-40">
+            <div class="max-w-[1600px] mx-auto px-4 h-16 flex items-center justify-between gap-3">
+                <a href="../../" class="flex items-center gap-3 group shrink-0" title="Retour à l'accueil">
+                    <span class="w-9 h-9 rounded-full overflow-hidden border border-slate-500/20 group-hover:border-accent-400 transition-colors block shrink-0">
+                        <img src="../../images/profile-96.jpg" srcset="../../images/profile-96.jpg 1x, ../../images/profile-192.jpg 2x" width="36" height="36" alt="" class="w-full h-full object-cover">
+                    </span>
+                    <span class="leading-tight">
+                        <span class="font-display font-bold text-base tracking-wide text-white block">Devis &amp; factures</span>
+                        <span class="block text-[10px] text-accent-400 font-bold uppercase tracking-wider" id="doc-context-label">Nouveau document</span>
+                    </span>
                 </a>
+                <div class="flex items-center gap-2">
+                    <div data-theme-toggle></div>
+                    <a href="../../admin/" class="btn-ghost"><i class="ph-bold ph-users-three" aria-hidden="true"></i> <span class="hidden sm:inline">Clients</span></a>
+                    <a href="../../" class="btn-ghost"><i class="ph-bold ph-arrow-left" aria-hidden="true"></i> <span class="hidden sm:inline">Accueil</span></a>
+                </div>
             </div>
         </nav>
 
@@ -203,36 +136,51 @@
                     <button onclick="setMode('invoice')" id="btn-invoice" class="mode-btn inactive flex-1">Facture</button>
                 </div>
 
-                <div class="section-title mt-0"><i class="ph-duotone ph-identification-card"></i> Infos Client</div>
+                <div class="section-title mt-0"><i class="ph-duotone ph-identification-card"></i> Infos client</div>
                 <div class="space-y-3">
                     <div>
-                        <label class="label-premium">Client / Société</label>
-                        <input type="text" id="clientName" placeholder="ex: SAS MABOUL" class="input-premium" oninput="updatePreview()">
+                        <label class="label-premium" for="clientPicker">Client enregistré</label>
+                        <select id="clientPicker" class="select-premium !py-2 !text-sm">
+                            <option value="">— Saisie libre —</option>
+                        </select>
                     </div>
                     <div>
-                        <label class="label-premium">Adresse</label>
+                        <label class="label-premium" for="clientName">Client / société</label>
+                        <input type="text" id="clientName" placeholder="ex : Badminton Club Évian" class="input-premium" oninput="updatePreview()">
+                    </div>
+                    <div>
+                        <label class="label-premium" for="clientEmail">E-mail (obligatoire pour l'envoi Stripe)</label>
+                        <input type="email" id="clientEmail" placeholder="contact@client.fr" class="input-premium">
+                    </div>
+                    <div>
+                        <label class="label-premium" for="clientAddr">Adresse</label>
                         <textarea id="clientAddr" rows="2" placeholder="Adresse complète" class="input-premium resize-none" oninput="updatePreview()"></textarea>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="label-premium">N° Doc</label>
-                            <input type="text" id="docNumber" value="DEV-2024-001" class="input-premium" oninput="updatePreview()">
+                            <label class="label-premium" for="docNumber">N° document</label>
+                            <input type="text" id="docNumber" value="DEV-2026-001" class="input-premium" oninput="updatePreview()">
                         </div>
                         <div>
-                            <label class="label-premium">Date</label>
+                            <label class="label-premium" for="docDate">Date</label>
                             <input type="date" id="docDate" class="input-premium" onchange="updatePreview()">
                         </div>
+                    </div>
+                    <div>
+                        <label class="label-premium" for="docStatus">Statut</label>
+                        <select id="docStatus" class="select-premium !py-2 !text-sm">
+                            <option value="brouillon">Brouillon</option>
+                            <option value="envoye">Envoyé</option>
+                            <option value="accepte">Accepté</option>
+                            <option value="refuse">Refusé</option>
+                            <option value="payee">Payée</option>
+                        </select>
                     </div>
                 </div>
 
                 <div class="section-title"><i class="ph-duotone ph-list-plus"></i> Prestations</div>
                 
-                <div class="flex gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide">
-                    <button onclick="addItem('Pack Essentiel', 900)" class="text-[10px] bg-white/5 border border-white/10 px-2 py-1 rounded text-slate-300 hover:bg-accent-400 hover:text-dark-950 transition-colors whitespace-nowrap">+ Essentiel</button>
-                    <button onclick="addItem('Pack Vitrine Artisan', 1700)" class="text-[10px] bg-white/5 border border-white/10 px-2 py-1 rounded text-slate-300 hover:bg-accent-400 hover:text-dark-950 transition-colors whitespace-nowrap">+ Vitrine</button>
-                    <button onclick="addItem('Pack Premium', 2500)" class="text-[10px] bg-white/5 border border-white/10 px-2 py-1 rounded text-slate-300 hover:bg-accent-400 hover:text-dark-950 transition-colors whitespace-nowrap">+ Premium</button>
-                    <button onclick="addItem('Acompte 30%', -1)" class="text-[10px] bg-white/5 border border-white/10 px-2 py-1 rounded text-gold-400 border-gold-400/30 hover:bg-gold-400 hover:text-dark-950 transition-colors whitespace-nowrap">% Acompte</button>
-                </div>
+                <div id="quick-add-bar" class="flex gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide"></div>
 
                 <div id="items-container" class="space-y-3 mb-4">
                     </div>
@@ -263,12 +211,41 @@
                     </div>
                 </div>
                 
-                <div class="sticky bottom-0 bg-dark-950/80 backdrop-blur pt-4 pb-2 mt-6 border-t border-white/10">
-                    <button class="w-full py-4 rounded-xl bg-gradient-to-r from-accent-500 to-blue-600 text-white font-bold text-lg shadow-lg hover:shadow-accent-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-3" onclick="generatePDF()">
-                        <span>Télécharger PDF</span>
-                        <i class="ph-bold ph-download-simple"></i>
+                <div class="pt-5 mt-6 border-t border-slate-500/15 space-y-2">
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" class="btn-primary" onclick="saveDocument()">
+                            <i class="ph-bold ph-floppy-disk" aria-hidden="true"></i> Enregistrer
+                        </button>
+                        <button type="button" class="btn-ghost !py-[0.85rem]" onclick="generatePDF()">
+                            <i class="ph-bold ph-download-simple" aria-hidden="true"></i> Télécharger le PDF
+                        </button>
+                    </div>
+                    <button type="button" id="btn-send-invoice" class="btn-primary w-full hidden !bg-transparent" onclick="sendInvoiceByEmail()"
+                            style="background: rgb(var(--t-blue-500)); color:#fff;">
+                        <i class="ph-bold ph-paper-plane-right" aria-hidden="true"></i>
+                        Envoyer la facture &amp; le lien de paiement
+                    </button>
+                    <p id="save-hint" class="text-[10px] text-slate-500 text-center"></p>
+                </div>
+
+                <!-- Documents enregistrés : rechargement en un clic -->
+                <div class="section-title"><i class="ph-duotone ph-folders"></i> Documents enregistrés</div>
+                <div class="flex items-center gap-2 mb-3">
+                    <select id="savedFilter" class="select-premium !py-2 !text-sm flex-1">
+                        <option value="">Tous les documents</option>
+                        <option value="devis">Devis uniquement</option>
+                        <option value="facture">Factures uniquement</option>
+                    </select>
+                    <button type="button" class="btn-ghost !py-2 !px-3" onclick="refreshSavedDocuments()" aria-label="Actualiser la liste">
+                        <i class="ph-bold ph-arrows-clockwise" aria-hidden="true"></i>
                     </button>
                 </div>
+                <div id="saved-list" class="space-y-2 max-h-72 overflow-y-auto pr-1">
+                    <p class="text-xs text-slate-500 italic">Chargement…</p>
+                </div>
+                <button type="button" class="btn-ghost w-full mt-3" onclick="newDocument()">
+                    <i class="ph-bold ph-file-plus" aria-hidden="true"></i> Nouveau document vierge
+                </button>
             </div>
 
             <div class="preview-container flex justify-center sticky top-24">
@@ -356,209 +333,530 @@
             </div>
 
         </main>
-    </div> <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    </div>
 
-        // --- CONFIGURATION FIREBASE (REMPLACE PAR TES CLÉS !) ---
-        const firebaseConfig = {
-		  apiKey: "AIzaSyD6Q-HVto8eybwGo9YgcFx4hu7rWBLNYfg",
-		  authDomain: "portfolio-nathan-e148f.firebaseapp.com",
-		  projectId: "portfolio-nathan-e148f",
-		  storageBucket: "portfolio-nathan-e148f.firebasestorage.app",
-		  messagingSenderId: "61408006418",
-		  appId: "1:61408006418:web:8a448e8ca60ec77bf523cb"
-		};
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // --- VÉRIFICATION DE SÉCURITÉ ---
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // UTILISATEUR CONNECTÉ
+    <!-- Accès sécurisé : mêmes identifiants que l'espace clients -->
+    <script src="../../config.js"></script>
+    <script type="module" src="../../assets/js/supabase-client.js"></script>
+    <script src="../../assets/js/i18n.js"></script>
+    <script src="../../assets/js/quote-builder.js"></script>
+    <script>
+        (async function () {
+            try {
+                const db = await window.NM.dbReady;
+                const user = await db.requireAdmin('../../admin/');
+                if (!user) return;
                 document.getElementById('auth-loader').style.display = 'none';
                 document.getElementById('secure-content').style.display = 'block';
-                if(window.initApp) window.initApp();
-            } else {
-                // PAS CONNECTÉ -> REDIRECTION
-                window.location.href = "../../index.html#contact"; 
+                if (window.initApp) window.initApp();
+            } catch (e) {
+                console.error(e);
+                document.getElementById('auth-loader').innerHTML =
+                    '<p class="text-red-400 text-sm text-center px-6">Accès impossible : base de données injoignable.<br><a class="underline" href="../../">Retour à l\'accueil</a></p>';
             }
-        });
+        })();
     </script>
 
     <script>
-        // --- DATA STATE ---
-        let currentMode = 'quote'; // 'quote' or 'invoice'
-        let items = [
-            { desc: "Création Site Web - Pack Vitrine", qty: 1, price: 1700 }
-        ];
+        // ============================================================
+        // ÉTAT DU DOCUMENT
+        // ------------------------------------------------------------
+        // Un document = un devis OU une facture. Il peut être
+        // enregistré dans Supabase (table nm_documents) puis rechargé
+        // à l'identique, y compris ses lignes et sa signature.
+        // ============================================================
+        let currentMode = 'quote';        // 'quote' (devis) | 'invoice' (facture)
+        let currentDocId = null;          // identifiant Supabase du document ouvert
+        let savedDocuments = [];
+        let knownClients = [];
+        let items = [];
 
-        // --- INIT APP (Appelé par Firebase) ---
-        window.initApp = function() {
-            const d = new Date();
-            document.getElementById('docDate').valueAsDate = d;
-            
-            // Signature logic
+        function kindOf(mode) { return mode === 'invoice' ? 'facture' : 'devis'; }
+
+        // ------------------------------------------------------------
+        // Initialisation (appelée après validation de l'accès sécurisé)
+        // ------------------------------------------------------------
+        window.initApp = async function () {
+            document.getElementById('docDate').valueAsDate = new Date();
             initPad();
-            
-            // Render initial state
-            renderItems();
-            setMode('quote'); // Initialise l'état correct des boutons
+            renderQuickAdd();
+            setMode('quote');
+
+            document.getElementById('savedFilter').addEventListener('change', renderSavedList);
+            document.getElementById('clientPicker').addEventListener('change', applyClientPreset);
+            document.getElementById('docStatus').addEventListener('change', function () {
+                hint('Pensez à enregistrer pour conserver ce statut.');
+            });
+
+            await Promise.all([refreshSavedDocuments(), loadClients()]);
+
+            // Ouverture directe d'un document (?doc=<id>) ou pré-remplissage
+            // depuis une fiche client (?client=<id>&kind=devis)
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('doc')) {
+                await openDocument(params.get('doc'));
+            } else if (params.get('client')) {
+                prefillFromClient(params.get('client'), params.get('kind') || 'devis');
+            } else {
+                items = [];
+                renderItems();
+                await suggestNumber();
+            }
         };
 
-        // --- MODE SWITCHER (FIXED) ---
+        function hint(message, isError) {
+            const el = document.getElementById('save-hint');
+            el.textContent = message || '';
+            el.className = 'text-[10px] text-center ' + (isError ? 'text-red-400' : 'text-slate-500');
+        }
+
+        // ------------------------------------------------------------
+        // Raccourcis de prestations — issus du catalogue central
+        // ------------------------------------------------------------
+        function renderQuickAdd() {
+            const C = window.APP_CONFIG;
+            const bar = document.getElementById('quick-add-bar');
+            if (!C || !bar) return;
+
+            const entries = [];
+            (C.packOrder || []).forEach(function (key) {
+                const offer = C.offers[key];
+                entries.push({ label: '+ ' + offer.name, desc: 'Création de site — Pack ' + offer.name, price: offer.price.EUR });
+            });
+            ['serenite', 'serenitePlus'].forEach(function (key) {
+                const offer = C.offers[key];
+                entries.push({ label: '+ ' + offer.name + ' (an)', desc: offer.name + ' — abonnement annuel (2 mois offerts)', price: offer.annualPrice.EUR });
+            });
+            (C.documentOptions || []).forEach(function (opt) {
+                entries.push({ label: '+ ' + opt.label, desc: 'Automatisation de document — ' + opt.label, price: opt.priceEur });
+            });
+            (C.clubOptions || []).forEach(function (opt) {
+                entries.push({ label: '+ ' + opt.label, desc: 'Module club — ' + opt.label, price: opt.priceEur });
+            });
+
+            bar.innerHTML = entries.map(function (e, i) {
+                return '<button type="button" class="quick-add" data-i="' + i + '">' + e.label + '</button>';
+            }).join('') +
+            '<button type="button" class="quick-add" style="color:rgb(var(--t-gold-400));border-color:rgb(var(--t-gold-400)/.4)" data-acompte="1">% Acompte 30 %</button>';
+
+            bar.querySelectorAll('[data-i]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const e = entries[Number(btn.dataset.i)];
+                    addItem(e.desc, e.price);
+                });
+            });
+            bar.querySelector('[data-acompte]').addEventListener('click', function () { addItem('', -1); });
+        }
+
+        // ------------------------------------------------------------
+        // Bascule devis / facture
+        // ------------------------------------------------------------
         function setMode(mode) {
             currentMode = mode;
             const btnQuote = document.getElementById('btn-quote');
             const btnInvoice = document.getElementById('btn-invoice');
-            
-            if (mode === 'quote') {
-                // Mode DEVIS : Quote Actif, Invoice Inactif
-                btnQuote.classList.add('active');
-                btnQuote.classList.remove('inactive');
-                
-                btnInvoice.classList.add('inactive');
-                btnInvoice.classList.remove('active');
-                
-                document.getElementById('docTitle').innerText = "DEVIS";
-                document.getElementById('docTitle').style.color = "#e2e8f0"; // Slate Light
-                
-                // Texte légal Devis
-                document.getElementById('legalText').innerHTML = `
-                    <strong>Validité du devis :</strong> 30 jours.<br>
-                    <strong>Conditions de règlement :</strong> 30% à la commande, solde à la livraison.<br>
-                    La signature du présent devis vaut acceptation des conditions générales de vente. Le transfert de propriété intellectuelle ne sera effectif qu'après paiement intégral de la prestation.
-                `;
-                document.getElementById('pSigBlock').style.display = 'block';
-                document.getElementById('sign-section').style.display = 'block';
-                
-                // Auto numéro
-                if(document.getElementById('docNumber').value.startsWith('FAC')) {
-                    document.getElementById('docNumber').value = "DEV-2026-001";
-                }
+            const isQuote = mode === 'quote';
 
-            } else {
-                // Mode FACTURE : Invoice Actif, Quote Inactif
-                btnInvoice.classList.add('active');
-                btnInvoice.classList.remove('inactive');
+            btnQuote.classList.toggle('active', isQuote);
+            btnQuote.classList.toggle('inactive', !isQuote);
+            btnInvoice.classList.toggle('active', !isQuote);
+            btnInvoice.classList.toggle('inactive', isQuote);
 
-                btnQuote.classList.add('inactive');
-                btnQuote.classList.remove('active');
+            const title = document.getElementById('docTitle');
+            title.innerText = isQuote ? 'DEVIS' : 'FACTURE';
+            title.style.color = isQuote ? '#cbd5e1' : '#14b8a6';
 
-                document.getElementById('docTitle').innerText = "FACTURE";
-                document.getElementById('docTitle').style.color = "#14b8a6"; // Teal
-                
-                // Texte légal Facture
-                document.getElementById('legalText').innerHTML = `
-                    <strong>Conditions de paiement :</strong> Réception de facture, sans escompte.<br>
-                    <strong>Pénalités de retard :</strong> 3 fois le taux d'intérêt légal. Indemnité forfaitaire pour frais de recouvrement : 40€.<br>
-                    <strong>Réserve de propriété :</strong> Les biens/services vendus demeurent la propriété du vendeur jusqu'au complet paiement du prix.
-                `;
-                
-                document.getElementById('pSigBlock').style.display = 'none';
-                document.getElementById('sign-section').style.display = 'none';
+            const validity = (window.APP_CONFIG && APP_CONFIG.funnel) ? APP_CONFIG.funnel.quoteValidityDays : 30;
+            const deposit = (window.APP_CONFIG && APP_CONFIG.funnel) ? APP_CONFIG.funnel.depositPercent : 30;
 
-                if(document.getElementById('docNumber').value.startsWith('DEV')) {
-                    document.getElementById('docNumber').value = "FAC-2026-001";
-                }
+            document.getElementById('legalText').innerHTML = isQuote
+                ? '<strong>Validité du devis :</strong> ' + validity + ' jours.<br>' +
+                  '<strong>Conditions de règlement :</strong> ' + deposit + ' % à la commande, solde à la livraison.<br>' +
+                  'La signature du présent devis vaut acceptation des conditions générales de vente. ' +
+                  'Le transfert de propriété intellectuelle ne sera effectif qu\'après paiement intégral de la prestation.'
+                : '<strong>Conditions de paiement :</strong> à réception de facture, sans escompte.<br>' +
+                  '<strong>Pénalités de retard :</strong> 3 fois le taux d\'intérêt légal. Indemnité forfaitaire pour frais de recouvrement : 40 €.<br>' +
+                  '<strong>Réserve de propriété :</strong> les prestations demeurent la propriété du prestataire jusqu\'au complet paiement du prix.';
+
+            document.getElementById('pSigBlock').style.display = isQuote ? 'block' : 'none';
+            document.getElementById('sign-section').style.display = isQuote ? 'block' : 'none';
+            document.getElementById('btn-send-invoice').classList.toggle('hidden', isQuote);
+
+            const numberField = document.getElementById('docNumber');
+            const wrongPrefix = isQuote ? 'FAC' : 'DEV';
+            if (numberField.value.startsWith(wrongPrefix)) suggestNumber();
+
+            updatePreview();
+        }
+        window.setMode = setMode;
+
+        async function suggestNumber() {
+            try {
+                const db = await window.NM.dbReady;
+                document.getElementById('docNumber').value = await db.nextDocumentNumber(kindOf(currentMode));
+            } catch (e) {
+                const year = new Date().getFullYear();
+                document.getElementById('docNumber').value = (currentMode === 'invoice' ? 'FAC-' : 'DEV-') + year + '-001';
             }
             updatePreview();
         }
 
-        // --- ITEMS MANAGEMENT ---
-        function addItem(name = "", price = 0) {
-            if(price === -1) {
-                // Logique Acompte : Calculer 30% du total actuel
-                let total = items.reduce((acc, item) => acc + (item.qty * item.price), 0);
-                price = -(total * 0.30);
-                name = "Acompte à la commande (30%)";
+        // ------------------------------------------------------------
+        // Lignes de prestation
+        // ------------------------------------------------------------
+        function addItem(name = '', price = 0) {
+            if (price === -1) {
+                const total = items.reduce(function (acc, item) { return acc + (item.qty * item.price); }, 0);
+                const pct = (window.APP_CONFIG && APP_CONFIG.funnel) ? APP_CONFIG.funnel.depositPercent : 30;
+                price = -(Math.round(total * (pct / 100) * 100) / 100);
+                name = 'Acompte à la commande (' + pct + ' %)';
             }
             items.push({ desc: name, qty: 1, price: price });
             renderItems();
         }
+        window.addItem = addItem;
 
         function updateItem(index, field, value) {
-            items[index][field] = field === 'desc' ? value : parseFloat(value);
+            items[index][field] = field === 'desc' ? value : (parseFloat(value) || 0);
             renderItems();
         }
+        window.updateItem = updateItem;
 
-        function removeItem(index) {
-            items.splice(index, 1);
-            renderItems();
-        }
+        function removeItem(index) { items.splice(index, 1); renderItems(); }
+        window.removeItem = removeItem;
 
         function renderItems() {
             const container = document.getElementById('items-container');
             const tbody = document.getElementById('pTableBody');
-            
             container.innerHTML = '';
             tbody.innerHTML = '';
-            
-            let totalHT = 0;
 
-            items.forEach((item, index) => {
+            let totalHT = 0;
+            items.forEach(function (item, index) {
                 const lineTotal = item.qty * item.price;
                 totalHT += lineTotal;
 
-                // Form Inputs
                 const div = document.createElement('div');
-                div.className = "grid grid-cols-[1fr_60px_90px_30px] gap-2 items-center";
-                div.innerHTML = `
-                    <input type="text" class="input-premium text-xs" value="${item.desc}" oninput="updateItem(${index}, 'desc', this.value)" placeholder="Description">
-                    <input type="number" class="input-premium text-xs text-center" value="${item.qty}" oninput="updateItem(${index}, 'qty', this.value)">
-                    <input type="number" step="0.01" class="input-premium text-xs text-right" value="${item.price.toFixed(2)}" oninput="updateItem(${index}, 'price', this.value)">
-                    <button onclick="removeItem(${index})" class="text-red-400 hover:text-red-200"><i class="ph-bold ph-trash"></i></button>
-                `;
-                container.appendChild(div);
+                div.className = 'grid grid-cols-[1fr_60px_90px_30px] gap-2 items-center';
+                div.innerHTML =
+                    '<input type="text" class="input-premium text-xs" value="' + escapeAttr(item.desc) + '" placeholder="Description">' +
+                    '<input type="number" class="input-premium text-xs text-center" value="' + item.qty + '">' +
+                    '<input type="number" step="0.01" class="input-premium text-xs text-right" value="' + Number(item.price).toFixed(2) + '">' +
+                    '<button type="button" class="text-red-400 hover:text-red-300" aria-label="Supprimer la ligne"><i class="ph-bold ph-trash"></i></button>';
 
-                // Preview Row
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="desc">${item.desc}</td>
-                    <td class="qty">${item.qty}</td>
-                    <td class="price">${item.price.toFixed(2)} €</td>
-                    <td class="total">${lineTotal.toFixed(2)} €</td>
-                `;
-                tbody.appendChild(tr);
+                const inputs = div.querySelectorAll('input');
+                inputs[0].addEventListener('input', function () { items[index].desc = this.value; renderPreviewTable(); });
+                inputs[1].addEventListener('input', function () { updateItem(index, 'qty', this.value); });
+                inputs[2].addEventListener('input', function () { updateItem(index, 'price', this.value); });
+                div.querySelector('button').addEventListener('click', function () { removeItem(index); });
+                container.appendChild(div);
             });
 
-            // Calc Totals
+            renderPreviewTable();
+            renderTotals(totalHT);
+        }
+
+        function renderPreviewTable() {
+            const tbody = document.getElementById('pTableBody');
+            tbody.innerHTML = items.map(function (item) {
+                return '<tr>' +
+                    '<td class="desc">' + escapeHtml(item.desc) + '</td>' +
+                    '<td class="qty">' + item.qty + '</td>' +
+                    '<td class="price">' + Number(item.price).toFixed(2) + ' €</td>' +
+                    '<td class="total">' + (item.qty * item.price).toFixed(2) + ' €</td>' +
+                '</tr>';
+            }).join('');
+        }
+
+        function renderTotals(totalHT) {
+            if (totalHT === undefined) {
+                totalHT = items.reduce(function (s, it) { return s + it.qty * it.price; }, 0);
+            }
             const tvaActive = document.getElementById('tvaToggle').checked;
             const tvaAmt = tvaActive ? totalHT * 0.20 : 0;
             const totalNet = totalHT + tvaAmt;
 
-            document.getElementById('formTotal').innerText = totalNet.toFixed(2) + " €";
-            
-            document.getElementById('pTotalHT').innerText = totalHT.toFixed(2) + " €";
-            
+            document.getElementById('formTotal').innerText = totalNet.toFixed(2) + ' €';
+            document.getElementById('pTotalHT').innerText = totalHT.toFixed(2) + ' €';
+            document.getElementById('pTotalNet').innerText = totalNet.toFixed(2) + ' €';
+
             const rowTVA = document.getElementById('rowTVA');
             const tvaMention = document.getElementById('tvaMention');
-            
             if (tvaActive) {
                 rowTVA.style.display = 'table-row';
-                document.getElementById('pTVA').innerText = tvaAmt.toFixed(2) + " €";
+                document.getElementById('pTVA').innerText = tvaAmt.toFixed(2) + ' €';
                 tvaMention.style.display = 'none';
             } else {
                 rowTVA.style.display = 'none';
                 tvaMention.style.display = 'inline';
             }
-            
-            document.getElementById('pTotalNet').innerText = totalNet.toFixed(2) + " €";
         }
 
-        // --- GENERIC UPDATE ---
-        function updatePreview() {
-            // Header Info
-            document.getElementById('pClientName').innerText = document.getElementById('clientName').value || "Nom du Client";
-            document.getElementById('pClientAddr').innerText = document.getElementById('clientAddr').value || "Adresse...";
-            document.getElementById('pDocNumber').innerText = document.getElementById('docNumber').value;
-            
-            const d = new Date(document.getElementById('docDate').value);
-            document.getElementById('pDocDate').innerText = !isNaN(d) ? d.toLocaleDateString('fr-FR') : "...";
+        function escapeHtml(v) {
+            return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
-        
-        function calcTotal() { renderItems(); } // Alias for checkbox trigger
+        function escapeAttr(v) { return escapeHtml(v).replace(/"/g, '&quot;'); }
+
+        function updatePreview() {
+            document.getElementById('pClientName').innerText = document.getElementById('clientName').value || 'Nom du client';
+            document.getElementById('pClientAddr').innerText = document.getElementById('clientAddr').value || 'Adresse…';
+            document.getElementById('pDocNumber').innerText = document.getElementById('docNumber').value;
+            const d = new Date(document.getElementById('docDate').value);
+            document.getElementById('pDocDate').innerText = !isNaN(d) ? d.toLocaleDateString('fr-FR') : '…';
+        }
+        window.updatePreview = updatePreview;
+
+        function calcTotal() { renderTotals(); }
+        window.calcTotal = calcTotal;
+
+        // ------------------------------------------------------------
+        // Clients enregistrés
+        // ------------------------------------------------------------
+        async function loadClients() {
+            try {
+                const db = await window.NM.dbReady;
+                knownClients = await db.listClients();
+            } catch (e) { knownClients = []; }
+
+            const picker = document.getElementById('clientPicker');
+            picker.innerHTML = '<option value="">— Saisie libre —</option>' + knownClients.map(function (c) {
+                const name = c.organisation || ((c.first_name || '') + ' ' + (c.last_name || '')).trim() || c.email || 'Client';
+                return '<option value="' + c.id + '">' + escapeHtml(name) + '</option>';
+            }).join('');
+        }
+
+        function applyClientPreset() {
+            const id = document.getElementById('clientPicker').value;
+            const client = knownClients.filter(function (c) { return c.id === id; })[0];
+            if (!client) return;
+            document.getElementById('clientName').value = client.organisation || ((client.first_name || '') + ' ' + (client.last_name || '')).trim();
+            document.getElementById('clientEmail').value = client.email || '';
+            document.getElementById('clientAddr').value = client.address || '';
+            updatePreview();
+            hint('Client chargé. Ajoutez les prestations puis enregistrez.');
+        }
+
+        function prefillFromClient(clientId, kind) {
+            setMode(kind === 'facture' ? 'invoice' : 'quote');
+            const client = knownClients.filter(function (c) { return c.id === clientId; })[0];
+            if (!client) { suggestNumber(); return; }
+            document.getElementById('clientPicker').value = clientId;
+            applyClientPreset();
+
+            const draft = window.NM.quote.build({
+                pack: client.pack === 'club' ? APP_CONFIG.club.baseOfferKey : client.pack,
+                documents: (client.options || []).filter(function (o) { return o.key.indexOf('doc:') === 0; }).map(function (o) { return o.label; }),
+                club_options: (client.options || []).filter(function (o) { return o.key.indexOf('club:') === 0; }).map(function (o) { return o.label; }),
+                serenity_tier: client.serenity_tier,
+                serenity_cycle: client.serenity_cycle
+            });
+            items = draft.items.map(function (it) { return { desc: it.desc, qty: it.qty, price: it.price }; });
+            renderItems();
+            suggestNumber();
+        }
+
+        // ------------------------------------------------------------
+        // Enregistrement / rechargement
+        // ------------------------------------------------------------
+        function collectDocument() {
+            const totalHT = items.reduce(function (s, it) { return s + it.qty * it.price; }, 0);
+            const tvaActive = document.getElementById('tvaToggle').checked;
+            const sigImg = document.getElementById('pSigImg');
+
+            return {
+                kind: kindOf(currentMode),
+                number: document.getElementById('docNumber').value.trim(),
+                client_id: document.getElementById('clientPicker').value || null,
+                client_name: document.getElementById('clientName').value.trim(),
+                client_email: document.getElementById('clientEmail').value.trim() || null,
+                client_address: document.getElementById('clientAddr').value.trim(),
+                issue_date: document.getElementById('docDate').value || new Date().toISOString().slice(0, 10),
+                items: items,
+                vat_applied: tvaActive,
+                total_ht: Math.round(totalHT * 100) / 100,
+                total_ttc: Math.round(totalHT * (tvaActive ? 1.2 : 1) * 100) / 100,
+                currency: 'EUR',
+                signature_data: (sigImg && sigImg.style.display !== 'none' && sigImg.src.indexOf('data:') === 0) ? sigImg.src : null,
+                status: document.getElementById('docStatus').value
+            };
+        }
+
+        window.saveDocument = async function () {
+            const record = collectDocument();
+            if (!record.number) { hint('Renseignez un numéro de document.', true); return; }
+            if (!items.length) { hint('Ajoutez au moins une prestation.', true); return; }
+
+            try {
+                const db = await window.NM.dbReady;
+                if (currentDocId) record.id = currentDocId;
+                const saved = await db.saveDocument(record);
+                currentDocId = saved.id;
+                document.getElementById('doc-context-label').textContent = saved.number + ' — enregistré';
+                hint('Enregistré le ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) + '.');
+                await refreshSavedDocuments();
+            } catch (e) {
+                console.error(e);
+                hint('Enregistrement impossible : ' + (e.message || 'erreur inconnue'), true);
+            }
+        };
+
+        window.newDocument = function () {
+            currentDocId = null;
+            items = [];
+            document.getElementById('clientPicker').value = '';
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientEmail').value = '';
+            document.getElementById('clientAddr').value = '';
+            document.getElementById('docStatus').value = 'brouillon';
+            document.getElementById('tvaToggle').checked = false;
+            document.getElementById('docDate').valueAsDate = new Date();
+            if (typeof clearPad === 'function') clearPad();
+            document.getElementById('doc-context-label').textContent = 'Nouveau document';
+            renderItems();
+            suggestNumber();
+            updatePreview();
+            renderSavedList();
+            hint('');
+        };
+
+        window.refreshSavedDocuments = async function () {
+            try {
+                const db = await window.NM.dbReady;
+                savedDocuments = await db.listDocuments({ limit: 60 });
+            } catch (e) {
+                savedDocuments = [];
+            }
+            renderSavedList();
+        };
+
+        function renderSavedList() {
+            const list = document.getElementById('saved-list');
+            const filter = document.getElementById('savedFilter').value;
+            const rows = savedDocuments.filter(function (d) { return !filter || d.kind === filter; });
+
+            if (!rows.length) {
+                list.innerHTML = '<p class="text-xs text-slate-500 italic">Aucun document enregistré pour le moment.</p>';
+                return;
+            }
+
+            list.innerHTML = rows.map(function (d) {
+                const isInvoice = d.kind === 'facture';
+                return '<button type="button" class="saved-doc' + (d.id === currentDocId ? ' is-current' : '') + '" data-open="' + d.id + '">' +
+                    '<i class="ph-bold ' + (isInvoice ? 'ph-receipt text-amber-400' : 'ph-file-text text-blue-400') + '" aria-hidden="true"></i>' +
+                    '<span class="min-w-0 flex-1">' +
+                        '<span class="block text-xs font-bold text-white truncate">' + escapeHtml(d.number) + '</span>' +
+                        '<span class="block text-[10px] text-slate-500 truncate">' + escapeHtml(d.client_name || 'Sans client') + ' · ' +
+                            new Date(d.issue_date).toLocaleDateString('fr-FR') + '</span>' +
+                    '</span>' +
+                    '<span class="text-[11px] font-bold text-accent-400 whitespace-nowrap">' + Number(d.total_ttc || 0).toFixed(2) + ' €</span>' +
+                '</button>';
+            }).join('');
+
+            list.querySelectorAll('[data-open]').forEach(function (btn) {
+                btn.addEventListener('click', function () { openDocument(btn.dataset.open); });
+            });
+        }
+
+        async function openDocument(id) {
+            try {
+                const db = await window.NM.dbReady;
+                const d = await db.getDocument(id);
+                currentDocId = d.id;
+                setMode(d.kind === 'facture' ? 'invoice' : 'quote');
+
+                document.getElementById('clientPicker').value = d.client_id || '';
+                document.getElementById('clientName').value = d.client_name || '';
+                document.getElementById('clientEmail').value = d.client_email || '';
+                document.getElementById('clientAddr').value = d.client_address || '';
+                document.getElementById('docNumber').value = d.number || '';
+                document.getElementById('docDate').value = d.issue_date || '';
+                document.getElementById('docStatus').value = d.status || 'brouillon';
+                document.getElementById('tvaToggle').checked = !!d.vat_applied;
+
+                items = (d.items || []).map(function (it) {
+                    return { desc: it.desc, qty: Number(it.qty) || 1, price: Number(it.price) || 0 };
+                });
+
+                const sigImg = document.getElementById('pSigImg');
+                if (d.signature_data) { sigImg.src = d.signature_data; sigImg.style.display = 'block'; }
+                else { sigImg.src = ''; sigImg.style.display = 'none'; }
+
+                document.getElementById('doc-context-label').textContent = d.number;
+                renderItems();
+                updatePreview();
+                renderSavedList();
+                hint('Document rechargé. Modifiez puis enregistrez.');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (e) {
+                console.error(e);
+                hint('Impossible de charger ce document.', true);
+            }
+        }
+        window.openDocument = openDocument;
+
+        // ------------------------------------------------------------
+        // Envoi de la facture par Stripe (e-mail + lien de paiement)
+        // ------------------------------------------------------------
+        window.sendInvoiceByEmail = async function () {
+            if (currentMode !== 'invoice') return;
+            const record = collectDocument();
+            if (!record.client_email) { hint('Renseignez l’e-mail du client avant l’envoi.', true); return; }
+            if (!items.length) { hint('Ajoutez au moins une prestation.', true); return; }
+
+            const payable = items.filter(function (it) { return it.price > 0; });
+            if (!payable.length) { hint('Aucune ligne facturable (montants positifs).', true); return; }
+
+            if (!window.confirm('Envoyer la facture ' + record.number + ' à ' + record.client_email + ' ?\n\nStripe enverra l’e-mail avec le lien de paiement sécurisé.')) return;
+
+            const btn = document.getElementById('btn-send-invoice');
+            const original = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> Envoi en cours…';
+
+            try {
+                const db = await window.NM.dbReady;
+                if (!currentDocId) {
+                    const saved = await db.saveDocument(record);
+                    currentDocId = saved.id;
+                }
+
+                const res = await db.sendStripeInvoice({
+                    customer: { name: record.client_name, email: record.client_email },
+                    items: payable.map(function (it) { return { description: it.desc, quantity: it.qty, amount: it.price }; }),
+                    currency: 'eur',
+                    dueDays: 14,
+                    number: record.number,
+                    documentId: currentDocId,
+                    memo: 'Facture ' + record.number + ' — Nathan Marzilli'
+                });
+
+                if (!res || !res.ok) {
+                    const detail = res && res.code === 'stripe_not_configured'
+                        ? 'clé Stripe absente (Supabase → Edge Functions → Secrets → STRIPE_SECRET_KEY).'
+                        : ((res && res.error) || 'erreur inconnue');
+                    hint('Envoi impossible : ' + detail, true);
+                    return;
+                }
+
+                await db.saveDocument({
+                    id: currentDocId,
+                    status: 'envoye',
+                    stripe_invoice_id: res.invoiceId,
+                    stripe_hosted_url: res.hostedUrl,
+                    stripe_status: res.status,
+                    sent_at: new Date().toISOString()
+                });
+                document.getElementById('docStatus').value = 'envoye';
+                hint('Facture envoyée à ' + record.client_email + (res.livemode ? '.' : ' (Stripe en mode test).'));
+                await refreshSavedDocuments();
+            } catch (e) {
+                console.error(e);
+                hint('Envoi impossible : ' + (e.message || 'erreur inconnue'), true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = original;
+            }
+        };
 
         // --- SIGNATURE PAD (Reused logic) ---
         let canvas, ctx, drawing = false;
@@ -598,10 +896,12 @@
             canvas.addEventListener('touchstart', start, {passive:false}); canvas.addEventListener('touchmove', move, {passive:false}); canvas.addEventListener('touchend', end);
         }
         function clearPad() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            document.getElementById('pSigImg').style.display = 'none';
-            document.getElementById('pSigImg').src = '';
+            if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const img = document.getElementById('pSigImg');
+            img.style.display = 'none';
+            img.src = '';
         }
+        window.clearPad = clearPad;
 
         // --- PDF GENERATION ---
         function generatePDF() {
@@ -629,6 +929,7 @@
                 if(wasHidden) previewContainer.classList.remove('show-for-print');
             });
         }
+        window.generatePDF = generatePDF;
     </script>
 </body>
 </html>

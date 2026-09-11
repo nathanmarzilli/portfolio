@@ -5,53 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Générateur Bail Meublé | Édition Premium</title>
     
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#f6f8fb">
+    <link rel="icon" href="../../images/profile-40.jpg">
+
+    <link rel="stylesheet" href="../../assets/css/theme.css">
+    <link rel="stylesheet" href="../../assets/css/app.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="../../assets/js/tailwind-theme.js"></script>
+    <script src="../../assets/js/nm-boot.js"></script>
+    <script src="../../assets/js/theme.js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] },
-                    colors: {
-                        dark: { 950: '#020617', 900: '#0B1120', 800: '#1E293B' },
-                        accent: { 400: '#2DD4BF', 500: '#14B8A6' }
-                    }
-                }
-            }
-        }
-    </script>
 
     <style>
         /* --- UI APPLICATION (MODE SOMBRE) --- */
-        body { background-color: #020617; color: #E2E8F0; overflow-x: hidden; }
+        body { overflow-x: hidden; } /* couleurs : assets/css/theme.css */
         
         /* Protection Contenu */
         #secure-content { display: none; } /* Caché par défaut */
         
         /* Loader Screen */
-        #auth-loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #020617; z-index: 9999;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-        }
+        #auth-loader { /* mise en page : assets/css/app.css */ }
 
-        .glass-card {
-            background: rgba(30, 41, 59, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            border-radius: 1.5rem;
-        }
+        .glass-card { border-radius: 1.5rem; }
 
         /* Inputs Styling */
         .input-premium {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
+            background: rgb(var(--t-dark-950) / 0.6);
+            border: 1px solid rgb(var(--t-white) / 0.1);
+            color: rgb(var(--t-white));
             border-radius: 0.75rem;
             padding: 0.75rem 1rem;
             width: 100%;
@@ -59,10 +47,10 @@
             font-size: 0.95rem;
         }
         .input-premium:focus {
-            border-color: #2DD4BF;
+            border-color: rgb(var(--t-accent-400));
             outline: none;
-            box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.1);
-            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 2px rgb(var(--t-accent-400) / 0.1);
+            background: rgb(var(--t-dark-950) / 0.8);
         }
         
         /* Labels */
@@ -70,7 +58,7 @@
             display: block;
             font-size: 0.75rem;
             font-weight: 600;
-            color: #94A3B8;
+            color: rgb(var(--t-slate-400));
             margin-bottom: 0.35rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -81,8 +69,8 @@
             font-family: 'Space Grotesk', sans-serif;
             font-size: 1.1rem;
             font-weight: 700;
-            color: white;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: rgb(var(--t-white));
+            border-bottom: 1px solid rgb(var(--t-white) /0.1);
             padding-bottom: 0.5rem;
             margin-top: 2rem;
             margin-bottom: 1.5rem;
@@ -90,14 +78,14 @@
             align-items: center;
             gap: 0.5rem;
         }
-        .section-title i { color: #2DD4BF; }
+        .section-title i { color: rgb(var(--t-accent-400)); }
 
         /* Signatures Canvas */
         .sig-wrapper {
             background: white; /* Toujours blanc pour le contraste de l'encre */
             border-radius: 0.75rem;
             overflow: hidden;
-            border: 2px dashed #475569;
+            border: 2px dashed rgb(var(--t-slate-600));
             position: relative;
         }
         canvas.sig-canvas {
@@ -113,18 +101,18 @@
             width: 100%;
             text-align: left;
             padding: 1rem;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
+            background: rgb(var(--t-white) /0.03);
+            border: 1px solid rgb(var(--t-white) /0.05);
             border-radius: 0.75rem;
-            color: #cbd5e1;
+            color: rgb(var(--t-slate-300));
             font-weight: 500;
             display: flex;
             justify-content: space-between;
             align-items: center;
             transition: all 0.2s;
         }
-        .toggle-btn:hover { background: rgba(255,255,255,0.07); }
-        .toggle-btn.active { border-color: #2DD4BF; color: #2DD4BF; background: rgba(45, 212, 191, 0.05); }
+        .toggle-btn:hover { background: rgb(var(--t-white) /0.07); }
+        .toggle-btn.active { border-color: rgb(var(--t-accent-400)); color: rgb(var(--t-accent-400)); background: rgb(var(--t-accent-400) / 0.05); }
 
         /* Custom Checkbox */
         .chk-label {
@@ -136,9 +124,9 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .chk-label:hover { background: rgba(255,255,255,0.03); }
+        .chk-label:hover { background: rgb(var(--t-white) /0.03); }
         input[type="checkbox"] {
-            accent-color: #2DD4BF;
+            accent-color: rgb(var(--t-accent-400));
             width: 1.1rem;
             height: 1.1rem;
         }
@@ -216,9 +204,9 @@
                 position: fixed;
                 bottom: 0; left: 0; right: 0;
                 padding: 1rem;
-                background: rgba(2, 6, 23, 0.95);
+                background: rgb(var(--t-dark-950) / 0.95);
                 backdrop-filter: blur(10px);
-                border-top: 1px solid rgba(255,255,255,0.1);
+                border-top: 1px solid rgb(var(--t-white) /0.1);
                 z-index: 50;
                 box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
             }
@@ -261,17 +249,22 @@
             <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-accent-400/10 rounded-full blur-[100px] mix-blend-screen animate-blob animation-delay-2000"></div>
         </div>
 
-        <nav class="w-full border-b border-white/5 bg-dark-950/50 backdrop-blur-md sticky top-0 z-40">
-            <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-400 to-blue-600 flex items-center justify-center text-dark-950 font-bold">
-                        <i class="ph-bold ph-file-text"></i>
-                    </div>
-                    <span class="font-display font-bold text-lg tracking-wide text-white">Bail<span class="text-accent-400">Génération</span></span>
-                </div>
-                <a href="../../index.html" class="text-xs font-bold text-slate-400 hover:text-white flex items-center gap-2 border border-white/10 px-3 py-1.5 rounded-lg bg-white/5">
-                    <i class="ph-bold ph-arrow-left"></i> Retour
+        <nav class="w-full nav-glass sticky top-0 z-40">
+            <div class="max-w-[1600px] mx-auto px-4 h-16 flex items-center justify-between gap-3">
+                <a href="../../" class="flex items-center gap-3 group shrink-0" title="Retour à l'accueil">
+                    <span class="w-9 h-9 rounded-full overflow-hidden border border-slate-500/20 group-hover:border-accent-400 transition-colors block shrink-0">
+                        <img src="../../images/profile-96.jpg" srcset="../../images/profile-96.jpg 1x, ../../images/profile-192.jpg 2x" width="36" height="36" alt="" class="w-full h-full object-cover">
+                    </span>
+                    <span class="leading-tight">
+                        <span class="font-display font-bold text-base tracking-wide text-white block">Bail de location</span>
+                        <span class="block text-[10px] text-accent-400 font-bold uppercase tracking-wider">Espace sécurisé</span>
+                    </span>
                 </a>
+                <div class="flex items-center gap-2">
+                    <div data-theme-toggle></div>
+                    <a href="../../admin/" class="btn-ghost"><i class="ph-bold ph-users-three" aria-hidden="true"></i> <span class="hidden sm:inline">Clients</span></a>
+                    <a href="../../" class="btn-ghost"><i class="ph-bold ph-arrow-left" aria-hidden="true"></i> <span class="hidden sm:inline">Accueil</span></a>
+                </div>
             </div>
         </nav>
 
@@ -746,40 +739,24 @@
         </main>
     </div> 
     
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        // --- 1. CONFIGURATION FIREBASE (REMPLACE PAR TES CLÉS !) ---
-        const firebaseConfig = {
-          apiKey: "AIzaSyD6Q-HVto8eybwGo9YgcFx4hu7rWBLNYfg",
-          authDomain: "portfolio-nathan-e148f.firebaseapp.com",
-          projectId: "portfolio-nathan-e148f",
-          storageBucket: "portfolio-nathan-e148f.firebasestorage.app",
-          messagingSenderId: "61408006418",
-          appId: "1:61408006418:web:8a448e8ca60ec77bf523cb"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // --- 2. VÉRIFICATION DE SÉCURITÉ ---
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // UTILISATEUR CONNECTÉ : ON AFFICHE LE CONTENU
-                console.log("Accès autorisé : " + user.email);
+    <!-- Accès sécurisé : mêmes identifiants que l'espace clients -->
+    <script src="../../config.js"></script>
+    <script type="module" src="../../assets/js/supabase-client.js"></script>
+    <script>
+        (async function () {
+            try {
+                const db = await window.NM.dbReady;
+                const user = await db.requireAdmin('../../admin/');
+                if (!user) return;
                 document.getElementById('auth-loader').style.display = 'none';
                 document.getElementById('secure-content').style.display = 'block';
-                
-                // On initialise les pads de signature maintenant que le DOM est visible
-                ['cvLandlord','cvT1'].forEach(window.initPad);
-            } else {
-                // PAS CONNECTÉ : REDIRECTION
-                console.log("Accès refusé. Redirection...");
-                // On suppose que la page est dans /contrat/bail/, donc on remonte de 2 niveaux
-                window.location.href = "../../index.html#contact"; 
+                if (window.initApp) window.initApp();
+            } catch (e) {
+                console.error(e);
+                document.getElementById('auth-loader').innerHTML =
+                    '<p class="text-red-400 text-sm text-center px-6">Accès impossible : base de données injoignable.<br><a class="underline" href="../../">Retour à l\'accueil</a></p>';
             }
-        });
+        })();
     </script>
 
     <script>

@@ -1,64 +1,103 @@
 // ============================================================
-// IMPORTS FIREBASE
-// ============================================================currentBasePrice 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+// SCRIPT PRINCIPAL — page d'accueil
+// ------------------------------------------------------------
+// Dépendances chargées AVANT ce fichier (voir index.html) :
+//   • config.js                 -> window.APP_CONFIG (tarifs, textes)
+//   • assets/js/supabase-client -> window.NM.db (données + auth)
+//   • assets/js/i18n.js         -> window.NM.i18n (langue, devise, prix)
+//   • assets/js/theme.js        -> window.NM.theme (clair / sombre)
+//
+// ⚠️ Ce site ne propose AUCUN paiement en ligne. Le tunnel s'arrête
+// à la prise de rendez-vous : réservation d'un créneau, puis brief
+// projet (page /kickoff/), puis devis envoyé manuellement depuis
+// l'espace d'administration.
+// ============================================================
 
-const firebaseConfig = {
-    apiKey: "AIzaSyD6Q-HVto8eybwGo9YgcFx4hu7rWBLNYfg",
-    authDomain: "portfolio-nathan-e148f.firebaseapp.com",
-    projectId: "portfolio-nathan-e148f",
-    storageBucket: "portfolio-nathan-e148f.firebasestorage.app",
-    messagingSenderId: "61408006418",
-    appId: "1:61408006418:web:8a448e8ca60ec77bf523cb"
-};
+var CFG = window.APP_CONFIG || { offers: {}, currencies: {}, launchPromo: { active: false }, defaultCurrency: 'EUR' };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+// Cycle de facturation des packs Sérénité : 'monthly' | 'annual'
+// (forcé sur 'annual' quand le pack Essentiel est sélectionné).
+// Déclaré en `var` au niveau du module car il est lu par des fonctions
+// hissées appelées dès le premier rendu.
+var serenityBillingCycle = 'monthly';
+
+// --- Ponts vers le module i18n partagé ------------------------------
+function getCurrentCurrency() {
+	return (window.NM && NM.i18n) ? NM.i18n.currency() : (CFG.defaultCurrency || 'EUR');
+}
+function getCurrentLocale() {
+	return (window.NM && NM.i18n) ? NM.i18n.locale() : (CFG.currentLocale || 'fr');
+}
+function formatMoney(amount, currencyCode) {
+	if (window.NM && NM.i18n) return NM.i18n.format(amount, currencyCode);
+	return amount + ' €';
+}
+function applyI18n() {
+	if (window.NM && NM.i18n) NM.i18n.render();
+}
+window.applyI18n = applyI18n;
 
 // ============================================================
-// ESPACE DE PARAMÉTRAGE CENTRALISÉ (PRIX & OFFRES)
+// ENREGISTREMENT D'UNE DEMANDE
+// ------------------------------------------------------------
+// Point d'entrée unique du tunnel : enregistre la demande dans
+// Supabase (table nm_leads). C'est Supabase lui-même qui prévient
+// ensuite Zapier (déclencheur SQL sur la table), donc rien à faire
+// ici : voir /admin/ → Réglages pour coller l'URL « Catch Hook ».
+// Best-effort : une erreur ici ne doit JAMAIS empêcher l'affichage
+// de la confirmation à l'internaute.
 // ============================================================
-const SITE_CONFIG = {
-    // Tarifs de base (Hors promotions)
-    prices: {
-        eclair: 690,
-        essentiel: 990,
-        vitrine: 1790,
-        premium: 2990
-    },
-    // Offre de lancement
-    launchPromo: {
-        active: true,             // Passe à false pour désactiver la promo
-        discountPercent: 20,      // Le pourcentage de réduction
-        totalPacks: 9            // Le nombre de packs mis en vente
-    }
+window.submitForm = async function (data) {
+	// 1. Ancien webhook appelé depuis le navigateur — désactivé par
+	//    défaut (config.integrations.zapierWebhookUrl vide). Conservé
+	//    comme filet de secours si un jour le déclencheur base échoue.
+	/* eslint-disable-next-line */
+	var webhookUrl = CFG.integrations && CFG.integrations.zapierWebhookUrl;
+	if (webhookUrl && webhookUrl.indexOf('TODO_') !== 0) {
+		try {
+			await fetch(webhookUrl, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(data)
+			});
+		} catch (e) {
+			console.error('submitForm : webhook Zapier injoignable (non bloquant)', e);
+		}
+	}
+
+	// 2. Enregistrement en base (visible ensuite dans l'espace admin)
+	try {
+		var db = await window.NM.dbReady;
+		return await db.saveLead(data);
+	} catch (e) {
+		console.error("submitForm : enregistrement Supabase impossible (non bloquant)", e);
+		return null;
+	}
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-	// --- INITIALISATION DYNAMIQUE DES TARIFS ET PROMOTIONS ---
-    function initPricing() {
-        const promo = SITE_CONFIG.launchPromo;
-        const isPromoValid = promo.active && promo.totalPacks > 0;
+	// --- INITIALISATION DYNAMIQUE DES TARIFS, DEVISES ET PROMOTIONS ---
+    function renderPricing() {
+        var offers = CFG.offers || {};
+        var promo = CFG.launchPromo || { active: false };
+        const isPromoValid = !!(promo.active && promo.totalPacks > 0);
 
-        // 1. Gestion de la bannière Promo
+        // 1. Bannière « offre de lancement » (masquée si la promo est inactive)
         const bannerContainer = document.getElementById('promo-banner-container');
         if (bannerContainer && isPromoValid) {
             bannerContainer.innerHTML = `
-                <div class="p-1 rounded-2xl bg-gradient-to-r from-accent-400 via-blue-500 to-purple-500 animate-gradient-x shadow-[0_0_30px_rgba(45,212,191,0.2)] mb-8">
+                <div class="p-1 rounded-2xl bg-gradient-to-r from-accent-400 via-blue-500 to-purple-500 shadow-lg mb-8">
                     <div class="bg-dark-950 rounded-xl p-6 text-center relative overflow-hidden flex flex-col items-center">
                         <div class="absolute top-0 right-0 p-24 bg-accent-400/10 blur-3xl rounded-full pointer-events-none"></div>
                         <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-400/20 text-accent-400 text-xs font-bold uppercase tracking-wider mb-3">
-                            <i class="ph-bold ph-rocket-launch"></i> Opportunité Nouveaux Clients
+                            <i class="ph-bold ph-rocket-launch"></i> Opportunité nouveaux clients
                         </span>
                         <h3 class="text-xl sm:text-2xl font-display font-bold text-white mb-2">
-                            Offre de lancement : -${promo.discountPercent}% sur les créations Essentiel & Vitrine !
+                            Offre de lancement : -${promo.discountPercent}% sur les créations Essentiel &amp; Vitrine
                         </h3>
-                        <p class="text-slate-400 text-sm font-medium flex items-center gap-2">
-                            Pour fêter le lancement de mon activité. 
-                            <span class="text-dark-950 bg-accent-400 px-3 py-1 rounded-full animate-pulse font-bold ml-2 shadow-[0_0_15px_rgba(45,212,191,0.5)]">
+                        <p class="text-slate-400 text-sm font-medium flex items-center gap-2 flex-wrap justify-center">
+                            Pour fêter le lancement de mon activité.
+                            <span class="text-dark-950 bg-accent-400 px-3 py-1 rounded-full font-bold shadow-sm">
                                réservé aux ${promo.totalPacks} prochains projets
                             </span>
                         </p>
@@ -68,50 +107,47 @@ document.addEventListener('DOMContentLoaded', () => {
             bannerContainer.classList.remove('hidden');
         } else if (bannerContainer) {
             bannerContainer.classList.add('hidden');
+            bannerContainer.innerHTML = '';
         }
 
-        // 2. Helper de calcul
-        const getPrice = (basePrice, applyDiscount) => {
+        // 2. Remise éventuelle appliquée aux montants du formulaire (toujours en EUR)
+        const getDiscounted = (basePrice, applyDiscount) => {
             if (applyDiscount && isPromoValid) {
-                return Math.round(basePrice * (1 - (promo.discountPercent / 100)));
+                return Math.round(basePrice * (1 - (promo.discountPercent / 100)) * 100) / 100;
             }
             return basePrice;
         };
 
-        // 3. Mise à jour HTML des prix
-        const displayEclair = document.getElementById('price-eclair-display');
-        if (displayEclair) displayEclair.innerHTML = `${SITE_CONFIG.prices.eclair}€`;
+        // 3. Les prix affichés (cartes, pastilles, options) sont rendus par
+        //    NM.i18n à partir des attributs data-offer-key / data-price-eur.
+        //    Les cartes Sérénité gèrent en plus le cycle mensuel/annuel.
+        applyI18n();
+        renderSerenityCardPrices();
 
-        const displayEssentiel = document.getElementById('price-essentiel-display');
-        if (displayEssentiel) {
-            if (isPromoValid) {
-                displayEssentiel.innerHTML = `<span class="line-through text-slate-500 text-xl mr-2">${SITE_CONFIG.prices.essentiel}€</span><span class="text-3xl font-bold text-accent-400">${getPrice(SITE_CONFIG.prices.essentiel, true)}€</span> <span class="text-sm font-normal text-slate-400">à la création</span>`;
-            } else {
-                displayEssentiel.innerHTML = `<span class="text-3xl font-bold text-accent-400">${SITE_CONFIG.prices.essentiel}€</span> <span class="text-sm font-normal text-slate-400">à la création</span>`;
-            }
-        }
-
-        const displayVitrine = document.getElementById('price-vitrine-display');
-        if (displayVitrine) {
-            if (isPromoValid) {
-                displayVitrine.innerHTML = `<span class="line-through text-slate-500 text-xl mr-2">${SITE_CONFIG.prices.vitrine}€</span><span class="text-3xl font-bold text-accent-400">${getPrice(SITE_CONFIG.prices.vitrine, true)}€</span>`;
-            } else {
-                displayVitrine.innerHTML = `<span class="text-3xl font-bold text-accent-400">${SITE_CONFIG.prices.vitrine}€</span>`;
-            }
-        }
-
-        const displayPremium = document.getElementById('price-premium-display');
-        if (displayPremium) displayPremium.innerHTML = `${SITE_CONFIG.prices.premium}€`;
-
-        // 4. Injection des attributs data-price dans le formulaire
-        document.getElementById('pack-eclair')?.setAttribute('data-price', SITE_CONFIG.prices.eclair);
-        document.getElementById('pack-essentiel')?.setAttribute('data-price', getPrice(SITE_CONFIG.prices.essentiel, true));
-        document.getElementById('pack-vitrine')?.setAttribute('data-price', getPrice(SITE_CONFIG.prices.vitrine, true));
-        document.getElementById('pack-premium')?.setAttribute('data-price', SITE_CONFIG.prices.premium);
+        // 4. Montants de référence du formulaire de demande (toujours en EUR :
+        //    le devis et le brief projet sont établis en euros).
+        var packs = { eclair: 'pack-eclair', essentiel: 'pack-essentiel', vitrine: 'pack-vitrine', premium: 'pack-premium' };
+        Object.keys(packs).forEach(function (key) {
+            var offer = offers[key];
+            var input = document.getElementById(packs[key]);
+            if (!offer || !input) return;
+            var applyDiscount = isPromoValid && (promo.appliesTo || []).indexOf(key) !== -1;
+            input.setAttribute('data-price', getDiscounted(offer.price.EUR, applyDiscount));
+        });
     }
-    
-    // Appel immédiat
-    initPricing();	
+
+    // Expose pour les gestionnaires de devise + appel immédiat
+    window.renderPricing = renderPricing;
+    renderPricing();
+    applyI18n();
+
+    // Changement de langue / devise : NM.i18n prévient tout le monde.
+    if (window.NM && NM.i18n) {
+        NM.i18n.onChange(function () {
+            if (window.vibrate) window.vibrate();
+            renderPricing();
+        });
+    }
 
     // ==============================================
     // 0. UX & DESIGN ENHANCEMENTS
@@ -227,6 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // FORCE L'AFFICHAGE (Correction du bug "invisible")
             setTimeout(() => {
+                if (window.NM && NM.reveal) NM.reveal.refresh();
                 const newProjectElements = document.querySelectorAll('#projects-grid .reveal');
                 newProjectElements.forEach(el => el.classList.add('active'));
             }, 50);
@@ -277,7 +314,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==============================================
-    // 3. AUTH & ADMIN
+    // 3. AUTHENTIFICATION & ESPACE ADMINISTRATION
+    // ----------------------------------------------
+    // L'authentification passe par Supabase (voir
+    // assets/js/supabase-client.js). Les mêmes identifiants
+    // ouvrent TOUTES les pages sécurisées du site : espace
+    // clients, générateur de devis/factures, quittances, bail
+    // et suivi running.
     // ==============================================
     const adminModal = document.getElementById('admin-modal');
     const adminContent = document.getElementById('admin-content');
@@ -287,125 +330,178 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginError = document.getElementById('login-error');
     const shieldIcon = document.getElementById('header-shield-icon');
 
-    onAuthStateChanged(auth, (user) => {
-        if (user && shieldIcon) {
-            shieldIcon.classList.remove('text-slate-600');
-            shieldIcon.classList.add('text-green-400');
-            // Admin doit pulser
-            shieldIcon.parentElement.classList.add('animate-pulse-slow');
-        } else if(shieldIcon) {
-            shieldIcon.classList.add('text-slate-600');
-            shieldIcon.classList.remove('text-green-400');
-            shieldIcon.parentElement.classList.remove('animate-pulse-slow');
+    function paintShield(isConnected) {
+        if (!shieldIcon) return;
+        shieldIcon.classList.toggle('text-slate-600', !isConnected);
+        shieldIcon.classList.toggle('text-green-400', !!isConnected);
+        if (shieldIcon.parentElement) {
+            shieldIcon.parentElement.classList.toggle('animate-pulse-slow', !!isConnected);
         }
+    }
+
+    window.NM.dbReady.then(function (db) {
+        db.currentUser().then(function (user) { paintShield(!!user); });
+        db.onAuthChange(function (user) {
+            paintShield(!!user);
+            if (adminModal && !adminModal.classList.contains('hidden')) {
+                user ? showDashboard() : showLogin();
+            }
+        });
+    }).catch(function (e) {
+        console.error('Espace sécurisé indisponible :', e);
     });
 
-    window.toggleAdminModal = function() {
-        window.vibrate(); // Haptic
+    window.toggleAdminModal = function () {
+        if (window.vibrate) window.vibrate();
+        if (!adminModal) return;
+
         if (adminModal.classList.contains('hidden')) {
             adminModal.classList.remove('hidden');
-            setTimeout(() => {
+            setTimeout(function () {
                 adminModal.classList.remove('opacity-0');
                 adminContent.classList.remove('scale-95');
                 adminContent.classList.add('scale-100');
             }, 10);
-            if(auth.currentUser) showDashboard();
-            else showLogin();
+            showLogin();
+            window.NM.dbReady.then(function (db) {
+                return db.currentUser();
+            }).then(function (user) {
+                if (user) showDashboard();
+            }).catch(function () { /* hors ligne : on reste sur le formulaire */ });
         } else {
             adminModal.classList.add('opacity-0');
             adminContent.classList.remove('scale-100');
             adminContent.classList.add('scale-95');
-            setTimeout(() => {
+            setTimeout(function () {
                 adminModal.classList.add('hidden');
                 resetAdminForm();
             }, 300);
         }
     };
 
-    window.togglePasswordVisibility = function() {
+    window.togglePasswordVisibility = function () {
         const passInput = document.getElementById('admin-pass');
         const eyeIcon = document.getElementById('eye-icon');
+        if (!passInput || !eyeIcon) return;
         if (passInput.type === 'password') {
             passInput.type = 'text';
             eyeIcon.classList.replace('ph-eye', 'ph-eye-slash');
-            eyeIcon.parentElement.classList.add('text-white');
         } else {
             passInput.type = 'password';
             eyeIcon.classList.replace('ph-eye-slash', 'ph-eye');
-            eyeIcon.parentElement.classList.remove('text-white');
         }
     };
 
     function resetAdminForm() {
-        document.getElementById('admin-id').value = '';
-        document.getElementById('admin-pass').value = '';
-        loginError.classList.add('hidden');
+        const id = document.getElementById('admin-id');
+        const pass = document.getElementById('admin-pass');
+        if (id) id.value = '';
+        if (pass) pass.value = '';
+        if (loginError) loginError.classList.add('hidden');
     }
 
-    function showLogin() {
-        loginView.classList.remove('hidden');
-        dashboardView.classList.add('hidden');
-    }
-
-    function showDashboard() {
-        loginView.classList.add('hidden');
-        dashboardView.classList.remove('hidden');
-        renderAdminButtons();
-    }
-
-    window.attemptLogin = function() {
-        window.vibrate(); // Haptic
-        const idInput = document.getElementById('admin-id').value.trim();
-        const passInput = document.getElementById('admin-pass').value.trim();
-        const emailToUse = idInput.includes('@') ? idInput : idInput + '@gmail.com';
-
-        signInWithEmailAndPassword(auth, emailToUse, passInput)
-            .then(() => {
-                loginError.classList.add('hidden');
-                showDashboard();
-            })
-            .catch((error) => {
-                loginError.classList.remove('hidden');
-                adminContent.classList.add('animate-pulse');
-                setTimeout(() => adminContent.classList.remove('animate-pulse'), 500);
-            });
-    };
-
-    window.logout = function() {
-        window.vibrate();
-        signOut(auth).then(() => showLogin()).catch((error) => console.error(error));
-    };
-
-    const adminActions = [
-        { label: "Créer Devis / Facture", icon: "ph-file-text", color: "text-blue-400", link: "/portfolio/contrat/devis&contrat/" },
-        { label: "Quittance de Loyer", icon: "ph-house-line", color: "text-green-400", link: "/portfolio/contrat/quittance/" },
-        { label: "Bail Location Meublée", icon: "ph-key", color: "text-purple-400", link: "/portfolio/contrat/bail/" },
-        { label: "Prospecter", icon: "ph-target", color: "text-pink-400", link: "/portfolio/prospect/" },
-        { label: "Running", icon: "ph-person-simple-run", color: "text-orange-400", link: "/portfolio/running/" }
-    ];
-
-    function renderAdminButtons() {
-        if(actionsGrid) {
-            let html = adminActions.map(action => `
-                <a href="${action.link}" target="_blank" class="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-accent-400 transition-all group">
-                    <div class="w-10 h-10 rounded-full bg-dark-950 flex items-center justify-center border border-white/10 group-hover:border-${action.color.split('-')[1]}-400 transition-colors">
-                        <i class="ph-bold ${action.icon} ${action.color} text-xl"></i>
-                    </div>
-                    <span class="font-bold text-slate-200 group-hover:text-white transition-colors">${action.label}</span>
-                    <i class="ph-bold ph-arrow-right ml-auto text-slate-500 group-hover:text-accent-400 transition-colors"></i>
-                </a>
-            `).join('');
-            html += `
-                <button onclick="window.logout()" class="w-full mt-4 py-3 rounded-xl border border-white/10 text-slate-400 text-xs font-bold uppercase tracking-widest hover:bg-white/5 hover:text-white transition-all">
-                    Se déconnecter
-                </button>
-            `;
-            actionsGrid.innerHTML = html;
+    function showLoginError(message) {
+        if (!loginError) return;
+        loginError.querySelector('.login-error-text').textContent = message;
+        loginError.classList.remove('hidden');
+        if (adminContent) {
+            adminContent.classList.add('animate-pulse');
+            setTimeout(function () { adminContent.classList.remove('animate-pulse'); }, 500);
         }
     }
 
+    function showLogin() {
+        if (loginView) loginView.classList.remove('hidden');
+        if (dashboardView) dashboardView.classList.add('hidden');
+    }
+
+    function showDashboard() {
+        if (loginView) loginView.classList.add('hidden');
+        if (dashboardView) dashboardView.classList.remove('hidden');
+        renderAdminButtons();
+    }
+
+    window.attemptLogin = async function () {
+        if (window.vibrate) window.vibrate();
+        const identifier = (document.getElementById('admin-id') || {}).value || '';
+        const password = (document.getElementById('admin-pass') || {}).value || '';
+        if (!identifier.trim() || !password) {
+            showLoginError('Merci de renseigner votre identifiant et votre mot de passe.');
+            return;
+        }
+        try {
+            const db = await window.NM.dbReady;
+            await db.signIn(identifier.trim(), password);
+            if (loginError) loginError.classList.add('hidden');
+            showDashboard();
+        } catch (error) {
+            console.error('Connexion refusée :', error);
+            showLoginError(
+                (error && /Invalid login/i.test(error.message || ''))
+                    ? 'Identifiant ou mot de passe incorrect.'
+                    : 'Connexion impossible. Vérifiez votre connexion internet et réessayez.'
+            );
+        }
+    };
+
+    window.requestPasswordReset = async function () {
+        const identifier = (document.getElementById('admin-id') || {}).value || '';
+        if (!identifier.trim()) {
+            showLoginError('Saisissez d’abord votre identifiant, je vous envoie un lien de réinitialisation.');
+            return;
+        }
+        try {
+            const db = await window.NM.dbReady;
+            await db.sendPasswordReset(identifier.trim(), window.location.origin + '/portfolio/admin/');
+            showLoginError('Lien de réinitialisation envoyé. Consultez votre boîte mail.');
+        } catch (error) {
+            console.error(error);
+            showLoginError('Envoi impossible pour le moment. Réessayez dans un instant.');
+        }
+    };
+
+    window.logout = async function () {
+        if (window.vibrate) window.vibrate();
+        try {
+            const db = await window.NM.dbReady;
+            await db.signOut();
+        } catch (e) { console.error(e); }
+        showLogin();
+    };
+
+    // Toutes les pages réservées, accessibles une fois connecté.
+    const adminActions = [
+        { label: "Espace clients", icon: "ph-users-three", color: "text-accent-400", link: "admin/", primary: true },
+        { label: "Créer un devis / une facture", icon: "ph-file-text", color: "text-blue-400", link: "contrat/devis&contrat/" },
+        { label: "Quittance de loyer", icon: "ph-house-line", color: "text-green-400", link: "contrat/quittance/" },
+        { label: "Bail location meublée", icon: "ph-key", color: "text-purple-400", link: "contrat/bail/" },
+        { label: "Prospection", icon: "ph-target", color: "text-pink-400", link: "prospect/" },
+        { label: "Suivi running", icon: "ph-person-simple-run", color: "text-orange-400", link: "running/" }
+    ];
+
+    function renderAdminButtons() {
+        if (!actionsGrid) return;
+        let html = adminActions.map(function (action) {
+            return `
+                <a href="${action.link}" class="flex items-center gap-4 p-4 rounded-xl bg-slate-500/5 border ${action.primary ? 'border-accent-400/40' : 'border-slate-500/15'} hover:bg-slate-500/10 hover:border-accent-400 transition-all group">
+                    <span class="w-10 h-10 rounded-full bg-dark-950 flex items-center justify-center border border-slate-500/20 shrink-0">
+                        <i class="ph-bold ${action.icon} ${action.color} text-xl"></i>
+                    </span>
+                    <span class="font-bold text-slate-200 group-hover:text-white transition-colors">${action.label}</span>
+                    <i class="ph-bold ph-arrow-right ml-auto text-slate-500 group-hover:text-accent-400 transition-colors"></i>
+                </a>
+            `;
+        }).join('');
+        html += `
+            <button onclick="window.logout()" class="w-full mt-2 py-3 rounded-xl border border-slate-500/20 text-slate-400 text-xs font-bold uppercase tracking-widest hover:bg-slate-500/10 hover:text-white transition-all">
+                Se déconnecter
+            </button>
+        `;
+        actionsGrid.innerHTML = html;
+    }
+
     const passField = document.getElementById('admin-pass');
-    if(passField) {
+    if (passField) {
         passField.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') window.attemptLogin();
         });
@@ -421,7 +517,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'tailwind': { title: 'Tailwind CSS', text: 'Développement rapide d\'interfaces uniques et légères. Pas de "template" tout fait, mais un design système cohérent.', icon: 'ph-paint-brush-broad', color: 'text-cyan-400' },
         'git': { title: 'Versionning Git', text: 'Sécurité du code et historique des modifications. Votre projet est sauvegardé étape par étape, zéro risque de perte.', icon: 'ph-git-branch', color: 'text-red-500' },
         'responsive': { title: 'Mobile First', text: 'Votre site est pensé pour les smartphones en priorité, car c\'est là que vos clients se trouvent aujourd\'hui.', icon: 'ph-device-mobile', color: 'text-purple-400' },
-        'firebase': { title: 'Google Firebase', text: 'Base de données temps réel et authentification sécurisée par Google. Performance et fiabilité industrielle.', icon: 'ph-fire', color: 'text-orange-400' },
+        'supabase': { title: 'Supabase (PostgreSQL)', text: 'Base de données PostgreSQL hébergée en Europe, avec authentification sécurisée et règles d\'accès par ligne. Vos données restent les vôtres.', icon: 'ph-database', color: 'text-emerald-400' },
         'seo': { title: 'SEO & Performance', text: 'Optimisation technique avancée (Core Web Vitals) pour plaire à Google et faire monter votre site dans les résultats.', icon: 'ph-magnifying-glass', color: 'text-green-500' },
         'formspree': { title: 'Formspree', text: 'Gestion fiable et instantanée des formulaires de contact. Réception des e-mails en temps réel avec protection anti-spam intégrée.', icon: 'ph-paper-plane-tilt', color: 'text-red-500' }
     };
@@ -491,10 +587,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    // Les apparitions au défilement sont gérées par assets/js/reveal.js
+    // (module partagé avec la page Offre Club). On lui signale simplement
+    // les blocs injectés dynamiquement, comme la grille des réalisations.
 
     const yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
@@ -506,11 +601,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // Variables globales pour le calcul
 	let currentBasePrice = 1790;
 	let serenityTier = null; // null | 'simple' | 'plus'
+	// serenityBillingCycle est déclaré tout en haut du fichier (voir commentaire là-bas)
 	let isDocumentSelected = false;
 	let requestType = 'newsite'; // 'newsite' | 'existing'
 	let selectedIntervention = null; // { type, price } | null
-	const SERENITY_PRICES = { simple: 49.90, plus: 94.90 };
-	const DOC_PRICE = 250;
+	// Récapitulatif du formulaire : toujours exprimé en euros, et TOUJOURS
+	// lu depuis le catalogue central (config.js). Aucun montant n'est figé
+	// ici : modifier un prix dans config.js suffit à mettre à jour le site.
+	const SERENITY_PRICES = {
+		simple: CFG.offers.serenite.price.EUR,
+		plus: CFG.offers.serenitePlus.price.EUR
+	};
+	const SERENITY_PRICES_ANNUAL = {
+		simple: CFG.offers.serenite.annualPrice.EUR,
+		plus: CFG.offers.serenitePlus.annualPrice.EUR
+	};
+
+	// Formatage court d'un montant en euros (49,90 € — 1 790 €).
+	function eur(amount) {
+		return new Intl.NumberFormat('fr-FR', {
+			style: 'currency', currency: 'EUR',
+			minimumFractionDigits: (Math.abs(amount % 1) > 0.001) ? 2 : 0,
+			maximumFractionDigits: (Math.abs(amount % 1) > 0.001) ? 2 : 0
+		}).format(amount);
+	}
 
     // --- Fonctions exposées à window pour les onclick HTML ---
 
@@ -645,6 +759,74 @@ document.addEventListener('DOMContentLoaded', () => {
 		window.toggleSerenityForm(tier);
 	};
 
+	// --- Facturation Sérénité : mensuel ou annuel (2 mois offerts) ---
+	// locked=true : verrouille visuellement le choix sur 'annual' (cas Essentiel).
+	window.setSerenityBillingCycle = function(cycle, locked) {
+		if (cycle !== 'monthly' && cycle !== 'annual') return;
+		serenityBillingCycle = cycle;
+
+		document.querySelectorAll('.billing-cycle-pill').forEach(function (pill) {
+			const isActive = pill.getAttribute('data-cycle') === cycle;
+			pill.classList.toggle('active', isActive);
+			pill.disabled = !!locked && pill.getAttribute('data-cycle') === 'monthly';
+			pill.classList.toggle('opacity-40', pill.disabled);
+			pill.classList.toggle('cursor-not-allowed', pill.disabled);
+		});
+
+		// Prix (EUR) affichés dans les boutons du formulaire — le devis/kickoff
+		// reste toujours en EUR, indépendamment de la devise du header.
+		const priceSimpleEl = document.getElementById('serenite-form-price');
+		const pricePlusEl = document.getElementById('serenitePlus-form-price');
+		if (cycle === 'annual') {
+			if (priceSimpleEl) priceSimpleEl.textContent = eur(SERENITY_PRICES_ANNUAL.simple) + ' / an';
+			if (pricePlusEl) pricePlusEl.textContent = eur(SERENITY_PRICES_ANNUAL.plus) + ' / an';
+		} else {
+			if (priceSimpleEl) priceSimpleEl.textContent = eur(SERENITY_PRICES.simple) + ' / mois';
+			if (pricePlusEl) pricePlusEl.textContent = eur(SERENITY_PRICES.plus) + ' / mois';
+		}
+
+		renderSerenityCardPrices();
+		updateTotal();
+	};
+
+	// Prix des cartes Sérénité / Sérénité+ dans la section Services,
+	// selon la devise active (pill-menu du header) et le cycle choisi.
+	function renderSerenityCardPrices() {
+		var currency = getCurrentCurrency();
+
+		// La pastille « Sérénité annuel inclus » de la carte Essentiel est rendue
+		// par NM.i18n (data-offer-key="serenite-annual") : rien à faire ici.
+
+		['serenite', 'serenitePlus'].forEach(function (key) {
+			var offer = CFG.offers[key];
+			if (!offer) return;
+			var container = document.querySelector('[data-offer-key="' + key + '"]');
+			var badge = document.getElementById(key === 'serenite' ? 'serenite-annual-badge' : 'serenitePlus-annual-badge');
+			if (!container) return;
+
+			var wrap = container.querySelector('.price-wrap');
+			if (!wrap) {
+				var existingAmount = container.querySelector('.price-amount');
+				wrap = document.createElement('span');
+				wrap.className = 'price-wrap';
+				if (existingAmount) { existingAmount.replaceWith(wrap); } else { container.appendChild(wrap); }
+			}
+
+			if (serenityBillingCycle === 'annual' && offer.annualPrice && offer.annualPrice[currency] != null) {
+				wrap.innerHTML = '<span class="price-amount">' + formatMoney(offer.annualPrice[currency], currency) + '</span>';
+				var suffix = container.querySelector('.price-suffix');
+				if (suffix) suffix.textContent = '/an';
+				if (badge) badge.classList.remove('hidden');
+			} else {
+				wrap.innerHTML = '<span class="price-amount">' + formatMoney(offer.price[currency], currency) + '</span>';
+				var suffix2 = container.querySelector('.price-suffix');
+				if (suffix2) suffix2.textContent = '/mois';
+				if (badge) badge.classList.add('hidden');
+			}
+		});
+	}
+	window.renderSerenityCardPrices = renderSerenityCardPrices;
+
 	// Mise à jour visuelle des DEUX cartes dans la section Services
 	window.updateSerenityCardInServices = function() {
 		const cardSimple = document.getElementById('card-serenite');
@@ -691,19 +873,23 @@ document.addEventListener('DOMContentLoaded', () => {
 	};
 
 	window.toggleSerenityForm = function(tier) {
-		// Si "Essentiel" est sélectionné, Sérénité simple est forcée : on autorise seulement l'upgrade vers "plus"
+		// Si "Essentiel" est sélectionné, Sérénité simple est le minimum forcé et inclus :
+		// on ne peut pas le désélectionner complètement, mais on DOIT pouvoir basculer
+		// librement entre "simple" et "plus" dans les deux sens (bug historique : un clic
+		// sur "plus" bloquait tout retour vers "simple").
 		const radioEssentiel = document.querySelector('input[name="project_pack"][value="Essentiel"]');
-		if (radioEssentiel && radioEssentiel.checked && tier === 'simple') return;
+		const isForced = !!(radioEssentiel && radioEssentiel.checked);
+
+		if (isForced && tier === 'simple' && serenityTier === 'simple') {
+			// Déjà sur le minimum forcé : un reclic ne doit pas désélectionner.
+			return;
+		}
 
 		window.vibrate();
 
 		if (serenityTier === tier) {
 			// Reclique sur l'option active -> on désélectionne (sauf si forcé par Essentiel)
-			if (radioEssentiel && radioEssentiel.checked) {
-				serenityTier = 'simple'; // reste au minimum forcé
-			} else {
-				serenityTier = null;
-			}
+			serenityTier = isForced ? 'simple' : null;
 		} else {
 			serenityTier = tier;
 		}
@@ -781,13 +967,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	};
 
 	// Gestion de l'état "Forcé" du pack Sérénité (simple, jamais Plus, quand Essentiel est choisi)
+	// Essentiel INCLUT obligatoirement Sérénité simple, facturée annuellement (2 mois offerts).
 	function forceSerenity(forced) {
 		const btnSimple = document.getElementById('serenite-toggle-btn');
 
 		if (forced) {
 			// Si Plus était choisi, on redescend sur Simple (Essentiel n'inclut que la base)
 			serenityTier = 'simple';
-			btnSimple?.classList.add('opacity-80', 'cursor-not-allowed');
+			// Remarque : "Simple" reste cliquable (pas de cursor-not-allowed) — on peut
+			// toujours basculer vers "Plus" puis revenir sur "Simple", seule la désélection
+			// complète est bloquée (voir toggleSerenityForm).
+			btnSimple?.classList.add('opacity-80');
 
 			if (btnSimple && !document.getElementById('forced-msg')) {
 				const msg = document.createElement('span');
@@ -797,10 +987,16 @@ document.addEventListener('DOMContentLoaded', () => {
 				btnSimple.classList.add('relative');
 				btnSimple.appendChild(msg);
 			}
+
+			// Essentiel impose la facturation annuelle (pas de mensuel possible)
+			window.setSerenityBillingCycle('annual', true);
 		} else {
-			btnSimple?.classList.remove('opacity-80', 'cursor-not-allowed');
+			btnSimple?.classList.remove('opacity-80');
 			const msg = document.getElementById('forced-msg');
 			if(msg) msg.remove();
+
+			// On repasse la facturation en libre choix (retour au mensuel par défaut)
+			window.setSerenityBillingCycle('monthly', false);
 		}
 
 		updateSerenityFormButtons();
@@ -844,22 +1040,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		const displayEl = document.getElementById('total-price-display');
 		const labelEl = document.getElementById('total-label');
+		const recurringChip = document.getElementById('total-recurring-chip');
+		const recurringChipText = document.getElementById('total-recurring-chip-text');
 
 		if(displayEl) {
+			// Partie ponctuelle (une fois) et partie récurrente (mensuel/annuel) sont
+			// maintenant deux blocs visuellement distincts (gros montant + puce à part),
+			// plutôt qu'un seul texte fusionné — pour une hiérarchie plus claire.
 			let text;
 			if (totalOneShot > 0) {
 				const prefix = (selectedIntervention && selectedIntervention.type === 'relifting') ? 'Dès ' : '';
-				text = prefix + new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(totalOneShot);
+				text = prefix + eur(totalOneShot);
 			} else {
 				text = '—';
 			}
+			displayEl.textContent = text;
 
-			if (serenityTier) {
-				const monthly = SERENITY_PRICES[serenityTier];
-				const label = serenityTier === 'plus' ? 'Sérénité+' : 'Sérénité';
-				text += ` <span class="text-xs font-normal text-blue-300 block text-right mt-1">+ ${monthly}€/mois (${label}, engagement 12 mois)</span>`;
+			if (recurringChip && recurringChipText) {
+				if (serenityTier) {
+					const label = serenityTier === 'plus' ? 'Sérénité+' : 'Sérénité';
+					const isEssentielBundle = requestType !== 'existing' && document.querySelector('input[name="project_pack"][value="Essentiel"]')?.checked;
+
+					if (serenityBillingCycle === 'annual') {
+						const annual = SERENITY_PRICES_ANNUAL[serenityTier];
+						const bundleNote = isEssentielBundle ? `${label} incluse, payée avec le pack` : `${label}, -2 mois offerts`;
+						recurringChipText.textContent = `${eur(annual)} / an · ${bundleNote}`;
+					} else {
+						const monthly = SERENITY_PRICES[serenityTier];
+						recurringChipText.textContent = `${eur(monthly)} / mois · ${label}`;
+					}
+					recurringChip.classList.remove('hidden');
+					recurringChip.classList.add('flex');
+				} else {
+					recurringChip.classList.add('hidden');
+					recurringChip.classList.remove('flex');
+					recurringChipText.textContent = '';
+				}
 			}
-			displayEl.innerHTML = text;
 		}
 
 		if(labelEl) {
@@ -895,153 +1112,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Init défaut
-    // On simule une sélection Vitrine au chargement
-    window.updateCardSelection('Vitrine', 1790);
+    // On simule une sélection Vitrine au chargement (prix lu dynamiquement, promo incluse)
+    window.updateCardSelection('Vitrine', parseInt(document.getElementById('pack-vitrine')?.getAttribute('data-price')) || 1790);
 
 
     // ==============================================
-    // 6. CALENDRIER
+    // 6. CALENDRIER DE PRISE DE RENDEZ-VOUS
+    // ----------------------------------------------
+    // La logique complète (jours ouverts, créneaux, vérification
+    // des créneaux déjà réservés) vit dans assets/js/calendar.js,
+    // partagée avec la page Offre Club pour éviter toute
+    // divergence de disponibilités entre les deux formulaires.
     // ==============================================
-    const daysContainer = document.getElementById('calendar-days');
-    const slotsContainer = document.getElementById('calendar-slots');
     const dateInput = document.getElementById('selected-date');
     const timeInput = document.getElementById('selected-time');
-    
-    // Matin uniquement
-    const DEFAULT_SLOTS = ["09:00", "09:30", "10:00", "10:30"];
 
-    let calendarStartDate = new Date();
-    let currentDateOffset = 0;
-    const DAYS_TO_SHOW = 12;
-
-    // Init
-    renderCalendar();
-
-    // Boutons Pagination
-    document.getElementById('next-week')?.addEventListener('click', () => {
-        window.vibrate();
-        currentDateOffset += DAYS_TO_SHOW; 
-        renderCalendar();
-    });
-    document.getElementById('prev-week')?.addEventListener('click', () => {
-        if(currentDateOffset > 0) {
-            window.vibrate();
-            currentDateOffset -= DAYS_TO_SHOW;
-            if(currentDateOffset < 0) currentDateOffset = 0;
-            renderCalendar();
-        }
-    });
-
-    function renderCalendar() {
-        if(!daysContainer) return;
-        daysContainer.innerHTML = '';
-        
-        const btnPrev = document.getElementById('prev-week');
-        if(btnPrev) btnPrev.disabled = currentDateOffset === 0;
-
-        let daysGenerated = 0;
-        let i = 1 + currentDateOffset;
-
-        while (daysGenerated < DAYS_TO_SHOW) {
-            if (i > 60) break; // Limite de sécurité
-
-            const d = new Date();
-            d.setDate(d.getDate() + i);
-
-            // Exclure Week-end (0=Dim, 6=Sam) ET MERCREDI (3)
-            const day = d.getDay();
-            if (day !== 0 && day !== 6 && day !== 3) {
-                const dateStr = d.toISOString().split('T')[0];
-                const dayName = d.toLocaleDateString('fr-FR', { weekday: 'short' });
-                const dayNum = d.toLocaleDateString('fr-FR', { day: 'numeric' });
-                const monthName = d.toLocaleDateString('fr-FR', { month: 'short' });
-
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = `date-btn flex-shrink-0 h-20 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 flex flex-col items-center justify-center transition-all duration-300 group focus:outline-none w-full`;
-                
-                if(dateInput.value === dateStr) {
-                    btn.classList.add('active-date');
-                }
-
-                btn.innerHTML = `
-                    <span class="text-xs text-slate-400 uppercase font-bold group-hover:text-accent-400">${dayName}</span>
-                    <span class="text-xl font-bold text-white my-1">${dayNum}</span>
-                    <span class="text-[10px] text-slate-500">${monthName}</span>
-                `;
-                btn.addEventListener('click', () => selectDate(btn, dateStr));
-                daysContainer.appendChild(btn);
-                
-                daysGenerated++;
-            }
-            i++;
-        }
-    }
-
-    async function selectDate(btn, dateStr) {
-        window.vibrate();
-        // RESET TOTAL
-        document.querySelectorAll('.date-btn').forEach(b => {
-            b.classList.remove('active-date');
-            const spans = b.querySelectorAll('span');
-            spans[0].className = "text-xs text-slate-400 uppercase font-bold group-hover:text-accent-400";
-            spans[1].className = "text-xl font-bold text-white my-1";
-            spans[2].className = "text-[10px] text-slate-500";
+    if (window.NM && NM.calendar) {
+        NM.calendar.mount({
+            daysEl: document.getElementById('calendar-days'),
+            slotsEl: document.getElementById('calendar-slots'),
+            dateInput: dateInput,
+            timeInput: timeInput,
+            prevBtn: document.getElementById('prev-week'),
+            nextBtn: document.getElementById('next-week')
         });
-
-        // ACTIVER NOUVEAU
-        btn.classList.add('active-date');
-        
-        const spans = btn.querySelectorAll('span');
-        spans[0].className = "text-xs text-dark-950 uppercase font-bold";
-        spans[1].className = "text-xl font-bold text-dark-950 my-1";
-        spans[2].className = "text-[10px] text-dark-950";
-
-        dateInput.value = dateStr;
-        timeInput.value = ""; 
-        await loadSlotsForDate(dateStr);
-    }
-
-    async function loadSlotsForDate(dateStr) {
-        slotsContainer.innerHTML = '<div class="col-span-full text-center text-accent-400"><i class="ph-duotone ph-spinner animate-spin text-2xl"></i></div>';
-        try {
-            const q = query(collection(db, "bookings"), where("date", "==", dateStr));
-            const querySnapshot = await getDocs(q);
-            const takenSlots = [];
-            querySnapshot.forEach((doc) => takenSlots.push(doc.data().time));
-
-            slotsContainer.innerHTML = '';
-            if(DEFAULT_SLOTS.length === takenSlots.length) {
-                slotsContainer.innerHTML = '<div class="col-span-full text-center text-slate-500 text-xs py-2">Complet ce jour</div>';
-                return;
-            }
-
-            DEFAULT_SLOTS.forEach(time => {
-                const isTaken = takenSlots.includes(time);
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.disabled = isTaken;
-                btn.textContent = time;
-                btn.className = `py-2 rounded-lg text-sm font-medium border transition-all duration-200
-                    ${isTaken 
-                        ? 'bg-dark-900 border-transparent text-slate-700 cursor-not-allowed line-through' 
-                        : 'bg-white/5 border-white/10 text-white hover:border-accent-400 hover:text-accent-400 time-btn'}`;
-                
-                if(!isTaken) {
-                    btn.addEventListener('click', () => {
-                        window.vibrate();
-                        document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('bg-accent-400', 'text-dark-950', 'hover:text-accent-400'));
-                        btn.classList.remove('bg-white/5', 'hover:text-accent-400');
-                        btn.classList.add('bg-accent-400', 'text-dark-950');
-                        timeInput.value = time;
-                    });
-                }
-                slotsContainer.appendChild(btn);
-            });
-        } catch (err) {
-            console.error(err);
-            slotsContainer.innerHTML = '<div class="col-span-full text-center text-red-400 text-xs">Erreur connexion</div>';
-        }
     }
 
     // Affiche un message d'erreur inline (bannière) au lieu d'un popup alert()
@@ -1142,35 +1236,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="ph-bold ph-spinner animate-spin text-xl"></i> Envoi...';
 
-                // Envoi vers Firebase
-                await addDoc(collection(db, "bookings"), {
-                    date: dateInput.value,
-                    time: timeInput.value,
-                    endTime: calculatedEndTime,
-                    lastname: name,
-                    firstname: firstname,
-                    fullname: `${firstname} ${name}`,
+                // Payload complet de la demande de RDV — envoyé à la fois vers Firebase
+                // (trace interne) et vers submitForm() (webhook Zapier -> email de
+                // confirmation), pour que le mail parte bien sur ce tunnel aussi.
+                // Payload aligné sur les colonnes de la table nm_leads
+                // (voir migration nm_portfolio_core_schema). Il alimente à la
+                // fois l'espace d'administration et l'e-mail de confirmation.
+                const numericTotal = Number(String(total).replace(/[^0-9,.-]/g, '').replace(/\s/g, '').replace(',', '.')) || null;
+                const packRadioForPrice = document.querySelector('input[name="project_pack"]:checked');
+                const packPrice = (requestType === 'existing' || !packRadioForPrice)
+                    ? null
+                    : parseFloat(packRadioForPrice.getAttribute('data-price')) || null;
+
+                const bookingPayload = {
+                    source: 'portfolio',
+                    request_type: requestType,                 // 'newsite' | 'existing'
+                    first_name: firstname,
+                    last_name: name,
                     email: email,
                     phone: document.getElementById('client-phone').value,
-                    pack: selectedPack,
-					request_type: requestType, // 'newsite' | 'existing'
-					intervention_type: selectedIntervention ? selectedIntervention.type : null,
-					intervention_price: selectedIntervention ? selectedIntervention.price : null,
-					rdv_label: `${dateStr} à ${timeInput.value}`, // ex: "lundi 26 janvier à 09:00" — texte brut, zéro risque de conversion
-										
-                    option_serenite: hasSerenity,
-					option_serenite_tier: serenityTier, // null | 'simple' | 'plus'
-                    
-                    // Nouveaux champs Documents
-                    option_documents_active: isDocActive,
-                    documents_list: selectedDocumentsList, // Tableau (ex: ["Devis", "Autre : Attestation"])
-                    documents_count: selectedDocumentsList.length,
+                    rdv_date: dateInput.value,
+                    rdv_time: timeInput.value,
+                    rdv_label: `${dateStr} à ${timeInput.value}`,
+                    pack: requestType === 'existing' ? 'existing' : (packRadioForPrice ? packRadioForPrice.value.toLowerCase() : null),
+                    pack_label: selectedPack,
+                    pack_price: packPrice,
+                    currency: 'EUR',
+                    serenity_tier: serenityTier,               // null | 'simple' | 'plus'
+                    serenity_cycle: hasSerenity ? serenityBillingCycle : null,
+                    documents: selectedDocumentsList,          // ex : ["Devis", "Autre : Attestation"]
+                    intervention_type: selectedIntervention ? selectedIntervention.type : null,
+                    intervention_price: selectedIntervention ? selectedIntervention.price : null,
+                    estimated_total: numericTotal,
+                    message: desc,
+                    status: 'nouveau'
+                };
 
-                    description: desc,
-                    estimated_total: total,
-                    created_at: new Date().toISOString(),
-                    status: 'pending'
-                });
+                // submitForm() enregistre la demande dans Supabase ET déclenche
+                // l'e-mail de confirmation via le webhook Zapier. Best-effort :
+                // un échec ne doit jamais bloquer la confirmation à l'écran.
+                let savedLeadId = null;
+                try {
+                    savedLeadId = await window.submitForm(bookingPayload);
+                } catch (e) {
+                    console.error('submitForm (RDV découverte) a échoué (non bloquant) :', e);
+                }
 
                 // Configuration Message Succès (AVEC REDIRECTION KICKOFF)
                 document.getElementById('success-message-date').textContent = `Le ${dateStr} à ${timeInput.value}`;
@@ -1192,24 +1302,41 @@ document.addEventListener('DOMContentLoaded', () => {
 						date: dateStr + ' à ' + timeInput.value,
 						documents: docsStr,
 						// Nouveaux champs pour gérer "J'ai déjà un site" et les interventions
-						requestType: requestType, 
+						requestType: requestType,
 						intervention: selectedIntervention ? selectedIntervention.type : null,
-						serenite: serenityTier
+						serenite: serenityTier,
+						sereniteCycle: serenityTier ? serenityBillingCycle : null,
+						// Permet de rattacher le brief à la demande enregistrée
+						// (et donc de pré-remplir le devis côté administration).
+						leadId: savedLeadId,
+						phone: document.getElementById('client-phone').value,
+						estimatedTotal: numericTotal,
+						source: 'portfolio'
 					};
                     
-					console.log(kickoffData);
-					
                     // Sauvegarde dans le stockage local du navigateur
                     localStorage.setItem('kickoffData', JSON.stringify(kickoffData));
 
                     // URL propre
-                    kickoffBtn.href = '/portfolio/kickoff/';
+                    kickoffBtn.href = 'kickoff/';
                     // -----------------------------------------------------------
                 }
 
                 // Affichage Overlay
                 document.getElementById('booking-success').classList.remove('hidden');
                 document.getElementById('booking-success').classList.add('flex');
+
+                // Défilement doux vers le message de confirmation : sur desktop, le
+                // formulaire est haut et le message (centré sur toute sa hauteur) pouvait
+                // rester masqué au-dessus ou au milieu de l'écran une fois validé.
+                // On cible le contenu du message (pas l'overlay plein écran) pour un
+                // centrage fiable quelle que soit la hauteur du formulaire.
+                const successContent = document.getElementById('booking-success-content');
+                if (successContent) {
+                    requestAnimationFrame(() => {
+                        successContent.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    });
+                }
 
             } catch (error) {
                 console.error("Booking error:", error);
@@ -1220,6 +1347,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+    // ==============================================
+    // (Le bloc « paiement direct par carte » a été supprimé :
+    //  le site ne propose plus aucun paiement en ligne. Le
+    //  règlement se fait sur facture, envoyée depuis l'espace
+    //  d'administration une fois la prestation livrée.)
+    // ==============================================
+
     // ==============================================
     // GESTION ACCORDÉON HÉBERGEMENT
     // ==============================================
@@ -1399,24 +1533,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 3. Calcul Prix Service (Local)
+    // 3. Prix affiché au-dessus du sélecteur « Documents & Automatisation ».
+    //    Le montant de repli vient du catalogue (config.js) : aucun tarif
+    //    n'est écrit en dur ici.
     window.updateServicePrice = function() {
         let total = 0;
         const checked = document.querySelectorAll('.service-doc-chk:checked');
-        
-        checked.forEach(chk => {
-            total += parseInt(chk.getAttribute('data-price'));
-        });
+        checked.forEach(chk => { total += parseInt(chk.getAttribute('data-price'), 10) || 0; });
 
         const display = document.getElementById('service-price-display');
         const label = document.getElementById('service-price-label');
+        if (!display || !label) return;
+
+        // Tarif d'entrée = option de document la moins chère du catalogue.
+        const cheapest = (CFG.documentOptions || [])
+            .reduce((min, o) => Math.min(min, o.priceEur), Infinity);
+        const baseEur = isFinite(cheapest) ? cheapest : 100;
 
         if (total > 0) {
-            display.textContent = total + '€';
-            label.textContent = "pour la sélection (" + checked.length + " docs)";
+            display.removeAttribute('data-price-eur');
+            display.textContent = formatMoney(NM.i18n.convert(total), getCurrentCurrency());
+            label.textContent = "pour la sélection (" + checked.length +
+                (checked.length > 1 ? " documents)" : " document)");
             label.classList.add('text-emerald-400');
         } else {
-            display.textContent = '250€';
+            display.setAttribute('data-price-eur', String(baseEur));
+            display.textContent = formatMoney(NM.i18n.convert(baseEur), getCurrentCurrency());
             label.textContent = "par type de document";
             label.classList.remove('text-emerald-400');
         }
@@ -1563,7 +1705,9 @@ document.addEventListener('DOMContentLoaded', () => {
 				window.updateCardSelection(checkedRadio.value, currentBasePrice);
 			} else {
 				document.getElementById('pack-vitrine').checked = true;
-				window.updateCardSelection('Vitrine', 1790);
+				const vitrinePrice = parseInt(document.getElementById('pack-vitrine')?.getAttribute('data-price')) || 1790;
+				currentBasePrice = vitrinePrice;
+				window.updateCardSelection('Vitrine', vitrinePrice);
 			}
 		}
 

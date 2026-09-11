@@ -1,0 +1,405 @@
+/* ============================================================
+   COMPOSANTS D'INTERFACE PARTAGÉS (pages « application »)
+   ------------------------------------------------------------
+   Utilisé par : /kickoff/, /admin/, /contrat/devis&contrat/,
+   /contrat/quittance/, /contrat/bail/, /running/.
+
+   À charger APRÈS assets/css/theme.css : toutes les couleurs
+   proviennent des tokens de thème, ces composants suivent donc
+   automatiquement le mode clair comme le mode sombre.
+   ============================================================ */
+
+/* ---------- Décor de fond ---------- */
+.animate-blob { animation: nm-blob 7s infinite; }
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
+@keyframes nm-blob {
+	0%   { transform: translate(0px, 0px) scale(1); }
+	33%  { transform: translate(30px, -50px) scale(1.1); }
+	66%  { transform: translate(-20px, 20px) scale(0.9); }
+	100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@keyframes nm-fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: nm-fade-in .5s ease-out forwards; }
+
+/* ---------- Cartes ---------- */
+.glass-card { border-radius: 1.5rem; position: relative; z-index: 2; }
+
+/* ---------- Champs de formulaire ---------- */
+.input-premium,
+.textarea-premium,
+.select-premium {
+	background: rgb(var(--t-dark-950));
+	border: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2.5));
+	color: rgb(var(--t-white));
+	border-radius: 0.75rem;
+	padding: 0.75rem 1rem;
+	width: 100%;
+	transition: border-color .25s ease, box-shadow .25s ease, background-color .25s ease;
+	font-size: 0.95rem;
+	font-family: 'Inter', system-ui, sans-serif;
+	position: relative;
+}
+.textarea-premium { min-height: 120px; resize: vertical; }
+.input-premium::placeholder,
+.textarea-premium::placeholder { color: rgb(var(--t-slate-500)); }
+.input-premium:focus,
+.textarea-premium:focus,
+.select-premium:focus {
+	border-color: rgb(var(--t-accent-400));
+	outline: none;
+	box-shadow: 0 0 0 3px rgb(var(--t-accent-400) / 0.15);
+}
+.input-premium:disabled,
+.select-premium:disabled { opacity: .55; cursor: not-allowed; }
+
+/* Flèche du <select> lisible dans les deux thèmes */
+.select-premium {
+	appearance: none;
+	background-image: linear-gradient(45deg, transparent 50%, rgb(var(--t-slate-400)) 50%),
+	                  linear-gradient(135deg, rgb(var(--t-slate-400)) 50%, transparent 50%);
+	background-position: calc(100% - 20px) calc(50% + 2px), calc(100% - 14px) calc(50% + 2px);
+	background-size: 6px 6px, 6px 6px;
+	background-repeat: no-repeat;
+	padding-right: 2.5rem;
+}
+
+.label-premium {
+	display: block;
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: rgb(var(--t-slate-400));
+	margin-bottom: 0.35rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+/* ---------- Titres de section ---------- */
+.section-title {
+	font-family: 'Space Grotesk', 'Inter', sans-serif;
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: rgb(var(--t-white));
+	border-bottom: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2));
+	padding-bottom: 0.5rem;
+	margin-top: 2rem;
+	margin-bottom: 1.5rem;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+.section-title:first-child, .section-title.mt-0 { margin-top: 0; }
+.section-title i { color: rgb(var(--t-accent-400)); }
+
+/* ---------- Cases à cocher ---------- */
+.chk-label {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.75rem;
+	padding: 0.75rem;
+	border-radius: 0.5rem;
+	cursor: pointer;
+	transition: background-color .2s, border-color .2s;
+	border: 1px solid transparent;
+}
+.chk-label:hover {
+	background: rgb(var(--t-slate-500) / 0.08);
+	border-color: rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2));
+}
+.chk-input {
+	accent-color: rgb(var(--t-accent-400));
+	width: 1.1rem; height: 1.1rem; margin-top: 2px;
+	flex-shrink: 0;
+}
+
+/* ---------- Boutons ---------- */
+.btn-primary {
+	display: inline-flex; align-items: center; justify-content: center; gap: .6rem;
+	padding: .85rem 1.4rem; border-radius: .85rem;
+	background: rgb(var(--t-accent-400));
+	color: rgb(var(--t-dark-950));
+	font-weight: 700; font-size: .9rem;
+	transition: filter .2s ease, transform .2s ease, opacity .2s ease;
+}
+.btn-primary:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+
+.btn-ghost {
+	display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+	padding: .7rem 1.1rem; border-radius: .8rem;
+	border: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2.5));
+	background: rgb(var(--t-slate-500) / .06);
+	color: rgb(var(--t-slate-300));
+	font-weight: 600; font-size: .82rem;
+	transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+.btn-ghost:hover { background: rgb(var(--t-slate-500) / .14); color: rgb(var(--t-white)); }
+
+.btn-danger { color: rgb(var(--t-red-400)); }
+.btn-danger:hover { background: rgb(var(--t-red-500) / .12); color: rgb(var(--t-red-500)); }
+
+/* ---------- Barre d'action fixe (mobile) ---------- */
+.sticky-action-bar {
+	position: fixed; bottom: 0; left: 0; right: 0;
+	padding: 1rem 1.5rem calc(1rem + env(safe-area-inset-bottom, 0px));
+	background: rgb(var(--t-dark-950) / 0.92);
+	-webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+	border-top: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2.5));
+	z-index: 60;
+	display: flex; justify-content: center; gap: 1rem;
+}
+
+/* ---------- Écran de garde des pages sécurisées ---------- */
+#auth-loader {
+	position: fixed; inset: 0; z-index: 200;
+	background: rgb(var(--t-dark-950));
+	display: flex; flex-direction: column; align-items: center; justify-content: center;
+	text-align: center; padding: 1.5rem;
+}
+#secure-content { display: none; }
+
+/* ---------- Tableaux ---------- */
+.nm-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.nm-table th {
+	text-align: left; font-size: .68rem; text-transform: uppercase; letter-spacing: .06em;
+	color: rgb(var(--t-slate-500)); font-weight: 700;
+	padding: .7rem .8rem; white-space: nowrap;
+	border-bottom: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2.5));
+}
+.nm-table td {
+	padding: .8rem;
+	border-bottom: 1px solid rgb(var(--t-hairline) / var(--t-hairline-alpha));
+	color: rgb(var(--t-slate-300));
+	vertical-align: top;
+}
+.nm-table tbody tr:hover { background: rgb(var(--t-slate-500) / .06); }
+
+/* ---------- Sélecteur de statut (liste des demandes) ---------- */
+.nm-status-select {
+	appearance: none;
+	display: block; width: 100%; max-width: 140px;
+	padding: .3rem 1.6rem .3rem .6rem;
+	border-radius: .5rem;
+	font-size: .7rem; font-weight: 700;
+	color: rgb(var(--t-slate-300));
+	background-color: rgb(var(--t-dark-950));
+	border: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2.5));
+	background-image: linear-gradient(45deg, transparent 50%, rgb(var(--t-slate-500)) 50%),
+	                  linear-gradient(135deg, rgb(var(--t-slate-500)) 50%, transparent 50%);
+	background-position: calc(100% - 14px) calc(50% + 1px), calc(100% - 9px) calc(50% + 1px);
+	background-size: 5px 5px, 5px 5px;
+	background-repeat: no-repeat;
+	cursor: pointer; transition: border-color .2s ease;
+}
+.nm-status-select:hover { border-color: rgb(var(--t-accent-400) / .5); }
+.nm-status-select--nouveau  { color: rgb(var(--t-accent-400));  border-color: rgb(var(--t-accent-400) / .45); }
+.nm-status-select--traite   { color: rgb(var(--t-blue-400));    border-color: rgb(var(--t-blue-400) / .45); }
+.nm-status-select--converti { color: rgb(var(--t-emerald-400)); border-color: rgb(var(--t-emerald-400) / .45); }
+.nm-status-select--perdu    { color: rgb(var(--t-slate-500)); }
+
+/* ---------- Badges d'état ---------- */
+.nm-badge {
+	display: inline-flex; align-items: center; gap: .35rem;
+	padding: .2rem .6rem; border-radius: 999px;
+	font-size: .65rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em;
+	white-space: nowrap;
+}
+.nm-badge--neutral { background: rgb(var(--t-slate-500) / .15); color: rgb(var(--t-slate-400)); }
+.nm-badge--info    { background: rgb(var(--t-blue-500) / .15);  color: rgb(var(--t-blue-400)); }
+.nm-badge--ok      { background: rgb(var(--t-emerald-500) / .15); color: rgb(var(--t-emerald-400)); }
+.nm-badge--warn    { background: rgb(var(--t-amber-500) / .18); color: rgb(var(--t-amber-400)); }
+.nm-badge--danger  { background: rgb(var(--t-red-500) / .15);   color: rgb(var(--t-red-400)); }
+.nm-badge--accent  { background: rgb(var(--t-accent-400) / .15); color: rgb(var(--t-accent-400)); }
+
+
+/* ============================================================
+   COMPOSANTS PARTAGÉS ACCUEIL ↔ OFFRE CLUB
+   (sélection de packs, formules de suivi, interventions,
+    animation de survol, aperçus agrandis)
+   ============================================================ */
+
+.interactive-hover { transition: all .3s cubic-bezier(.4, 0, .2, 1); }
+.interactive-hover:hover {
+	transform: translateY(-3px) scale(1.02);
+	box-shadow: var(--t-elevation);
+	border-color: rgb(var(--t-accent-400) / .3);
+}
+
+/* --- Bascule mensuel / annuel --- */
+.billing-cycle-pills {
+	border: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2));
+	background: rgb(var(--t-slate-500) / .08);
+}
+.billing-cycle-pill {
+	appearance: none; border: none; background: transparent;
+	color: rgb(var(--t-slate-400));
+	font-weight: 700; font-size: 12px; line-height: 1;
+	padding: 9px 16px; border-radius: 9999px;
+	cursor: pointer; transition: all .2s ease; white-space: nowrap;
+}
+.billing-cycle-pill:hover:not(:disabled) { color: rgb(var(--t-slate-200)); background: rgb(var(--t-slate-500) / .12); }
+.billing-cycle-pill.active {
+	background: rgb(var(--t-blue-500)); color: #fff;
+	box-shadow: 0 4px 14px rgb(var(--t-blue-500) / .35);
+}
+.billing-cycle-pill:disabled { pointer-events: none; }
+
+/* --- Cartes de suivi sélectionnées --- */
+.serenity-selected-card {
+	border-color: rgb(var(--t-blue-400)) !important;
+	box-shadow: 0 0 30px rgb(var(--t-blue-400) / .18) !important;
+	transform: translateY(-3px) scale(1.01);
+}
+
+/* --- Boutons Sérénité du formulaire --- */
+.serenity-btn {
+	transition: all .3s cubic-bezier(.4, 0, .2, 1);
+	border: 1px solid rgb(var(--t-blue-500) / .25);
+	background: rgb(var(--t-blue-500) / .06);
+}
+.serenity-btn.active {
+	background: rgb(var(--t-blue-500) / .18);
+	border-color: rgb(var(--t-blue-500));
+	box-shadow: 0 0 20px rgb(var(--t-blue-500) / .2);
+}
+.serenity-btn.active-plus {
+	background: rgb(var(--t-indigo-500) / .18);
+	border-color: rgb(var(--t-indigo-500));
+	box-shadow: 0 0 20px rgb(var(--t-indigo-500) / .2);
+}
+
+/* --- Situation & interventions --- */
+.request-type-btn { transition: all .25s ease; cursor: pointer; }
+.request-type-btn.active-request-type {
+	border-color: rgb(var(--t-accent-400)) !important;
+	background: rgb(var(--t-accent-400) / .1) !important;
+	box-shadow: 0 0 15px rgb(var(--t-accent-400) / .15);
+}
+.intervention-btn { transition: all .25s ease; cursor: pointer; }
+.intervention-btn.active-intervention {
+	background-color: rgb(var(--t-accent-400)) !important;
+	border-color: rgb(var(--t-accent-400)) !important;
+	box-shadow: 0 0 15px rgb(var(--t-accent-400) / .3);
+}
+.intervention-btn.active-intervention span { color: rgb(var(--t-dark-950)) !important; }
+
+/* --- Titre de section de formulaire --- */
+.form-section-title {
+	color: rgb(var(--t-accent-400)); font-size: .8rem; text-transform: uppercase;
+	letter-spacing: .05em; font-weight: 700; margin-bottom: .5rem;
+	display: flex; align-items: center; gap: .5rem;
+}
+
+/* --- Calendrier --- */
+.date-btn.active-date {
+	background-color: rgb(var(--t-accent-400)) !important;
+	border-color: rgb(var(--t-accent-400)) !important;
+	transform: scale(1.05);
+}
+.date-btn.active-date span { color: rgb(var(--t-dark-950)) !important; }
+
+/* ============================================================
+   MODULES CLUB — cartes sélectionnables et miniatures
+   ============================================================ */
+.club-card { transition: all .3s cubic-bezier(.4, 0, .2, 1); }
+.club-card.is-selected {
+	border-color: rgb(var(--t-accent-400)) !important;
+	background: rgb(var(--t-accent-400) / .07);
+	box-shadow: 0 0 0 1px rgb(var(--t-accent-400) / .3);
+}
+.club-card__toggle.is-on {
+	background: rgb(var(--t-accent-400));
+	color: rgb(var(--t-dark-950));
+	border-color: rgb(var(--t-accent-400));
+}
+
+.club-option {
+	transition: all .25s cubic-bezier(.4, 0, .2, 1);
+	border: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2.5));
+	cursor: pointer;
+}
+.club-option:hover { border-color: rgb(var(--t-accent-400) / .5); }
+.club-option.selected {
+	border-color: rgb(var(--t-accent-400));
+	background: rgb(var(--t-accent-400) / .10);
+	box-shadow: 0 0 0 1px rgb(var(--t-accent-400) / .25);
+}
+.club-option.selected .club-option__box {
+	background: rgb(var(--t-accent-400));
+	border-color: rgb(var(--t-accent-400));
+}
+.club-option.selected .club-option__box i { opacity: 1; transform: scale(1); }
+
+/* Miniatures d'aperçu */
+.club-thumb {
+	width: 62px; height: 44px; border-radius: 8px; overflow: hidden;
+	border: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 3));
+	background: rgb(var(--t-dark-950));
+	transition: transform .2s ease, border-color .2s ease;
+	flex-shrink: 0; padding: 0; cursor: zoom-in;
+}
+.club-thumb:hover { transform: scale(1.08); border-color: rgb(var(--t-accent-400)); }
+.club-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Aperçu agrandi */
+#club-lightbox {
+	position: fixed; inset: 0; z-index: 120;
+	background: rgb(2 6 23 / .92);
+	-webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+	display: flex; align-items: center; justify-content: center; gap: 12px;
+	padding: 24px;
+	opacity: 0; pointer-events: none; transition: opacity .25s ease;
+}
+#club-lightbox.is-open { opacity: 1; pointer-events: auto; }
+.club-lightbox__figure { margin: 0; max-width: min(1100px, 88vw); text-align: center; }
+.club-lightbox__figure img {
+	max-width: 100%; max-height: 76vh; border-radius: 12px; display: block;
+	box-shadow: 0 30px 80px -20px rgb(0 0 0 / .7);
+}
+.club-lightbox__figure figcaption { margin-top: 14px; color: #cbd5e1; font-size: 13px; }
+.club-lightbox__close {
+	position: absolute; top: 18px; right: 18px;
+	width: 42px; height: 42px; border-radius: 999px;
+	background: rgb(255 255 255 / .12); color: #fff; font-size: 20px;
+	display: flex; align-items: center; justify-content: center;
+	transition: background-color .2s ease;
+}
+.club-lightbox__close:hover { background: rgb(255 255 255 / .25); }
+.club-lightbox__nav {
+	width: 46px; height: 46px; border-radius: 999px; flex-shrink: 0;
+	background: rgb(255 255 255 / .12); color: #fff; font-size: 20px;
+	display: flex; align-items: center; justify-content: center;
+	transition: background-color .2s ease;
+}
+.club-lightbox__nav:hover { background: rgb(255 255 255 / .25); }
+@media (max-width: 640px) {
+	.club-lightbox__nav { position: absolute; bottom: 24px; }
+	.club-lightbox__nav--prev { left: 24px; }
+	.club-lightbox__nav--next { right: 24px; }
+}
+
+/* ============================================================
+   RÉVÉLATION AU DÉFILEMENT (accueil + offre club)
+   ============================================================ */
+.reveal { opacity: 0; transform: translateY(20px); transition: all .8s cubic-bezier(.2, .8, .2, 1); }
+.reveal.active { opacity: 1; transform: translateY(0); }
+.delay-100 { transition-delay: 100ms; }
+.delay-200 { transition-delay: 200ms; }
+.delay-300 { transition-delay: 300ms; }
+
+/* Étapes du parcours : elles arrivent l'une après l'autre. */
+.funnel-step { transition: transform .3s cubic-bezier(.4, 0, .2, 1), box-shadow .3s ease, border-color .3s ease; }
+.funnel-step:hover { transform: translateY(-4px); box-shadow: var(--t-elevation); border-color: rgb(var(--t-accent-400) / .35); }
+.funnel-step:hover .funnel-step__num {
+	background: rgb(var(--t-accent-400));
+	color: rgb(var(--t-dark-950));
+	transform: scale(1.08);
+}
+.funnel-step__num { transition: background-color .3s ease, color .3s ease, transform .3s ease; }
+
+/* ---------- Utilitaire lecteur d'écran ---------- */
+.sr-only {
+	position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+	overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}

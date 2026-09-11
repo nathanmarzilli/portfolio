@@ -1,0 +1,336 @@
+/* ============================================================
+   THEME TOKENS — mode clair (par défaut) & mode sombre
+   ------------------------------------------------------------
+   Chaque couleur Tailwind utilisée sur le site est déclarée ici
+   sous forme de triplet RGB. Le fichier assets/js/tailwind-theme.js
+   les branche sur la palette Tailwind (`rgb(var(--t-x) / <alpha-value>)`),
+   ce qui permet de basculer TOUT le site d'un thème à l'autre en
+   changeant simplement l'attribut `data-theme` sur <html>.
+
+   ⚠️ Ne jamais écrire une couleur en dur dans le HTML : utiliser les
+   classes Tailwind (bg-dark-900, text-slate-400, ...) ou les variables
+   ci-dessous (var(--t-accent-400)).
+   ============================================================ */
+
+/* ---------- MODE CLAIR (défaut) ---------- */
+:root, [data-theme="light"] {
+	--t-white: 15 23 42;
+	--t-black: 0 0 0;
+	--t-dark-950: 246 248 251;
+	--t-dark-900: 255 255 255;
+	--t-dark-850: 241 245 249;
+	--t-dark-800: 226 232 240;
+	--t-slate-100: 15 23 42;
+	--t-slate-200: 30 41 59;
+	--t-slate-300: 51 65 85;
+	--t-slate-400: 75 91 112;
+	--t-slate-500: 100 116 139;
+	--t-slate-600: 148 163 184;
+	--t-slate-700: 203 213 225;
+	--t-slate-900: 226 232 240;
+	--t-accent-400: 13 148 136;
+	--t-accent-500: 15 118 110;
+	--t-gold-400: 180 83 9;
+	--t-gold-500: 146 64 14;
+	--t-amber-400: 180 83 9;
+	--t-amber-500: 146 64 14;
+	--t-red-200: 127 29 29;
+	--t-red-300: 153 27 27;
+	--t-red-400: 220 38 38;
+	--t-red-500: 185 28 28;
+	--t-orange-400: 234 88 12;
+	--t-orange-500: 194 65 12;
+	--t-yellow-200: 133 77 14;
+	--t-yellow-400: 161 98 7;
+	--t-yellow-500: 133 77 14;
+	--t-green-400: 22 163 74;
+	--t-green-500: 21 128 61;
+	--t-emerald-50: 6 78 59;
+	--t-emerald-100: 6 95 70;
+	--t-emerald-200: 4 120 87;
+	--t-emerald-300: 5 150 105;
+	--t-emerald-400: 5 150 105;
+	--t-emerald-500: 4 120 87;
+	--t-emerald-950: 236 253 245;
+	--t-cyan-400: 8 145 178;
+	--t-cyan-500: 14 116 144;
+	--t-blue-200: 30 64 175;
+	--t-blue-300: 29 78 216;
+	--t-blue-400: 37 99 235;
+	--t-blue-500: 29 78 216;
+	--t-blue-600: 30 64 175;
+	--t-indigo-300: 67 56 202;
+	--t-indigo-400: 79 70 229;
+	--t-indigo-500: 67 56 202;
+	--t-violet-400: 124 58 237;
+	--t-violet-500: 109 40 217;
+	--t-purple-400: 147 51 234;
+	--t-purple-500: 126 34 206;
+	--t-pink-400: 219 39 119;
+	--t-pink-500: 190 24 93;
+	--t-rose-400: 225 29 72;
+	--t-rose-500: 190 18 60;
+
+	--t-shadow-color: 15 23 42;
+	--t-glass-bg: 255 255 255;
+	--t-glass-alpha: 0.72;
+	--t-glass-border: 15 23 42;
+	--t-glass-border-alpha: 0.08;
+	--t-nav-bg: 255 255 255;
+	--t-nav-alpha: 0.82;
+	--t-hairline: 15 23 42;
+	--t-hairline-alpha: 0.07;
+	--t-noise-opacity: 0.015;
+	--t-elevation: 0 18px 40px -24px rgb(15 23 42 / 0.28);
+	--t-elevation-soft: 0 8px 24px -16px rgb(15 23 42 / 0.20);
+	color-scheme: light;
+}
+
+/* ---------- MODE SOMBRE ---------- */
+[data-theme="dark"] {
+	--t-white: 255 255 255;
+	--t-black: 0 0 0;
+	--t-dark-950: 2 6 23;
+	--t-dark-900: 11 17 32;
+	--t-dark-850: 15 23 42;
+	--t-dark-800: 30 41 59;
+	--t-slate-100: 241 245 249;
+	--t-slate-200: 226 232 240;
+	--t-slate-300: 203 213 225;
+	--t-slate-400: 148 163 184;
+	--t-slate-500: 100 116 139;
+	--t-slate-600: 71 85 105;
+	--t-slate-700: 51 65 85;
+	--t-slate-900: 15 23 42;
+	--t-accent-400: 45 212 191;
+	--t-accent-500: 20 184 166;
+	--t-gold-400: 251 191 36;
+	--t-gold-500: 245 158 11;
+	--t-amber-400: 251 191 36;
+	--t-amber-500: 245 158 11;
+	--t-red-200: 254 202 202;
+	--t-red-300: 252 165 165;
+	--t-red-400: 248 113 113;
+	--t-red-500: 239 68 68;
+	--t-orange-400: 251 146 60;
+	--t-orange-500: 249 115 22;
+	--t-yellow-200: 254 240 138;
+	--t-yellow-400: 250 204 21;
+	--t-yellow-500: 234 179 8;
+	--t-green-400: 74 222 128;
+	--t-green-500: 34 197 94;
+	--t-emerald-50: 236 253 245;
+	--t-emerald-100: 209 250 229;
+	--t-emerald-200: 167 243 208;
+	--t-emerald-300: 110 231 183;
+	--t-emerald-400: 52 211 153;
+	--t-emerald-500: 16 185 129;
+	--t-emerald-950: 2 44 34;
+	--t-cyan-400: 34 211 238;
+	--t-cyan-500: 6 182 212;
+	--t-blue-200: 191 219 254;
+	--t-blue-300: 147 197 253;
+	--t-blue-400: 96 165 250;
+	--t-blue-500: 59 130 246;
+	--t-blue-600: 37 99 235;
+	--t-indigo-300: 165 180 252;
+	--t-indigo-400: 129 140 248;
+	--t-indigo-500: 99 102 241;
+	--t-violet-400: 167 139 250;
+	--t-violet-500: 139 92 246;
+	--t-purple-400: 192 132 252;
+	--t-purple-500: 168 85 247;
+	--t-pink-400: 244 114 182;
+	--t-pink-500: 236 72 153;
+	--t-rose-400: 251 113 133;
+	--t-rose-500: 244 63 94;
+
+	--t-shadow-color: 0 0 0;
+	--t-glass-bg: 30 41 59;
+	--t-glass-alpha: 0.20;
+	--t-glass-border: 255 255 255;
+	--t-glass-border-alpha: 0.05;
+	--t-nav-bg: 2 6 23;
+	--t-nav-alpha: 0.85;
+	--t-hairline: 255 255 255;
+	--t-hairline-alpha: 0.05;
+	--t-noise-opacity: 0.03;
+	--t-elevation: 0 20px 45px -25px rgb(0 0 0 / 0.8);
+	--t-elevation-soft: 0 10px 30px -20px rgb(0 0 0 / 0.6);
+	color-scheme: dark;
+}
+
+/* ============================================================
+   PRIMITIVES COMMUNES (indépendantes du thème)
+   ============================================================ */
+html { background-color: rgb(var(--t-dark-950)); }
+body {
+	background-color: rgb(var(--t-dark-950));
+	color: rgb(var(--t-slate-300));
+	overflow-x: hidden;
+	width: 100%;
+	position: relative;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Transition douce lors du basculement de thème */
+html.theme-transition, html.theme-transition * {
+	transition: background-color .35s ease, border-color .35s ease, color .25s ease, box-shadow .35s ease !important;
+}
+
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: rgb(var(--t-dark-950)); }
+::-webkit-scrollbar-thumb {
+	background: rgb(var(--t-slate-700));
+	border-radius: 6px;
+	border: 2px solid rgb(var(--t-dark-950));
+}
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--t-accent-400)); }
+
+.nav-glass {
+	background: rgb(var(--t-nav-bg) / var(--t-nav-alpha));
+	-webkit-backdrop-filter: blur(16px);
+	backdrop-filter: blur(16px);
+	border-bottom: 1px solid rgb(var(--t-hairline) / var(--t-hairline-alpha));
+}
+
+.glass-card {
+	background: rgb(var(--t-glass-bg) / var(--t-glass-alpha));
+	border: 1px solid rgb(var(--t-glass-border) / var(--t-glass-border-alpha));
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+	box-shadow: var(--t-elevation-soft);
+	transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease, background-color .35s ease;
+}
+
+.noise-overlay {
+	position: fixed; inset: 0; pointer-events: none; z-index: 40;
+	opacity: var(--t-noise-opacity);
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.spotlight-overlay {
+	pointer-events: none; position: fixed; inset: 0; z-index: 30;
+	background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgb(var(--t-accent-400) / 0.06), transparent 40%);
+	opacity: 0; transition: opacity .5s ease;
+}
+@media (hover: hover) { .spotlight-overlay { opacity: 1; } }
+
+.scroll-progress {
+	position: fixed; top: 0; left: 0; height: 3px;
+	background: rgb(var(--t-accent-400));
+	z-index: 100; width: 0%; transition: width .1s;
+	box-shadow: 0 0 10px rgb(var(--t-accent-400) / 0.5);
+}
+
+/* ============================================================
+   SÉLECTEUR DE THÈME (clair / sombre) — discret et intégré
+   ============================================================ */
+.theme-toggle {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
+	padding: 3px;
+	border-radius: 999px;
+	background: rgb(var(--t-slate-500) / 0.10);
+	border: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2));
+}
+.theme-toggle button {
+	display: inline-flex; align-items: center; justify-content: center;
+	width: 26px; height: 26px;
+	border-radius: 999px;
+	color: rgb(var(--t-slate-500));
+	font-size: 13px;
+	transition: color .2s ease, background-color .2s ease, transform .2s ease;
+}
+.theme-toggle button:hover { color: rgb(var(--t-slate-300)); }
+.theme-toggle button[aria-pressed="true"] {
+	background: rgb(var(--t-dark-900));
+	color: rgb(var(--t-accent-400));
+	box-shadow: var(--t-elevation-soft);
+}
+
+/* ============================================================
+   SÉLECTEUR LANGUE / DEVISE — liste déroulante compacte
+   ============================================================ */
+.lang-select { position: relative; }
+.lang-select__trigger {
+	display: inline-flex; align-items: center; gap: 6px;
+	padding: 6px 10px;
+	border-radius: 999px;
+	border: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2.5));
+	background: rgb(var(--t-slate-500) / 0.08);
+	color: rgb(var(--t-slate-300));
+	font-size: 11px; font-weight: 700; letter-spacing: .04em;
+	line-height: 1;
+	transition: color .2s ease, border-color .2s ease, background-color .2s ease;
+	white-space: nowrap;
+}
+.lang-select__trigger:hover { color: rgb(var(--t-slate-100)); border-color: rgb(var(--t-accent-400) / .45); }
+.lang-select__trigger .caret { font-size: 10px; opacity: .6; transition: transform .2s ease; }
+.lang-select[open] .lang-select__trigger .caret,
+.lang-select.is-open .lang-select__trigger .caret { transform: rotate(180deg); }
+.lang-select__menu {
+	position: absolute; right: 0; top: calc(100% + 8px);
+	min-width: 190px;
+	padding: 6px;
+	border-radius: 14px;
+	background: rgb(var(--t-dark-900));
+	border: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 3));
+	box-shadow: var(--t-elevation);
+	z-index: 90;
+	opacity: 0; transform: translateY(-6px) scale(.98);
+	pointer-events: none;
+	transition: opacity .18s ease, transform .18s ease;
+}
+.lang-select.is-open .lang-select__menu { opacity: 1; transform: none; pointer-events: auto; }
+.lang-select__option {
+	display: flex; align-items: center; gap: 10px; width: 100%;
+	padding: 8px 10px; border-radius: 10px;
+	color: rgb(var(--t-slate-300)); font-size: 12px; font-weight: 600;
+	transition: background-color .15s ease, color .15s ease;
+	text-align: left;
+}
+.lang-select__option:hover { background: rgb(var(--t-slate-500) / .12); color: rgb(var(--t-slate-100)); }
+.lang-select__option[aria-selected="true"] { color: rgb(var(--t-accent-400)); }
+.lang-select__option .flag { font-size: 15px; line-height: 1; }
+.lang-select__option .sub { margin-left: auto; font-size: 10px; font-weight: 700; color: rgb(var(--t-slate-500)); }
+
+/* ============================================================
+   BADGE / PASTILLE réutilisable
+   ============================================================ */
+.pill-link {
+	display: inline-flex; align-items: center; gap: 6px;
+	padding: 4px 10px; border-radius: 999px;
+	font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em;
+	background: rgb(var(--t-gold-400) / .12);
+	color: rgb(var(--t-gold-400));
+	border: 1px solid rgb(var(--t-gold-400) / .35);
+	transition: background-color .2s ease, transform .2s ease;
+}
+.pill-link:hover { background: rgb(var(--t-gold-400) / .22); transform: translateY(-1px); }
+
+/* ============================================================
+   PARCOURS CLIENT — pastille numérotée d'étape
+   (utilisée sur l'accueil et sur la page Offre Club)
+   ============================================================ */
+.funnel-step { position: relative; }
+.funnel-step__num {
+	width: 34px; height: 34px; border-radius: 999px;
+	display: inline-flex; align-items: center; justify-content: center;
+	font-weight: 800; font-size: 13px;
+	background: rgb(var(--t-accent-400) / .14);
+	color: rgb(var(--t-accent-400));
+	border: 1px solid rgb(var(--t-accent-400) / .35);
+	flex-shrink: 0;
+}
+
+/* ============================================================
+   ACCESSIBILITÉ
+   ============================================================ */
+:focus-visible { outline: 2px solid rgb(var(--t-accent-400)); outline-offset: 2px; border-radius: 6px; }
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}

@@ -8,521 +8,351 @@
     
     <meta property="og:title" content="Nathan Marzilli | Expert Web & Ingénieur">
     <meta property="og:description" content="Ingénieur développeur web (14 ans d'expérience). Sites sur-mesure, performants et design. Disponibilité immédiate.">
-    <meta property="og:image" content="https://nathanmarzilli.com/images/og-share.jpg"> <meta property="og:url" content="https://nathanmarzilli.com">
+    <meta property="og:image" content="https://nathanmarzilli.github.io/portfolio/images/og-share.jpg"> <meta property="og:url" content="https://nathanmarzilli.github.io/portfolio/">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="fr_FR">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    
+    <meta name="theme-color" content="#f6f8fb">
+    <link rel="icon" href="images/profile-40.jpg">
+
+    <!-- ============================================================
+         SOCLE VISUEL PARTAGÉ
+         theme.css définit les couleurs des deux thèmes (clair par
+         défaut, sombre) ; tailwind-theme.js branche la palette
+         Tailwind dessus ; theme.js applique le thème mémorisé AVANT
+         le premier rendu (aucun flash au chargement).
+         ============================================================ -->
+    <link rel="stylesheet" href="assets/css/theme.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/js/tailwind-theme.js"></script>
+    <script src="assets/js/nm-boot.js"></script>
+    <script src="assets/js/theme.js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] },
-                    colors: {
-                        dark: { 950: '#020617', 900: '#0B1120', 800: '#1E293B', 850: '#0f172a' },
-                        accent: { 400: '#2DD4BF', 500: '#14B8A6' },
-                        gold: { 400: '#FBBF24', 500: '#F59E0B' }
-                    },
-                    animation: {
-                        'blob': 'blob 7s infinite',
-                        'pop-in': 'popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'fade-up': 'fadeUp 0.5s ease-out forwards',
-                    },
-                    keyframes: {
-                        blob: {
-                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
-                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
-                        },
-                        popIn: {
-                            '0%': { transform: 'translateX(-10px) scale(0.9)', opacity: 0 },
-                            '100%': { transform: 'translateX(0) scale(1)', opacity: 1 }
-                        },
-                        fadeUp: {
-                            '0%': { transform: 'translateY(20px)', opacity: 0 },
-                            '100%': { transform: 'translateY(0)', opacity: 1 }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
     <style>
-        body { background-color: #020617; color: #E2E8F0; overflow-x: hidden; width: 100%; position: relative; }
-        
-        /* --- CUSTOM SCROLLBAR (DESIGN) --- */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #020617; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; border: 2px solid #020617; }
-        ::-webkit-scrollbar-thumb:hover { background: #2DD4BF; }
+        /* ============================================================
+           STYLES SPÉCIFIQUES À LA PAGE D'ACCUEIL
+           Toutes les couleurs passent par les tokens de thème
+           (var(--t-...)) afin de suivre le mode clair comme le mode
+           sombre. Les styles génériques (body, glass-card, nav-glass,
+           sélecteurs de thème et de langue) vivent dans
+           assets/css/theme.css.
+           ============================================================ */
 
-        /* --- NOISE TEXTURE (DESIGN) --- */
-        .noise-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 40; opacity: 0.03;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
-
-        /* --- SPOTLIGHT CURSOR (DESIGN) --- */
-        .spotlight-overlay {
-            pointer-events: none; position: fixed; inset: 0; z-index: 30;
-            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(45, 212, 191, 0.04), transparent 40%);
-            opacity: 0; transition: opacity 0.5s ease;
-        }
-        @media (hover: hover) { .spotlight-overlay { opacity: 1; } }
-
-        /* --- SCROLL PROGRESS (UX) --- */
-        .scroll-progress {
-            position: fixed; top: 0; left: 0; height: 3px; background: #2DD4BF;
-            z-index: 100; width: 0%; transition: width 0.1s;
-            box-shadow: 0 0 10px rgba(45, 212, 191, 0.5);
-        }
-
-        .nav-glass { background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
-        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-        .delay-100 { transition-delay: 100ms; }
-        .glass-card { background: rgba(30, 41, 59, 0.2); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); transition: all 0.4s ease; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
-        
-        .text-gradient-accent { background: linear-gradient(135deg, #2DD4BF 0%, #3B82F6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .interactive-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .interactive-hover:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 10px 30px -10px rgba(45, 212, 191, 0.2);
-            border-color: rgba(45, 212, 191, 0.3);
-            background: rgba(255, 255, 255, 0.08);
+
+        .text-gradient-accent {
+            background: linear-gradient(135deg, rgb(var(--t-accent-400)) 0%, rgb(var(--t-blue-500)) 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; color: transparent;
         }
 
-        /* --- STYLES SELECTION PACKS --- */
+
+        /* --- SÉLECTION DES PACKS --- */
         .gold-selected-card {
-            border-color: #FBBF24 !important;
-            box-shadow: 0 0 30px rgba(251, 191, 36, 0.2) !important;
-            background: linear-gradient(to bottom right, rgba(251, 191, 36, 0.05), rgba(30, 41, 59, 0.4)) !important;
+            border-color: rgb(var(--t-gold-400)) !important;
+            box-shadow: 0 0 30px rgb(var(--t-gold-400) / 0.2) !important;
+            background: linear-gradient(to bottom right, rgb(var(--t-gold-400) / 0.08), rgb(var(--t-glass-bg) / var(--t-glass-alpha))) !important;
             transform: translateY(-5px) scale(1.02);
             z-index: 10;
             position: relative;
         }
-        
-        /* Label "Sélectionné" sur la carte */
         .gold-selected-card::after {
             content: "SÉLECTIONNÉ";
             position: absolute;
-            top: -12px;
-            left: 50%;
+            top: -12px; left: 50%;
             transform: translateX(-50%);
-            background-color: #FBBF24;
-            color: #020617;
-            font-size: 0.7rem;
-            font-weight: 800;
-            padding: 4px 12px;
-            border-radius: 9999px;
+            background-color: rgb(var(--t-gold-400));
+            color: rgb(var(--t-dark-950));
+            font-size: 0.7rem; font-weight: 800;
+            padding: 4px 12px; border-radius: 9999px;
             letter-spacing: 0.1em;
-            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+            box-shadow: 0 4px 12px rgb(var(--t-gold-400) / 0.4);
             animation: fadeIn 0.3s ease-out forwards;
         }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(5px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
-        
-        .serenity-selected-card {
-            border-color: #60A5FA !important;
-            box-shadow: 0 0 30px rgba(96, 165, 250, 0.15) !important;
-            background: linear-gradient(to bottom right, rgba(96, 165, 250, 0.1), rgba(30, 41, 59, 0.5)) !important;
-            transform: translateY(-3px) scale(1.01);
-        }
 
-        /* Form Radio Buttons (Styled as Cards in Form) */
-        .pack-radio-label { cursor: pointer; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden; }
-        
-        .pack-radio-input:checked + .pack-radio-label {
-            font-weight: bold;
-            transform: translateY(-2px);
-        }
 
-        /* Couleurs spécifiques quand sélectionné dans le formulaire */
-		.pack-radio-input[value="Eclair"]:checked + .pack-radio-label {
-            background-color: #FBBF24; color: #020617; border-color: #FBBF24;
-            box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+
+        /* --- BOUTONS RADIO « PACK » DU FORMULAIRE --- */
+        .pack-radio-label {
+            cursor: pointer; transition: all 0.3s ease;
+            border: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2));
+            position: relative; overflow: hidden;
         }
-        .pack-radio-input[value="Essentiel"]:checked + .pack-radio-label {
-            background-color: #2DD4BF; color: #020617; border-color: #2DD4BF;
-            box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
+        .pack-radio-input:checked + .pack-radio-label { font-weight: bold; transform: translateY(-2px); }
+        .pack-radio-input[value="Eclair"]:checked + .pack-radio-label {
+            background-color: rgb(var(--t-gold-400)); color: rgb(var(--t-dark-950)); border-color: rgb(var(--t-gold-400));
+            box-shadow: 0 4px 14px rgb(var(--t-gold-400) / 0.35);
         }
+        .pack-radio-input[value="Essentiel"]:checked + .pack-radio-label,
         .pack-radio-input[value="Vitrine"]:checked + .pack-radio-label {
-            background-color: #2DD4BF; color: #020617; border-color: #2DD4BF;
-            box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
+            background-color: rgb(var(--t-accent-400)); color: rgb(var(--t-dark-950)); border-color: rgb(var(--t-accent-400));
+            box-shadow: 0 4px 14px rgb(var(--t-accent-400) / 0.3);
         }
-        /* PREMIUM = VIOLET */
         .pack-radio-input[value="Premium"]:checked + .pack-radio-label {
-            background-color: #A855F7; color: #fff; border-color: #A855F7;
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+            background-color: rgb(var(--t-purple-500)); color: #fff; border-color: rgb(var(--t-purple-500));
+            box-shadow: 0 4px 14px rgb(var(--t-purple-500) / 0.35);
         }
 
-        /* Bouton Sérénité Formulaire */
-        .serenity-btn {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            background: rgba(59, 130, 246, 0.05);
-        }
-        .serenity-btn.active {
-            background: rgba(59, 130, 246, 0.2);
-            border-color: #3B82F6;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
-        }
 
-        /* Mobile Project Interaction */
+        /* --- APERÇU DES RÉALISATIONS (mobile) --- */
         .project-frame-container.mobile-active .iframe-overlay { opacity: 0 !important; pointer-events: none; }
         .project-frame-container.mobile-active .project-iframe iframe { pointer-events: auto !important; }
         .project-frame-container.mobile-active .project-iframe { filter: grayscale(0) !important; }
         .project-frame-container.mobile-active .hint-overlay { display: none !important; }
 
-        .form-section-title {
-            color: #2DD4BF; font-size: 0.8rem; text-transform: uppercase;
-            letter-spacing: 0.05em; font-weight: 700; margin-bottom: 0.5rem;
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        
-        /* Date Button Active State */
-        .date-btn.active-date {
-            background-color: #2DD4BF !important;
-            border-color: #2DD4BF !important;
-            transform: scale(1.05);
-        }
-        .date-btn.active-date span {
-            color: #020617 !important;
-        }
-        
+
+
         @media (hover: none) {
-            .pricing-card a:hover { background-color: inherit; color: inherit; border-color: rgba(255, 255, 255, 0.1); }
-        }
-        
-        /* Hébergement Accordéon */
-        #hosting-content {
-            transition: max-height 0.5s ease-out, opacity 0.4s ease-out;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-        }
-        #hosting-content.open {
-            max-height: 1000px;
-            opacity: 1;
-        }
-        .rotate-chevron {
-            transform: rotate(180deg);
+            .pricing-card a:hover { background-color: inherit; color: inherit; border-color: rgb(var(--t-hairline) / var(--t-hairline-alpha)); }
         }
 
-        /* SKELETON ANIMATION */
-        .skeleton {
-            background: rgba(255,255,255,0.05);
-            animation: pulse-skeleton 1.5s infinite ease-in-out;
+        /* --- ACCORDÉON HÉBERGEMENT --- */
+        #hosting-content { transition: max-height 0.5s ease-out, opacity 0.4s ease-out; max-height: 0; opacity: 0; overflow: hidden; }
+        #hosting-content.open { max-height: 1200px; opacity: 1; }
+        .rotate-chevron { transform: rotate(180deg); }
+
+        /* --- SQUELETTE DE CHARGEMENT --- */
+        .skeleton { background: rgb(var(--t-slate-500) / 0.10); animation: pulse-skeleton 1.5s infinite ease-in-out; }
+        @keyframes pulse-skeleton { 0% { opacity: 0.4; } 50% { opacity: 0.8; } 100% { opacity: 0.4; } }
+
+        /* --- MODALE D'APERÇU D'UN DOCUMENT --- */
+        #image-preview-modal {
+            position: fixed; inset: 0; z-index: 100;
+            background: rgb(var(--t-dark-950) / 0.95);
+            -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
         }
-        @keyframes pulse-skeleton {
-            0% { opacity: 0.4; }
-            50% { opacity: 0.8; }
-            100% { opacity: 0.4; }
+        #image-preview-modal.active { opacity: 1; pointer-events: auto; }
+        #preview-img {
+            max-width: 90vw; max-height: 90vh;
+            border-radius: 12px; box-shadow: 0 0 50px rgb(var(--t-accent-400) / 0.2);
+            transform: scale(0.95); transition: transform 0.3s ease;
         }
-		
-		/* --- MODALE PREVIEW IMAGE --- */
-		#image-preview-modal {
-			position: fixed; inset: 0; z-index: 100;
-			background: rgba(2, 6, 23, 0.95); backdrop-filter: blur(10px);
-			display: flex; align-items: center; justify-content: center;
-			opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-		}
-		#image-preview-modal.active { opacity: 1; pointer-events: auto; }
-		#preview-img {
-			max-width: 90vw; max-height: 90vh;
-			border-radius: 12px; box-shadow: 0 0 50px rgba(45, 212, 191, 0.2);
-			transform: scale(0.95); transition: transform 0.3s ease;
-		}
-		#image-preview-modal.active #preview-img { transform: scale(1); }
-		.serenity-btn.active-plus {
-			background: rgba(99, 102, 241, 0.2);
-			border-color: #6366F1;
-			box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
-		}
-		.request-type-btn.active-request-type {
-			border-color: #2DD4BF !important;
-			background: rgba(45, 212, 191, 0.1) !important;
-			box-shadow: 0 0 15px rgba(45, 212, 191, 0.15);
-		}
-		.intervention-btn.active-intervention {
-			background-color: #2DD4BF !important;
-			border-color: #2DD4BF !important;
-			box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
-		}
-		.intervention-btn.active-intervention span {
-			color: #020617 !important;
-		}
+        #image-preview-modal.active #preview-img { transform: scale(1); }
+
+
     </style>
 	
 	<style>
+		/* ============================================================
+		   SUPPORTS IMPRIMÉS — flyer A4 + cartes de visite
+		   ------------------------------------------------------------
+		   Identité « Clic à l'aide » : fond clair, encre bleu nuit,
+		   accent turquoise — les mêmes couleurs que le site, mais
+		   posées pour le papier (peu d'aplats, beaucoup de blanc).
+		   Volontairement épuré : une promesse, trois services, un
+		   numéro de téléphone. Rien de plus.
+		   ============================================================ */
 		@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 		@media screen {
-			#print-flyer { display: none !important; }
-			#print-cards { display: none !important; }
+			#print-flyer, #print-cards { display: none !important; }
 		}
 
 		@media print {
 			@page { size: A4 portrait; margin: 0; }
-			html, body { background: white !important; padding: 0 !important; margin: 0 !important; height: auto !important; min-height: auto !important; overflow: visible !important; }
+			html, body { background: #fff !important; padding: 0 !important; margin: 0 !important; height: auto !important; min-height: auto !important; overflow: visible !important; }
 			body > *:not(#print-flyer):not(#print-cards) { display: none !important; }
 			#print-flyer { display: block !important; position: relative !important; width: 210mm !important; height: 297mm !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; overflow: hidden !important; }
 			#print-cards { display: block !important; width: 210mm !important; page-break-before: always !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-			.spotlight-overlay, .noise-overlay, .scroll-progress, #image-preview-modal { display: none !important; }
+			.spotlight-overlay, .noise-overlay, .scroll-progress, #image-preview-modal, #club-lightbox { display: none !important; }
 		}
 
-		#print-flyer {
-		--dark-950: #020617;
-		--dark-900: #0B1120;
-		--dark-850: #0f172a;
-		--dark-800: #1E293B;
-		--accent-400: #2DD4BF;
-		--accent-500: #14B8A6;
-		--gold-400: #FBBF24;
-		--gold-500: #F59E0B;
-		--ink-muted: #94a3b8;
-	}
-		#print-flyer .flyer-a4 {
-		width: 210mm;
-		height: 297mm;
-		background: var(--dark-950);
-		position: relative;
-		overflow: hidden;
-		display: flex;
-		flex-direction: column;
-		color: #fff;
-	}
-		#print-flyer .f-header {
-		position: relative;
-		height: 76mm;
-		flex-shrink: 0;
-		overflow: hidden;
-	}
-		#print-flyer .f-header-bg {
-		position: absolute;
-		inset: 0;
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		object-position: 60% 30%;
-		opacity: 0.55;
-		filter: blur(0.5px);
-	}
-		#print-flyer .f-header-bg-fade {
-		position: absolute;
-		inset: 0;
-		background:
-			linear-gradient(180deg, rgba(2,6,23,0.55) 0%, rgba(2,6,23,0.86) 60%, var(--dark-950) 100%),
-			linear-gradient(90deg, rgba(2,6,23,0.65) 0%, rgba(2,6,23,0.15) 55%, rgba(2,6,23,0.55) 100%);
-	}
-		#print-flyer .f-header-noise { position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 3px 3px; opacity: .5; }
-		#print-flyer .f-header-content {
-		position: relative;
-		z-index: 3;
-		height: 100%;
-		padding: 8mm 15mm 6mm 15mm;
-		display: flex;
-		flex-direction: column;
-	}
-		#print-flyer .f-avail-badge {
-		display: inline-flex;
-		align-items: center;
-		gap: 2mm;
-		align-self: flex-start;
-		padding: 1.6mm 4mm;
-		border-radius: 20px;
-		border: 1px solid rgba(255,255,255,0.18);
-		background: rgba(0,0,0,0.35);
-		font-size: 7.3pt;
-		font-weight: 600;
-		letter-spacing: 0.02em;
-		color: #e2e8f0;
-	}
-		#print-flyer .f-avail-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent-400); box-shadow: 0 0 6px var(--accent-400); }
-		#print-flyer .f-brand-row { display: flex; align-items: center; gap: 4mm; margin-top: 4mm; }
-		#print-flyer .f-brand-accent-line { width: 8mm; height: 2.5px; background: var(--accent-400); flex-shrink: 0; }
-		#print-flyer .f-brand-name { font-family: 'Space Grotesk', sans-serif; font-size: 12pt; font-weight: 700; letter-spacing: 0.12em; color: #fff; }
-		#print-flyer .f-brand-sub { font-size: 7.3pt; font-weight: 500; letter-spacing: 0.05em; color: var(--ink-muted); text-transform: uppercase; margin-top: 0.8mm; }
-		#print-flyer .f-main-title { font-family: 'Space Grotesk', sans-serif; font-size: 21pt; font-weight: 700; line-height: 1.1; margin: 4mm 0 2.5mm 0; letter-spacing: -0.02em; max-width: 78%; }
-		#print-flyer .f-main-title .f-accent { color: var(--accent-400); }
-		#print-flyer .f-header-subtitle { font-size: 8.8pt; line-height: 1.45; color: #cbd5e1; max-width: 68%; font-weight: 400; margin-bottom: 3mm; }
-		#print-flyer .f-targets-row { display: flex; align-items: center; gap: 3.5mm; margin-top: auto; }
-		#print-flyer .f-target-pill { display: flex; align-items: center; gap: 2mm; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 7.8pt; letter-spacing: 0.06em; color: #fff; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); padding: 2mm 3.5mm; border-radius: 20px; }
-		#print-flyer .f-target-pill i { color: var(--accent-400); font-size: 11pt; }
-		#print-flyer .f-profile-badge {
-		position: absolute;
-		right: 15mm;
-		bottom: -9mm;
-		z-index: 6;
-		width: 30mm;
-		height: 30mm;
-		border-radius: 50%;
-		border: 3px solid var(--accent-400);
-		box-shadow: 0 4mm 8mm rgba(0,0,0,0.45);
-		overflow: hidden;
-		background: var(--dark-900);
-	}
-		#print-flyer .f-profile-badge img { width: 100%; height: 100%; object-fit: cover; }
-		#print-flyer .f-ribbon-badge {
-		position: absolute;
-		top: 10mm;
-		right: 15mm;
-		z-index: 6;
-		background: var(--accent-400);
-		color: var(--dark-950);
-		font-family: 'Space Grotesk', sans-serif;
-		font-weight: 700;
-		font-size: 7.3pt;
-		letter-spacing: 0.06em;
-		padding: 2.6mm 4mm;
-		border-radius: 20px 20px 4px 20px;
-		text-align: center;
-		line-height: 1.4;
-		box-shadow: 0 3mm 6mm rgba(0,0,0,0.35);
-	}
-		#print-flyer .f-trust-strip {
-		flex-shrink: 0;
-		height: 11mm;
-		background: var(--dark-900);
-		border-top: 1px solid rgba(255,255,255,0.06);
-		border-bottom: 1px solid rgba(255,255,255,0.06);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 7mm;
-		padding: 0 15mm 0 30mm;
-	}
-		#print-flyer .f-trust-caption { font-size: 6.8pt; font-weight: 700; letter-spacing: 0.14em; color: #64748b; text-transform: uppercase; margin-right: 2mm; white-space: nowrap; }
-		#print-flyer .f-trust-item { display: flex; align-items: center; gap: 1.6mm; color: #cbd5e1; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 8.3pt; opacity: 0.85; white-space: nowrap; }
-		#print-flyer .f-trust-item i { font-size: 11pt; }
-		#print-flyer .f-content { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 4.5mm 15mm 0 15mm; min-height: 0; }
-		#print-flyer .f-section-label { font-size: 7pt; font-weight: 700; letter-spacing: 0.18em; color: var(--accent-400); text-transform: uppercase; margin-bottom: 2mm; }
-		#print-flyer .f-services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin-bottom: 3.5mm; }
-		#print-flyer .f-service-card { background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.08); border-radius: 9px; padding: 2.8mm 3mm 3mm 3mm; }
-		#print-flyer .f-service-icon { width: 7mm; height: 7mm; border-radius: 50%; background: rgba(45,212,191,0.14); display: flex; align-items: center; justify-content: center; margin-bottom: 1.6mm; }
-		#print-flyer .f-service-icon i { color: var(--accent-400); font-size: 10.5pt; }
-		#print-flyer .f-service-title { font-family: 'Space Grotesk', sans-serif; font-size: 8.4pt; font-weight: 700; color: #fff; margin: 0 0 0.9mm 0; line-height: 1.2; }
-		#print-flyer .f-service-desc { font-size: 7.1pt; color: #94a3b8; line-height: 1.3; margin: 0; }
-		#print-flyer .f-pricing-section {
-		background: linear-gradient(155deg, var(--dark-900) 0%, var(--dark-850) 100%);
-		border: 1px solid rgba(45,212,191,0.25);
-		border-radius: 11px;
-		padding: 4mm 6mm;
-		display: flex;
-		gap: 7mm;
-		margin-bottom: 3mm;
-	}
-		#print-flyer .f-price-col { flex: 1; display: flex; flex-direction: column; }
-		#print-flyer .f-price-col:first-child { border-right: 1px solid rgba(255,255,255,0.1); padding-right: 7mm; }
-		#print-flyer .f-price-col-title { font-family: 'Space Grotesk', sans-serif; font-size: 7.8pt; color: var(--gold-400); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; margin-bottom: 2.4mm; }
-		#print-flyer .f-pack-item { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.8mm; gap: 2mm; }
-		#print-flyer .f-pack-item:last-child { margin-bottom: 0; }
-		#print-flyer .f-pack-name { font-size: 7.9pt; font-weight: 500; color: #e2e8f0; line-height: 1.22; }
-		#print-flyer .f-pack-sub { display: block; font-size: 6.8pt; color: var(--accent-400); font-weight: 600; margin-top: 0.5mm; }
-		#print-flyer .f-pack-dots { flex-grow: 1; border-bottom: 1px dotted rgba(255,255,255,0.22); margin: 0 1.5mm 1.3mm 1.5mm; min-width: 4mm; }
-		#print-flyer .f-pack-price { font-family: 'Space Grotesk', sans-serif; font-size: 9pt; font-weight: 700; color: var(--accent-400); white-space: nowrap; }
-		#print-flyer .f-price-note { font-size: 6.8pt; color: #64748b; text-align: center; width: 100%; margin: 1.8mm 0 0 0; letter-spacing: 0.02em; }
-		#print-flyer .f-testimonial { display: flex; align-items: flex-start; gap: 3.5mm; background: rgba(251,191,36,0.045); border: 1px solid rgba(251,191,36,0.18); border-radius: 9px; padding: 2.8mm 4.5mm; margin-bottom: 3mm; margin-top: 3mm; }
-		#print-flyer .f-testimonial-stars { color: var(--gold-400); font-size: 7.3pt; letter-spacing: 0.5px; white-space: nowrap; margin-bottom: 0.8mm; }
-		#print-flyer .f-testimonial-text { font-size: 7.3pt; color: #cbd5e1; font-style: italic; line-height: 1.32; margin: 0; }
-		#print-flyer .f-testimonial-author { font-size: 6.8pt; color: #64748b; margin-top: 1mm; }
-		#print-flyer .f-testimonial-author strong { color: #e2e8f0; font-weight: 700; }
-		#print-flyer .f-footer {
-		flex-shrink: 0;
-		position: relative;
-		background: var(--dark-900);
-		border-top: 1px solid rgba(255,255,255,0.08);
-		padding: 6mm 15mm 5mm 15mm;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 8mm;
-	}
-		#print-flyer .f-footer-left { flex: 1; min-width: 0; }
-		#print-flyer .f-footer-tagline { font-family: 'Space Grotesk', sans-serif; font-size: 9.3pt; font-weight: 600; color: #fff; line-height: 1.35; margin-bottom: 4mm; max-width: 95mm; }
-		#print-flyer .f-footer-tagline .f-accent { color: var(--accent-400); }
-		#print-flyer .f-contact-phone-wrapper { display: flex; align-items: center; gap: 3.5mm; margin-bottom: 3mm; }
-		#print-flyer .f-phone-icon { width: 10mm; height: 10mm; background: var(--accent-400); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--dark-950); font-size: 13pt; flex-shrink: 0; }
-		#print-flyer .f-phone-number { font-family: 'Space Grotesk', sans-serif; font-size: 17pt; font-weight: 700; color: #fff; line-height: 1; }
-		#print-flyer .f-location-info { display: flex; align-items: flex-start; gap: 2.5mm; font-size: 8pt; color: #94a3b8; font-weight: 500; line-height: 1.4; }
-		#print-flyer .f-location-info i { color: var(--accent-400); font-size: 11pt; margin-top: 0.5px; flex-shrink: 0; }
-		#print-flyer .f-footer-right { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 1.6mm; }
-		#print-flyer .f-qr-box { width: 24mm; height: 24mm; background: #fff; border-radius: 6px; padding: 1.6mm; display: flex; align-items: center; justify-content: center; }
-		#print-flyer .f-qr-box img { width: 100%; height: 100%; object-fit: contain; }
-		#print-flyer .f-qr-caption { font-size: 6.4pt; font-weight: 700; color: #cbd5e1; text-align: center; letter-spacing: 0.02em; max-width: 26mm; line-height: 1.3; }
-		#print-flyer .f-qr-url { font-size: 6pt; color: var(--accent-400); font-weight: 600; }
-		#print-flyer .f-bottom-bar { flex-shrink: 0; background: var(--dark-950); padding: 2.6mm 15mm; text-align: center; font-size: 6.8pt; color: #475569; letter-spacing: 0.06em; }
+		#print-flyer, #print-cards {
+			--ink:      #0f172a;
+			--ink-soft: #475569;
+			--ink-mute: #94a3b8;
+			--accent:   #0d9488;
+			--accent-l: #14b8a6;
+			--paper:    #ffffff;
+			--tint:     #f1f6f8;
+			--line:     #e2e8f0;
+			font-family: 'Inter', system-ui, sans-serif;
+			color: var(--ink);
+			-webkit-font-smoothing: antialiased;
+		}
 
-		#print-cards {
-		--dark-950: #020617;
-		--dark-900: #0B1120;
-		--accent-400: #2DD4BF;
-		--accent-500: #14B8A6;
-		--accent-tint: #ccf3ec;
-		--gold-400: #FBBF24;
-		--ink-navy: #0a192f;
-	}
-		#print-cards .c-cards-page { width: 210mm; min-height: 160mm; background: #fff; padding: 16mm 9mm; display: flex; flex-direction: column; align-items: center; }
-		#print-cards .c-cards-page-title { font-size: 8pt; font-weight: 700; letter-spacing: 0.14em; color: #94a3b8; text-transform: uppercase; margin-bottom: 8mm; text-align: center; }
-		#print-cards .c-cards-wrap { display: flex; gap: 6mm; flex-wrap: nowrap; justify-content: center; }
-		#print-cards .c-card-slot { padding: 3mm; border: 1px dashed #cbd5e1; border-radius: 2mm; flex-shrink: 0; }
-		#print-cards .c-card-slot-label { font-size: 6.5pt; font-weight: 700; letter-spacing: 0.12em; color: #94a3b8; text-transform: uppercase; text-align: center; margin-bottom: 2mm; }
-		#print-cards .c-card { width: 85mm; height: 55mm; position: relative; overflow: hidden; }
-		#print-cards .c-card-front { background: #ffffff; }
-		#print-cards .c-front-photo { position: absolute; inset: 0; z-index: 1; }
-		#print-cards .c-front-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 45%; }
-		#print-cards .c-front-white-panel { position: absolute; top: 0; left: 0; width: 57%; height: 100%; background: #ffffff; z-index: 2; }
-		#print-cards .c-front-white-blob { position: absolute; top: 50%; left: 57%; width: 38mm; height: 38mm; background: #ffffff; border-radius: 50%; transform: translate(-50%,-50%); z-index: 2; }
-		#print-cards .c-front-content { position: relative; z-index: 3; width: 56%; height: 100%; padding: 4mm 0 4mm 5mm; display: flex; flex-direction: column; }
-		#print-cards .c-front-line { width: 9mm; height: 1.4px; background: var(--accent-500); }
-		#print-cards .c-front-name { font-family: 'Space Grotesk', sans-serif; font-size: 11.5pt; font-weight: 700; letter-spacing: 0.06em; color: var(--ink-navy); margin: 1.4mm 0 0.6mm 0; }
-		#print-cards .c-front-role { font-size: 6.2pt; font-weight: 600; letter-spacing: 0.08em; color: #64748b; text-transform: uppercase; margin-bottom: 1.6mm; }
-		#print-cards .c-front-line2 { width: 9mm; height: 1.4px; background: var(--accent-500); margin-bottom: 2.4mm; }
-		#print-cards .c-front-tagline { font-size: 7.6pt; font-weight: 700; color: var(--ink-navy); line-height: 1.3; margin-bottom: 3mm; max-width: 33mm; }
-		#print-cards .c-front-icons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.2mm 1.5mm; max-width: 40mm; }
-		#print-cards .c-front-icon-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
-		#print-cards .c-front-icon-badge { width: 7mm; height: 7mm; border-radius: 50%; background: var(--accent-tint); display: flex; align-items: center; justify-content: center; margin-bottom: 0.9mm; }
-		#print-cards .c-front-icon-badge i { font-size: 9pt; color: var(--ink-navy); }
-		#print-cards .c-front-icon-label { font-size: 5.6pt; font-weight: 700; color: var(--ink-navy); line-height: 1.15; }
-		#print-cards .c-front-teal-blob {
-		position: absolute; bottom: -5mm; right: -5mm; width: 28mm; height: 28mm;
-		background: var(--accent-tint); border-radius: 50%; z-index: 4;
-		display: flex; align-items: center; justify-content: center; flex-direction: column;
-	}
-		#print-cards .c-front-teal-blob-text { font-family: 'Space Grotesk', sans-serif; font-size: 6pt; font-weight: 800; letter-spacing: 0.04em; color: var(--ink-navy); text-align: center; line-height: 1.5; margin-left: -3mm; margin-top: -3mm; }
-		#print-cards .c-front-teal-blob-line { width: 5.5mm; height: 1.4px; background: var(--accent-500); margin-top: 1mm; margin-left: -3mm; }
-		#print-cards .c-card-back { background: var(--dark-950); color: #fff; }
-		#print-cards .c-back-photo { position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; z-index: 1; }
-		#print-cards .c-back-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 70%; }
-		#print-cards .c-back-photo-fade { position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; z-index: 1; background: linear-gradient(180deg, var(--dark-950) 0%, rgba(2,6,23,0.35) 35%, rgba(2,6,23,0) 100%); }
-		#print-cards .c-back-content { position: relative; z-index: 2; height: 100%; padding: 4.5mm 5mm; display: flex; flex-direction: column; }
-		#print-cards .c-back-line { width: 9mm; height: 1.4px; background: var(--accent-400); }
-		#print-cards .c-back-name { font-family: 'Space Grotesk', sans-serif; font-size: 11.5pt; font-weight: 700; letter-spacing: 0.06em; color: #fff; margin: 1.4mm 0 0.6mm 0; }
-		#print-cards .c-back-role { font-size: 6.2pt; font-weight: 600; letter-spacing: 0.08em; color: #94a3b8; text-transform: uppercase; margin-bottom: 3mm; }
-		#print-cards .c-back-contact-list { display: flex; flex-direction: column; gap: 1.8mm; }
-		#print-cards .c-back-contact-row { display: flex; align-items: center; gap: 2.2mm; }
-		#print-cards .c-back-contact-icon { width: 5.6mm; height: 5.6mm; border-radius: 50%; background: var(--accent-400); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-		#print-cards .c-back-contact-icon i { font-size: 7.5pt; color: var(--dark-950); }
-		#print-cards .c-back-contact-text { font-size: 7.4pt; font-weight: 500; color: #e2e8f0; }
-		#print-cards .c-back-contact-text.c-strong { font-weight: 700; font-size: 8pt; }
-		#print-cards .c-back-tagline-block { position: absolute; top: 4.5mm; right: 5mm; z-index: 2; text-align: right; max-width: 26mm; }
-		#print-cards .c-back-tagline { font-family: 'Space Grotesk', sans-serif; font-size: 6.6pt; font-weight: 700; letter-spacing: 0.04em; color: #e2e8f0; line-height: 1.4; text-transform: uppercase; }
-		#print-cards .c-back-tagline-line { width: 7mm; height: 1.4px; background: var(--accent-400); margin: 1.4mm 0 0 auto; }
+		/* ====================== FLYER A4 ====================== */
+		#print-flyer .flyer {
+			width: 210mm; height: 297mm; background: var(--paper);
+			display: flex; flex-direction: column; position: relative; overflow: hidden;
+		}
+
+		/* --- Bandeau de tête --- */
+		#print-flyer .f-top {
+			padding: 12mm 16mm 0;
+			flex-shrink: 0;
+			display: flex; align-items: flex-start; justify-content: space-between; gap: 8mm;
+		}
+		#print-flyer .f-logo { height: 19mm; width: auto; display: block; }
+		#print-flyer .f-top-right { text-align: right; padding-top: 2mm; }
+		#print-flyer .f-avail {
+			display: inline-flex; align-items: center; gap: 1.6mm;
+			font-size: 7.2pt; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+			color: var(--accent); background: #e6f5f3;
+			padding: 1.6mm 3mm; border-radius: 20mm;
+		}
+		#print-flyer .f-avail::before { content: ''; width: 1.6mm; height: 1.6mm; border-radius: 50%; background: var(--accent); }
+		#print-flyer .f-zone { font-size: 7.4pt; color: var(--ink-mute); margin-top: 2mm; }
+
+		/* --- Promesse principale : les souvenirs --- */
+		#print-flyer .f-hero { padding: 7mm 16mm 0; flex-shrink: 0; }
+		#print-flyer .f-eyebrow {
+			font-family: 'Space Grotesk', sans-serif;
+			font-size: 8pt; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+			color: var(--accent); margin-bottom: 3mm;
+		}
+		#print-flyer .f-title {
+			font-family: 'Space Grotesk', sans-serif;
+			font-size: 24pt; font-weight: 700; line-height: 1.12; letter-spacing: -0.02em;
+			color: var(--ink); margin: 0 0 4mm;
+		}
+		#print-flyer .f-title em { font-style: normal; color: var(--accent); }
+		#print-flyer .f-lead {
+			font-size: 10pt; line-height: 1.5; color: var(--ink-soft); max-width: 122mm; margin: 0;
+		}
+
+		/* --- Bloc vedette : numérisation des souvenirs --- */
+		#print-flyer .f-star {
+			margin: 7mm 16mm 0; border-radius: 4mm; overflow: hidden; flex-shrink: 0;
+			background: var(--tint); border: 0.35mm solid #d7e6e6;
+			display: flex; align-items: stretch;
+		}
+		#print-flyer .f-star-img { width: 62mm; flex-shrink: 0; position: relative; overflow: hidden; }
+		#print-flyer .f-star-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+		#print-flyer .f-star-body { padding: 6mm 6mm 6mm 7mm; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+		#print-flyer .f-star-badge {
+			display: inline-block; align-self: flex-start;
+			font-size: 6.8pt; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+			color: #fff; background: var(--accent); padding: 1.4mm 2.8mm; border-radius: 1.4mm; margin-bottom: 3mm;
+		}
+		#print-flyer .f-star-title {
+			font-family: 'Space Grotesk', sans-serif;
+			font-size: 12.5pt; font-weight: 700; line-height: 1.2; margin: 0 0 2.5mm; color: var(--ink);
+		}
+		#print-flyer .f-star-text { font-size: 8.6pt; line-height: 1.45; color: var(--ink-soft); margin: 0 0 3.5mm; }
+		#print-flyer .f-star-price {
+			font-size: 9pt; color: var(--ink); font-weight: 600;
+			padding-top: 3mm; border-top: 0.3mm solid #d7e6e6;
+		}
+		#print-flyer .f-star-price strong { color: var(--accent); font-size: 11pt; }
+
+		/* --- Les deux autres services --- */
+		#print-flyer .f-services { margin: 6mm 16mm 0; display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; flex-shrink: 0; }
+		#print-flyer .f-service { padding: 5mm; border: 0.35mm solid var(--line); border-radius: 3.5mm; }
+		#print-flyer .f-service-icon {
+			width: 9mm; height: 9mm; border-radius: 2.4mm; background: #e6f5f3;
+			display: flex; align-items: center; justify-content: center; margin-bottom: 3.5mm;
+		}
+		#print-flyer .f-service-icon i { font-size: 13pt; color: var(--accent); }
+		#print-flyer .f-service h3 {
+			font-family: 'Space Grotesk', sans-serif;
+			font-size: 11pt; font-weight: 700; margin: 0 0 2mm; color: var(--ink);
+		}
+		#print-flyer .f-service p { font-size: 8.6pt; line-height: 1.5; color: var(--ink-soft); margin: 0; }
+		#print-flyer .f-service .f-from { display: block; margin-top: 2.5mm; font-size: 8.4pt; font-weight: 700; color: var(--accent); }
+
+		/* --- Confiance --- */
+		#print-flyer .f-trust {
+			margin: 6mm 16mm 0; padding: 4.5mm 5.5mm; border-radius: 3.5mm; flex-shrink: 0;
+			background: var(--tint); display: flex; align-items: center; gap: 6mm;
+		}
+		#print-flyer .f-trust-photo {
+			width: 17mm; height: 17mm; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+			border: 0.6mm solid #fff; box-shadow: 0 1mm 3mm rgba(15,23,42,.12);
+		}
+		#print-flyer .f-trust-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+		#print-flyer .f-trust-quote { font-size: 8.8pt; line-height: 1.5; color: var(--ink); margin: 0 0 1.5mm; font-style: italic; }
+		#print-flyer .f-trust-who { font-size: 7.6pt; color: var(--ink-mute); }
+		#print-flyer .f-trust-who strong { color: var(--ink-soft); }
+
+		/* --- Pied : appel à l'action --- */
+		#print-flyer .f-cta {
+			margin-top: auto; background: var(--ink); color: #fff; flex-shrink: 0;
+			padding: 8mm 16mm; display: flex; align-items: center; justify-content: space-between; gap: 8mm;
+		}
+		#print-flyer .f-cta-left { flex: 1; }
+		#print-flyer .f-cta-label {
+			font-size: 7.6pt; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+			color: var(--accent-l); margin-bottom: 2.5mm;
+		}
+		#print-flyer .f-cta-phone {
+			font-family: 'Space Grotesk', sans-serif;
+			font-size: 24pt; font-weight: 700; letter-spacing: .01em; line-height: 1; margin-bottom: 3mm;
+		}
+		#print-flyer .f-cta-note { font-size: 8.2pt; color: #cbd5e1; line-height: 1.45; }
+		#print-flyer .f-cta-qr { text-align: center; flex-shrink: 0; }
+		#print-flyer .f-cta-qr img { width: 24mm; height: 24mm; display: block; background: #fff; padding: 1.6mm; border-radius: 2mm; }
+		#print-flyer .f-cta-qr span { display: block; font-size: 6.6pt; color: var(--ink-mute); margin-top: 2mm; letter-spacing: .04em; }
+
+		/* ====================== CARTES DE VISITE ====================== */
+		#print-cards { width: 210mm; background: #fff; }
+		#print-cards .c-page { width: 210mm; min-height: 170mm; padding: 18mm 10mm; display: flex; flex-direction: column; align-items: center; }
+		#print-cards .c-page-title {
+			font-size: 7.6pt; font-weight: 700; letter-spacing: .16em; color: var(--ink-mute);
+			text-transform: uppercase; margin-bottom: 9mm; text-align: center;
+		}
+		#print-cards .c-wrap { display: flex; gap: 8mm; justify-content: center; }
+		#print-cards .c-slot { text-align: center; }
+		#print-cards .c-slot-label {
+			font-size: 6.4pt; font-weight: 700; letter-spacing: .12em; color: var(--ink-mute);
+			text-transform: uppercase; margin-bottom: 2.5mm;
+		}
+		#print-cards .c-card {
+			width: 85mm; height: 55mm; position: relative; overflow: hidden;
+			border: 0.25mm solid var(--line); border-radius: 1.5mm;
+			text-align: left;
+		}
+
+		/* --- Recto : logo et spécialités --- */
+		#print-cards .c-front { background: #fff; padding: 6.5mm 6mm 5.5mm; display: flex; flex-direction: column; }
+		#print-cards .c-front-accent { position: absolute; top: 0; left: 0; width: 100%; height: 1.4mm; background: linear-gradient(90deg, var(--accent) 0%, var(--accent-l) 100%); }
+		#print-cards .c-front-logo { height: 9.5mm; width: auto; max-width: 46mm; object-fit: contain; object-position: left center; display: block; margin-bottom: 3.5mm; }
+		#print-cards .c-front-tag {
+			font-size: 7.4pt; font-weight: 500; color: var(--ink-soft); line-height: 1.45; margin-bottom: auto; max-width: 54mm;
+		}
+		#print-cards .c-front-list { display: flex; flex-wrap: wrap; gap: 1.4mm 1.8mm; margin-top: 3.5mm; max-width: 62mm; }
+		#print-cards .c-front-chip {
+			font-size: 6.2pt; font-weight: 700; letter-spacing: .02em;
+			color: var(--accent); background: #e6f5f3; padding: 1mm 2.1mm; border-radius: 10mm; white-space: nowrap;
+		}
+		#print-cards .c-front-photo {
+			position: absolute; right: 5.5mm; top: 50%; transform: translateY(-50%);
+			width: 16mm; height: 16mm; border-radius: 50%; overflow: hidden; border: 0.5mm solid #fff;
+			box-shadow: 0 0.8mm 2.4mm rgba(15,23,42,.18);
+		}
+		#print-cards .c-front-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+		/* --- Verso : coordonnées --- */
+		#print-cards .c-back { background: var(--ink); color: #fff; padding: 6mm; display: flex; flex-direction: column; justify-content: space-between; }
+		#print-cards .c-back-logo-chip {
+			display: inline-block; background: #fff; padding: 1.4mm 2.2mm; border-radius: 1.6mm;
+		}
+		#print-cards .c-back-logo { height: 7mm; width: auto; max-width: 34mm; object-fit: contain; display: block; }
+		#print-cards .c-back-name {
+			font-family: 'Space Grotesk', sans-serif;
+			font-size: 11pt; font-weight: 700; letter-spacing: .02em; margin-top: 3mm;
+		}
+		#print-cards .c-back-role { font-size: 6.6pt; color: var(--accent-l); text-transform: uppercase; letter-spacing: .09em; font-weight: 700; margin-top: 0.8mm; }
+		#print-cards .c-back-contact { margin-top: auto; display: flex; flex-direction: column; gap: 1.5mm; }
+		#print-cards .c-back-row { display: flex; align-items: center; gap: 2.2mm; font-size: 7.2pt; color: #e2e8f0; }
+		#print-cards .c-back-row i { color: var(--accent-l); font-size: 8pt; width: 3.6mm; flex-shrink: 0; }
+		#print-cards .c-back-row.c-strong { font-size: 10.5pt; font-weight: 700; color: #fff; font-family: 'Space Grotesk', sans-serif; }
+		#print-cards .c-back-qr {
+			position: absolute; right: 5.5mm; top: 5.5mm;
+			width: 16mm; height: 16mm; background: #fff; padding: 1.1mm; border-radius: 1.5mm;
+		}
+		#print-cards .c-back-qr img { width: 100%; height: 100%; display: block; }
+		#print-cards .c-cut-note { font-size: 6.4pt; color: var(--ink-mute); margin-top: 8mm; text-align: center; }
 	</style>
 </head>
 <body class="selection:bg-accent-400/30 selection:text-white bg-dark-950">
@@ -532,21 +362,24 @@
     <div class="spotlight-overlay"></div>
 
     <nav class="fixed w-full z-50 nav-glass transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 md:px-6 h-20 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-20 flex justify-between items-center gap-3">
+
             <a href="#" class="font-display font-bold text-lg tracking-wide text-white flex items-center gap-3 group shrink-0">
-                <div class="relative w-10 h-10 rounded-full overflow-hidden border border-white/10 group-hover:border-accent-400 transition-colors shrink-0">
-                    <img src="images/profile.jpg" alt="Nathan" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=Nathan+Marzilli&background=0B1120&color=2DD4BF'">
-                </div>
-                <div class="leading-tight">
+                <span class="relative w-10 h-10 rounded-full overflow-hidden border border-slate-500/20 group-hover:border-accent-400 transition-colors shrink-0 block">
+                    <img src="images/profile-96.jpg"
+                         srcset="images/profile-96.jpg 1x, images/profile-192.jpg 2x"
+                         width="40" height="40" alt="Portrait de Nathan Marzilli"
+                         class="w-full h-full object-cover" decoding="async"
+                         onerror="this.onerror=null;this.srcset='';this.src='images/profile.jpg'">
+                </span>
+                <span class="leading-tight">
                     Nathan Marzilli
                     <span class="block text-[10px] text-accent-400 font-normal uppercase tracking-wider">Facilitateur Numérique</span>
-                </div>
+                </span>
             </a>
 
-            <div class="hidden lg:flex items-center space-x-6 text-sm font-medium text-slate-400">
-                <button onclick="toggleAdminModal()" id="header-admin-btn" class="text-slate-600 hover:text-white transition-colors" title="Administration">
-                    <i class="ph-bold ph-shield text-lg" id="header-shield-icon"></i>
-                </button>
+            <!-- Navigation bureau -->
+            <div class="hidden lg:flex items-center gap-5 text-sm font-medium text-slate-400">
                 <a href="#about" class="hover:text-white transition-colors">L'Artisan</a>
                 <a href="#methode" class="hover:text-white transition-colors">Méthode</a>
                 <a href="#skills" class="hover:text-white transition-colors">Expertise</a>
@@ -555,19 +388,31 @@
                 <a href="#services" class="hover:text-white transition-colors">Tarifs</a>
                 <a href="#sponsorship" class="hover:text-white transition-colors">Parrainage</a>
                 <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
-                <a href="#contact" class="px-5 py-2.5 rounded-full bg-white text-dark-950 hover:bg-accent-400 font-bold transition-all text-xs uppercase tracking-wider interactive-hover">
-                    Réserver
+
+                <span class="h-5 w-px bg-slate-500/25" aria-hidden="true"></span>
+
+                <!-- Langue & devise : une seule liste déroulante -->
+                <div data-lang-select></div>
+                <!-- Thème clair / sombre -->
+                <div data-theme-toggle></div>
+
+                <button onclick="toggleAdminModal()" id="header-admin-btn" class="text-slate-600 hover:text-accent-400 transition-colors" title="Espace administration" aria-label="Espace administration">
+                    <i class="ph-bold ph-shield text-lg" id="header-shield-icon" aria-hidden="true"></i>
+                </button>
+
+                <a href="#contact" class="px-5 py-2.5 rounded-full bg-accent-400 text-dark-950 hover:brightness-110 font-bold transition-all text-xs uppercase tracking-wider whitespace-nowrap">
+                    <span data-i18n="navReserve">Réserver</span>
                 </a>
             </div>
 
-            <div class="flex items-center gap-3 lg:hidden z-50 shrink-0">
-                <button onclick="toggleAdminModal()" class="text-slate-600 p-1"><i class="ph-bold ph-shield"></i></button>
-                <a href="#contact" class="px-3 py-2 rounded-full bg-accent-400 text-dark-950 font-bold text-[10px] uppercase tracking-wider shadow-lg shadow-accent-400/20 whitespace-nowrap">Réserver</a>
-                <button id="mobile-menu-btn" class="text-white p-1"><i class="ph ph-list text-2xl"></i></button>
+            <!-- Navigation mobile -->
+            <div class="flex items-center gap-2 lg:hidden z-50 shrink-0">
+                <a href="#contact" class="px-3 py-2 rounded-full bg-accent-400 text-dark-950 font-bold text-[10px] uppercase tracking-wider whitespace-nowrap" data-i18n="navReserve">Réserver</a>
+                <button id="mobile-menu-btn" class="text-white p-1" aria-label="Ouvrir le menu" aria-expanded="false"><i class="ph ph-list text-2xl" aria-hidden="true"></i></button>
             </div>
         </div>
 
-        <div id="mobile-menu" class="fixed inset-x-0 top-[80px] h-[calc(100vh-80px)] bg-[#020617] transform translate-x-full transition-transform duration-500 lg:hidden flex flex-col justify-start pt-12 items-center space-y-8 z-40 border-t border-white/5">
+        <div id="mobile-menu" class="fixed inset-x-0 top-[80px] h-[calc(100vh-80px)] bg-dark-950 transform translate-x-full transition-transform duration-500 lg:hidden flex flex-col justify-start pt-10 items-center space-y-6 z-40 border-t border-slate-500/15 overflow-y-auto pb-16">
             <a href="#about" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">L'Artisan</a>
             <a href="#methode" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">Méthode</a>
             <a href="#skills" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">Expertise</a>
@@ -576,6 +421,13 @@
             <a href="#services" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">Tarifs</a>
             <a href="#sponsorship" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">Parrainage</a>
             <a href="#faq" class="text-3xl font-display font-medium mobile-link text-white hover:text-accent-400 transition-colors">FAQ</a>
+            <div class="flex items-center gap-3 pt-4">
+                <div data-lang-select></div>
+                <div data-theme-toggle></div>
+            </div>
+            <button onclick="toggleAdminModal()" class="mobile-link text-xs uppercase tracking-widest font-bold text-slate-500 hover:text-accent-400 transition-colors flex items-center gap-2 pt-2">
+                <i class="ph-bold ph-lock-key" aria-hidden="true"></i> Administration
+            </button>
         </div>
     </nav>
 
@@ -596,7 +448,7 @@
 
 		<div class="max-w-5xl mx-auto px-6 text-center relative z-10">
 			
-			<div class="reveal inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-black/40 backdrop-blur-md text-xs font-medium text-slate-300 mb-8 shadow-lg">
+			<div class="reveal inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-slate-500/20 bg-dark-900/75 backdrop-blur-md text-xs font-medium text-slate-300 mb-8 shadow-lg">
 				<span class="w-1.5 h-1.5 rounded-full bg-accent-400 animate-pulse"></span>
 				Disponibilité immédiate (France / Suisse)
 			</div>
@@ -615,7 +467,7 @@
 			<div class="reveal delay-300 flex flex-col sm:flex-row gap-5 justify-center items-center">
 				<a href="#contact" class="px-8 py-4 bg-white text-dark-950 font-bold rounded-full interactive-hover flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.3)]">
 					<i class="ph-bold ph-calendar-check text-lg"></i>
-					Discuter de votre projet
+					<span data-i18n="heroCta">Discuter de votre projet</span>
 				</a>
 				<a href="#projects" class="px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white interactive-hover flex items-center gap-2 hover:bg-white/10">
 					Voir mon travail
@@ -655,7 +507,7 @@
 		</div>
 	</div>
 
-    <section id="about" class="pt-24 pb-12 relative bg-[#0B1120] border-t border-white/5">
+    <section id="about" class="pt-24 pb-12 relative bg-dark-900 border-t border-white/5">
         <div class="max-w-6xl mx-auto px-6">
             <div class="grid md:grid-cols-2 gap-16 items-start">
                 <div class="reveal">
@@ -846,9 +698,9 @@
                                 <i class="ph-bold ph-device-mobile text-3xl text-purple-400 mb-2 group-hover:scale-110 group-hover:-rotate-6 transition-transform"></i>
                                 <span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">Mobile</span>
                             </div>
-                            <div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="firebase">
-                                <i class="ph-bold ph-fire text-3xl text-orange-400 mb-2 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
-                                <span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">Firebase</span>
+                            <div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="supabase">
+                                <i class="ph-bold ph-database text-3xl text-emerald-400 mb-2 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                <span class="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">Supabase</span>
                             </div>
                             <div class="tech-item cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl bg-dark-900 border border-white/5 hover:border-accent-400/50 hover:bg-white/5 transition-all group duration-300" data-tech="seo">
                                 <i class="ph-bold ph-magnifying-glass text-3xl text-green-500 mb-2 group-hover:scale-110 group-hover:-rotate-6 transition-transform"></i>
@@ -1002,7 +854,7 @@
 		</div>
 	</section>
 
-    <section id="services" class="py-24 border-t border-white/5 bg-[#0B1120]">
+    <section id="services" class="py-24 border-t border-white/5 bg-dark-900">
 		<div class="max-w-7xl mx-auto px-6">
 			
 			<div class="text-center mb-16 reveal">
@@ -1034,7 +886,7 @@
 				</h3>
 				
 				<div class="flex flex-col mb-6 relative z-10">
-					<span class="text-3xl font-bold text-amber-400" id="price-eclair-display">690€</span>
+					<span class="text-3xl font-bold text-amber-400" id="price-eclair-display" data-offer-key="eclair"><span class="price-amount">690 €</span></span>
 					<span class="text-[10px] text-amber-400/80 mt-2 flex items-center gap-1.5 font-bold tracking-wide uppercase">
 						<i class="ph-bold ph-timer text-sm"></i> Livraison sous 48h chrono
 					</span>
@@ -1057,7 +909,7 @@
 						<span class="text-slate-200">
 							Hébergement OVH<br>
 							<strong class="text-amber-400 text-xs hover:underline">
-								~22€/an (Détails)
+								~<span data-price-eur="22.05" data-price-suffix="/an">22,05 €/an</span> (Détails)
 							</strong>
 							<span class="block text-xs text-slate-400">
 								1ère année offerte
@@ -1065,23 +917,30 @@
 						</span>
 					</li>
 				</ul>
-				<button onclick="selectOffer(this, 'Eclair', document.getElementById('pack-eclair').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-amber-400/30 text-center text-amber-400 hover:bg-amber-400 hover:text-dark-950 hover:shadow-[0_0_20px_rgba(251,191,36,0.3)] transition-all font-bold relative z-10 flex items-center justify-center gap-2">
-					<span>Choisir l'Éclair</span> <i class="ph-bold ph-lightning"></i>
-				</button>
+				<div class="relative z-10 space-y-2">
+					<button onclick="selectOffer(this, 'Eclair', document.getElementById('pack-eclair').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-amber-400/30 text-center text-amber-400 hover:bg-amber-400 hover:text-dark-950 transition-all font-bold flex items-center justify-center gap-2 text-sm">
+						<span>Sélectionner ce pack</span>
+					</button>
+				</div>
 			</div>
 
 			<!-- 2. OFFRE ESSENTIEL -->
 			<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-essentiel">
 				<h3 class="text-xl font-display font-bold text-white mb-2">L'Essentiel & Suivi</h3>
-				
+
+				<!-- Pastille : ce pack est aussi celui proposé aux clubs et associations -->
+				<a href="offre-club/" class="pill-link self-start mb-4" title="Découvrir la déclinaison de ce pack pour les clubs et associations">
+					<i class="ph-fill ph-shield-star" aria-hidden="true"></i> Offre club / associations
+				</a>
+
 				<div class="flex flex-col mb-6">
-					<div id="price-essentiel-display" class="mb-1"></div>
+					<div id="price-essentiel-display" class="mb-1" data-offer-key="essentiel"><span class="text-3xl font-bold text-white price-amount">990 €</span></div>
 					<div class="flex items-center gap-2 mt-1 flex-wrap">
-						<span class="text-sm font-bold text-white">+ Pack Sérénité</span>
-						<span class="text-[10px] font-bold text-dark-950 bg-accent-400 px-2 py-0.5 rounded text-center">49.90€ / MOIS</span>
+						<span class="text-sm font-bold text-white">+ Pack Sérénité annuel inclus</span>
+						<span class="text-[10px] font-bold text-dark-950 bg-accent-400 px-2 py-0.5 rounded text-center" data-offer-key="serenite-annual" data-price-suffix="/ AN">499 € / AN</span>
 					</div>
 					<span class="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
-						<i class="ph-bold ph-lock-simple"></i> Engagement 12 mois minimum
+						<i class="ph-bold ph-lock-simple"></i> Obligatoire · facturé à part chaque année · engagement 12 mois
 					</span>
 				</div>
 
@@ -1093,7 +952,7 @@
 						<i class="ph-bold ph-shield-check text-accent-400 pl-1"></i> Maintenance & Mises à jour incluses
 					</li>
 					<li class="flex items-center gap-2 font-bold text-white bg-white/5 p-1 rounded pr-2 -ml-1">
-						<i class="ph-bold ph-life-buoy text-accent-400 pl-1"></i> Assistance prioritaire en cas de panne
+						<i class="ph-bold ph-lifebuoy text-accent-400 pl-1"></i> Assistance prioritaire en cas de panne
 					</li>
 
 					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Optimisation mobile & performance</li>
@@ -1103,7 +962,7 @@
 						<span class="text-slate-200">
 							Hébergement OVH<br>
 							<strong class="text-accent-400 text-xs hover:underline">
-								~22€/an (Détails)
+								~<span data-price-eur="22.05" data-price-suffix="/an">22,05 €/an</span> (Détails)
 							</strong>
 							<span class="block text-xs text-slate-400">
 								1ère année offerte
@@ -1111,9 +970,11 @@
 						</span>
 					</li>
 				</ul>
-				<button onclick="selectOffer(this, 'Essentiel', document.getElementById('pack-essentiel').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-all font-medium relative z-10 flex items-center justify-center gap-2">
-					<span>Choisir</span>
-				</button>
+				<div class="relative z-10 space-y-2">
+					<button onclick="selectOffer(this, 'Essentiel', document.getElementById('pack-essentiel').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-all font-bold flex items-center justify-center gap-2 text-sm">
+						<span>Sélectionner ce pack</span>
+					</button>
+				</div>
 			</div>
 
 			<!-- 3. OFFRE VITRINE (POPULAIRE) -->
@@ -1121,7 +982,7 @@
 				<div class="absolute top-4 right-4 text-xs font-bold text-accent-400 bg-accent-400/10 px-2 py-1 rounded tag-populaire">POPULAIRE</div>
 				<h3 class="text-xl font-display font-bold text-white mb-2">Vitrine Artisan</h3>
 				
-				<div id="price-vitrine-display" class="mb-6"></div>
+				<div id="price-vitrine-display" class="mb-6" data-offer-key="vitrine"><span class="text-3xl font-bold text-accent-400 price-amount">1 790 €</span></div>
 
 				<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
 					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site jusqu’à 5 pages personnalisé</li>
@@ -1138,7 +999,7 @@
 						<span class="text-slate-200">
 							Hébergement OVH<br>
 							<strong class="text-accent-400 text-xs hover:underline">
-								~22€/an (Détails)
+								~<span data-price-eur="22.05" data-price-suffix="/an">22,05 €/an</span> (Détails)
 							</strong>
 							<span class="block text-xs text-slate-400">
 								1ère année offerte
@@ -1146,16 +1007,18 @@
 						</span>
 					</li>
 				</ul>
-				<button onclick="selectOffer(this, 'Vitrine', document.getElementById('pack-vitrine').dataset.price)" class="offer-btn w-full py-3 rounded-xl bg-accent-400 text-dark-950 text-center font-bold relative z-10 flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(45,212,191,0.4)] transition-all">
-					<span>Sélectionné</span> <i class="ph-bold ph-check"></i>
-				</button>
+				<div class="relative z-10 space-y-2">
+					<button onclick="selectOffer(this, 'Vitrine', document.getElementById('pack-vitrine').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-accent-400/30 text-center text-accent-400 hover:bg-accent-400 hover:text-dark-950 transition-all font-bold flex items-center justify-center gap-2 text-sm">
+						<span>Sélectionner ce pack</span>
+					</button>
+				</div>
 			</div>
 
 			<!-- 4. OFFRE PREMIUM -->
 			<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-premium">
 				<h3 class="text-xl font-display font-bold text-white mb-2">Premium</h3>
 				
-				<div id="price-premium-display" class="text-3xl font-bold text-purple-400 mb-6"></div>
+				<div id="price-premium-display" class="text-3xl font-bold text-purple-400 mb-6" data-offer-key="premium"><span class="price-amount">2 990 €</span></div>
 
 				<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
 					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Design 100% sur-mesure adapté à votre identité</li>
@@ -1174,14 +1037,16 @@
 						<i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-purple-400"></i>
 						<span class="text-slate-200">
 							Hébergement OVH<br>
-							<strong class="text-purple-400 text-xs hover:underline">~55€/an (Détails)</strong>
+							<strong class="text-purple-400 text-xs hover:underline">~<span data-price-eur="54.79" data-price-suffix="/an">54,79 €/an</span> (Détails)</strong>
 							<span class="block text-xs text-slate-400">1ère année offerte</span>
 						</span>
 					</li>
 				</ul>
-				<button onclick="selectOffer(this, 'Premium', document.getElementById('pack-premium').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-medium relative z-10 flex items-center justify-center gap-2">
-					<span>Choisir</span>
-				</button>
+				<div class="relative z-10 space-y-2">
+					<button onclick="selectOffer(this, 'Premium', document.getElementById('pack-premium').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-bold flex items-center justify-center gap-2 text-sm">
+						<span>Sélectionner ce pack</span>
+					</button>
+				</div>
 			</div>
 		</div>
 			
@@ -1265,7 +1130,7 @@
 									<i class="ph-fill ph-check-circle text-accent-400 mt-1 shrink-0 text-lg"></i>
 									<div>
 										<strong class="text-white block">Tarif "Direct Artisan"</strong>
-										Dès <span class="text-accent-400 font-bold">690€</span>. Quel que soit votre budget, une formule adaptée à votre besoin. Pas de frais d'agence, pas de commerciaux : vous payez uniquement mon expertise, avec la garantie d'une réponse rapide, qu'il s'agisse d'un service ou d'un simple conseil.
+										À partir de <span class="text-accent-400 font-bold" data-price-eur="690">690 €</span>. Quel que soit votre budget, une formule adaptée à votre besoin. Pas de frais d'agence, pas de commerciaux : vous payez uniquement mon expertise, avec la garantie d'une réponse rapide, qu'il s'agisse d'un service ou d'un simple conseil.
 									</div>
 								</li>
 
@@ -1289,7 +1154,7 @@
 									<i class="ph-fill ph-check-circle text-accent-400 mt-1 shrink-0 text-lg"></i>
 									<div>
 										<strong class="text-white block">Partenaires dans la durée</strong>
-										Avec le suivi (49.90€/mois, engagement 12 mois), votre site n'est jamais abandonné. Je gère la technique et les mises à jour pour que vous restiez concentré sur votre métier.
+										Avec le suivi (<span data-offer-key="serenite">49,90 €</span>, engagement 12 mois), votre site n'est jamais abandonné. Je gère la technique et les mises à jour pour que vous restiez concentré sur votre métier.
 									</div>
 								</li>
 							</ul>
@@ -1341,76 +1206,71 @@
 								<p class="text-xs text-slate-400 mb-3 font-bold uppercase tracking-wider">Sélectionnez vos besoins :</p>
 								
 								<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-									<label class="doc-card-service flex items-center justify-between p-2.5 rounded-lg cursor-pointer border border-white/10 bg-dark-900 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
-										<div class="flex items-center gap-2 relative z-10">
-											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box">
+									<label class="doc-card-service flex items-center justify-between gap-2 p-2.5 rounded-lg cursor-pointer border border-slate-500/20 bg-dark-900 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
+										<div class="flex items-center gap-2 relative z-10 min-w-0">
+											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box shrink-0">
 												<i class="ph-bold ph-check text-white text-[10px] opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
 											</div>
-											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Devis</span>
+											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label truncate">Devis</span>
 										</div>
-										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
-										<input type="checkbox" class="service-doc-chk hidden" value="Devis" data-price="250">
+										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="100" data-price-prefix="">100 €</span>
+										<input type="checkbox" class="service-doc-chk hidden" value="Devis" data-price="100">
 										<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 									</label>
-
-									<label class="doc-card-service flex items-center justify-between p-2.5 rounded-lg cursor-pointer border border-white/10 bg-dark-900 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
-										<div class="flex items-center gap-2 relative z-10">
-											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box">
+									<label class="doc-card-service flex items-center justify-between gap-2 p-2.5 rounded-lg cursor-pointer border border-slate-500/20 bg-dark-900 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
+										<div class="flex items-center gap-2 relative z-10 min-w-0">
+											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box shrink-0">
 												<i class="ph-bold ph-check text-white text-[10px] opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
 											</div>
-											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Factures</span>
+											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label truncate">Factures</span>
 										</div>
-										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
-										<input type="checkbox" class="service-doc-chk hidden" value="Facture" data-price="250">
+										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="100" data-price-prefix="">100 €</span>
+										<input type="checkbox" class="service-doc-chk hidden" value="Facture" data-price="100">
 										<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 									</label>
-
-									<label class="doc-card-service flex items-center justify-between p-2.5 rounded-lg cursor-pointer border border-white/10 bg-dark-900 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
-										<div class="flex items-center gap-2 relative z-10">
-											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box">
+									<label class="doc-card-service flex items-center justify-between gap-2 p-2.5 rounded-lg cursor-pointer border border-slate-500/20 bg-dark-900 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
+										<div class="flex items-center gap-2 relative z-10 min-w-0">
+											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box shrink-0">
 												<i class="ph-bold ph-check text-white text-[10px] opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
 											</div>
-											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Quittance</span>
+											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label truncate">Quittance de loyer</span>
 										</div>
-										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
-										<input type="checkbox" class="service-doc-chk hidden" value="Quittance" data-price="250">
+										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="100" data-price-prefix="">100 €</span>
+										<input type="checkbox" class="service-doc-chk hidden" value="Quittance" data-price="100">
 										<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 									</label>
-
-									<label class="doc-card-service flex items-center justify-between p-2.5 rounded-lg cursor-pointer border border-white/10 bg-dark-900 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
-										<div class="flex items-center gap-2 relative z-10">
-											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box">
+									<label class="doc-card-service flex items-center justify-between gap-2 p-2.5 rounded-lg cursor-pointer border border-slate-500/20 bg-dark-900 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
+										<div class="flex items-center gap-2 relative z-10 min-w-0">
+											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box shrink-0">
 												<i class="ph-bold ph-check text-white text-[10px] opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
 											</div>
-											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Note de Frais</span>
+											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label truncate">Note de frais</span>
 										</div>
-										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
-										<input type="checkbox" class="service-doc-chk hidden" value="Note de Frais" data-price="250">
+										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="100" data-price-prefix="">100 €</span>
+										<input type="checkbox" class="service-doc-chk hidden" value="Note de Frais" data-price="100">
 										<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 									</label>
-
-									<label class="doc-card-service flex items-center justify-between p-2.5 rounded-lg cursor-pointer border border-white/10 bg-dark-900 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
-										<div class="flex items-center gap-2 relative z-10">
-											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box">
+									<label class="doc-card-service flex items-center justify-between gap-2 p-2.5 rounded-lg cursor-pointer border border-slate-500/20 bg-dark-900 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
+										<div class="flex items-center gap-2 relative z-10 min-w-0">
+											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box shrink-0">
 												<i class="ph-bold ph-check text-white text-[10px] opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
 											</div>
-											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Bail Location</span>
+											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label truncate">Bail de location</span>
 										</div>
-										<span class="text-[10px] font-bold text-purple-400 bg-purple-400/10 px-1.5 py-0.5 rounded">300€</span>
+										<span class="text-[10px] font-bold text-purple-400 bg-purple-400/10 px-1.5 py-0.5 rounded whitespace-nowrap" data-price-eur="300" data-price-prefix="">300 €</span>
 										<input type="checkbox" class="service-doc-chk hidden" value="Bail Location" data-price="300">
 										<div class="absolute inset-0 bg-purple-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 									</label>
-
-									<label class="doc-card-service flex items-center justify-between p-2.5 rounded-lg cursor-pointer border border-white/10 bg-dark-900 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
-										<div class="flex items-center gap-2 relative z-10">
-											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box">
+									<label class="doc-card-service flex items-center justify-between gap-2 p-2.5 rounded-lg cursor-pointer border border-slate-500/20 bg-dark-900 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
+										<div class="flex items-center gap-2 relative z-10 min-w-0">
+											<div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-950 custom-checkbox-box shrink-0">
 												<i class="ph-bold ph-check text-white text-[10px] opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
 											</div>
-											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Autre spécifique</span>
+											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label truncate">Document sur-mesure</span>
 										</div>
-										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">~300€</span>
+										<span class="text-[10px] font-bold text-purple-400 bg-purple-400/10 px-1.5 py-0.5 rounded whitespace-nowrap" data-price-eur="300" data-price-prefix="dès ">dès 300 €</span>
 										<input type="checkbox" class="service-doc-chk hidden" value="Autre" data-price="300">
-										<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
+										<div class="absolute inset-0 bg-purple-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 									</label>
 								</div>
 							</div>
@@ -1421,7 +1281,7 @@
 						<div class="flex flex-col items-center md:items-end gap-1 min-w-[200px] bg-emerald-950/20 md:bg-transparent p-4 md:p-0 rounded-2xl w-full md:w-auto border border-emerald-500/10 md:border-0">
 							<div class="flex items-baseline gap-1">
 								<span class="text-sm text-emerald-400 font-bold mr-1">À partir de</span>
-								<span class="text-3xl font-display font-bold text-emerald-400 text-shadow-glow" id="service-price-display">250€</span>
+								<span class="text-3xl font-display font-bold text-emerald-400" id="service-price-display" data-price-eur="100">100 €</span>
 							</div>
 							<div class="text-emerald-200/60 text-xs mb-3 text-center md:text-right" id="service-price-label">par type de document</div>
 							
@@ -1459,12 +1319,12 @@
 								<div class="p-4 rounded-xl bg-white/5 border border-white/5">
 									<div class="flex justify-between items-start mb-2">
 										<h4 class="font-bold text-white text-sm">Pour packs "Essentiel" & "Vitrine"</h4>
-										<span class="text-accent-400 font-bold text-sm">22.05€ <span class="text-xs font-normal text-slate-400">/an</span></span>
+										<span class="text-accent-400 font-bold text-sm"><span data-price-eur="22.05">22,05 €</span> <span class="text-xs font-normal text-slate-400">/an</span></span>
 									</div>
 									<p class="text-xs text-slate-500 mb-3">Offre OVH "Starter" (Idéal vitrine)</p>
 									<ul class="text-xs text-slate-300 space-y-1">
-										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> Hébergement (14,26€ TTC)</li>
-										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> Nom de domaine (7,79€ TTC)</li>
+										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> Hébergement (<span data-price-eur="14.26">14,26 €</span> TTC)</li>
+										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> Nom de domaine (<span data-price-eur="7.79">7,79 €</span> TTC)</li>
 										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 1 Go d'espace disque</li>
 									</ul>
 								</div>
@@ -1472,18 +1332,25 @@
 								<div class="p-4 rounded-xl bg-white/5 border border-white/5">
 									<div class="flex justify-between items-start mb-2">
 										<h4 class="font-bold text-white text-sm">Pour pack "Premium"</h4>
-										<span class="text-purple-400 font-bold text-sm">54.79€ <span class="text-xs font-normal text-slate-400">/an</span></span>
+										<span class="text-purple-400 font-bold text-sm"><span data-price-eur="54.79">54,79 €</span> <span class="text-xs font-normal text-slate-400">/an</span></span>
 									</div>
 									<p class="text-xs text-slate-500 mb-3">Offre OVH "Perso" (Plus de puissance)</p>
 									<ul class="text-xs text-slate-300 space-y-1">
-										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Hébergement (47€ TTC)</li>
-										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Nom de domaine (7,79€ TTC)</li>
+										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Hébergement (<span data-price-eur="47">47 €</span> TTC)</li>
+										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Nom de domaine (<span data-price-eur="7.79">7,79 €</span> TTC)</li>
 										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 100 Go d'espace disque</li>
 									</ul>
 								</div>
 							</div>
 						</div>
 					</div>
+				</div>
+			</div>
+
+			<div class="flex items-center justify-center mb-6 reveal">
+				<div class="billing-cycle-pills inline-flex items-center gap-1 bg-white/5 border border-white/10 rounded-full p-1">
+					<button type="button" class="billing-cycle-pill active" data-cycle="monthly" onclick="setSerenityBillingCycle('monthly')">Mensuel</button>
+					<button type="button" class="billing-cycle-pill" data-cycle="annual" onclick="setSerenityBillingCycle('annual')">Annuel <span class="ml-1 text-emerald-400">— 2 mois offerts</span></button>
 				</div>
 			</div>
 
@@ -1502,10 +1369,16 @@
 						</div>
 					</div>
 					<div class="mt-3 pt-3 border-t border-white/5">
-						<span class="text-xl font-bold text-blue-400 block">49.90€ <span class="text-xs text-slate-500 font-normal">/mois</span></span>
-						<button id="btn-serenite-action" onclick="toggleSerenityOption('simple')" class="mt-3 w-full px-4 py-2 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-bold uppercase hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-2">
-							<span>Ajouter au devis</span> <i class="ph-bold ph-plus"></i>
-						</button>
+						<span id="serenite-annual-badge" class="hidden inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-400/10 border border-emerald-400/30 text-emerald-400 text-[10px] font-bold uppercase mb-1.5">
+							<i class="ph-bold ph-gift"></i> 2 mois offerts
+						</span>
+						<span class="text-xl font-bold text-blue-400 block" data-offer-key="serenite" data-offer-skip><span class="price-amount">49,90 €</span> <span class="text-xs text-slate-500 font-normal price-suffix">/mois</span></span>
+						<div class="mt-3 grid grid-cols-1 gap-2">
+							<button id="btn-serenite-action" onclick="toggleSerenityOption('simple')" class="w-full px-4 py-2.5 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-bold uppercase hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-2">
+								<span>Ajouter au devis</span> <i class="ph-bold ph-plus"></i>
+							</button>
+						</div>
+						<p class="text-[10px] text-slate-500 mt-2 text-center">Ajouté à votre devis, jamais facturé par carte séparément.</p>
 					</div>
 				</div>
 
@@ -1524,10 +1397,16 @@
 						</div>
 					</div>
 					<div class="mt-3 pt-3 border-t border-white/5">
-						<span class="text-xl font-bold text-indigo-400 block">94.90€ <span class="text-xs text-slate-500 font-normal">/mois</span></span>
-						<button id="btn-serenite-plus-action" onclick="toggleSerenityOption('plus')" class="mt-3 w-full px-4 py-2 rounded-lg bg-indigo-500/20 text-indigo-300 text-xs font-bold uppercase hover:bg-indigo-500 hover:text-white transition-all flex items-center justify-center gap-2">
-							<span>Ajouter au devis</span> <i class="ph-bold ph-plus"></i>
-						</button>
+						<span id="serenitePlus-annual-badge" class="hidden inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-400/10 border border-emerald-400/30 text-emerald-400 text-[10px] font-bold uppercase mb-1.5">
+							<i class="ph-bold ph-gift"></i> 2 mois offerts
+						</span>
+						<span class="text-xl font-bold text-indigo-400 block" data-offer-key="serenitePlus" data-offer-skip><span class="price-amount">94,90 €</span> <span class="text-xs text-slate-500 font-normal price-suffix">/mois</span></span>
+						<div class="mt-3 grid grid-cols-1 gap-2">
+							<button id="btn-serenite-plus-action" onclick="toggleSerenityOption('plus')" class="w-full px-4 py-2.5 rounded-lg bg-indigo-500/20 text-indigo-300 text-xs font-bold uppercase hover:bg-indigo-500 hover:text-white transition-all flex items-center justify-center gap-2">
+								<span>Ajouter au devis</span> <i class="ph-bold ph-plus"></i>
+							</button>
+						</div>
+						<p class="text-[10px] text-slate-500 mt-2 text-center">Ajouté à votre devis, jamais facturé par carte séparément.</p>
 					</div>
 				</div>
 
@@ -1537,22 +1416,22 @@
 					<div class="space-y-4">
 						<div class="flex justify-between items-center border-b border-white/5 pb-2">
 							<span class="text-sm text-slate-300">Simple (Texte/Photo)</span>
-							<span class="font-bold text-white">100€</span>
+							<span class="font-bold text-white" data-price-eur="100">100 €</span>
 						</div>
 						<div class="flex justify-between items-center border-b border-white/5 pb-2">
 							<span class="text-sm text-slate-300">Moyenne (Mise en page)</span>
-							<span class="font-bold text-white">200€</span>
+							<span class="font-bold text-white" data-price-eur="200">200 €</span>
 						</div>
 						<div class="flex justify-between items-center border-b border-white/5 pb-2">
 							<span class="text-sm text-slate-300">Complexe (Fonctionnalité)</span>
-							<span class="font-bold text-white">300€</span>
+							<span class="font-bold text-white" data-price-eur="300">300 €</span>
 						</div>
 						<div class="flex justify-between items-center pt-1">
 							<div class="flex flex-col">
 								<span class="text-sm text-slate-300 font-bold">Relifting complet du site</span>
 								<span class="text-[10px] text-slate-500">Ancien site → design moderne</span>
 							</div>
-							<span class="font-bold text-accent-400">Dès 690€</span>
+							<span class="font-bold text-accent-400"><span data-i18n="from">À partir de</span> <span data-price-eur="690">690 €</span></span>
 						</div>
 					</div>
 					<p class="text-[10px] text-slate-600 mt-4 italic">Relifting : devis personnalisé au-delà de 5 pages.</p>
@@ -1592,7 +1471,7 @@
                                 <i class="ph-fill ph-gift text-2xl"></i>
                             </div>
                             <h3 class="text-white font-bold text-lg mb-1">Pour vous</h3>
-                            <div class="text-3xl font-display font-bold text-accent-400 mb-2">50 €</div>
+                            <div class="text-3xl font-display font-bold text-accent-400 mb-2" data-price-eur="50">50 €</div>
                             <p class="text-xs text-slate-400">Versés directement par virement pour chaque nouveau contrat signé.</p>
                         </div>
 
@@ -1641,7 +1520,7 @@
                             </div>
                             <div class="pt-2">
                                 <h4 class="text-white font-bold text-lg mb-2">Vous recevez</h4>
-                                <p class="text-slate-400 text-sm">Dès l'acompte du projet réglé, je vous effectue le virement de 50€. Simple et rapide.</p>
+                                <p class="text-slate-400 text-sm">Dès l'acompte du projet réglé, je vous effectue le virement de <span data-price-eur="50">50 €</span>. Simple et rapide.</p>
                             </div>
                         </div>
                     </div>
@@ -1661,15 +1540,17 @@
 		<div class="max-w-7xl mx-auto px-6 relative z-10">
 			
 			<div class="text-center mb-16 reveal">
-				<h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">
-					Un clic à domicile
-				</h2>
+				<img src="images/logo/Logo-1.png" alt="Clic à l’aide" width="360" height="180"
+					 class="mx-auto w-auto h-20 sm:h-24 object-contain mb-4" loading="lazy" decoding="async">
+				<h2 class="sr-only">Clic à l’aide</h2>
+				<p class="font-display text-xl sm:text-2xl font-bold text-white mb-3">Le numérique, sans prise de tête</p>
 				<p class="text-slate-400 max-w-2xl mx-auto mb-8">
-					Facilitateur numérique sur le bassin lémanique. Je me déplace chez vous pour simplifier votre quotidien technologique avec pédagogie et confiance.
+					Facilitateur numérique sur le bassin lémanique. Je me déplace chez vous pour simplifier
+					votre quotidien technologique, avec pédagogie et sans jargon.
 				</p>
 				
 				<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-					<a href="tel:0600000000" class="px-8 py-4 rounded-full bg-accent-400 text-dark-950 font-bold hover:shadow-[0_0_20px_rgba(45,212,191,0.4)] hover:scale-105 transition-all flex items-center gap-2">
+					<a href="tel:+33625965112" class="px-8 py-4 rounded-full bg-accent-400 text-dark-950 font-bold hover:shadow-[0_0_20px_rgba(45,212,191,0.4)] hover:scale-105 transition-all flex items-center gap-2">
 						<i class="ph-bold ph-phone-call text-xl"></i>
 						06 25 96 51 12
 					</a>
@@ -1688,7 +1569,7 @@
 						Appels vidéo, WhatsApp, e-mails, transfert de photos. Réglages simplifiés de votre téléphone ou tablette (gros caractères, son fort).
 					</p>
 					<div class="border-t border-white/10 pt-3">
-						<span class="text-lg font-bold text-white">70€ <span class="text-[10px] font-normal text-slate-500 uppercase">/heure</span></span>
+						<span class="text-lg font-bold text-white"><span data-price-eur="70">70 €</span> <span class="text-[10px] font-normal text-slate-500 uppercase">/heure</span></span>
 					</div>
 				</div>
 
@@ -1699,7 +1580,7 @@
 						Installation de votre nouvelle télévision, réglage des chaînes, Box Internet, Netflix ou YouTube. Utilisation sans jargon.
 					</p>
 					<div class="border-t border-white/10 pt-3">
-						<span class="text-lg font-bold text-white">70€ <span class="text-[10px] font-normal text-slate-500 uppercase">/heure</span></span>
+						<span class="text-lg font-bold text-white"><span data-price-eur="70">70 €</span> <span class="text-[10px] font-normal text-slate-500 uppercase">/heure</span></span>
 					</div>
 				</div>
 
@@ -1710,7 +1591,7 @@
 						Mise en sécurité Wi-Fi, antivirus, prévention des arnaques. Installation simplifiée d'imprimantes ou de caméras.
 					</p>
 					<div class="border-t border-white/10 pt-3">
-						<span class="text-lg font-bold text-white">70€ <span class="text-[10px] font-normal text-slate-500 uppercase">/heure</span></span>
+						<span class="text-lg font-bold text-white"><span data-price-eur="70">70 €</span> <span class="text-[10px] font-normal text-slate-500 uppercase">/heure</span></span>
 					</div>
 				</div>
 
@@ -1721,7 +1602,7 @@
 						Apprenez à votre rythme ! Accompagnement personnalisé pour maîtriser votre ordinateur ou faire vos achats en ligne sans stress.
 					</p>
 					<div class="border-t border-white/10 pt-3">
-						<span class="text-lg font-bold text-white">70€ <span class="text-[10px] font-normal text-slate-500 uppercase">/heure</span></span>
+						<span class="text-lg font-bold text-white"><span data-price-eur="70">70 €</span> <span class="text-[10px] font-normal text-slate-500 uppercase">/heure</span></span>
 					</div>
 				</div>
 
@@ -1732,7 +1613,7 @@
 						Prise de rendez-vous Doctolib, configuration de Mon Espace Santé, gestion des ordonnances en ligne en toute confidentialité.
 					</p>
 					<div class="border-t border-white/10 pt-3">
-						<span class="text-lg font-bold text-white">70€ <span class="text-[10px] font-normal text-slate-500 uppercase">/heure</span></span>
+						<span class="text-lg font-bold text-white"><span data-price-eur="70">70 €</span> <span class="text-[10px] font-normal text-slate-500 uppercase">/heure</span></span>
 					</div>
 				</div>
 
@@ -1743,7 +1624,7 @@
 						Aide à la création de comptes, tri des e-mails, organisation. Je vous guide pas à pas dans vos démarches (sans signer à votre place).
 					</p>
 					<div class="border-t border-white/10 pt-3">
-						<span class="text-lg font-bold text-white">70€ <span class="text-[10px] font-normal text-slate-500 uppercase">/heure</span></span>
+						<span class="text-lg font-bold text-white"><span data-price-eur="70">70 €</span> <span class="text-[10px] font-normal text-slate-500 uppercase">/heure</span></span>
 					</div>
 				</div>
 
@@ -1754,8 +1635,8 @@
 						Ne perdez plus vos souvenirs ! Numérisation sur clé USB de vos anciennes cassettes (VHS, Hi8) et photos papier.
 					</p>
 					<div class="border-t border-white/10 pt-3 flex flex-col">
-						<span class="text-lg font-bold text-white">70€ <span class="text-[10px] font-normal text-slate-500 uppercase">/ cassette</span></span>
-						<span class="text-[10px] font-bold text-pink-400 uppercase mt-0.5">0.15€ / photo numérisée</span>
+						<span class="text-lg font-bold text-white"><span data-price-eur="70">70 €</span> <span class="text-[10px] font-normal text-slate-500 uppercase">/ cassette</span></span>
+						<span class="text-[10px] font-bold text-pink-400 uppercase mt-0.5"><span data-price-eur="0.15">0,15 €</span> / photo numérisée</span>
 					</div>
 				</div>
 
@@ -1769,11 +1650,11 @@
 					<div class="border-t border-white/10 pt-3 relative z-10 flex flex-col gap-3">
 						<div class="flex justify-between items-center">
 							<span class="text-sm font-bold text-white">Diagnostic (1h30)</span>
-							<span class="text-accent-400 font-bold">90€</span>
+							<span class="text-accent-400 font-bold" data-price-eur="90">90 €</span>
 						</div>
 						<div class="flex justify-between items-center border-t border-white/5 pt-3">
 							<span class="text-sm font-bold text-white">Pack 5 Heures</span>
-							<span class="text-accent-400 font-bold">320€</span>
+							<span class="text-accent-400 font-bold" data-price-eur="320">320 €</span>
 						</div>
 					</div>
 				</div>
@@ -1847,186 +1728,154 @@
 		</div>
 	</section>
 
+	<!-- ============================================================
+	     FLYER A4 — « Clic à l'aide »
+	     Une promesse (les souvenirs), trois services, un numéro.
+	     Visible uniquement à l'impression.
+	     ============================================================ -->
 	<div id="print-flyer">
-		<div class="flyer-a4">
+		<div class="flyer">
 
-			<div class="f-header">
-				<img src="images/hero.jpg" class="f-header-bg" alt="">
-				<div class="f-header-bg-fade"></div>
-				<div class="f-header-noise"></div>
-
-				<div class="f-ribbon-badge">À DOMICILE<br>OU À DISTANCE</div>
-
-				<div class="f-header-content">
-					<div class="f-avail-badge"><span class="f-avail-dot"></span> Disponibilité immédiate — France / Suisse</div>
-
-					<div class="f-brand-row">
-						<div class="f-brand-accent-line"></div>
-						<div>
-							<div class="f-brand-name">NATHAN MARZILLI</div>
-							<div class="f-brand-sub">Ingénieur Diplômé (CTI) · 14 ans d'expérience</div>
-						</div>
-					</div>
-
-					<h1 class="f-main-title">Le numérique,<br><span class="f-accent">sans prise de tête.</span></h1>
-					<p class="f-header-subtitle">Sites web, automatisation, dépannage et accompagnement à domicile. La rigueur d'un ingénieur, la proximité d'un artisan — au prix juste.</p>
-
-					<div class="f-targets-row">
-						<div class="f-target-pill"><i class="ph-bold ph-users"></i> PARTICULIERS</div>
-						<div class="f-target-pill"><i class="ph-bold ph-buildings"></i> PROFESSIONNELS</div>
-					</div>
+			<div class="f-top">
+				<img src="images/logo/Logo-1.png" alt="Clic à l'aide" class="f-logo">
+				<div class="f-top-right">
+					<span class="f-avail">Disponible cette semaine</span>
+					<div class="f-zone">Évian-les-Bains &amp; bassin lémanique<br>À domicile ou à distance</div>
 				</div>
-
-				<div class="f-profile-badge"><img src="images/profile.jpg" alt="Nathan Marzilli"></div>
 			</div>
 
-			<div class="f-trust-strip">
-				<div class="f-trust-caption">Rigueur d'ingénieur éprouvée par</div>
-				<div class="f-trust-item"><i class="ph-fill ph-lightning" style="color:#f97316;"></i> EDF</div>
-				<div class="f-trust-item"><i class="ph-fill ph-hexagon" style="color:#ef4444;"></i> ELCA</div>
-				<div class="f-trust-item"><i class="ph-fill ph-seal-check" style="color:#2DD4BF;"></i> Ingénieur CTI</div>
-				<div class="f-trust-item"><i class="ph-fill ph-racquet" style="color:#22c55e;"></i> BE 74</div>
+			<div class="f-hero">
+				<div class="f-eyebrow">Le numérique, sans prise de tête</div>
+				<h1 class="f-title">Vos souvenirs méritent<br>mieux qu'un <em>carton au grenier</em>.</h1>
+				<p class="f-lead">
+					Les cassettes se démagnétisent, les photos jaunissent, les vieux ordinateurs s'éteignent.
+					Je viens chez vous, je m'occupe de tout, et je vous explique — calmement, sans jargon.
+				</p>
 			</div>
 
-			<div class="f-content">
-				<div class="f-section-label">Ce que je propose</div>
-				<div class="f-services-grid">
-					<div class="f-service-card">
-						<div class="f-service-icon"><i class="ph-bold ph-desktop"></i></div>
-						<h3 class="f-service-title">Création de Sites Web</h3>
-						<p class="f-service-desc">Sites vitrines sur-mesure, performants et optimisés (SEO), pour valoriser votre savoir-faire.</p>
-					</div>
-					<div class="f-service-card">
-						<div class="f-service-icon"><i class="ph-bold ph-file-text"></i></div>
-						<h3 class="f-service-title">Outils & Automatisation</h3>
-						<p class="f-service-desc">Génération automatique de devis, factures, contrats. Gagnez du temps sur l'administratif.</p>
-					</div>
-					<div class="f-service-card">
-						<div class="f-service-icon"><i class="ph-bold ph-wrench"></i></div>
-						<h3 class="f-service-title">Dépannage & Installation</h3>
-						<p class="f-service-desc">Box internet, Wi-Fi, imprimantes, TV. Je me déplace et j'explique sans jargon.</p>
-					</div>
-					<div class="f-service-card">
-						<div class="f-service-icon"><i class="ph-bold ph-shield-check"></i></div>
-						<h3 class="f-service-title">Sécurité & Démarches</h3>
-						<p class="f-service-desc">Protection antivirus, prévention des arnaques, accompagnement en ligne (Doctolib...).</p>
-					</div>
-					<div class="f-service-card">
-						<div class="f-service-icon"><i class="ph-bold ph-graduation-cap"></i></div>
-						<h3 class="f-service-title">Formation à votre rythme</h3>
-						<p class="f-service-desc">Prise en main de votre site, ordinateur ou smartphone, en toute bienveillance.</p>
-					</div>
-					<div class="f-service-card">
-						<div class="f-service-icon"><i class="ph-bold ph-cassette-tape"></i></div>
-						<h3 class="f-service-title">Sauvegarde de souvenirs</h3>
-						<p class="f-service-desc">Numérisation sur clé USB de vos cassettes (VHS, Hi8) et de vos photos papier.</p>
-					</div>
+			<div class="f-star">
+				<div class="f-star-img">
+					<img src="images/flyer/header-mug.jpg" alt="">
 				</div>
-
-				<div class="f-pricing-section">
-					<div class="f-price-col">
-						<div class="f-price-col-title">Création Web & Pros</div>
-						<div class="f-pack-item"><span class="f-pack-name">Site Vitrine Complet</span><div class="f-pack-dots"></div><span class="f-pack-price">Dès 990€</span></div>
-						<div class="f-pack-item"><span class="f-pack-name">Automatisation Devis / Factures</span><div class="f-pack-dots"></div><span class="f-pack-price">Dès 250€</span></div>
-						<div class="f-pack-item"><span class="f-pack-name">Pack Sérénité (suivi mensuel)</span><div class="f-pack-dots"></div><span class="f-pack-price">49,90€ / mois</span></div>
-					</div>
-					<div class="f-price-col">
-						<div class="f-price-col-title">Interventions à Domicile</div>
-						<div class="f-pack-item"><span class="f-pack-name">Tarif Horaire (dépannage / cours)</span><div class="f-pack-dots"></div><span class="f-pack-price">70€ / heure</span></div>
-						<div class="f-pack-item"><span class="f-pack-name">Diagnostic 1ère rencontre (1h30)</span><div class="f-pack-dots"></div><span class="f-pack-price">90€</span></div>
-						<div class="f-pack-item"><span class="f-pack-name">Numérisation Cassette<span class="f-pack-sub">+ 0,15€ / photo numérisée</span></span><div class="f-pack-dots"></div><span class="f-pack-price">70€ / pièce</span></div>
-					</div>
-				</div>
-				<div class="f-price-note">TVA non applicable (art. 293B du CGI)</div>
-
-				<div class="f-testimonial">
-					<div style="flex:1;">
-						<div class="f-testimonial-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
-						<p class="f-testimonial-text">"Un immense merci à Nathan pour la création de notre site. Son investissement et son travail remarquable ont transformé notre vision en un outil performant."</p>
-						<div class="f-testimonial-author"><strong>Norène & William</strong> — Badminton Club Évian</div>
+				<div class="f-star-body">
+					<span class="f-star-badge">Ce que je fais le plus</span>
+					<h2 class="f-star-title">Numérisation de vos cassettes<br>et de vos photos</h2>
+					<p class="f-star-text">
+						VHS, Hi8, MiniDV, photos papier, diapositives. Tout est transféré sur une clé USB
+						que vous gardez, prête à être partagée avec vos enfants et vos petits-enfants.
+						Vos originaux vous sont rendus.
+					</p>
+					<div class="f-star-price">
+						<strong>70 €</strong> la cassette &nbsp;·&nbsp; <strong>0,15 €</strong> la photo numérisée
 					</div>
 				</div>
 			</div>
 
-			<div class="f-footer">
-				<div class="f-footer-left">
-					<div class="f-footer-tagline">La qualité d'une agence, la proximité d'un artisan, <span class="f-accent">au prix juste.</span></div>
-					<div class="f-contact-phone-wrapper">
-						<div class="f-phone-icon"><i class="ph-fill ph-phone"></i></div>
-						<div class="f-phone-number">06 25 96 51 12</div>
-					</div>
-					<div class="f-location-info"><i class="ph-fill ph-map-pin"></i><span>Évian-les-Bains & tout le bassin lémanique — France / Suisse</span></div>
+			<div class="f-services">
+				<div class="f-service">
+					<div class="f-service-icon"><i class="ph-bold ph-hand-heart"></i></div>
+					<h3>Dépannage &amp; accompagnement</h3>
+					<p>
+						Box internet, Wi-Fi, imprimante, télévision, téléphone. Je répare, je règle,
+						et je vous montre comment faire la prochaine fois.
+					</p>
+					<span class="f-from">70 € / heure · diagnostic 90 €</span>
 				</div>
-				<div class="f-footer-right">
-					<div class="f-qr-box"><img src="images/flyer/qr-site.png" alt="QR code"></div>
-					<div class="f-qr-caption">Scannez pour découvrir mon site</div>
-					<div class="f-qr-url">nathanmarzilli.github.io/portfolio</div>
+				<div class="f-service">
+					<div class="f-service-icon"><i class="ph-bold ph-shield-check"></i></div>
+					<h3>Sécurité &amp; démarches en ligne</h3>
+					<p>
+						Antivirus, mots de passe, prévention des arnaques, Doctolib, Ameli.
+						Je vous guide pas à pas, sans jamais signer à votre place.
+					</p>
+					<span class="f-from">70 € / heure · pack 5 h 320 €</span>
 				</div>
 			</div>
 
-			<div class="f-bottom-bar">NATHANMARZILLI.GITHUB.IO/PORTFOLIO · NATHAN.MARZILLI@GMAIL.COM</div>
+			<div class="f-trust">
+				<div class="f-trust-photo"><img src="images/profile-256.jpg" alt=""></div>
+				<div>
+					<p class="f-trust-quote">
+						« Un immense merci à Nathan. Son investissement et son travail remarquable
+						ont transformé notre vision en un outil performant. »
+					</p>
+					<div class="f-trust-who">
+						<strong>Norène &amp; William</strong> — Badminton Club Évian &nbsp;|&nbsp;
+						Nathan Marzilli, ingénieur diplômé (CTI), 14 ans d'expérience
+					</div>
+				</div>
+			</div>
+
+			<div class="f-cta">
+				<div class="f-cta-left">
+					<div class="f-cta-label">Un doute ? Appelez, on en parle</div>
+					<div class="f-cta-phone">06 25 96 51 12</div>
+					<div class="f-cta-note">
+						Premier échange gratuit et sans engagement. Devis clair avant toute intervention.<br>
+						nathan.marzilli@gmail.com
+					</div>
+				</div>
+				<div class="f-cta-qr">
+					<img src="images/flyer/qr-site.png" alt="">
+					<span>Voir mes services</span>
+				</div>
+			</div>
 
 		</div>
 	</div>
 
+	<!-- ============================================================
+	     CARTES DE VISITE — recto / verso, format 85 × 55 mm
+	     ============================================================ -->
 	<div id="print-cards">
-		<div class="c-cards-page">
-			<div class="c-cards-page-title">Cartes de visite — Nathan Marzilli</div>
-			<div class="c-cards-wrap">
-				<div class="c-card-slot">
-					<div class="c-card-slot-label">Recto</div>
-					<div class="c-card c-card-front">
-						<div class="c-front-photo"><img src="images/flyer/02.jfif" alt=""></div>
-						<div class="c-front-white-panel"></div>
-						<div class="c-front-white-blob"></div>
-						<div class="c-front-content">
-							<div class="c-front-line"></div>
-							<div class="c-front-name">NATHAN MARZILLI</div>
-							<div class="c-front-role">Ingénieur Diplômé</div>
-							<div class="c-front-line2"></div>
-							<div class="c-front-tagline">Solutions numériques pour particuliers &amp; professionnels</div>
-							<div class="c-front-icons">
-								<div class="c-front-icon-item"><div class="c-front-icon-badge"><i class="ph-bold ph-desktop"></i></div><div class="c-front-icon-label">Sites web</div></div>
-								<div class="c-front-icon-item"><div class="c-front-icon-badge"><i class="ph-bold ph-file-text"></i></div><div class="c-front-icon-label">Automatisation</div></div>
-								<div class="c-front-icon-item"><div class="c-front-icon-badge"><i class="ph-bold ph-wrench"></i></div><div class="c-front-icon-label">Dépannage</div></div>
-								<div class="c-front-icon-item"><div class="c-front-icon-badge"><i class="ph-bold ph-shield-check"></i></div><div class="c-front-icon-label">Sécurité</div></div>
-								<div class="c-front-icon-item"><div class="c-front-icon-badge"><i class="ph-bold ph-graduation-cap"></i></div><div class="c-front-icon-label">Formation</div></div>
-								<div class="c-front-icon-item"><div class="c-front-icon-badge"><i class="ph-bold ph-cassette-tape"></i></div><div class="c-front-icon-label">Numérisation</div></div>
-							</div>
+		<div class="c-page">
+			<div class="c-page-title">Cartes de visite — à découper (85 × 55 mm)</div>
+			<div class="c-wrap">
+
+				<div class="c-slot">
+					<div class="c-slot-label">Recto</div>
+					<div class="c-card c-front">
+						<div class="c-front-accent"></div>
+						<img src="images/logo/Logo-1.png" alt="Clic à l'aide" class="c-front-logo">
+						<div class="c-front-tag">
+							Numérisation de souvenirs, dépannage et accompagnement numérique,
+							à domicile ou à distance.
 						</div>
-						<div class="c-front-teal-blob">
-							<div class="c-front-teal-blob-text">À DOMICILE<br>OU À DISTANCE</div>
-							<div class="c-front-teal-blob-line"></div>
+						<div class="c-front-list">
+							<span class="c-front-chip">Cassettes &amp; photos</span>
+							<span class="c-front-chip">Dépannage</span>
+							<span class="c-front-chip">Sécurité</span>
+							<span class="c-front-chip">Formation</span>
+							<span class="c-front-chip">Sites web</span>
+						</div>
+						<div class="c-front-photo"><img src="images/profile-192.jpg" alt=""></div>
+					</div>
+				</div>
+
+				<div class="c-slot">
+					<div class="c-slot-label">Verso</div>
+					<div class="c-card c-back">
+						<div class="c-back-qr"><img src="images/flyer/qr-site.png" alt=""></div>
+						<div>
+							<span class="c-back-logo-chip"><img src="images/logo/Logo-1.png" alt="" class="c-back-logo"></span>
+							<div class="c-back-name">Nathan Marzilli</div>
+							<div class="c-back-role">Ingénieur diplômé CTI</div>
+						</div>
+						<div class="c-back-contact">
+							<div class="c-back-row c-strong"><i class="ph-fill ph-phone"></i>06 25 96 51 12</div>
+							<div class="c-back-row"><i class="ph-fill ph-envelope-simple"></i>nathan.marzilli@gmail.com</div>
+							<div class="c-back-row"><i class="ph-fill ph-map-pin"></i>Évian-les-Bains &amp; alentours</div>
+							<div class="c-back-row"><i class="ph-fill ph-globe"></i>nathanmarzilli.github.io/portfolio</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="c-card-slot">
-					<div class="c-card-slot-label">Verso</div>
-					<div class="c-card c-card-back">
-						<div class="c-back-photo"><img src="images/flyer/04.png" alt=""></div>
-						<div class="c-back-photo-fade"></div>
-						<div class="c-back-content">
-							<div class="c-back-line"></div>
-							<div class="c-back-name">NATHAN MARZILLI</div>
-							<div class="c-back-role">Ingénieur Diplômé</div>
-							<div class="c-back-contact-list">
-								<div class="c-back-contact-row"><div class="c-back-contact-icon"><i class="ph-fill ph-phone"></i></div><div class="c-back-contact-text c-strong">06 25 96 51 12</div></div>
-								<div class="c-back-contact-row"><div class="c-back-contact-icon"><i class="ph-fill ph-envelope-simple"></i></div><div class="c-back-contact-text">nathan.marzilli@gmail.com</div></div>
-								<div class="c-back-contact-row"><div class="c-back-contact-icon"><i class="ph-fill ph-map-pin"></i></div><div class="c-back-contact-text">Évian-les-Bains et alentours</div></div>
-								<div class="c-back-contact-row"><div class="c-back-contact-icon"><i class="ph-fill ph-globe"></i></div><div class="c-back-contact-text">nathanmarzilli.github.io/portfolio</div></div>
-							</div>
-						</div>
-						<div class="c-back-tagline-block">
-							<div class="c-back-tagline">La qualité d'une agence,<br>la proximité d'un artisan</div>
-							<div class="c-back-tagline-line"></div>
-						</div>
-					</div>
-				</div>
 			</div>
+			<div class="c-cut-note">Imprimer à 100 % (sans mise à l'échelle), sur papier 300 g mat de préférence.</div>
 		</div>
 	</div>
-	
+
+
 	<section id="faq" class="py-24 bg-dark-900 border-t border-white/5 relative overflow-hidden">
 		<div class="absolute top-0 left-0 p-64 bg-accent-400/5 blur-[100px] rounded-full -ml-32 -mt-32 pointer-events-none"></div>
 
@@ -2078,12 +1927,14 @@
 						</button>
 						<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out px-6 text-slate-400 text-sm leading-relaxed">
 							<div class="pb-6 border-t border-white/5 pt-4">
-								Le règlement se fait en deux étapes pour sécuriser les deux parties :
+								<strong>Rien ne se paie sur ce site.</strong> Le parcours est volontairement simple et sans mauvaise surprise :
 								<ul class="list-disc pl-5 mt-2 space-y-1">
-									<li><strong>40% d'acompte</strong> à la signature du devis pour lancer le projet.</li>
-									<li><strong>60% à la livraison</strong>, une fois que le site est en ligne et que vous êtes satisfait.</li>
+									<li>Vous réservez un <strong>RDV de lancement gratuit</strong> (20 à 30 minutes) et remplissez un court formulaire de préparation.</li>
+									<li>Je vous envoie un <strong>devis détaillé</strong> (valable 30 jours), que vous signez si tout vous convient.</li>
+									<li><strong>30 % d'acompte</strong> à la signature du devis, pour lancer le projet.</li>
+									<li><strong>Le solde à la livraison</strong>, une fois le site en ligne et validé par vos soins.</li>
 								</ul>
-								Paiement par virement bancaire. Une facture est systématiquement émise.
+								Chaque règlement fait l'objet d'une <strong>facture envoyée par e-mail</strong>, avec un lien de paiement sécurisé (Stripe) ou un RIB si vous préférez le virement.
 							</div>
 						</div>
 					</div>
@@ -2107,7 +1958,7 @@
 					
 					<div class="glass-card rounded-2xl border border-white/5 overflow-hidden transition-all duration-300 group">
 						<button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-6 text-left focus:outline-none">
-							<span class="font-bold text-white group-hover:text-accent-400 transition-colors">À quoi sert le Pack Sérénité (49.90€) ?</span>
+							<span class="font-bold text-white group-hover:text-accent-400 transition-colors">À quoi sert le Pack Sérénité (<span data-offer-key="serenite">49,90 €</span>) ?</span>
 							<i class="ph-bold ph-caret-down text-slate-500 transform transition-transform duration-300"></i>
 						</button>
 						<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out px-6 text-slate-400 text-sm leading-relaxed">
@@ -2116,8 +1967,8 @@
 								<ul class="list-disc pl-5 mt-2 space-y-1 text-slate-400">
 									<li>Je gère les mises à jour techniques (sécurité).</li>
 									<li>Je fais des sauvegardes régulières.</li>
-									<li><strong>Sérénité (49.90€/mois) :</strong> 1 intervention simple incluse par mois.</li>
-									<li><strong>Sérénité+ (94.90€/mois) :</strong> 2 interventions simples incluses par mois, pour les sites qui bougent plus souvent.</li>
+									<li><strong>Sérénité (<span data-offer-key="serenite">49,90 €</span>) :</strong> 1 intervention simple incluse par mois.</li>
+									<li><strong>Sérénité+ (<span data-offer-key="serenitePlus">94,90 €</span>) :</strong> 2 interventions simples incluses par mois, pour les sites qui bougent plus souvent.</li>
 								</ul>
 								<p class="mt-3 text-blue-300 font-bold flex items-center gap-2">
 									<i class="ph-bold ph-lock-simple"></i> Engagement minimum de 12 mois sur les deux formules.
@@ -2171,13 +2022,81 @@
 		</div>
 	</section>
 
+	<!-- ============================================================
+	     PARCOURS CLIENT — aucun paiement en ligne
+	     Rappelle explicitement la logique du site : on réserve,
+	     on prépare le rendez-vous, on reçoit un devis, et on ne
+	     règle qu'à la livraison, sur facture.
+	     ============================================================ -->
+	<section id="parcours" class="py-20 border-t border-slate-500/10 bg-dark-900 relative overflow-hidden">
+		<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-accent-400/5 blur-[120px] rounded-full pointer-events-none"></div>
+
+		<div class="max-w-5xl mx-auto px-6 relative z-10">
+			<div class="text-center mb-12 reveal">
+				<span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-accent-400/10 text-accent-400 text-xs font-bold uppercase tracking-wider border border-accent-400/25 mb-4">
+					<i class="ph-bold ph-path" aria-hidden="true"></i> Comment ça se passe
+				</span>
+				<h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-3">De la première prise de contact à votre site en ligne</h2>
+				<p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base">
+					Cinq étapes, aucune surprise. <strong class="text-white">Vous ne payez rien sur ce site</strong> : le règlement se fait sur facture, une fois le travail livré.
+				</p>
+			</div>
+
+			<ol class="grid gap-4 md:grid-cols-5 list-none" data-stagger="110">
+				<li class="funnel-step glass-card rounded-2xl p-5 flex md:flex-col gap-4 md:gap-3 items-start border border-slate-500/10">
+					<span class="funnel-step__num">1</span>
+					<div>
+						<h3 class="text-sm font-bold text-white mb-1">Je réserve mon rendez-vous</h3>
+						<p class="text-xs text-slate-400 leading-relaxed">Un créneau de 20 à 30 minutes, gratuit et sans engagement.</p>
+					</div>
+				</li>
+				<li class="funnel-step glass-card rounded-2xl p-5 flex md:flex-col gap-4 md:gap-3 items-start border border-accent-400/30">
+					<span class="funnel-step__num">2</span>
+					<div>
+						<h3 class="text-sm font-bold text-white mb-1">Je prépare le rendez-vous</h3>
+						<p class="text-xs text-slate-400 leading-relaxed">Un court formulaire cadre votre projet : on gagne un temps précieux le jour J.</p>
+					</div>
+				</li>
+				<li class="funnel-step glass-card rounded-2xl p-5 flex md:flex-col gap-4 md:gap-3 items-start border border-slate-500/10">
+					<span class="funnel-step__num">3</span>
+					<div>
+						<h3 class="text-sm font-bold text-white mb-1">Je reçois mon devis</h3>
+						<p class="text-xs text-slate-400 leading-relaxed">Établi à partir de votre brief, détaillé ligne à ligne, valable 30 jours.</p>
+					</div>
+				</li>
+				<li class="funnel-step glass-card rounded-2xl p-5 flex md:flex-col gap-4 md:gap-3 items-start border border-slate-500/10">
+					<span class="funnel-step__num">4</span>
+					<div>
+						<h3 class="text-sm font-bold text-white mb-1">On construit le site</h3>
+						<p class="text-xs text-slate-400 leading-relaxed">Points réguliers, ajustements, mise en ligne. Vous suivez l'avancement.</p>
+					</div>
+				</li>
+				<li class="funnel-step glass-card rounded-2xl p-5 flex md:flex-col gap-4 md:gap-3 items-start border border-slate-500/10">
+					<span class="funnel-step__num">5</span>
+					<div>
+						<h3 class="text-sm font-bold text-white mb-1">Je règle à la livraison</h3>
+						<p class="text-xs text-slate-400 leading-relaxed">Facture envoyée par e-mail, avec son lien de paiement sécurisé ou un RIB.</p>
+					</div>
+				</li>
+			</ol>
+
+			<div class="text-center mt-10 reveal delay-200">
+				<a href="#contact" class="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-accent-400 text-dark-950 font-bold text-sm hover:brightness-110 hover:scale-105 transition-all">
+					<i class="ph-bold ph-calendar-check text-lg" aria-hidden="true"></i>
+					<span data-i18n="bookCta">Réserver mon RDV de lancement (20-30 min)</span>
+				</a>
+				<p class="text-xs text-slate-500 mt-3" data-i18n="bookHint">Gratuit, sans engagement — on fait le point sur votre besoin.</p>
+			</div>
+		</div>
+	</section>
+
     <footer id="contact" class="py-20 border-t border-white/5 bg-dark-950 relative overflow-hidden">
 		<div class="max-w-6xl mx-auto px-6">
 			<div class="grid lg:grid-cols-2 gap-16">
 				<div class="w-full">
 					<h3 class="font-display text-4xl font-bold text-white mb-4">Parlons Concret</h3>
 					<p class="text-slate-400 mb-8 max-w-full break-words whitespace-normal">
-						Sélectionnez un créneau ci-contre. Je vous appellerai pour comprendre votre besoin.
+						Sélectionnez un créneau ci-contre : je vous appelle pour comprendre votre besoin, puis je vous envoie un devis clair. Rien à payer sur ce site.
 					</p>
 					<div class="space-y-4 mb-8 w-full">
 						<a href="mailto:nathan.marzilli@gmail.com" class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors interactive-hover w-full overflow-hidden">
@@ -2197,33 +2116,36 @@
 				<div class="glass-card p-6 md:p-8 rounded-3xl border border-white/10 w-full">
 					<form id="booking-form" class="space-y-6 relative">
 						<div id="booking-success" class="hidden absolute inset-0 z-20 bg-dark-900/95 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 rounded-3xl animate-fade-up">
-							<div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
-								<i class="ph-fill ph-check-circle text-4xl text-green-500"></i>
-							</div>
-							<h4 class="text-xl font-bold text-white mb-2">Demande enregistrée !</h4>
-							<p id="success-message-date" class="text-accent-400 font-bold text-lg mb-4"></p>
-							
-							<div class="bg-white/5 border border-accent-400/30 p-6 rounded-2xl w-full max-w-sm">
-								<p class="text-slate-300 text-sm mb-4 leading-relaxed">
-									La demande de RDV a bien été prise en compte.<br>
-									Veuillez remplir ce formulaire pour préparer la réunion.
-								</p>
-								<a href="/portfolio/kickoff/" class="block w-full py-3 rounded-xl bg-accent-400 text-dark-950 font-bold text-sm hover:scale-105 transition-transform shadow-lg shadow-accent-400/20">
-									<i class="ph-bold ph-pencil-simple mr-2"></i>
-									Préparer la réunion
-								</a>
+							<div id="booking-success-content" class="flex flex-col items-center w-full max-w-sm">
+								<div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
+									<i class="ph-fill ph-check-circle text-4xl text-green-500"></i>
+								</div>
+								<h4 class="text-xl font-bold text-white mb-2">Demande enregistrée !</h4>
+								<p id="success-message-date" class="text-accent-400 font-bold text-lg mb-4"></p>
+
+								<div class="bg-white/5 border border-accent-400/30 p-6 rounded-2xl w-full">
+									<p class="text-slate-300 text-sm mb-4 leading-relaxed">
+										La demande de RDV a bien été prise en compte.<br>
+										Veuillez remplir ce formulaire pour préparer la réunion.
+									</p>
+									<a href="kickoff/" class="block w-full py-3 rounded-xl bg-accent-400 text-dark-950 font-bold text-sm hover:scale-105 transition-transform shadow-lg shadow-accent-400/20">
+										<i class="ph-bold ph-pencil-simple mr-2"></i>
+										Préparer la réunion
+									</a>
+								</div>
 							</div>
 						</div>
 
 						<div class="space-y-4">
 							<div class="flex justify-between items-end">
-								<div class="form-section-title"><i class="ph-bold ph-calendar-blank"></i> Choisir un moment</div>
+								<div class="form-section-title"><i class="ph-bold ph-calendar-blank"></i> RDV de lancement gratuit (20-30 min)</div>
 								<div class="flex gap-2">
 									<button type="button" id="prev-week" class="p-1 rounded bg-white/5 hover:bg-white/10 text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"><i class="ph-bold ph-caret-left"></i></button>
 									<button type="button" id="next-week" class="p-1 rounded bg-white/5 hover:bg-white/10 text-white transition-colors"><i class="ph-bold ph-caret-right"></i></button>
 								</div>
 							</div>
-							
+							<p class="text-xs text-slate-500 -mt-2">Choisissez le créneau qui vous arrange : 20 à 30 minutes au téléphone, gratuites et sans engagement, pour cadrer votre projet. Vous recevrez ensuite un devis détaillé.</p>
+
 							<div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2 pb-2" id="calendar-days">
 								</div>
 							
@@ -2281,22 +2203,22 @@
 									<div class="intervention-btn cursor-pointer flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center select-none border border-white/10 bg-dark-950" data-type="simple" data-price="100" onclick="selectIntervention(this)">
 										<span class="text-xs text-slate-300 font-bold">Simple</span>
 										<span class="text-[9px] text-slate-500">Texte / Photo</span>
-										<span class="text-xs text-accent-400 font-bold mt-1">100€</span>
+										<span class="text-xs text-accent-400 font-bold mt-1" data-price-eur="100">100 €</span>
 									</div>
 									<div class="intervention-btn cursor-pointer flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center select-none border border-white/10 bg-dark-950" data-type="moyenne" data-price="200" onclick="selectIntervention(this)">
 										<span class="text-xs text-slate-300 font-bold">Moyenne</span>
 										<span class="text-[9px] text-slate-500">Mise en page</span>
-										<span class="text-xs text-accent-400 font-bold mt-1">200€</span>
+										<span class="text-xs text-accent-400 font-bold mt-1" data-price-eur="200">200 €</span>
 									</div>
 									<div class="intervention-btn cursor-pointer flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center select-none border border-white/10 bg-dark-950" data-type="complexe" data-price="300" onclick="selectIntervention(this)">
 										<span class="text-xs text-slate-300 font-bold">Complexe</span>
 										<span class="text-[9px] text-slate-500">Fonctionnalité</span>
-										<span class="text-xs text-accent-400 font-bold mt-1">300€</span>
+										<span class="text-xs text-accent-400 font-bold mt-1" data-price-eur="300">300 €</span>
 									</div>
 									<div class="intervention-btn cursor-pointer flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center select-none border border-white/10 bg-dark-950" data-type="relifting" data-price="690" onclick="selectIntervention(this)">
 										<span class="text-xs text-slate-300 font-bold">Relifting</span>
 										<span class="text-[9px] text-slate-500">Design moderne</span>
-										<span class="text-xs text-accent-400 font-bold mt-1">Dès 690€</span>
+										<span class="text-xs text-accent-400 font-bold mt-1" data-price-eur="690" data-price-prefix="dès ">dès 690 €</span>
 									</div>
 								</div>
 								<p class="text-[10px] text-slate-500 text-center">Relifting : devis personnalisé au-delà de 5 pages · Cliquez à nouveau pour désélectionner</p>
@@ -2306,19 +2228,19 @@
 								<label class="text-xs text-slate-400 uppercase font-bold ml-1">Pack Sélectionné</label>
 								<div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
 									<div class="relative">
-										<input type="radio" name="project_pack" id="pack-eclair" value="Eclair" class="hidden pack-radio-input" onchange="updateCardSelection('Eclair', parseInt(this.getAttribute('data-price')))">
+										<input type="radio" name="project_pack" id="pack-eclair" value="Eclair" data-price="690" class="hidden pack-radio-input" onchange="updateCardSelection('Eclair', parseInt(this.getAttribute('data-price')))">
 										<label for="pack-eclair" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Éclair</label>
 									</div>
 									<div class="relative">
-										<input type="radio" name="project_pack" id="pack-essentiel" value="Essentiel" class="hidden pack-radio-input" onchange="updateCardSelection('Essentiel', parseInt(this.getAttribute('data-price')))">
+										<input type="radio" name="project_pack" id="pack-essentiel" value="Essentiel" data-price="990" class="hidden pack-radio-input" onchange="updateCardSelection('Essentiel', parseInt(this.getAttribute('data-price')))">
 										<label for="pack-essentiel" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Essentiel</label>
 									</div>
 									<div class="relative">
-										<input type="radio" name="project_pack" id="pack-vitrine" value="Vitrine" class="hidden pack-radio-input" checked onchange="updateCardSelection('Vitrine', parseInt(this.getAttribute('data-price')))">
+										<input type="radio" name="project_pack" id="pack-vitrine" value="Vitrine" data-price="1790" class="hidden pack-radio-input" checked onchange="updateCardSelection('Vitrine', parseInt(this.getAttribute('data-price')))">
 										<label for="pack-vitrine" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Vitrine</label>
 									</div>
 									<div class="relative">
-										<input type="radio" name="project_pack" id="pack-premium" value="Premium" class="hidden pack-radio-input" onchange="updateCardSelection('Premium', parseInt(this.getAttribute('data-price')))">
+										<input type="radio" name="project_pack" id="pack-premium" value="Premium" data-price="2990" class="hidden pack-radio-input" onchange="updateCardSelection('Premium', parseInt(this.getAttribute('data-price')))">
 										<label for="pack-premium" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Premium</label>
 									</div>
 								</div>
@@ -2347,79 +2269,74 @@
 										</div>
 										
 										<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-											<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
-												<div class="flex items-center gap-3 relative z-10">
-													<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
+											<label class="doc-card flex items-center justify-between gap-2 p-3 rounded-xl cursor-pointer border border-slate-500/20 bg-dark-950 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
+												<div class="flex items-center gap-3 relative z-10 min-w-0">
+													<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box shrink-0">
 														<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
 													</div>
 													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Devis</span>
 												</div>
-												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
-												<input type="checkbox" class="doc-sub-checkbox hidden" value="Devis" data-price="250">
+												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="100" data-price-prefix="">100 €</span>
+												<input type="checkbox" class="doc-sub-checkbox hidden" value="Devis" data-price="100">
 												<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 											</label>
-
-											<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
-												<div class="flex items-center gap-3 relative z-10">
-													<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
+											<label class="doc-card flex items-center justify-between gap-2 p-3 rounded-xl cursor-pointer border border-slate-500/20 bg-dark-950 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
+												<div class="flex items-center gap-3 relative z-10 min-w-0">
+													<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box shrink-0">
 														<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
 													</div>
 													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Factures</span>
 												</div>
-												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
-												<input type="checkbox" class="doc-sub-checkbox hidden" value="Facture" data-price="250">
+												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="100" data-price-prefix="">100 €</span>
+												<input type="checkbox" class="doc-sub-checkbox hidden" value="Facture" data-price="100">
 												<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 											</label>
-
-											<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
-												<div class="flex items-center gap-3 relative z-10">
-													<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
+											<label class="doc-card flex items-center justify-between gap-2 p-3 rounded-xl cursor-pointer border border-slate-500/20 bg-dark-950 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
+												<div class="flex items-center gap-3 relative z-10 min-w-0">
+													<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box shrink-0">
 														<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
 													</div>
-													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Quittance</span>
+													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Quittance de loyer</span>
 												</div>
-												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
-												<input type="checkbox" class="doc-sub-checkbox hidden" value="Quittance" data-price="250">
+												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="100" data-price-prefix="">100 €</span>
+												<input type="checkbox" class="doc-sub-checkbox hidden" value="Quittance" data-price="100">
 												<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 											</label>
-
-											<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
-												<div class="flex items-center gap-3 relative z-10">
-													<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
+											<label class="doc-card flex items-center justify-between gap-2 p-3 rounded-xl cursor-pointer border border-slate-500/20 bg-dark-950 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
+												<div class="flex items-center gap-3 relative z-10 min-w-0">
+													<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box shrink-0">
 														<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
 													</div>
-													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Note de Frais</span>
+													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Note de frais</span>
 												</div>
-												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">250€</span>
-												<input type="checkbox" class="doc-sub-checkbox hidden" value="Note de Frais" data-price="250">
+												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="100" data-price-prefix="">100 €</span>
+												<input type="checkbox" class="doc-sub-checkbox hidden" value="Note de Frais" data-price="100">
 												<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 											</label>
-
-											<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden col-span-1 sm:col-span-2" onclick="handleDocClick(this)">
-												<div class="flex items-center gap-3 relative z-10">
-													<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
+											<label class="doc-card flex items-center justify-between gap-2 p-3 rounded-xl cursor-pointer border border-slate-500/20 bg-dark-950 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden col-span-1 sm:col-span-2" onclick="handleDocClick(this)">
+												<div class="flex items-center gap-3 relative z-10 min-w-0">
+													<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box shrink-0">
 														<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
 													</div>
-													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Bail de Location (Complexe)</span>
+													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Bail de location</span>
 												</div>
-												<span class="text-xs font-bold text-purple-400 bg-purple-400/10 px-2 py-1 rounded">300€</span>
+												<span class="text-xs font-bold text-purple-400 bg-purple-400/10 px-2 py-1 rounded whitespace-nowrap" data-price-eur="300" data-price-prefix="">300 €</span>
 												<input type="checkbox" class="doc-sub-checkbox hidden" value="Bail Location" data-price="300">
 												<div class="absolute inset-0 bg-purple-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 											</label>
-											
-											<div class="col-span-1 sm:col-span-2 pt-2 border-t border-white/5">
-												<label class="doc-card flex items-center justify-between p-3 rounded-xl cursor-pointer border border-white/10 bg-dark-950 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this); toggleCustomDocInput()">
-													<div class="flex items-center gap-3 relative z-10">
-														<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box">
-															<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
-														</div>
-														<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Autre document spécifique</span>
+											<label class="doc-card flex items-center justify-between gap-2 p-3 rounded-xl cursor-pointer border border-slate-500/20 bg-dark-950 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden col-span-1 sm:col-span-2" onclick="handleDocClick(this); toggleCustomDocInput()">
+												<div class="flex items-center gap-3 relative z-10 min-w-0">
+													<div class="w-5 h-5 rounded border border-slate-600 flex items-center justify-center transition-colors bg-dark-900 custom-checkbox-box shrink-0">
+														<i class="ph-bold ph-check text-white text-xs opacity-0 transform scale-50 transition-all custom-checkbox-icon"></i>
 													</div>
-													<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors">~300€</span>
-													<input type="checkbox" id="check-custom-doc" class="doc-sub-checkbox hidden" value="Autre" data-price="300">
-													<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
-												</label>
-												<input type="text" id="custom-doc-input" placeholder="Précisez ici (Ex: Attestation de présence...)" class="w-full mt-2 bg-dark-950 border border-white/10 rounded-lg px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none transition-colors hidden opacity-0 translate-y-2">
+													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Document sur-mesure</span>
+												</div>
+												<span class="text-xs font-bold text-purple-400 bg-purple-400/10 px-2 py-1 rounded whitespace-nowrap" data-price-eur="300" data-price-prefix="dès ">dès 300 €</span>
+												<input type="checkbox" id="check-custom-doc" class="doc-sub-checkbox hidden" value="Autre" data-price="300">
+												<div class="absolute inset-0 bg-purple-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
+											</label>
+											<div class="col-span-1 sm:col-span-2">
+												<input type="text" id="custom-doc-input" placeholder="Précisez le document souhaité (ex : attestation de présence…)" class="w-full bg-dark-950 border border-slate-500/20 rounded-lg px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none transition-colors hidden opacity-0 translate-y-2">
 											</div>
 										</div>
 									</div>
@@ -2427,17 +2344,23 @@
 							</div>
 
 							<div class="space-y-2">
-								<div class="form-section-title"><i class="ph-bold ph-shield-check"></i> Pack Sérénité (optionnel)</div>
+								<div class="flex items-center justify-between flex-wrap gap-2">
+									<div class="form-section-title mt-0"><i class="ph-bold ph-shield-check"></i> Pack Sérénité (optionnel)</div>
+									<div class="billing-cycle-pills inline-flex items-center gap-1 bg-white/5 border border-white/10 rounded-full p-1">
+										<button type="button" class="billing-cycle-pill active" data-cycle="monthly" onclick="setSerenityBillingCycle('monthly')">Mensuel</button>
+										<button type="button" class="billing-cycle-pill" data-cycle="annual" onclick="setSerenityBillingCycle('annual')">Annuel <span class="ml-1 text-emerald-400">-2 mois</span></button>
+									</div>
+								</div>
 								<div class="grid grid-cols-2 gap-2">
 									<div id="serenite-toggle-btn" class="serenity-btn cursor-pointer flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center select-none" onclick="toggleSerenityForm('simple')">
 										<span class="text-sm text-slate-300 font-bold">Sérénité</span>
 										<span class="text-[10px] text-slate-500">1 intervention/mois</span>
-										<span class="text-xs text-blue-400 font-bold mt-1">49.90€/mois</span>
+										<span id="serenite-form-price" class="text-xs text-blue-400 font-bold mt-1">49,90 € / mois</span>
 									</div>
 									<div id="serenite-plus-toggle-btn" class="serenity-btn cursor-pointer flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center select-none" onclick="toggleSerenityForm('plus')">
 										<span class="text-sm text-slate-300 font-bold">Sérénité+</span>
 										<span class="text-[10px] text-slate-500">2 interventions/mois</span>
-										<span class="text-xs text-indigo-400 font-bold mt-1">94.90€/mois</span>
+										<span id="serenitePlus-form-price" class="text-xs text-indigo-400 font-bold mt-1">94,90 € / mois</span>
 									</div>
 								</div>
 								<p class="text-[10px] text-slate-500 text-center flex items-center justify-center gap-1">
@@ -2445,9 +2368,14 @@
 								</p>
 							</div>
 
-							<div class="flex justify-between items-center px-4 py-3 bg-white/5 rounded-xl border border-white/10">
-								<span id="total-label" class="text-sm text-slate-400 font-bold uppercase">Total Estimé <span class="text-[10px] font-normal lowercase">(Création)</span></span>
-								<span id="total-price-display" class="text-xl font-bold text-accent-400">1 790 €</span>
+							<div id="total-summary-card" class="rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.01] p-4 space-y-2.5">
+								<span id="total-label" class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Total Estimé <span class="text-[10px] font-normal lowercase text-slate-500">(Création)</span></span>
+								<div class="flex items-end justify-between gap-3 flex-wrap">
+									<span id="total-price-display" class="text-[26px] leading-none font-bold text-accent-400 tracking-tight">1 790 €</span>
+									<span id="total-recurring-chip" class="hidden items-center gap-1.5 text-[11px] font-bold text-blue-300 bg-blue-400/10 border border-blue-400/20 px-3 py-1.5 rounded-full whitespace-nowrap">
+										<i class="ph-fill ph-repeat text-[13px]"></i><span id="total-recurring-chip-text"></span>
+									</span>
+								</div>
 							</div>
 
 							<div class="space-y-1">
@@ -2461,10 +2389,16 @@
 							<span id="booking-error-text"></span>
 						</div>
 
-						<button type="submit" id="submit-booking" class="w-full py-4 rounded-xl bg-gradient-to-r from-accent-500 to-blue-600 text-white font-bold text-lg shadow-lg hover:shadow-accent-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed">
-							<span>Confirmer le rendez-vous</span>
-							<i class="ph-bold ph-paper-plane-right"></i>
-						</button>
+						<div class="pt-2 space-y-3">
+							<button type="submit" id="submit-booking" class="w-full py-4 rounded-xl bg-accent-400 text-dark-950 font-bold text-base hover:brightness-110 hover:scale-[1.01] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed">
+								<i class="ph-bold ph-calendar-check text-xl" aria-hidden="true"></i>
+								<span data-i18n="quoteButtonLabel">Réserver mon RDV de lancement gratuit (20-30 min)</span>
+							</button>
+							<p class="text-[11px] text-slate-500 text-center leading-relaxed flex items-center justify-center gap-1.5">
+								<i class="ph-bold ph-shield-check text-accent-400" aria-hidden="true"></i>
+								<span data-i18n="noOnlinePayment">Aucun paiement en ligne : vous recevez un devis, puis une facture à la livraison.</span>
+							</p>
+						</div>
 					</form>
 				</div>
 			</div>
@@ -2503,16 +2437,20 @@
                         </button>
                     </div>
                 </div>
-                <div id="login-error" class="hidden text-red-400 text-xs font-bold flex items-center gap-2">
-                    <i class="ph-bold ph-warning"></i> Erreur connexion
+                <div id="login-error" class="hidden text-red-400 text-xs font-bold flex items-start gap-2">
+                    <i class="ph-bold ph-warning mt-0.5 shrink-0" aria-hidden="true"></i>
+                    <span class="login-error-text">Identifiant ou mot de passe incorrect.</span>
                 </div>
-                <button onclick="attemptLogin()" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 font-bold hover:bg-white transition-colors mt-2">
+                <button onclick="attemptLogin()" class="w-full py-3 rounded-xl bg-accent-400 text-dark-950 font-bold hover:brightness-110 transition-all mt-2">
                     Connexion
+                </button>
+                <button type="button" onclick="requestPasswordReset()" class="w-full text-center text-[11px] text-slate-500 hover:text-accent-400 transition-colors underline underline-offset-2">
+                    Mot de passe oublié ?
                 </button>
             </div>
 
             <div id="admin-dashboard-view" class="hidden space-y-4">
-                <p class="text-sm text-slate-400 mb-4">Bienvenue, Nathan.</p>
+                <p class="text-sm text-slate-400 mb-4">Bienvenue, Nathan. Voici vos outils.</p>
                 <div class="grid gap-3" id="admin-actions-grid"></div>
             </div>
         </div>
@@ -2525,6 +2463,11 @@
 		</button>
 	</div>
 
+    <script src="config.js"></script>
+    <script type="module" src="assets/js/supabase-client.js"></script>
+    <script src="assets/js/i18n.js"></script>
+    <script src="assets/js/calendar.js"></script>
+    <script src="assets/js/reveal.js"></script>
     <script type="module" src="script.js"></script>
 </body>
 </html>

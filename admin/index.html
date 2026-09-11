@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="noindex, nofollow">
+	<title>Espace clients | Nathan Marzilli</title>
+	<meta name="theme-color" content="#f6f8fb">
+	<link rel="icon" href="../images/profile-40.jpg">
+
+	<link rel="stylesheet" href="../assets/css/theme.css">
+	<link rel="stylesheet" href="../assets/css/app.css">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script src="../assets/js/tailwind-theme.js"></script>
+	<script src="../assets/js/nm-boot.js"></script>
+	<script src="../assets/js/theme.js"></script>
+	<script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+	<style>
+		.tab-btn {
+			padding: .6rem 1rem; border-radius: .75rem;
+			font-size: .82rem; font-weight: 700;
+			color: rgb(var(--t-slate-400));
+			display: inline-flex; align-items: center; gap: .5rem;
+			transition: background-color .2s, color .2s;
+			white-space: nowrap;
+		}
+		.tab-btn:hover { color: rgb(var(--t-white)); background: rgb(var(--t-slate-500) / .08); }
+		.tab-btn[aria-selected="true"] {
+			background: rgb(var(--t-accent-400) / .14);
+			color: rgb(var(--t-accent-400));
+		}
+		.tab-btn .count {
+			font-size: .65rem; padding: .1rem .4rem; border-radius: 999px;
+			background: rgb(var(--t-slate-500) / .18); color: rgb(var(--t-slate-400));
+		}
+		.tab-btn[aria-selected="true"] .count { background: rgb(var(--t-accent-400) / .2); color: rgb(var(--t-accent-400)); }
+
+		.stat-card { padding: 1.1rem 1.25rem; border-radius: 1rem; }
+		.stat-card .value { font-family: 'Space Grotesk', sans-serif; font-size: 1.75rem; font-weight: 700; line-height: 1; }
+		.stat-card .label { font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; color: rgb(var(--t-slate-500)); }
+
+		dialog.nm-modal {
+			border: none; padding: 0; background: transparent;
+			max-width: min(640px, 94vw); width: 100%;
+		}
+		dialog.nm-modal::backdrop { background: rgb(2 6 23 / .72); backdrop-filter: blur(6px); }
+	</style>
+</head>
+<body class="selection:bg-accent-400/30">
+
+	<!-- ============================================================
+	     ÉCRAN DE CONNEXION (identiques aux autres pages sécurisées)
+	     ============================================================ -->
+	<div id="auth-loader">
+		<div class="w-full max-w-sm">
+			<div id="auth-spinner" class="flex flex-col items-center">
+				<i class="ph-duotone ph-spinner animate-spin text-4xl text-accent-400 mb-4" aria-hidden="true"></i>
+				<p class="text-slate-400 font-display uppercase tracking-widest text-xs">Vérification de l'accès…</p>
+			</div>
+
+			<form id="auth-form" class="hidden glass-card p-7 text-left space-y-4">
+				<div class="flex items-center gap-3 mb-2">
+					<span class="w-10 h-10 rounded-full overflow-hidden border border-slate-500/20 block shrink-0">
+						<img src="../images/profile-96.jpg" srcset="../images/profile-96.jpg 1x, ../images/profile-192.jpg 2x" width="40" height="40" alt="" class="w-full h-full object-cover">
+					</span>
+					<div>
+						<h1 class="font-display font-bold text-lg text-white leading-tight">Espace sécurisé</h1>
+						<p class="text-[11px] text-slate-500">Clients, devis et factures</p>
+					</div>
+				</div>
+
+				<div>
+					<label class="label-premium" for="auth-id">Identifiant</label>
+					<input type="email" id="auth-id" class="input-premium" autocomplete="username" placeholder="nathan.marzilli@gmail.com" required>
+				</div>
+				<div>
+					<label class="label-premium" for="auth-pass">Mot de passe</label>
+					<input type="password" id="auth-pass" class="input-premium" autocomplete="current-password" placeholder="••••••••" required>
+				</div>
+
+				<p id="auth-msg" class="hidden text-xs font-bold text-red-400 flex items-start gap-2">
+					<i class="ph-bold ph-warning mt-0.5 shrink-0" aria-hidden="true"></i><span></span>
+				</p>
+
+				<button type="submit" class="btn-primary w-full">Connexion</button>
+				<div class="flex items-center justify-between text-[11px]">
+					<button type="button" id="auth-reset" class="text-slate-500 hover:text-accent-400 underline underline-offset-2">Mot de passe oublié ?</button>
+					<a href="../" class="text-slate-500 hover:text-accent-400">Retour à l'accueil</a>
+				</div>
+			</form>
+
+			<!-- Définition d'un nouveau mot de passe (lien reçu par e-mail) -->
+			<form id="recovery-form" class="hidden glass-card p-7 text-left space-y-4">
+				<h1 class="font-display font-bold text-lg text-white">Nouveau mot de passe</h1>
+				<p class="text-xs text-slate-400">Choisissez un mot de passe d'au moins 8 caractères.</p>
+				<div>
+					<label class="label-premium" for="recovery-pass">Nouveau mot de passe</label>
+					<input type="password" id="recovery-pass" class="input-premium" autocomplete="new-password" minlength="8" required>
+				</div>
+				<p id="recovery-msg" class="hidden text-xs font-bold text-red-400"></p>
+				<button type="submit" class="btn-primary w-full">Enregistrer</button>
+			</form>
+		</div>
+	</div>
+
+	<!-- ============================================================
+	     CONTENU SÉCURISÉ
+	     ============================================================ -->
+	<div id="secure-content">
+
+		<nav class="w-full nav-glass sticky top-0 z-40">
+			<div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+				<a href="../" class="flex items-center gap-3 group shrink-0" title="Retour à l'accueil">
+					<span class="w-9 h-9 rounded-full overflow-hidden border border-slate-500/20 group-hover:border-accent-400 transition-colors block shrink-0">
+						<img src="../images/profile-96.jpg" srcset="../images/profile-96.jpg 1x, ../images/profile-192.jpg 2x" width="36" height="36" alt="" class="w-full h-full object-cover">
+					</span>
+					<span class="leading-tight">
+						<span class="font-display font-bold text-base tracking-wide text-white block">Espace clients</span>
+						<span class="block text-[10px] text-accent-400 font-bold uppercase tracking-wider">Administration</span>
+					</span>
+				</a>
+				<div class="flex items-center gap-2">
+					<div data-theme-toggle></div>
+					<a href="../contrat/devis&amp;contrat/" class="btn-ghost hidden sm:inline-flex"><i class="ph-bold ph-file-text" aria-hidden="true"></i> Devis / Facture</a>
+					<a href="../" class="btn-ghost"><i class="ph-bold ph-arrow-left" aria-hidden="true"></i> <span class="hidden sm:inline">Accueil</span></a>
+					<button type="button" id="logout-btn" class="btn-ghost btn-danger"><i class="ph-bold ph-sign-out" aria-hidden="true"></i><span class="hidden sm:inline">Quitter</span></button>
+				</div>
+			</div>
+		</nav>
+
+		<main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+
+			<!-- Chiffres clés -->
+			<section class="grid grid-cols-2 lg:grid-cols-4 gap-3" aria-label="Vue d'ensemble">
+				<div class="stat-card glass-card border border-accent-400/25">
+					<div class="value text-accent-400" id="stat-leads">—</div>
+					<div class="label mt-1">Demandes à traiter</div>
+				</div>
+				<div class="stat-card glass-card border border-slate-500/15">
+					<div class="value text-white" id="stat-clients">—</div>
+					<div class="label mt-1">Clients actifs</div>
+				</div>
+				<div class="stat-card glass-card border border-blue-500/25">
+					<div class="value text-blue-400" id="stat-quotes">—</div>
+					<div class="label mt-1">Devis en attente</div>
+				</div>
+				<div class="stat-card glass-card border border-emerald-500/25">
+					<div class="value text-emerald-400" id="stat-revenue">—</div>
+					<div class="label mt-1">Facturé cette année</div>
+				</div>
+			</section>
+
+			<!-- Onglets -->
+			<div class="flex items-center gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Sections">
+				<button class="tab-btn" role="tab" aria-selected="true" data-tab="leads">
+					<i class="ph-bold ph-tray" aria-hidden="true"></i> Demandes <span class="count" id="count-leads">0</span>
+				</button>
+				<button class="tab-btn" role="tab" aria-selected="false" data-tab="clients">
+					<i class="ph-bold ph-users-three" aria-hidden="true"></i> Clients <span class="count" id="count-clients">0</span>
+				</button>
+				<button class="tab-btn" role="tab" aria-selected="false" data-tab="documents">
+					<i class="ph-bold ph-files" aria-hidden="true"></i> Devis &amp; factures <span class="count" id="count-documents">0</span>
+				</button>
+				<button class="tab-btn" role="tab" aria-selected="false" data-tab="reglages">
+					<i class="ph-bold ph-gear-six" aria-hidden="true"></i> Réglages
+				</button>
+			</div>
+
+			<!-- Onglet : demandes -->
+			<section id="tab-leads" role="tabpanel" class="space-y-4">
+				<div class="glass-card p-5 border border-slate-500/15">
+					<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+						<h2 class="font-display font-bold text-lg text-white">Demandes de rendez-vous</h2>
+						<div class="flex items-center gap-2">
+							<button type="button" class="btn-primary" id="add-manual-lead"><i class="ph-bold ph-calendar-plus" aria-hidden="true"></i> Ajouter un RDV</button>
+							<button type="button" class="btn-ghost" data-refresh><i class="ph-bold ph-arrows-clockwise" aria-hidden="true"></i> Actualiser</button>
+						</div>
+					</div>
+					<p class="text-[11px] text-slate-500 -mt-2 mb-4 max-w-2xl">
+						Quelqu'un vous appelle ou vous écrit directement pour prendre RDV ? Ajoutez-le ici pour que
+						le créneau n'apparaisse plus disponible sur le site.
+					</p>
+					<div class="overflow-x-auto">
+						<table class="nm-table">
+							<thead>
+								<tr>
+									<th>Reçue le</th><th>Contact</th><th>Rendez-vous</th><th>Demande</th><th>Estimation</th><th>Statut</th><th></th>
+								</tr>
+							</thead>
+							<tbody id="leads-body">
+								<tr><td colspan="7" class="text-slate-500 italic">Chargement…</td></tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</section>
+
+			<!-- Onglet : clients -->
+			<section id="tab-clients" role="tabpanel" class="space-y-4 hidden">
+				<div class="flex flex-wrap items-center justify-between gap-3">
+					<h2 class="font-display font-bold text-lg text-white">Mes clients</h2>
+					<div class="flex items-center gap-2">
+						<input type="search" id="client-search" class="input-premium !py-2 !text-sm w-52" placeholder="Rechercher…" aria-label="Rechercher un client">
+						<button type="button" class="btn-primary !py-2 !px-4 !text-sm" id="new-client-btn"><i class="ph-bold ph-plus" aria-hidden="true"></i> Nouveau client</button>
+					</div>
+				</div>
+				<div id="clients-grid" class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+					<p class="text-slate-500 italic text-sm">Chargement…</p>
+				</div>
+			</section>
+
+			<!-- Onglet : documents -->
+			<section id="tab-documents" role="tabpanel" class="space-y-4 hidden">
+				<div class="glass-card p-5 border border-slate-500/15">
+					<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+						<h2 class="font-display font-bold text-lg text-white">Devis &amp; factures enregistrés</h2>
+						<div class="flex items-center gap-2">
+							<select id="doc-filter" class="select-premium !py-2 !text-sm w-40" aria-label="Filtrer par type">
+								<option value="">Tout</option>
+								<option value="devis">Devis</option>
+								<option value="facture">Factures</option>
+							</select>
+							<a href="../contrat/devis&amp;contrat/" class="btn-primary !py-2 !px-4 !text-sm"><i class="ph-bold ph-plus" aria-hidden="true"></i> Nouveau document</a>
+						</div>
+					</div>
+					<div class="overflow-x-auto">
+						<table class="nm-table">
+							<thead>
+								<tr><th>Numéro</th><th>Type</th><th>Client</th><th>Date</th><th>Montant</th><th>Statut</th><th></th></tr>
+							</thead>
+							<tbody id="documents-body">
+								<tr><td colspan="7" class="text-slate-500 italic">Chargement…</td></tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div class="glass-card p-5 border border-amber-500/25 text-xs text-slate-400 leading-relaxed" id="stripe-hint">
+					<strong class="text-white block mb-1 flex items-center gap-2"><i class="ph-bold ph-info text-amber-400" aria-hidden="true"></i> Envoi des factures par Stripe</strong>
+					Pour que le bouton « Envoyer la facture » fonctionne, ajoutez votre clé secrète Stripe dans
+					<em>Supabase → Edge Functions → Secrets</em>, sous le nom <code class="text-accent-400">STRIPE_SECRET_KEY</code>.
+					Stripe se charge ensuite d'envoyer l'e-mail au client, avec le lien de paiement sécurisé.
+				</div>
+			</section>
+			<!-- Onglet : réglages -->
+			<section id="tab-reglages" role="tabpanel" class="space-y-4 hidden">
+
+				<div class="glass-card p-6 border border-slate-500/15">
+					<h2 class="font-display font-bold text-lg text-white mb-2">Notifications automatiques (RDV)</h2>
+					<p class="text-xs text-slate-400 leading-relaxed mb-5 max-w-3xl">
+						Dès qu'une demande arrive sur le site, la base de données prévient toute seule le service
+						que vous aurez branché ci-dessous — vous recevez l'e-mail et l'événement d'agenda même si
+						le visiteur ferme son onglet juste après avoir validé. Collez l'adresse de ce service dans
+						les deux champs ci-dessous (la même adresse convient aux deux, le service reconnaît de
+						lui-même une demande de RDV d'un brief projet).
+					</p>
+
+					<div class="rounded-xl border border-emerald-500/25 bg-emerald-500/5 p-4 mb-4 text-xs text-slate-300 leading-relaxed">
+						<strong class="text-white block mb-2 flex items-center gap-2">
+							<i class="ph-bold ph-star text-emerald-400" aria-hidden="true"></i>
+							Solution recommandée — gratuite, et directe : Google Agenda + Gmail
+						</strong>
+						<p class="mb-2">
+							Pas besoin de Zapier ni d'abonnement : un petit script Google (« Apps Script »), posé une
+							fois sur votre propre compte Google, crée l'événement dans <strong>votre agenda</strong> et
+							envoie <strong>l'e-mail</strong> (à vous, et un accusé de réception au client) au moment
+							même de la réservation.
+						</p>
+						<ol class="list-decimal pl-5 space-y-1">
+							<li>Ouvrez <a href="https://script.google.com/" target="_blank" rel="noopener" class="text-accent-400 underline">script.google.com</a> (avec votre compte Google habituel) → <strong>Nouveau projet</strong>.</li>
+							<li>Copiez le contenu du fichier <code class="text-accent-400">integrations/notifications-agenda-gmail.gs</code> (livré avec le site) dans l'éditeur, à la place du code par défaut.</li>
+							<li>Tout en haut du script, remplacez <code class="text-accent-400">CHANGE_ME</code> par un mot de passe de votre choix (gardez-le, il vous servira à la dernière étape).</li>
+							<li><strong>Déployer</strong> → <strong>Nouveau déploiement</strong> → type <strong>Application web</strong> → « Exécuter en tant que » : <em>Moi</em> · « Qui a accès » : <em>Tout le monde</em>, puis <strong>Déployer</strong> (autorisez l'accès à votre agenda et à Gmail quand Google le demande).</li>
+							<li>Copiez l'adresse fournie (elle ressemble à <code class="text-accent-400">https://script.google.com/macros/s/…/exec</code>), ajoutez <code class="text-accent-400">?key=</code> suivi du mot de passe choisi, et collez le tout dans les deux champs ci-dessous.</li>
+						</ol>
+					</div>
+
+					<details class="rounded-xl border border-slate-500/15 bg-slate-500/[0.04] p-4 mb-5 text-xs text-slate-400 leading-relaxed">
+						<summary class="text-slate-300 font-bold cursor-pointer select-none">Vous préférez Zapier ? (nécessite un forfait payant)</summary>
+						<p class="mt-2">
+							Le déclencheur générique « Webhooks by Zapier → Catch Hook » n'est disponible que sur les
+							forfaits payants de Zapier. Si vous passez sur un tel forfait un jour : ouvrez le Zap →
+							son déclencheur → <strong>Webhooks by Zapier</strong> → <strong>Catch Hook</strong> →
+							copiez l'adresse <code class="text-accent-400">https://hooks.zapier.com/hooks/catch/…</code>
+							et collez-la ci-dessous à la place de l'adresse Google. Les champs envoyés sont les
+							mêmes dans les deux cas (<code>first_name</code>, <code>last_name</code>, <code>email</code>,
+							<code>rdv_label</code>, <code>pack_label</code>, <code>estimated_total</code>…).
+						</p>
+					</details>
+
+					<div class="space-y-4 max-w-3xl">
+						<div>
+							<label class="label-premium" for="hook-lead">Notification — nouveau RDV pris sur le site</label>
+							<input type="url" id="hook-lead" class="input-premium" placeholder="https://script.google.com/macros/s/…/exec?key=…">
+							<p class="text-[11px] text-slate-500 mt-1">Déclenché à chaque demande de rendez-vous (accueil et offre club).</p>
+						</div>
+						<div>
+							<label class="label-premium" for="hook-brief">Notification — nouveau brief projet</label>
+							<input type="url" id="hook-brief" class="input-premium" placeholder="https://script.google.com/macros/s/…/exec?key=…">
+							<p class="text-[11px] text-slate-500 mt-1">Déclenché à chaque brief projet envoyé depuis la page de préparation. Vous pouvez coller la même adresse que ci-dessus.</p>
+						</div>
+
+						<div class="flex flex-wrap items-center gap-3">
+							<button type="button" class="btn-primary" id="save-hooks"><i class="ph-bold ph-floppy-disk" aria-hidden="true"></i> Enregistrer</button>
+							<button type="button" class="btn-ghost" id="test-hook"><i class="ph-bold ph-paper-plane-right" aria-hidden="true"></i> Envoyer un test</button>
+							<span id="hooks-hint" class="text-xs text-slate-500"></span>
+						</div>
+					</div>
+				</div>
+
+				<div class="glass-card p-6 border border-slate-500/15">
+					<h2 class="font-display font-bold text-lg text-white mb-2">Facturation Stripe</h2>
+					<p class="text-xs text-slate-400 leading-relaxed max-w-3xl">
+						L'envoi des factures passe par une fonction serveur, pour que votre clé secrète Stripe
+						ne se retrouve jamais dans le code du site. Ajoutez-la une seule fois dans
+						<em>Supabase → Edge Functions → Secrets</em>, sous le nom
+						<code class="text-accent-400">STRIPE_SECRET_KEY</code>. Le bouton « Envoyer la facture »
+						devient alors opérationnel, sans rien changer au code.
+					</p>
+				</div>
+
+				<div class="glass-card p-6 border border-slate-500/15">
+					<h2 class="font-display font-bold text-lg text-white mb-2">Mot de passe</h2>
+					<p class="text-xs text-slate-400 mb-4 max-w-3xl">
+						Le même identifiant ouvre l'espace clients, le générateur de devis et factures,
+						les quittances, les baux et le suivi running.
+					</p>
+					<div class="flex flex-wrap items-end gap-3 max-w-3xl">
+						<div class="flex-1 min-w-[220px]">
+							<label class="label-premium" for="new-password">Nouveau mot de passe</label>
+							<input type="password" id="new-password" class="input-premium" minlength="8" autocomplete="new-password" placeholder="8 caractères minimum">
+						</div>
+						<button type="button" class="btn-ghost !py-[0.85rem]" id="save-password"><i class="ph-bold ph-key" aria-hidden="true"></i> Changer</button>
+					</div>
+					<p id="password-hint" class="text-xs text-slate-500 mt-2"></p>
+				</div>
+			</section>
+		</main>
+
+		<footer class="max-w-7xl mx-auto px-4 pb-10 text-center text-xs text-slate-500">
+			<a href="../" class="inline-flex items-center gap-2 hover:text-accent-400 transition-colors font-bold">
+				<i class="ph-bold ph-arrow-left" aria-hidden="true"></i> Retour à l'accueil
+			</a>
+		</footer>
+	</div>
+
+	<!-- Fiche client (création / édition) -->
+	<dialog id="client-modal" class="nm-modal">
+		<form method="dialog" class="glass-card p-6 space-y-4 bg-dark-900" id="client-form">
+			<div class="flex items-center justify-between">
+				<h2 class="font-display font-bold text-lg text-white" id="client-modal-title">Fiche client</h2>
+				<button type="button" class="text-slate-500 hover:text-white" data-close aria-label="Fermer"><i class="ph-bold ph-x text-xl" aria-hidden="true"></i></button>
+			</div>
+
+			<input type="hidden" id="cf-id">
+			<input type="hidden" id="cf-lead">
+
+			<div class="grid sm:grid-cols-2 gap-3">
+				<div><label class="label-premium" for="cf-firstname">Prénom</label><input class="input-premium" id="cf-firstname"></div>
+				<div><label class="label-premium" for="cf-lastname">Nom</label><input class="input-premium" id="cf-lastname"></div>
+			</div>
+			<div><label class="label-premium" for="cf-org">Société / association</label><input class="input-premium" id="cf-org"></div>
+			<div class="grid sm:grid-cols-2 gap-3">
+				<div><label class="label-premium" for="cf-email">E-mail</label><input type="email" class="input-premium" id="cf-email"></div>
+				<div><label class="label-premium" for="cf-phone">Téléphone</label><input class="input-premium" id="cf-phone"></div>
+			</div>
+			<div><label class="label-premium" for="cf-address">Adresse de facturation</label><textarea class="textarea-premium !min-h-[70px]" id="cf-address" rows="2"></textarea></div>
+
+			<div class="grid sm:grid-cols-2 gap-3">
+				<div><label class="label-premium" for="cf-pack">Pack</label>
+					<select class="select-premium" id="cf-pack"></select>
+				</div>
+				<div><label class="label-premium" for="cf-start">Début du projet</label><input type="date" class="input-premium" id="cf-start"></div>
+			</div>
+
+			<div class="grid sm:grid-cols-2 gap-3">
+				<div><label class="label-premium" for="cf-serenity">Formule de suivi</label>
+					<select class="select-premium" id="cf-serenity">
+						<option value="">Aucune</option>
+						<option value="simple">Pack Sérénité</option>
+						<option value="plus">Pack Sérénité+</option>
+					</select>
+				</div>
+				<div><label class="label-premium" for="cf-cycle">Facturation du suivi</label>
+					<select class="select-premium" id="cf-cycle">
+						<option value="annual">Annuelle (2 mois offerts)</option>
+						<option value="monthly">Mensuelle</option>
+					</select>
+				</div>
+			</div>
+
+			<div>
+				<span class="label-premium">Options retenues</span>
+				<div id="cf-options" class="grid sm:grid-cols-2 gap-2"></div>
+			</div>
+
+			<div class="grid sm:grid-cols-2 gap-3">
+				<div><label class="label-premium" for="cf-status">Avancement</label>
+					<select class="select-premium" id="cf-status">
+						<option value="prospect">Prospect</option>
+						<option value="devis_envoye">Devis envoyé</option>
+						<option value="signe">Devis signé</option>
+						<option value="en_cours">Site en cours</option>
+						<option value="livre">Livré</option>
+						<option value="archive">Archivé</option>
+					</select>
+				</div>
+				<div><label class="label-premium" for="cf-delivery">Livraison prévue</label><input type="date" class="input-premium" id="cf-delivery"></div>
+			</div>
+
+			<div><label class="label-premium" for="cf-notes">Notes internes</label><textarea class="textarea-premium !min-h-[70px]" id="cf-notes" rows="2"></textarea></div>
+
+			<div class="rounded-xl border border-slate-500/15 bg-slate-500/[0.06] p-3 text-xs text-slate-400">
+				Total création estimé : <strong class="text-accent-400 text-sm" id="cf-total">0 €</strong>
+				<span id="cf-recurring" class="ml-2"></span>
+			</div>
+
+			<p id="cf-error" class="hidden text-xs font-bold text-red-400"></p>
+
+			<div class="flex flex-wrap gap-2 justify-end pt-1">
+				<button type="button" class="btn-ghost" data-close>Annuler</button>
+				<button type="submit" class="btn-primary"><i class="ph-bold ph-floppy-disk" aria-hidden="true"></i> Enregistrer</button>
+			</div>
+		</form>
+	</dialog>
+
+	<dialog id="lead-modal" class="nm-modal">
+		<form method="dialog" class="glass-card p-6 space-y-4 bg-dark-900" id="lead-form">
+			<div class="flex items-center justify-between">
+				<h2 class="font-display font-bold text-lg text-white">Ajouter un rendez-vous</h2>
+				<button type="button" class="text-slate-500 hover:text-white" data-close aria-label="Fermer"><i class="ph-bold ph-x text-xl" aria-hidden="true"></i></button>
+			</div>
+			<p class="text-xs text-slate-400 leading-relaxed">
+				Pour un RDV pris par téléphone, e-mail ou en personne. Il apparaîtra dans vos demandes et bloquera
+				le créneau choisi sur le site, exactement comme une réservation en ligne.
+			</p>
+
+			<div class="grid sm:grid-cols-2 gap-3">
+				<div><label class="label-premium" for="lf-firstname">Prénom</label><input class="input-premium" id="lf-firstname"></div>
+				<div><label class="label-premium" for="lf-lastname">Nom</label><input class="input-premium" id="lf-lastname"></div>
+			</div>
+			<div><label class="label-premium" for="lf-org">Société / association <span class="text-slate-500">(facultatif)</span></label><input class="input-premium" id="lf-org"></div>
+			<div class="grid sm:grid-cols-2 gap-3">
+				<div><label class="label-premium" for="lf-email">E-mail <span class="text-slate-500">(facultatif)</span></label><input type="email" class="input-premium" id="lf-email"></div>
+				<div><label class="label-premium" for="lf-phone">Téléphone <span class="text-slate-500">(facultatif)</span></label><input class="input-premium" id="lf-phone"></div>
+			</div>
+
+			<div class="grid sm:grid-cols-2 gap-3">
+				<div>
+					<label class="label-premium" for="lf-date">Date du RDV</label>
+					<input type="date" class="input-premium" id="lf-date" required>
+				</div>
+				<div>
+					<label class="label-premium" for="lf-time">Créneau</label>
+					<select class="select-premium" id="lf-time" required>
+						<option value="09:00">09:00</option>
+						<option value="09:30">09:30</option>
+						<option value="10:00">10:00</option>
+						<option value="10:30">10:30</option>
+					</select>
+				</div>
+			</div>
+
+			<div><label class="label-premium" for="lf-message">Note interne <span class="text-slate-500">(facultatif)</span></label><textarea class="textarea-premium !min-h-[70px]" id="lf-message" rows="2" placeholder="Ex. : appelé le 12/09, souhaite un site vitrine."></textarea></div>
+
+			<p id="lf-error" class="hidden text-xs font-bold text-red-400"></p>
+
+			<div class="flex flex-wrap gap-2 justify-end pt-1">
+				<button type="button" class="btn-ghost" data-close>Annuler</button>
+				<button type="submit" class="btn-primary"><i class="ph-bold ph-floppy-disk" aria-hidden="true"></i> Enregistrer</button>
+			</div>
+		</form>
+	</dialog>
+
+	<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 glass-card px-5 py-3 flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300 z-[80] bg-dark-900">
+		<i id="toast-icon" class="ph-fill ph-check-circle text-accent-400 text-xl" aria-hidden="true"></i>
+		<span id="toast-message" class="font-medium text-sm text-white"></span>
+	</div>
+
+	<script src="../config.js"></script>
+	<script type="module" src="../assets/js/supabase-client.js"></script>
+	<script src="../assets/js/i18n.js"></script>
+	<script src="../assets/js/quote-builder.js"></script>
+	<script src="../assets/js/admin.js"></script>
+</body>
+</html>
