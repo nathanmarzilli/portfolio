@@ -239,7 +239,7 @@
 		body.innerHTML = state.leads.map(function (lead) {
 			var st = LEAD_STATUS[lead.status] || LEAD_STATUS.nouveau;
 			return '<tr data-lead="' + lead.id + '">' +
-				'<td class="whitespace-nowrap">' + shortDate(lead.created_at) +
+				'<td class="whitespace-nowrap hidden sm:table-cell">' + shortDate(lead.created_at) +
 					'<span class="block text-[10px] text-slate-500">' + esc(lead.source || '') + '</span></td>' +
 				'<td><strong class="text-white">' + esc((lead.first_name || '') + ' ' + (lead.last_name || '')) + '</strong>' +
 					(lead.organisation ? '<span class="block text-[11px] text-slate-500">' + esc(lead.organisation) + '</span>' : '') +
@@ -249,7 +249,7 @@
 				'<td class="whitespace-nowrap">' + esc(lead.rdv_label || '—') + '</td>' +
 				'<td class="max-w-[280px]"><span class="text-[11px] leading-snug block">' + esc(leadSummary(lead)) + '</span>' +
 					(lead.message ? '<span class="block text-[10px] text-slate-500 mt-1 line-clamp-2">' + esc(lead.message) + '</span>' : '') + '</td>' +
-				'<td class="whitespace-nowrap">' + money(lead.estimated_total) + '</td>' +
+				'<td class="whitespace-nowrap hidden md:table-cell">' + money(lead.estimated_total) + '</td>' +
 				'<td>' +
 					'<select class="nm-status-select nm-status-select--' + lead.status + '" data-lead-status="' + lead.id + '" aria-label="Statut de la demande">' +
 						Object.keys(LEAD_STATUS).map(function (k) {
@@ -258,13 +258,9 @@
 						}).join('') +
 					'</select>' +
 				'</td>' +
-				'<td class="whitespace-nowrap text-right">' +
+				'<td class="whitespace-nowrap text-right nm-table-actions-col">' +
 					'<div class="flex flex-wrap items-center justify-end gap-1.5">' +
-						'<button class="btn-ghost !py-1.5 !px-2.5 !text-[11px]" data-action="lead-quote" data-id="' + lead.id + '" title="Créer un devis pré-rempli à partir de cette demande">' +
-							'<i class="ph-bold ph-file-text" aria-hidden="true"></i> Devis</button>' +
-						'<button class="btn-ghost !py-1.5 !px-2.5 !text-[11px]" data-action="lead-invoice" data-id="' + lead.id + '" title="Créer une facture pré-remplie à partir de cette demande">' +
-							'<i class="ph-bold ph-receipt" aria-hidden="true"></i> Facture</button>' +
-						'<button class="btn-ghost !py-1.5 !px-2.5 !text-[11px]" data-action="lead-convert" data-id="' + lead.id + '" title="Créer la fiche client à partir de cette demande">' +
+						'<button class="btn-ghost !py-1.5 !px-2.5 !text-[11px]" data-action="lead-convert" data-id="' + lead.id + '" title="Créer ou ouvrir la fiche client à partir de cette demande — c’est depuis la fiche client que le devis et la facture se génèrent.">' +
 							'<i class="ph-bold ph-user-plus" aria-hidden="true"></i> Fiche client</button>' +
 					'</div>' +
 				'</td>' +
@@ -383,6 +379,7 @@
 					'<button class="btn-ghost !py-1.5 !px-2.5 !text-[11px]" data-action="client-edit" data-id="' + c.id + '"><i class="ph-bold ph-pencil-simple" aria-hidden="true"></i> Modifier</button>' +
 					'<button class="btn-ghost !py-1.5 !px-2.5 !text-[11px]" data-action="client-quote" data-id="' + c.id + '"><i class="ph-bold ph-file-text" aria-hidden="true"></i> ' + (devis ? 'Rouvrir le devis' : 'Générer le devis') + '</button>' +
 					'<button class="btn-ghost !py-1.5 !px-2.5 !text-[11px]" data-action="client-invoice" data-id="' + c.id + '"><i class="ph-bold ph-receipt" aria-hidden="true"></i> ' + (facture ? 'Rouvrir la facture' : 'Créer la facture') + '</button>' +
+					'<button class="btn-ghost !py-1.5 !px-2.5 !text-[11px] !text-red-400" data-action="client-delete" data-id="' + c.id + '" title="Supprimer cette fiche client"><i class="ph-bold ph-trash" aria-hidden="true"></i> Supprimer</button>' +
 				'</div>' +
 			'</article>';
 		}).join('');
@@ -597,45 +594,6 @@
 		};
 	}
 
-	/**
-	 * Retrouve la fiche client déjà liée à cette demande, ou en crée une
-	 * automatiquement (sans passer par la modale) pour permettre le
-	 * « un clic → devis pré-rempli » depuis la liste des demandes.
-	 */
-	async function getOrCreateClientForLead(lead) {
-		if (lead.client_id) {
-			var existing = state.clients.filter(function (c) { return c.id === lead.client_id; })[0];
-			if (existing) return existing;
-			try {
-				var fetched = await db.getClient(lead.client_id);
-				if (fetched) { state.clients.push(fetched); return fetched; }
-			} catch (e) { /* fiche introuvable (supprimée ?) : on en recrée une */ }
-		}
-
-		var payload = leadToClient(lead);
-		delete payload.lead_id; // nm_clients n'a pas cette colonne — voir saveClientFromModal.
-
-		var offer = (CFG.offers || {})[payload.pack === 'club' ? CFG.club.baseOfferKey : payload.pack];
-		var packPrice = offer && offer.type === 'one_time' ? offer.price.EUR : null;
-		var optionsTotal = (payload.options || []).reduce(function (s, o) { return s + o.price; }, 0);
-		payload.pack_label = payload.pack ? packLabel(payload.pack) : null;
-		payload.pack_price = packPrice;
-		payload.currency = 'EUR';
-		payload.options_total = optionsTotal;
-		payload.total_one_time = (packPrice || 0) + optionsTotal;
-
-		var saved = await db.saveClient(payload);
-		await db.updateLead(lead.id, { status: 'converti', client_id: saved.id });
-		lead.status = 'converti';
-		lead.client_id = saved.id;
-		state.clients.unshift(saved);
-		renderStats();
-		renderClients();
-		renderLeads();
-		toast('Fiche client créée automatiquement à partir de la demande.');
-		return saved;
-	}
-
 	async function saveClientFromModal(e) {
 		e.preventDefault();
 		var options = collectOptions();
@@ -751,7 +709,11 @@
 			toast('Ajoutez d’abord l’e-mail du client sur la facture.', 'error');
 			return;
 		}
-		if (!window.confirm('Envoyer la facture ' + doc.number + ' à ' + doc.client_email + ' ?\n\nStripe enverra l’e-mail avec le lien de paiement.')) return;
+		var okSend = await window.nmConfirm(
+			'Envoyer la facture ' + doc.number + ' à ' + doc.client_email + ' ?\n\nStripe enverra l’e-mail avec le lien de paiement.',
+			{ title: 'Envoyer la facture', okLabel: 'Envoyer' }
+		);
+		if (!okSend) return;
 
 		toast('Envoi en cours…');
 		var res = await db.sendStripeInvoice({
@@ -842,16 +804,6 @@
 			if (action === 'lead-convert') {
 				var lead = state.leads.filter(function (l) { return l.id === id; })[0];
 				if (lead) openClientModal(leadToClient(lead), lead);
-			} else if (action === 'lead-quote' || action === 'lead-invoice') {
-				var leadForDoc = state.leads.filter(function (l) { return l.id === id; })[0];
-				if (!leadForDoc) return;
-				try {
-					var clientForDoc = await getOrCreateClientForLead(leadForDoc);
-					await createDocumentForClient(clientForDoc, action === 'lead-quote' ? 'devis' : 'facture');
-				} catch (err) {
-					console.error(err);
-					toast('Création impossible : ' + (err.message || 'erreur inconnue'), 'error');
-				}
 			} else if (action === 'client-edit') {
 				openClientModal(state.clients.filter(function (c) { return c.id === id; })[0], null);
 			} else if (action === 'client-quote' || action === 'client-invoice') {
@@ -861,10 +813,26 @@
 				var doc = state.documents.filter(function (d) { return d.id === id; })[0];
 				if (doc) await sendInvoice(doc);
 			} else if (action === 'doc-delete') {
-				if (!window.confirm('Supprimer définitivement ce document ?')) return;
+				var okDeleteDoc = await window.nmConfirm('Supprimer définitivement ce document ?', { title: 'Supprimer le document', okLabel: 'Supprimer', danger: true });
+				if (!okDeleteDoc) return;
 				try {
 					await db.deleteDocument(id);
 					toast('Document supprimé.');
+					await loadAll();
+				} catch (err) { toast('Suppression impossible : ' + err.message, 'error'); }
+			} else if (action === 'client-delete') {
+				var clientToDelete = state.clients.filter(function (c) { return c.id === id; })[0];
+				var clientLabel = clientToDelete
+					? (clientToDelete.organisation || ((clientToDelete.first_name || '') + ' ' + (clientToDelete.last_name || '')).trim() || 'ce client')
+					: 'ce client';
+				var okDeleteClient = await window.nmConfirm(
+					'Supprimer définitivement la fiche de ' + clientLabel + ' ?\n\nSes devis et factures enregistrés resteront consultables dans l’onglet Documents, mais ne seront plus liés à un client.',
+					{ title: 'Supprimer le client', okLabel: 'Supprimer', danger: true }
+				);
+				if (!okDeleteClient) return;
+				try {
+					await db.deleteClient(id);
+					toast('Fiche client supprimée.');
 					await loadAll();
 				} catch (err) { toast('Suppression impossible : ' + err.message, 'error'); }
 			}

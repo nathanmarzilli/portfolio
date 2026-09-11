@@ -117,7 +117,7 @@
 		}).join('');
 
 		grid.querySelectorAll('[data-toggle]').forEach(function (btn) {
-			btn.addEventListener('click', function () { toggleOption(btn.dataset.toggle, true); });
+			btn.addEventListener('click', function () { toggleOption(btn.dataset.toggle); });
 		});
 		grid.querySelectorAll('[data-preview]').forEach(function (btn) {
 			btn.addEventListener('click', function (e) {
@@ -218,21 +218,21 @@
 		}).join('');
 
 		grid.querySelectorAll('[data-option]').forEach(function (btn) {
-			btn.addEventListener('click', function () { toggleOption(btn.dataset.option, false); });
+			btn.addEventListener('click', function () { toggleOption(btn.dataset.option); });
 		});
 	}
 
-	/** Ajoute ou retire un module, puis synchronise catalogue + formulaire. */
-	function toggleOption(key, scrollToForm) {
+	/**
+	 * Ajoute ou retire un module, puis synchronise catalogue + formulaire.
+	 * Ne fait plus défiler la page vers le formulaire à chaque clic : ça
+	 * empêchait de cocher plusieurs modules d'affilée depuis le catalogue
+	 * (le bouton cliqué change déjà d'état sur place pour confirmer l'ajout).
+	 */
+	function toggleOption(key) {
 		var i = state.options.indexOf(key);
 		if (i === -1) { state.options.push(key); } else { state.options.splice(i, 1); }
 		syncOptions();
 		updateTotal();
-
-		if (scrollToForm && i === -1) {
-			var block = document.getElementById('club-modules-block');
-			if (block) block.scrollIntoView({ behavior: 'smooth', block: 'center' });
-		}
 	}
 
 	/** Reflète l'état des modules aux deux endroits de la page. */

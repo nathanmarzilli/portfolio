@@ -337,7 +337,46 @@ Ce qui est déjà perdu ne peut pas être récupéré — il n'en existait aucun
 
 ---
 
-## 12. Publier les changements (GitHub Pages)
+## 12. Devis / facture en un clic depuis une demande, et transformation devis → facture
+
+Dans `/admin/` → onglet **Demandes**, chaque ligne propose maintenant trois
+boutons : **Devis**, **Facture**, **Fiche client**.
+
+- Cliquer sur **Devis** ou **Facture** ouvre directement le générateur
+  (`contrat/devis&contrat/`) avec un document pré-rempli à partir des
+  informations de la demande (formule, options, coordonnées).
+- Si la demande n'est pas encore liée à un client, la fiche client est
+  **créée automatiquement en arrière-plan** (mêmes informations que la
+  demande) avant l'ouverture du document, et la demande passe au statut
+  « Client ». Vous n'avez rien à faire de plus : il suffit ensuite de
+  vérifier/ajuster le devis ou la facture et de l'enregistrer.
+- Le document enregistré reste **lié au client** (et donc retrouvable dans
+  l'onglet Clients).
+
+**Transformer un devis en facture** — sur un devis déjà enregistré, un
+nouveau bouton **« Transformer ce devis en facture »** apparaît dans le
+générateur. Il crée une **nouvelle facture** reprenant les mêmes lignes, le
+même client, et référençant le devis d'origine (le devis lui-même n'est pas
+modifié — vous gardez une trace des deux documents, comme pour une vraie
+facturation). La fiche du document affiche ensuite « Issue du devis n°… »
+côté facture, et « Déjà transformé en facture n°… » côté devis.
+
+*Correction associée — passage du statut d'une demande à « Client » :*
+auparavant, choisir « Client » dans la liste déroulante des statuts changeait
+juste l'étiquette affichée, sans jamais créer de fiche client (c'était un
+bug, pas une erreur de manipulation — la fonction correspondante ne
+contenait tout simplement pas cette logique). Il n'y avait donc personne à
+sélectionner ensuite dans le générateur de devis. Désormais, choisir
+« Client » ouvre la fiche client pré-remplie pour vérification ; le statut ne
+change vraiment qu'une fois la fiche enregistrée. Un deuxième bug lié a été
+corrigé au passage : l'enregistrement de la fiche client depuis cette
+modale échouait silencieusement (un champ inexistant était envoyé à la base
+de données), ce qui explique que « 0 client » apparaissait jusqu'ici même
+après avoir suivi la procédure.
+
+---
+
+## 13. Publier les changements (GitHub Pages)
 
 Le site est hébergé sur GitHub Pages, à partir de ce dépôt. Les fichiers de
 cette livraison ont été **écrits sur votre disque**, mais le site en ligne ne

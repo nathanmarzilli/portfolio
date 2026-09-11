@@ -345,6 +345,7 @@
     <script type="module" src="../../assets/js/supabase-client.js"></script>
     <script src="../../assets/js/i18n.js"></script>
     <script src="../../assets/js/quote-builder.js"></script>
+    <script src="../../assets/js/confirm-dialog.js"></script>
     <script>
         (async function () {
             try {
@@ -835,7 +836,11 @@
                 hint('Ajoutez au moins une prestation.', true);
                 return;
             }
-            if (!window.confirm('Créer une facture à partir de ce devis ? Le devis reste inchangé ; une nouvelle facture liée est créée.')) return;
+            const okTransform = await window.nmConfirm(
+                'Créer une facture à partir de ce devis ? Le devis reste inchangé ; une nouvelle facture liée est créée.',
+                { title: 'Transformer en facture', okLabel: 'Créer la facture' }
+            );
+            if (!okTransform) return;
 
             try {
                 const db = await window.NM.dbReady;
@@ -881,7 +886,11 @@
             const payable = items.filter(function (it) { return it.price > 0; });
             if (!payable.length) { hint('Aucune ligne facturable (montants positifs).', true); return; }
 
-            if (!window.confirm('Envoyer la facture ' + record.number + ' à ' + record.client_email + ' ?\n\nStripe enverra l’e-mail avec le lien de paiement sécurisé.')) return;
+            const okSendInvoice = await window.nmConfirm(
+                'Envoyer la facture ' + record.number + ' à ' + record.client_email + ' ?\n\nStripe enverra l’e-mail avec le lien de paiement sécurisé.',
+                { title: 'Envoyer la facture', okLabel: 'Envoyer' }
+            );
+            if (!okSendInvoice) return;
 
             const btn = document.getElementById('btn-send-invoice');
             const original = btn.innerHTML;

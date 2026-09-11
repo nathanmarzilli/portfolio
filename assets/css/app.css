@@ -175,6 +175,14 @@
 }
 .nm-table tbody tr:hover { background: rgb(var(--t-slate-500) / .06); }
 
+/* Colonne d'actions toujours visible, même quand le tableau défile
+   horizontalement sur petit écran (ex. liste des demandes en admin). */
+.nm-table-actions-col {
+	position: sticky; right: 0;
+	background: rgb(var(--t-dark-900));
+	box-shadow: -8px 0 10px -8px rgb(0 0 0 / .35);
+}
+
 /* ---------- Sélecteur de statut (liste des demandes) ---------- */
 .nm-status-select {
 	appearance: none;
