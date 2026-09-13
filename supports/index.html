@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Flyers &amp; cartes de visite | Clic à l’aide</title>
+	<meta name="robots" content="noindex, nofollow">
+	<meta name="description" content="Supports imprimables : flyers A4 déclinés par thème et planche de cartes de visite prête pour l’imprimeur.">
+	<meta name="theme-color" content="#f6f8fb">
+	<link rel="icon" href="../images/profile-40.jpg">
+
+	<link rel="stylesheet" href="../assets/css/theme.css">
+	<link rel="stylesheet" href="../assets/css/app.css">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script src="../assets/js/tailwind-theme.js"></script>
+	<script src="../assets/js/nm-boot.js"></script>
+	<script src="../assets/js/theme.js"></script>
+	<script src="https://unpkg.com/@phosphor-icons/web"></script>
+	<script src="../config.js"></script>
+	<script src="../assets/js/i18n.js"></script>
+
+	<style>
+	/* ============================================================
+	   SUPPORTS IMPRIMÉS — flyers A4 (5 thèmes) + cartes de visite
+	   ------------------------------------------------------------
+	   Tout ce qui se retrouve sur le papier utilise des COULEURS
+	   FIXES (variables locales ci-dessous), jamais les tokens de
+	   thème clair/sombre du site : un support imprimé ne doit pas
+	   dépendre du thème affiché à l'écran.
+	   Mise en page en `mm`, tailles de texte en `pt`.
+	   ============================================================ */
+
+	.sheet {
+		--ink:      #0f2744;   /* bleu marine très foncé (titres)      */
+		--ink-2:    #0f172a;   /* encre la plus dense                  */
+		--ink-soft: #475569;   /* gris ardoise (texte secondaire)      */
+		--ink-mute: #94a3b8;
+		--accent:   #0d9488;   /* turquoise de la marque               */
+		--accent-l: #14b8a6;
+		--pale-1:   #eaf4f9;   /* courbes en filigrane                 */
+		--pale-2:   #dbeaf2;
+		--line:     #cbd5e1;
+		font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+		color: var(--ink);
+		background: #fff;
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
+	/* ---------- Aperçu à l'écran : la feuille A4 est réduite ---------- */
+	@media screen {
+		.preview-frame {
+			width: calc(210mm * var(--s, .58));
+			height: calc(297mm * var(--s, .58));
+			margin: 0 auto;
+			overflow: hidden;
+			border-radius: 6px;
+			box-shadow: 0 18px 50px rgba(2, 6, 23, .45);
+			background: #fff;
+		}
+		.preview-frame > .sheet {
+			transform: scale(var(--s, .58));
+			transform-origin: top left;
+		}
+		.preview-frame[data-kind="flyer"]:not([data-active]) { display: none; }
+	}
+
+	/* ---------- Impression : une seule feuille, A4 exact ---------- */
+	@media print {
+		@page { size: A4 portrait; margin: 0; }
+		html, body {
+			background: #fff !important; margin: 0 !important; padding: 0 !important;
+			height: auto !important; min-height: 0 !important; overflow: visible !important;
+		}
+		body > *:not(#print-stage) { display: none !important; }
+		#print-stage { display: block !important; margin: 0 !important; padding: 0 !important; max-width: none !important; }
+		#print-stage > *:not(#flyers):not(#cards) { display: none !important; }
+		#flyers, #cards { margin: 0 !important; padding: 0 !important; }
+		.noise-overlay, .spotlight-overlay, .scroll-progress { display: none !important; }
+		.preview-frame { display: none !important; width: auto !important; height: auto !important;
+			overflow: visible !important; margin: 0 !important; box-shadow: none !important; border-radius: 0 !important; }
+		.preview-frame > .sheet { transform: none !important; }
+		html[data-print="souvenirs"]  .preview-frame[data-sheet="souvenirs"],
+		html[data-print="depannage"]  .preview-frame[data-sheet="depannage"],
+		html[data-print="securite"]   .preview-frame[data-sheet="securite"],
+		html[data-print="formation"]  .preview-frame[data-sheet="formation"],
+		html[data-print="demarches"]  .preview-frame[data-sheet="demarches"],
+		html[data-print="cartes"]     .preview-frame[data-sheet="cartes"] { display: block !important; }
+		.sheet { box-shadow: none !important; }
+	}
+
+	/* ============================================================
+	   GABARIT DE FLYER — commun aux cinq thèmes
+	   ============================================================ */
+	.flyer {
+		position: relative;
+		width: 210mm; height: 297mm;
+		overflow: hidden;
+		display: flex; flex-direction: column;
+		padding: 13mm 15mm 10mm;
+		box-sizing: border-box;
+	}
+	.flyer__curves { position: absolute; inset: 0; width: 210mm; height: 297mm; z-index: 0; }
+	.flyer > *:not(.flyer__curves) { position: relative; z-index: 1; }
+
+	/* En-tête : logo centré + baseline */
+	.f-head { text-align: center; flex-shrink: 0; }
+	.f-logo { height: 17mm; width: auto; display: block; margin: 0 auto; }
+	.f-baseline {
+		margin-top: 2.6mm; font-size: 7.5pt; font-weight: 700;
+		letter-spacing: .25em; text-transform: uppercase; color: var(--ink);
+	}
+
+	/* Kicker (thème « souvenirs ») */
+	.f-kicker {
+		margin-top: 6mm; text-align: center; font-size: 8.5pt; font-weight: 800;
+		letter-spacing: .18em; text-transform: uppercase; color: var(--accent);
+	}
+
+	/* Titre géant + sous-titre + trait */
+	.f-title {
+		margin: 4mm 0 0; text-align: center; color: var(--ink);
+		font-weight: 800; font-size: 42pt; line-height: .98; letter-spacing: -.02em;
+	}
+	.flyer[data-theme="souvenirs"] .f-title { font-size: 33pt; line-height: 1.03; }
+	.f-sub {
+		margin: 4.5mm 0 0; text-align: center; color: var(--accent);
+		font-size: 15pt; font-weight: 600; line-height: 1.25;
+	}
+	.f-rule { width: 14mm; height: 2px; background: var(--accent); border-radius: 2px; margin: 4mm auto 0; }
+
+	/* Bandeau (thème « souvenirs ») */
+	.f-band {
+		margin: 5mm auto 0; padding: 2.4mm 7mm; border-radius: 999px;
+		background: var(--pale-1); color: var(--ink);
+		font-size: 10pt; font-weight: 700; letter-spacing: .06em; text-align: center;
+	}
+
+	/* Zone visuelle centrale
+	   Le visuel occupe TOUTE la hauteur disponible : sans ça, un SVG à
+	   hauteur fixe se retrouve centré dans une zone bien plus haute et
+	   le flyer paraît vide (grands blancs au-dessus et en dessous). */
+	.f-stage { flex: 1 1 auto; min-height: 0; display: flex; align-items: center; margin: 5mm 0 0; }
+	.f-stage--split { display: grid; grid-template-columns: 0.92fr 1.28fr; gap: 5mm; align-items: center; }
+	.f-art { display: block; }
+	.f-stage--solo { justify-content: center; }
+	.f-stage--solo .f-art { width: 100%; height: 100%; max-height: 118mm; }
+	.f-stage--split .f-art { width: 100%; height: 100%; max-height: 118mm; }
+
+	/* Liste des prestations */
+	.f-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6.4mm; }
+	.f-list li { display: flex; align-items: center; gap: 3.8mm; font-size: 13.5pt; font-weight: 600; color: var(--ink); line-height: 1.25; }
+	.f-chip {
+		flex: 0 0 auto; width: 10mm; height: 10mm; border-radius: 2.6mm;
+		background: var(--ink); color: #fff;
+		display: flex; align-items: center; justify-content: center;
+	}
+	.f-chip svg { width: 6mm; height: 6mm; }
+
+	/* Badge prix */
+	.f-price-row { display: flex; flex-direction: column; align-items: center; gap: 2.4mm; margin-top: 5mm; flex-shrink: 0; }
+	.f-price {
+		background: var(--accent); color: #fff; border-radius: 999px;
+		padding: 3.4mm 12mm; display: inline-flex; align-items: baseline; gap: 2.2mm;
+	}
+	.f-price b { font-size: 29pt; font-weight: 800; line-height: 1; letter-spacing: -.01em; }
+	.f-price span { font-size: 12pt; font-weight: 600; }
+	/* Mention secondaire (ex. « Diagnostic : 90 € ») : encadrée pour rester
+	   lisible sous le badge, comme sur la maquette validée. */
+	.f-price-note {
+		font-size: 10.5pt; font-weight: 700; color: var(--ink);
+		border: 1.4px solid var(--pale-2); border-radius: 999px;
+		padding: 1.8mm 6mm; background: #fff;
+	}
+
+	/* Ligne « Et aussi : » */
+	.f-also {
+		margin-top: 5mm; flex-shrink: 0;
+		display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+		gap: 0 2.6mm; font-size: 9pt; color: var(--ink);
+	}
+	.f-also__label { font-weight: 800; color: var(--accent); font-size: 9.5pt; }
+	.f-also__item { display: inline-flex; align-items: center; gap: 1.4mm; font-weight: 600; }
+	.f-also__item svg { width: 3.6mm; height: 3.6mm; color: var(--accent); }
+	.f-also__dot { color: var(--accent); font-weight: 800; }
+
+	/* Bloc contact */
+	.f-contact {
+		margin-top: 5mm; flex-shrink: 0;
+		background: var(--accent); color: #fff; border-radius: 8mm;
+		padding: 6mm 8mm; text-align: center;
+	}
+	.f-contact__phone { display: flex; align-items: center; justify-content: center; gap: 4mm; }
+	.f-contact__phone svg { width: 9mm; height: 9mm; color: #fff; }
+	.f-contact__phone strong { font-size: 24pt; font-weight: 800; letter-spacing: .01em; line-height: 1; }
+	.f-contact__area { margin-top: 3mm; font-size: 10pt; font-weight: 600; opacity: .95; }
+	.f-promise { margin-top: 3.5mm; text-align: center; font-size: 9pt; color: var(--ink-soft); font-weight: 500; flex-shrink: 0; }
+	.f-site { margin-top: 2.5mm; text-align: center; font-size: 9.5pt; font-weight: 800; color: var(--ink); flex-shrink: 0; }
+
+	/* ============================================================
+	   PLANCHE DE CARTES DE VISITE
+	   Format fini 85 × 55 mm · fonds perdus 3 mm · zone de sécurité 4 mm
+	   ============================================================ */
+	.cards-sheet {
+		width: 210mm; height: 297mm; box-sizing: border-box;
+		padding: 16mm 14mm; display: flex; flex-direction: column; align-items: center;
+		background: #fff;
+	}
+	.cards-sheet__title { font-size: 12pt; font-weight: 800; color: var(--ink); text-align: center; }
+	.cards-sheet__sub { font-size: 8.5pt; color: var(--ink-soft); text-align: center; margin-top: 1.6mm; }
+	.card-block { position: relative; width: 103mm; height: 73mm; margin-top: 8mm; }
+	.card-block__label {
+		position: absolute; top: -5mm; left: 0; font-size: 7.5pt; font-weight: 800;
+		letter-spacing: .16em; text-transform: uppercase; color: var(--ink-mute);
+	}
+	.card-bleed {
+		position: absolute; left: 6mm; top: 6mm; width: 91mm; height: 61mm;
+		overflow: hidden; box-sizing: border-box;
+	}
+	/* Traits de coupe : entièrement hors de la zone de fonds perdus */
+	.crop { position: absolute; background: #000; }
+	.crop.v { width: .2mm; height: 5mm; }
+	.crop.h { height: .2mm; width: 5mm; }
+	.crop.v.t { top: 0; }  .crop.v.b { top: 68mm; }
+	.crop.h.l { left: 0; } .crop.h.r { left: 98mm; }
+	.crop.x1 { left: 9mm; }  .crop.x2 { left: 94mm; }
+	.crop.y1 { top: 9mm; }   .crop.y2 { top: 64mm; }
+	/* Repère de la zone de sécurité (aperçu écran uniquement) */
+	.safe-hint {
+		position: absolute; left: 13mm; top: 13mm; width: 77mm; height: 47mm;
+		border: .2mm dashed #14b8a6; opacity: .5; pointer-events: none;
+	}
+	@media print { .safe-hint { display: none !important; } }
+
+	/* Contenu des cartes : 7 mm depuis le bord des fonds perdus
+	   = 3 mm de fond perdu + 4 mm de zone de sécurité */
+	.card-face { width: 91mm; height: 61mm; position: relative; box-sizing: border-box; padding: 7mm; overflow: hidden; }
+	.card-front { background: #fff; }
+	.card-front__bar { position: absolute; left: 0; top: 0; width: 91mm; height: 7mm; background: #0d9488; }
+	.card-front__curve { position: absolute; right: 0; bottom: 0; width: 60mm; height: 40mm; }
+	.card-front__inner { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+	.card-front__logo { height: 13.5mm; width: auto; display: block; }
+	.card-front__baseline { margin-top: 2.2mm; font-size: 5.6pt; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: #0f2744; }
+	.card-front__rule { width: 12mm; height: 1.4px; background: #0d9488; margin: 2.4mm auto; border-radius: 2px; }
+	.card-front__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2mm 5mm; margin-top: 1.2mm; }
+	.card-front__grid span { display: flex; align-items: center; gap: 1.6mm; font-size: 7.8pt; font-weight: 600; color: #0f2744; }
+	.card-front__grid svg { width: 3.4mm; height: 3.4mm; color: #0d9488; flex: 0 0 auto; }
+
+	.card-back { background: #0f2744; color: #fff; display: flex; gap: 5mm; align-items: center; }
+	.card-back__main { flex: 1 1 auto; min-width: 0; }
+	.card-back__name { font-size: 13pt; font-weight: 800; line-height: 1.1; }
+	.card-back__role { margin-top: 1mm; font-size: 6.4pt; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #5eead4; }
+	.card-back__rows { margin-top: 3.4mm; display: flex; flex-direction: column; gap: 1.5mm; }
+	.card-back__row { display: flex; align-items: center; gap: 2mm; font-size: 7.2pt; color: #e2e8f0; }
+	.card-back__row svg { width: 3.4mm; height: 3.4mm; color: #5eead4; flex: 0 0 auto; }
+	.card-back__row.is-phone { font-size: 11pt; font-weight: 800; color: #fff; }
+	.card-back__row.is-phone svg { width: 4.4mm; height: 4.4mm; }
+	.card-back__qr { flex: 0 0 auto; text-align: center; }
+	.card-back__qr img { width: 21mm; height: 21mm; display: block; background: #fff; padding: 1.4mm; border-radius: 1.6mm; box-sizing: border-box; }
+	.card-back__qr span { display: block; margin-top: 1.4mm; font-size: 5.4pt; letter-spacing: .1em; text-transform: uppercase; color: #94a3b8; }
+
+	.cards-sheet__notes { margin-top: 10mm; width: 152mm; font-size: 8pt; line-height: 1.55; color: var(--ink-soft); }
+	.cards-sheet__notes strong { color: var(--ink); }
+	.cards-sheet__notes ul { margin: 2mm 0 0; padding-left: 4mm; }
+
+	/* ---------- Habillage écran ---------- */
+	.theme-btn.is-on { background: rgb(var(--t-accent-400) / .18); border-color: rgb(var(--t-accent-400)); color: rgb(var(--t-accent-400)); }
+	</style>
+</head>
+<body class="selection:bg-accent-400/30">
+
+	<nav class="w-full nav-glass sticky top-0 z-40 print:hidden">
+		<div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+			<a href="../" class="flex items-center gap-3 group shrink-0" title="Retour à l’accueil">
+				<span class="w-9 h-9 rounded-full overflow-hidden border border-slate-500/20 group-hover:border-accent-400 transition-colors block shrink-0">
+					<img src="../images/profile-96.jpg" srcset="../images/profile-96.jpg 1x, ../images/profile-192.jpg 2x" width="36" height="36" alt="" class="w-full h-full object-cover">
+				</span>
+				<span class="font-display font-bold text-base tracking-wide text-white">Supports imprimés</span>
+			</a>
+			<div class="flex items-center gap-2">
+				<div data-theme-toggle></div>
+				<a href="../" class="btn-ghost"><i class="ph-bold ph-arrow-left" aria-hidden="true"></i> <span class="hidden sm:inline">Retour à l’accueil</span></a>
+			</div>
+		</div>
+	</nav>
+
+	<main class="max-w-5xl mx-auto px-4 py-10 space-y-8">
+
+		<header class="text-center">
+			<h1 class="font-display text-2xl sm:text-3xl font-bold text-white mb-3">Flyers &amp; cartes de visite</h1>
+			<p class="text-slate-400 text-sm max-w-2xl mx-auto leading-relaxed">
+				Cinq flyers A4 bâtis sur le même gabarit — choisissez celui qui parle à la personne en face de vous —
+				et une planche de cartes de visite prête pour l’imprimeur. Les tarifs, le téléphone et l’adresse du site
+				proviennent tous de <code class="text-accent-400">config.js</code> : ils ne sont écrits nulle part en dur.
+			</p>
+		</header>
+
+		<section class="glass-card p-6 rounded-3xl">
+			<h2 class="font-display font-bold text-sm uppercase tracking-widest text-slate-400 mb-4">Choisir le thème du flyer</h2>
+			<div id="theme-buttons" class="flex flex-wrap gap-3"></div>
+
+			<div class="flex flex-wrap gap-3 mt-6 pt-6 border-t border-white/10">
+				<button type="button" id="btn-print-flyer" class="px-6 py-3 rounded-full bg-accent-400 text-dark-950 font-bold hover:scale-105 transition-all flex items-center gap-2">
+					<i class="ph-bold ph-printer" aria-hidden="true"></i> Imprimer ce flyer
+				</button>
+				<button type="button" id="btn-print-cards" class="px-6 py-3 rounded-full border border-white/20 bg-white/5 text-white font-bold hover:bg-white/10 transition-all flex items-center gap-2">
+					<i class="ph-bold ph-identification-card" aria-hidden="true"></i> Imprimer les cartes de visite
+				</button>
+			</div>
+			<p class="text-xs text-slate-500 mt-4">
+				Dans la fenêtre d’impression : format A4, échelle 100 %, marges « aucune », et
+				<strong class="text-slate-400">cocher « graphiques d’arrière-plan »</strong>.
+			</p>
+		</section>
+
+	</main>
+
+	<!-- ============================================================
+	     SCÈNE D'IMPRESSION — enfant direct de <body> pour que la
+	     règle `body > *:not(#print-stage)` isole proprement la
+	     feuille demandée au moment d'imprimer.
+	     ============================================================ -->
+	<div id="print-stage" class="max-w-5xl mx-auto px-4 pb-4 space-y-4">
+		<h2 class="font-display font-bold text-sm uppercase tracking-widest text-slate-400 text-center print:hidden" id="flyer-caption">Aperçu du flyer</h2>
+		<div id="flyers"></div>
+		<h2 class="font-display font-bold text-sm uppercase tracking-widest text-slate-400 text-center pt-8 print:hidden">Planche de cartes de visite</h2>
+		<div id="cards"></div>
+	</div>
+
+	<footer class="max-w-5xl mx-auto px-4 py-10 print:hidden">
+		<p class="text-xs text-slate-500 text-center">
+			Page technique, non référencée. Les visuels sont des dessins vectoriels originaux : aucun logo de marque n’y figure.
+		</p>
+	</footer>
+
+	<!-- Jeu d'icônes vectorielles (net à l'impression, aucune police externe requise) -->
+	<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+		<g id="ico-base"></g>
+		<symbol id="ic-wifi" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8.5a16 16 0 0 1 19 0"/><path d="M5.5 12.2a11 11 0 0 1 13 0"/><path d="M8.6 15.9a6 6 0 0 1 6.8 0"/><circle cx="12" cy="19.5" r="1.3" fill="currentColor" stroke="none"/></g></symbol>
+		<symbol id="ic-printer" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8V3h10v5"/><path d="M7 18H4.5A1.5 1.5 0 0 1 3 16.5v-6A1.5 1.5 0 0 1 4.5 9h15A1.5 1.5 0 0 1 21 10.5v6a1.5 1.5 0 0 1-1.5 1.5H17"/><rect x="7" y="14" width="10" height="7" rx="1"/></g></symbol>
+		<symbol id="ic-tv" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="12.5" rx="1.8"/><path d="M8.5 21h7"/><path d="M12 17.5V21"/></g></symbol>
+		<symbol id="ic-phone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 2.8a1.9 1.9 0 0 1 2.6.6l1.7 2.7a1.9 1.9 0 0 1-.3 2.4l-1 .9a12 12 0 0 0 4.9 4.9l.9-1a1.9 1.9 0 0 1 2.4-.3l2.7 1.7a1.9 1.9 0 0 1 .6 2.6l-1 1.6a3.2 3.2 0 0 1-3.6 1.4C12.3 19.6 4.4 11.7 3.6 5.5A3.2 3.2 0 0 1 5 1.9z"/></symbol>
+		<symbol id="ic-sliders" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h9M18 7h2M4 17h3M12 17h8"/><circle cx="15.5" cy="7" r="2.5"/><circle cx="9.5" cy="17" r="2.5"/></g></symbol>
+		<symbol id="ic-shield" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2.6 20 6v6.2c0 4.6-3.4 7.9-8 9.2-4.6-1.3-8-4.6-8-9.2V6z"/></g></symbol>
+		<symbol id="ic-shield-check" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2.6 20 6v6.2c0 4.6-3.4 7.9-8 9.2-4.6-1.3-8-4.6-8-9.2V6z"/><path d="m8.6 11.8 2.4 2.4 4.4-4.6"/></g></symbol>
+		<symbol id="ic-warning" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4 22 20H2z"/><path d="M12 9.5v4.2"/><circle cx="12" cy="17" r="1.1" fill="currentColor" stroke="none"/></g></symbol>
+		<symbol id="ic-key" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="12" r="4.2"/><path d="M11.7 12H22"/><path d="M18.5 12v3.6M15.2 12v2.6"/></g></symbol>
+		<symbol id="ic-camera" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="2.5" y="6.5" width="13" height="11" rx="2"/><path d="m15.5 11 6-3.2v8.4l-6-3.2z"/></g></symbol>
+		<symbol id="ic-desktop" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="12.5" rx="1.8"/><path d="M8.5 21h7M12 16.5V21"/><path d="M6.5 8.5h6"/></g></symbol>
+		<symbol id="ic-cart" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 3.5h2.6l2.3 11h10l2.1-7.6H6.2"/><circle cx="9.5" cy="19.4" r="1.6"/><circle cx="17.5" cy="19.4" r="1.6"/></g></symbol>
+		<symbol id="ic-user" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.8 7.8 0 0 1 15 0"/></g></symbol>
+		<symbol id="ic-user-plus" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="8" r="4"/><path d="M2.5 20.5a7.4 7.4 0 0 1 14 0"/><path d="M18.5 7v6M15.5 10h6"/></g></symbol>
+		<symbol id="ic-chat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.2c0 4-4 7.2-9 7.2a11 11 0 0 1-2.6-.3L4 21l1.3-3.6A6.9 6.9 0 0 1 3 12.2C3 8.2 7 5 12 5s9 3.2 9 7.2z"/></g></symbol>
+		<symbol id="ic-envelope" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="m3.4 6.4 8.6 6.4 8.6-6.4"/></g></symbol>
+		<symbol id="ic-calendar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></g></symbol>
+		<symbol id="ic-health" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5C6.5 16.9 3.5 14 3.5 10.3A4.8 4.8 0 0 1 12 7.2a4.8 4.8 0 0 1 8.5 3.1c0 3.7-3 6.6-8.5 10.2z"/></g></symbol>
+		<symbol id="ic-steps" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h4v-5H3zM10 15h4V8h-4zM17 10h4V3h-4z"/></g></symbol>
+		<symbol id="ic-wrench" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.6 3.4a5.6 5.6 0 0 0-6.9 7L3 16.1V21h4.9l5.7-5.7a5.6 5.6 0 0 0 7-6.9l-3.2 3.2-3-.3-.3-3z"/></g></symbol>
+		<symbol id="ic-graduation" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9 12 4.5 21.5 9 12 13.5z"/><path d="M6.5 11.2V16c0 1.7 2.5 3 5.5 3s5.5-1.3 5.5-3v-4.8"/></g></symbol>
+		<symbol id="ic-file" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 2.5H7a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M13.5 2.5V8H19"/><path d="M8.6 13h6.8M8.6 17h4.8"/></g></symbol>
+		<symbol id="ic-cassette" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8.5" cy="12" r="2.6"/><circle cx="15.5" cy="12" r="2.6"/></g></symbol>
+		<symbol id="ic-pin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.2a7.3 7.3 0 0 0-7.3 7.3c0 5.3 7.3 12.3 7.3 12.3s7.3-7 7.3-12.3A7.3 7.3 0 0 0 12 2.2m0 10a2.8 2.8 0 1 1 0-5.6 2.8 2.8 0 0 1 0 5.6"/></symbol>
+		<symbol id="ic-globe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9.3"/><ellipse cx="12" cy="12" rx="4" ry="9.3"/><path d="M3 9h18M3 15h18"/></g></symbol>
+	</defs></svg>
+
+	<script>
+	(function () {
+		'use strict';
+		var C = window.APP_CONFIG || {};
+		var F = C.facilitateur || {};
+
+		function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+			return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+		function ic(name, cls) { return '<svg class="' + (cls || '') + '" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-' + name + '"/></svg>'; }
+		/* Prix : jamais en dur. Le moteur i18n remplit l'élément à partir de data-price-eur. */
+		function price(eur) { return '<b data-price-eur="' + eur + '"></b>'; }
+		function priceInline(eur) { return '<span data-price-eur="' + eur + '"></span>'; }
+
+		/* --------------------------------------------------------
+		   Courbes bleu très pâle en filigrane (angles bas)
+		   -------------------------------------------------------- */
+		var CURVES =
+			'<svg class="flyer__curves" viewBox="0 0 210 297" preserveAspectRatio="none" aria-hidden="true">' +
+			'<path d="M0 208C34 196 58 226 74 258c9 18 4 31-10 39H0z" fill="#eaf4f9"/>' +
+			'<path d="M0 242c26-7 42 14 52 36 5 11 2 19-7 19H0z" fill="#dbeaf2"/>' +
+			'<path d="M210 186c-44 8-74 42-86 82-5 17 1 29 14 29h72z" fill="#eaf4f9"/>' +
+			'<path d="M210 232c-28 4-48 26-56 52-3 9 1 13 9 13h47z" fill="#dbeaf2"/>' +
+			'</svg>';
+
+		/* --------------------------------------------------------
+		   Scènes vectorielles — dessins originaux et génériques.
+		   Aucun logo de marque, aucun personnage existant.
+		   -------------------------------------------------------- */
+		var NAVY = '#0f2744', TURQ = '#0d9488', PALE1 = '#eaf4f9', PALE2 = '#dbeaf2', LINE = '#cbd5e1';
+
+		function svg(vb, body) {
+			return '<svg class="f-art" viewBox="' + vb + '" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' + body + '</svg>';
+		}
+
+		var ART = {};
+
+		/* Cassette VHS → clé USB + photos numérisées */
+		ART.souvenirs = svg('0 0 240 158',
+			'<g fill="none" stroke="' + NAVY + '" stroke-width="2.6" stroke-linejoin="round">' +
+			  '<rect x="6" y="40" width="106" height="70" rx="7" fill="#fff"/>' +
+			  '<rect x="20" y="52" width="78" height="36" rx="3" fill="' + PALE2 + '"/>' +
+			  '<circle cx="45" cy="70" r="12.5" fill="#fff"/><circle cx="73" cy="70" r="12.5" fill="#fff"/>' +
+			  '<rect x="18" y="94" width="60" height="9" rx="2" fill="' + PALE1 + '"/>' +
+			'</g>' +
+			'<circle cx="45" cy="70" r="4.4" fill="' + NAVY + '"/><circle cx="73" cy="70" r="4.4" fill="' + NAVY + '"/>' +
+			'<path d="M84 98.5h10" stroke="' + TURQ + '" stroke-width="2.6" stroke-linecap="round"/>' +
+			'<path d="M120 72h24" stroke="' + TURQ + '" stroke-width="5" stroke-linecap="round"/>' +
+			'<path d="m141 63 12 9-12 9z" fill="' + TURQ + '"/>' +
+			'<g fill="none" stroke="' + NAVY + '" stroke-width="2.6" stroke-linejoin="round">' +
+			  '<rect x="176" y="20" width="58" height="24" rx="5" fill="' + NAVY + '"/>' +
+			  '<rect x="162" y="26" width="16" height="12" rx="2" fill="' + LINE + '"/>' +
+			'</g>' +
+			'<rect x="186" y="28" width="22" height="3" rx="1.5" fill="#5eead4"/>' +
+			'<g stroke="' + NAVY + '" stroke-width="2.6" stroke-linejoin="round">' +
+			  '<rect x="160" y="64" width="62" height="50" rx="4" fill="#fff" transform="rotate(-9 191 89)"/>' +
+			  '<rect x="168" y="76" width="62" height="50" rx="4" fill="#fff" transform="rotate(5 199 101)"/>' +
+			'</g>' +
+			'<g transform="rotate(5 199 101)">' +
+			  '<rect x="173" y="81" width="52" height="34" rx="2" fill="' + PALE2 + '"/>' +
+			  '<circle cx="190" cy="93" r="5.5" fill="' + TURQ + '"/>' +
+			  '<path d="M175 115h48l-16-19-10 10-7-6z" fill="' + NAVY + '" opacity=".75"/>' +
+			'</g>' +
+			'<g fill="' + TURQ + '">' +
+			  '<path d="M132 116c1.6 5.4 2.6 6.4 8 8-5.4 1.6-6.4 2.6-8 8-1.6-5.4-2.6-6.4-8-8 5.4-1.6 6.4-2.6 8-8z"/>' +
+			  '<path d="M152 132c1.1 3.6 1.7 4.3 5.3 5.4-3.6 1.1-4.2 1.7-5.3 5.3-1.1-3.6-1.7-4.2-5.3-5.3 3.6-1.1 4.2-1.8 5.3-5.4z"/>' +
+			'</g>');
+
+		/* Box internet + imprimante + écran */
+		ART.depannage = svg('0 0 240 180',
+			'<g fill="none" stroke="' + NAVY + '" stroke-width="2.8" stroke-linejoin="round">' +
+			  '<rect x="6" y="8" width="104" height="68" rx="6" fill="#fff"/>' +
+			  '<rect x="15" y="17" width="86" height="50" rx="2.5" fill="' + PALE2 + '"/>' +
+			  '<path d="M46 76v12h20V76" fill="#fff"/><path d="M36 90h40" stroke-linecap="round"/>' +
+			'</g>' +
+			'<g stroke="' + TURQ + '" stroke-width="3.4" stroke-linecap="round"><path d="M26 30h34M26 42h50M26 54h26"/></g>' +
+			'<g fill="none" stroke="' + NAVY + '" stroke-width="2.8" stroke-linejoin="round">' +
+			  '<rect x="152" y="2" width="62" height="16" rx="2.5" fill="' + PALE1 + '"/>' +
+			  '<rect x="128" y="16" width="106" height="46" rx="6" fill="#fff"/>' +
+			  '<rect x="152" y="56" width="62" height="34" rx="2.5" fill="#fff"/>' +
+			'</g>' +
+			'<g stroke="' + LINE + '" stroke-width="2.8" stroke-linecap="round"><path d="M162 68h42M162 78h30"/></g>' +
+			'<rect x="138" y="30" width="24" height="5" rx="2.5" fill="' + LINE + '"/>' +
+			'<circle cx="220" cy="32" r="4.8" fill="' + TURQ + '"/>' +
+			'<g fill="none" stroke="' + NAVY + '" stroke-width="2.8" stroke-linejoin="round">' +
+			  '<rect x="26" y="122" width="122" height="46" rx="11" fill="#fff"/>' +
+			  '<path d="M52 122 40 100M122 122l12-22" stroke-linecap="round"/>' +
+			'</g>' +
+			'<circle cx="50" cy="145" r="4.4" fill="' + TURQ + '"/><circle cx="68" cy="145" r="4.4" fill="' + TURQ + '"/><circle cx="86" cy="145" r="4.4" fill="' + LINE + '"/>' +
+			'<g fill="none" stroke="' + TURQ + '" stroke-width="3" stroke-linecap="round">' +
+			  '<path d="M176 156a14 14 0 0 1 20 0"/><path d="M168 144a26 26 0 0 1 36 0"/><path d="M160 132a38 38 0 0 1 52 0"/>' +
+			'</g>');
+
+		/* Bouclier + cadenas */
+		ART.securite = svg('0 0 240 180',
+			'<path d="M120 12 200 44v60c0 36-38 60-80 70-42-10-80-34-80-70V44z" fill="' + PALE1 + '" stroke="' + NAVY + '" stroke-width="3.4" stroke-linejoin="round"/>' +
+			'<path d="M120 26 188 53v51c0 30-30 50-68 60-38-10-68-30-68-60V53z" fill="#fff" stroke="' + PALE2 + '" stroke-width="2.6" stroke-linejoin="round"/>' +
+			'<path d="M98 92V78a22 22 0 0 1 44 0v14" fill="none" stroke="' + NAVY + '" stroke-width="6.5" stroke-linecap="round"/>' +
+			'<rect x="86" y="92" width="68" height="52" rx="9" fill="' + NAVY + '"/>' +
+			'<circle cx="120" cy="112" r="7.5" fill="#fff"/><path d="M120 118v13" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/>' +
+			'<circle cx="204" cy="128" r="23" fill="' + TURQ + '"/>' +
+			'<path d="m193 128 8 9 15-18" fill="none" stroke="#fff" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round"/>');
+
+		/* Écran + personnage stylisé */
+		ART.formation = svg('0 0 240 180',
+			'<g fill="none" stroke="' + NAVY + '" stroke-width="2.8" stroke-linejoin="round">' +
+			  '<rect x="4" y="30" width="132" height="84" rx="6" fill="#fff"/>' +
+			  '<rect x="13" y="39" width="114" height="66" rx="3" fill="' + PALE2 + '"/>' +
+			  '<path d="M56 114v14h28v-14" fill="#fff"/><path d="M44 130h52" stroke-linecap="round"/>' +
+			'</g>' +
+			'<rect x="24" y="50" width="56" height="7" rx="3.5" fill="' + TURQ + '"/>' +
+			'<g stroke="#fff" stroke-width="5.5" stroke-linecap="round"><path d="M24 70h94M24 84h70M24 96h44"/></g>' +
+			'<g fill="' + TURQ + '"><rect x="150" y="8" width="84" height="38" rx="12"/><path d="M172 46h20l-24 16z"/></g>' +
+			'<g stroke="#fff" stroke-width="4.6" stroke-linecap="round"><path d="M164 22h50M164 33h30"/></g>' +
+			'<path d="M148 176v-26a40 40 0 0 1 80 0v26z" fill="' + PALE2 + '" stroke="' + NAVY + '" stroke-width="2.8" stroke-linejoin="round"/>' +
+			'<circle cx="188" cy="100" r="23" fill="#fff" stroke="' + NAVY + '" stroke-width="2.8"/>');
+
+		/* Documents + calendrier + enveloppe */
+		ART.demarches = svg('0 0 240 180',
+			'<g stroke="' + NAVY + '" stroke-width="2.8" stroke-linejoin="round">' +
+			  '<rect x="4" y="18" width="70" height="98" rx="5" fill="#fff" transform="rotate(-7 39 67)"/>' +
+			  '<rect x="16" y="30" width="70" height="98" rx="5" fill="#fff"/>' +
+			'</g>' +
+			'<g stroke="' + LINE + '" stroke-width="3.2" stroke-linecap="round"><path d="M28 50h46M28 66h46M28 82h30"/></g>' +
+			'<circle cx="70" cy="112" r="16" fill="' + TURQ + '"/>' +
+			'<path d="m62 112 6 7 11-14" fill="none" stroke="#fff" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>' +
+			'<rect x="126" y="6" width="108" height="72" rx="7" fill="#fff" stroke="' + NAVY + '" stroke-width="2.8"/>' +
+			'<path d="M126 13a7 7 0 0 1 7-7h94a7 7 0 0 1 7 7v15H126z" fill="' + NAVY + '"/>' +
+			'<g fill="' + LINE + '"><circle cx="150" cy="45" r="5.4"/><circle cx="176" cy="45" r="5.4"/><circle cx="202" cy="45" r="5.4"/><circle cx="226" cy="45" r="5.4"/>' +
+			  '<circle cx="150" cy="64" r="5.4"/><circle cx="202" cy="64" r="5.4"/><circle cx="226" cy="64" r="5.4"/></g>' +
+			'<circle cx="176" cy="64" r="10" fill="' + TURQ + '"/>' +
+			'<rect x="112" y="98" width="120" height="66" rx="6" fill="#fff" stroke="' + NAVY + '" stroke-width="2.8"/>' +
+			'<path d="M112 104v-2a4 4 0 0 1 4-4h112a4 4 0 0 1 4 4v2l-60 42z" fill="' + PALE2 + '" stroke="' + NAVY + '" stroke-width="2.8" stroke-linejoin="round"/>' +
+			'<g fill="none" stroke="' + NAVY + '" stroke-width="2.4" stroke-linecap="round"><path d="m114 160 46-32M230 160l-46-32"/></g>');
+
+		/* --------------------------------------------------------
+		   Les cinq thèmes
+		   -------------------------------------------------------- */
+		var THEMES = [
+			{
+				key: 'souvenirs', label: 'Souvenirs', icon: 'cassette',
+				kicker: 'Numérisation de vos souvenirs',
+				title: 'Vos souvenirs sont encore sur cassette&nbsp;?',
+				sub: 'Je leur redonne une nouvelle vie.',
+				band: 'VHS • Hi8 • MiniDV • Photos',
+				priceEur: F.cassetteEur, unit: '/ cassette',
+				note: 'Vos originaux vous sont rendus.'
+			},
+			{
+				key: 'depannage', label: 'Dépannage', icon: 'wrench',
+				title: 'Dépannage',
+				sub: 'Un problème ? Je vous aide rapidement.',
+				list: [
+					['wifi', 'Box internet et Wi-Fi'],
+					['printer', 'Imprimante'],
+					['tv', 'Télévision'],
+					['phone', 'Téléphone'],
+					['sliders', 'Réglage et accompagnement']
+				],
+				priceEur: F.hourlyEur, unit: '/ heure',
+				noteHtml: 'Diagnostic : ' + priceInline(F.diagnosticEur)
+			},
+			{
+				key: 'securite', label: 'Sécurité', icon: 'shield',
+				title: 'Sécurité',
+				sub: 'Naviguez l’esprit tranquille.',
+				list: [
+					['wifi', 'Mise en sécurité de votre Wi-Fi'],
+					['shield-check', 'Antivirus et protections'],
+					['warning', 'Prévention des arnaques'],
+					['key', 'Mots de passe sécurisés'],
+					['camera', 'Imprimantes et caméras']
+				],
+				priceEur: F.hourlyEur, unit: '/ heure'
+			},
+			{
+				key: 'formation', label: 'Formation', icon: 'graduation',
+				title: 'Formation',
+				sub: 'Apprenez à votre rythme, en toute confiance.',
+				list: [
+					['desktop', 'Maîtriser votre ordinateur'],
+					['cart', 'Achats en ligne en toute sécurité'],
+					['user', 'Accompagnement personnalisé'],
+					['chat', 'Des explications simples et claires']
+				],
+				priceEur: F.hourlyEur, unit: '/ heure'
+			},
+			{
+				key: 'demarches', label: 'Démarches', icon: 'file',
+				title: 'Démarches numériques',
+				sub: 'Je vous accompagne pas à pas.',
+				list: [
+					['user-plus', 'Création de comptes et accès en ligne'],
+					['envelope', 'Tri et organisation de vos e-mails'],
+					['calendar', 'Rendez-vous en ligne (Doctolib, etc.)'],
+					['health', 'Ameli, Mon Espace Santé'],
+					['steps', 'Un accompagnement pas à pas (sans signer à votre place)']
+				],
+				priceEur: F.hourlyEur, unit: '/ heure'
+			}
+		];
+
+		/* « Et aussi : » — les quatre autres domaines, jamais celui du flyer. */
+		var DOMAINS = [
+			{ key: 'souvenirs', icon: 'cassette',  label: 'numérisation de souvenirs' },
+			{ key: 'depannage', icon: 'wrench',    label: 'dépannage' },
+			{ key: 'securite',  icon: 'shield',    label: 'sécurité' },
+			{ key: 'formation', icon: 'graduation',label: 'formation' },
+			{ key: 'demarches', icon: 'file',      label: 'démarches numériques' }
+		];
+
+		function alsoLine(currentKey) {
+			var items = DOMAINS.filter(function (d) { return d.key !== currentKey; });
+			var html = '<span class="f-also__label">Et aussi :</span>';
+			items.forEach(function (d, i) {
+				if (i) html += '<span class="f-also__dot">·</span>';
+				html += '<span class="f-also__item">' + ic(d.icon) + esc(d.label) + '</span>';
+			});
+			return '<div class="f-also">' + html + '</div>';
+		}
+
+		function buildFlyer(t) {
+			var brand = C.brand || {}, contact = C.contact || {};
+			var stage;
+			if (t.list) {
+				var li = t.list.map(function (row) {
+					return '<li><span class="f-chip">' + ic(row[0]) + '</span><span>' + esc(row[1]) + '</span></li>';
+				}).join('');
+				stage = '<div class="f-stage f-stage--split"><ul class="f-list">' + li + '</ul>' + ART[t.key] + '</div>';
+			} else {
+				stage = '<div class="f-stage f-stage--solo">' + ART[t.key] + '</div>';
+			}
+
+			var note = t.noteHtml ? t.noteHtml : (t.note ? esc(t.note) : '');
+
+			return '<div class="sheet flyer" data-theme="' + t.key + '">' + CURVES +
+				'<div class="f-head">' +
+					'<img class="f-logo" src="../images/logo/Logo-1.png" alt="' + esc(brand.name || '') + '">' +
+					'<div class="f-baseline">Votre aide numérique au quotidien</div>' +
+				'</div>' +
+				(t.kicker ? '<div class="f-kicker">' + esc(t.kicker) + '</div>' : '') +
+				'<h2 class="f-title">' + t.title + '</h2>' +
+				'<p class="f-sub">' + esc(t.sub) + '</p>' +
+				'<div class="f-rule"></div>' +
+				(t.band ? '<div class="f-band">' + esc(t.band) + '</div>' : '') +
+				stage +
+				'<div class="f-price-row">' +
+					'<div class="f-price">' + price(t.priceEur) + '<span>' + esc(t.unit) + '</span></div>' +
+					(note ? '<div class="f-price-note">' + note + '</div>' : '') +
+				'</div>' +
+				alsoLine(t.key) +
+				'<div class="f-contact">' +
+					'<div class="f-contact__phone">' + ic('phone') + '<strong data-cfg="contact.phoneDisplay"></strong></div>' +
+					'<div class="f-contact__area">À domicile • Évian &amp; bassin lémanique</div>' +
+				'</div>' +
+				'<div class="f-promise">Sans jargon • À votre rythme • Premier échange gratuit</div>' +
+				'<div class="f-site" data-cfg="brand.site"></div>' +
+			'</div>';
+		}
+
+		/* --------------------------------------------------------
+		   Planche de cartes de visite
+		   -------------------------------------------------------- */
+		function cropMarks() {
+			return '<span class="crop v t x1"></span><span class="crop v t x2"></span>' +
+				'<span class="crop v b x1"></span><span class="crop v b x2"></span>' +
+				'<span class="crop h l y1"></span><span class="crop h l y2"></span>' +
+				'<span class="crop h r y1"></span><span class="crop h r y2"></span>';
+		}
+
+		function buildCards() {
+			var front =
+				'<div class="card-face card-front">' +
+					'<span class="card-front__bar"></span>' +
+					'<svg class="card-front__curve" viewBox="0 0 60 40" preserveAspectRatio="none" aria-hidden="true">' +
+						'<path d="M60 6c-24 2-40 16-46 34h46z" fill="#eaf4f9"/>' +
+						'<path d="M60 20c-14 2-23 9-27 20h27z" fill="#dbeaf2"/></svg>' +
+					'<div class="card-front__inner">' +
+						'<img class="card-front__logo" src="../images/logo/Logo-1.png" alt="">' +
+						'<div class="card-front__baseline">Votre aide numérique au quotidien</div>' +
+						'<div class="card-front__rule"></div>' +
+						'<div class="card-front__grid">' +
+							'<span>' + ic('wrench') + 'Dépannage</span>' +
+							'<span>' + ic('shield') + 'Sécurité</span>' +
+							'<span>' + ic('graduation') + 'Formation</span>' +
+							'<span>' + ic('file') + 'Démarches</span>' +
+							'<span>' + ic('cassette') + 'Numérisation</span>' +
+							'<span>' + ic('desktop') + 'Création de sites</span>' +
+						'</div>' +
+					'</div>' +
+				'</div>';
+
+			var back =
+				'<div class="card-face card-back">' +
+					'<div class="card-back__main">' +
+						'<div class="card-back__name" data-cfg="contact.name"></div>' +
+						'<div class="card-back__role">Facilitateur numérique</div>' +
+						'<div class="card-back__rows">' +
+							'<div class="card-back__row is-phone">' + ic('phone') + '<span data-cfg="contact.phoneDisplay"></span></div>' +
+							'<div class="card-back__row">' + ic('envelope') + '<span data-cfg="contact.email"></span></div>' +
+							'<div class="card-back__row">' + ic('pin') + '<span data-cfg="contact.area"></span></div>' +
+							'<div class="card-back__row">' + ic('globe') + '<span data-cfg="brand.site"></span></div>' +
+						'</div>' +
+					'</div>' +
+					'<div class="card-back__qr">' +
+						'<img src="../images/flyer/qr-site.png" alt="QR code vers le site">' +
+						'<span>Mon site</span>' +
+					'</div>' +
+				'</div>';
+
+			function block(label, faceHtml) {
+				return '<div class="card-block">' +
+					'<div class="card-block__label">' + label + '</div>' +
+					cropMarks() +
+					'<div class="card-bleed">' + faceHtml + '</div>' +
+					'<div class="safe-hint"></div>' +
+				'</div>';
+			}
+
+			return '<div class="sheet cards-sheet">' +
+				'<div class="cards-sheet__title">Cartes de visite — 85 × 55 mm</div>' +
+				'<div class="cards-sheet__sub">Fonds perdus 3 mm (zone dessinée 91 × 61 mm) · zone de sécurité 4 mm · traits de coupe hors fonds perdus</div>' +
+				block('Recto', front) +
+				block('Verso', back) +
+				'<div class="cards-sheet__notes">' +
+					'<strong>Impression.</strong> Imprimer à 100 %, sans mise à l’échelle ni « ajuster à la page », ' +
+					'sur papier 300 g (mat ou soft-touch), et couper sur les traits de coupe. ' +
+					'Le trait turquoise pointillé n’apparaît pas à l’impression : il matérialise la zone de sécurité, ' +
+					'aucun texte ne doit en sortir.' +
+					'<ul>' +
+						'<li><strong>Pour un imprimeur en ligne</strong>, il faut fournir un PDF : dans la fenêtre d’impression ' +
+						'du navigateur, choisir « Enregistrer au format PDF » comme destination (A4, échelle 100 %, ' +
+						'marges « aucune », graphiques d’arrière-plan cochés), puis envoyer ce PDF à l’imprimeur ' +
+						'en précisant « 85 × 55 mm, fonds perdus 3 mm, recto/verso ».</li>' +
+						'<li>Les fonds perdus servent à absorber la tolérance de coupe : les aplats de couleur doivent ' +
+						'toucher le bord de la zone dessinée, jamais s’arrêter au format fini.</li>' +
+					'</ul>' +
+				'</div>' +
+			'</div>';
+		}
+
+		/* --------------------------------------------------------
+		   Montage de la page
+		   -------------------------------------------------------- */
+		var flyersHost = document.getElementById('flyers');
+		var cardsHost = document.getElementById('cards');
+		var btnHost = document.getElementById('theme-buttons');
+		var caption = document.getElementById('flyer-caption');
+
+		flyersHost.innerHTML = THEMES.map(function (t) {
+			return '<div class="preview-frame" data-kind="flyer" data-sheet="' + t.key + '">' + buildFlyer(t) + '</div>';
+		}).join('');
+
+		cardsHost.innerHTML = '<div class="preview-frame" data-kind="cards" data-sheet="cartes">' + buildCards() + '</div>';
+
+		btnHost.innerHTML = THEMES.map(function (t) {
+			return '<button type="button" class="theme-btn px-5 py-2.5 rounded-full border border-white/15 bg-white/5 ' +
+				'text-white text-sm font-bold hover:bg-white/10 transition-all flex items-center gap-2" data-theme-key="' + t.key + '">' +
+				ic(t.icon, 'w-4 h-4') + esc(t.label) + '</button>';
+		}).join('');
+
+		var current = THEMES[0].key;
+		function selectTheme(key) {
+			current = key;
+			flyersHost.querySelectorAll('.preview-frame').forEach(function (f) {
+				if (f.getAttribute('data-sheet') === key) f.setAttribute('data-active', '');
+				else f.removeAttribute('data-active');
+			});
+			btnHost.querySelectorAll('.theme-btn').forEach(function (b) {
+				b.classList.toggle('is-on', b.getAttribute('data-theme-key') === key);
+			});
+			var t = THEMES.filter(function (x) { return x.key === key; })[0];
+			if (caption && t) caption.textContent = 'Aperçu du flyer — ' + t.label;
+		}
+		btnHost.addEventListener('click', function (e) {
+			var b = e.target.closest('[data-theme-key]');
+			if (b) selectTheme(b.getAttribute('data-theme-key'));
+		});
+		selectTheme(current);
+
+		/* Injection des données de config.js (marque, téléphone, zone, site) */
+		function fromPath(path) {
+			return path.split('.').reduce(function (o, k) { return (o && o[k] != null) ? o[k] : null; }, C);
+		}
+		function injectConfig() {
+			document.querySelectorAll('[data-cfg]').forEach(function (el) {
+				var v = fromPath(el.getAttribute('data-cfg'));
+				if (v != null) el.textContent = v;
+			});
+		}
+		injectConfig();
+
+		/* Mise à l'échelle de l'aperçu à la largeur disponible */
+		var A4_PX = 210 * 96 / 25.4;
+		function rescale() {
+			var host = document.getElementById('print-stage');
+			var w = host ? host.clientWidth - 8 : A4_PX;
+			var s = Math.min(0.72, Math.max(0.26, w / A4_PX));
+			document.querySelectorAll('.preview-frame').forEach(function (f) { f.style.setProperty('--s', s.toFixed(4)); });
+		}
+		rescale();
+		window.addEventListener('resize', rescale);
+
+		/* Impression ciblée : une seule feuille à la fois */
+		function printOnly(target) {
+			document.documentElement.setAttribute('data-print', target);
+			window.setTimeout(function () { window.print(); }, 30);
+		}
+		window.addEventListener('afterprint', function () {
+			document.documentElement.removeAttribute('data-print');
+		});
+		document.getElementById('btn-print-flyer').addEventListener('click', function () { printOnly(current); });
+		document.getElementById('btn-print-cards').addEventListener('click', function () { printOnly('cartes'); });
+
+		/* Les prix viennent de config.js : on (re)rend après avoir injecté le DOM. */
+		function renderPrices() { if (window.NM && NM.i18n && NM.i18n.render) NM.i18n.render(); }
+		renderPrices();
+		document.addEventListener('DOMContentLoaded', function () { renderPrices(); rescale(); });
+		if (window.NM && NM.i18n && NM.i18n.onChange) NM.i18n.onChange(renderPrices);
+	})();
+	</script>
+
+</body>
+</html>

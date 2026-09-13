@@ -315,6 +315,42 @@ section{padding:44px 0}
 .next-title{font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--ink-0); font-size:1.02rem; margin-bottom:3px}
 .next-sub{font-size:.84rem; color:var(--ink-3)}
 
+/* ============ OBJECTIF CHIFFRÉ DE LA PROCHAINE SORTIE ============
+   Tout ce bloc est calculé sur les séances réellement enregistrées :
+   aucune valeur n'est écrite en dur ici. */
+.goal-card{background:var(--dark-900); border:1px solid rgb(var(--accent-rgb) / 0.3); border-radius:18px; padding:20px 22px; margin-bottom:20px}
+.goal-card.rest{border-color:rgb(var(--gold-rgb) / 0.3)}
+.goal-card.unknown{border-color:var(--line)}
+.goal-head{display:flex; align-items:center; gap:12px}
+.goal-head i{font-size:1.6rem; color:var(--accent-400); flex-shrink:0}
+.goal-card.rest .goal-head i{color:var(--gold-400)}
+.goal-card.unknown .goal-head i{color:var(--ink-3)}
+.goal-kicker{font-size:.66rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-4)}
+.goal-kind{font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--ink-0); font-size:1.06rem; line-height:1.25}
+.goal-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(132px,1fr)); gap:10px; margin:16px 0 14px}
+.goal-cell{background:rgb(var(--veil-rgb) / .04); border:1px solid var(--line-soft); border-radius:12px; padding:11px 13px}
+.goal-cell .gk{font-size:.64rem; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-4); margin-bottom:4px}
+.goal-cell .gv{font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--ink-0); font-size:1.02rem}
+.goal-cell .gv small{font-size:.72rem; font-weight:500; color:var(--ink-3)}
+.goal-why{display:flex; gap:9px; align-items:flex-start; font-size:.83rem; color:var(--ink-3); line-height:1.55; max-width:74ch}
+.goal-why i{color:var(--accent-400); margin-top:2px; flex-shrink:0}
+.goal-card.rest .goal-why i{color:var(--gold-400)}
+.goal-card.unknown .goal-why i{color:var(--ink-3)}
+.goal-why + .goal-why{margin-top:8px}
+
+/* ============ ANALYSE IA D'UNE SÉANCE ============ */
+.ai-block{margin-top:12px; padding-top:12px; border-top:1px dashed var(--line)}
+.ai-out:empty{display:none}
+.ai-text{white-space:pre-line; font-size:.83rem; color:var(--ink-2); line-height:1.6; background:rgb(var(--veil-rgb) / .04);
+  border:1px solid var(--line-soft); border-radius:12px; padding:13px 15px; max-width:74ch; margin-top:10px; animation:fadeIn .25s ease}
+.ai-meta{font-size:.68rem; color:var(--ink-4); margin-top:6px}
+.ai-msg{font-size:.82rem; line-height:1.55; border-radius:12px; padding:11px 14px; max-width:74ch; margin-top:10px; white-space:normal}
+.ai-msg.info{background:rgb(var(--accent-rgb) / 0.1); color:var(--accent-400)}
+.ai-msg.setup{background:rgb(var(--gold-rgb) / 0.1); color:var(--gold-400)}
+.ai-msg.err{background:rgb(var(--danger-rgb) / 0.1); color:#f87171}
+.ai-msg code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.78rem; background:rgb(var(--veil-rgb) / .1); padding:1px 5px; border-radius:5px}
+.ai-msg a{text-decoration:underline}
+
 /* ============ SEMAINE EN UN COUP D'ŒIL ============ */
 .week-strip{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:8px; margin-bottom:22px}
 .ws-day{min-width:0; overflow:hidden; background:var(--dark-900); border:1px solid var(--line); border-radius:12px; padding:10px 4px; text-align:center}
@@ -377,6 +413,14 @@ section{padding:44px 0}
 .gthresh-label{font-size:8px; fill:var(--gold-400); font-family:'Inter'; font-weight:600}
 .gtrace{fill:none; stroke:var(--accent-400); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round}
 .gpt{stroke:var(--dark-900); stroke-width:2; fill:var(--accent-400)}
+/* Séance chronométrée mais sans FC exploitable : cercle creux, jamais relié
+   à la courbe — elle est visible sans polluer la mesure de progression. */
+.gpt-off{stroke:var(--ink-4); stroke-width:2; fill:none}
+.chart-legend{display:flex; flex-wrap:wrap; gap:6px 18px; align-items:center; margin-top:14px; font-size:.72rem; color:var(--ink-4); line-height:1.45}
+.chart-legend .cl-item{display:inline-flex; align-items:center; gap:7px}
+.cl-dot{width:10px; height:10px; border-radius:50%; display:inline-block; flex-shrink:0}
+.cl-dot.z2{background:var(--accent-400)}
+.cl-dot.off{background:transparent; border:2px solid var(--ink-4)}
 
 /* ============ JOURNAL (collapsible) ============ */
 .toggle-row{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap}
@@ -683,6 +727,7 @@ Voici mes données brutes à convertir :
     </div>
 
     <div class="next-card" id="next-card"></div>
+    <div class="goal-card" id="next-goal"></div>
     <div class="week-strip" id="week-strip"></div>
 
     <div class="charge-grid">
@@ -766,6 +811,7 @@ Voici mes données brutes à convertir :
 
 <!-- Accès sécurisé : mêmes identifiants que l'espace clients -->
 <script src="../config.js"></script>
+<script src="../assets/js/confirm-dialog.js"></script>
 <script type="module" src="../assets/js/supabase-client.js"></script>
 <script>
 (function () {
@@ -909,12 +955,27 @@ async function cloudSave(){
   }
 }
 
-/** Fusionne deux listes de séances sans jamais en perdre une. */
-function mergeByKey(local, remote, keyFn){
+/** Fusionne deux listes de séances sans jamais en perdre une.
+    `mergeFn(local, remote)` permet, quand les deux côtés connaissent la même
+    séance, de récupérer un champ que seul le distant possède plutôt que de
+    l'écraser aveuglément avec la version locale. */
+function mergeByKey(local, remote, keyFn, mergeFn){
   const map = new Map();
   (remote || []).forEach(item => { if (item) map.set(keyFn(item), item); });
-  (local || []).forEach(item => { if (item) map.set(keyFn(item), item); });
+  (local || []).forEach(item => {
+    if (!item) return;
+    const k = keyFn(item);
+    const prev = map.get(k);
+    map.set(k, (prev && mergeFn) ? mergeFn(item, prev) : item);
+  });
   return Array.from(map.values());
+}
+
+/* L'analyse IA a pu être demandée depuis le téléphone : si le cloud en a une
+   et pas l'appareil courant, on la rapatrie au lieu de la perdre. */
+function mergeSession(local, remote){
+  if (!local.aiNote && remote.aiNote){ local.aiNote = remote.aiNote; local.aiAt = remote.aiAt || ""; }
+  return local;
 }
 
 async function cloudLoadAndMerge(){
@@ -928,7 +989,7 @@ async function cloudLoadAndMerge(){
       const before = sessions.length + badminton.length + strength.length;
 
       sessions = mergeByKey(sessions, (remote.sessions || []).map(normalize).filter(Boolean),
-                            s => s.date + '|' + (s.type || '') + '|' + (s.duree || ''));
+                            s => s.date + '|' + (s.type || '') + '|' + (s.duree || ''), mergeSession);
       badminton = mergeByKey(badminton, remote.badminton || [], b => b.date + '|' + (b.duree || b.minutes || ''));
       strength  = mergeByKey(strength,  remote.strength  || [], e => e.date + '|' + (e.nom || e.exercice || ''));
 
@@ -1016,7 +1077,11 @@ const ALIAS = {
   fcFin:     ["fcFin","fc_fin","fcEnd","hr_end","fc10Fin","fcDernieres"],
   denivele:  ["denivele","dénivelé","dplus","d_plus","elevation","gain","elevationGain"],
   ressenti:  ["ressenti","feel","rpe","feeling"],
-  notes:     ["notes","note","commentaire","comment","description"]
+  notes:     ["notes","note","commentaire","comment","description"],
+  /* Analyse rédigée par l'IA, attachée à la séance : sans ces alias,
+     normalize() la perdrait à chaque relecture du stockage ou du cloud. */
+  aiNote:    ["aiNote","ai_note","analyseIA"],
+  aiAt:      ["aiAt","ai_at","analyseIADate"]
 };
 function pick(obj, keys){
   const lower = {}; Object.keys(obj).forEach(k => lower[k.toLowerCase()] = obj[k]);
@@ -1065,6 +1130,8 @@ function normalize(raw){
     ressenti: num(pick(raw, ALIAS.ressenti)),
     notes: pick(raw, ALIAS.notes) || ""
   };
+  const aiNote = pick(raw, ALIAS.aiNote);
+  if (aiNote){ s.aiNote = String(aiNote); s.aiAt = pick(raw, ALIAS.aiAt) || ""; }
   if (s.duree && s.distance) s.speed = s.distance / (s.duree / 60);
   if (s.fcDebut && s.fcFin) s.drift = s.fcFin - s.fcDebut;
   if (s.speed && s.fcMoy) s.eff = (s.speed / s.fcMoy) * 1000;
@@ -1118,10 +1185,27 @@ function achievedDateFor(threshold){
   for (const s of list){ if (s.speed >= threshold) return s.date; }
   return null;
 }
-function recentTrendPerWeek(){
+/* ============================================================
+   PROGRAMME ADAPTATIF — la tendance réelle plutôt que le plan
+   ------------------------------------------------------------
+   Le calendrier des niveaux (LEVELS[].months) a été posé AVANT la
+   première séance : c'est une hypothèse, pas une mesure. Dès qu'il
+   y a assez de séances validées en zone 2, on lui préfère la
+   pente réellement observée, puis on la TEMPÈRE (jamais on ne
+   l'accélère) selon la dérive cardiaque et la régularité : un
+   cœur qui dérive ou une reprise après coupure ne peuvent que
+   repousser l'échéance.
+   ============================================================ */
+const TREND_WINDOW = 6;          // séances retenues pour la régression
+const MIN_TREND_SESSIONS = 4;    // en dessous, l'estimation reste théorique
+
+/** Régression linéaire vitesse ~ semaines sur les dernières séances validées. */
+function trendStats(){
   const list = qualifyingChrono();
-  if (list.length < 2) return null;
-  const recent = list.slice(-6);
+  const recent = list.slice(-TREND_WINDOW);
+  const out = { total: list.length, n: recent.length, slope: null, reliable: false,
+                first: recent[0] || null, last: recent[recent.length-1] || null, spanWeeks: 0 };
+  if (recent.length < 2) return out;
   const t0 = new Date(recent[0].date + "T12:00:00").getTime();
   const xs = recent.map(s => (new Date(s.date + "T12:00:00").getTime() - t0) / (7*86400000));
   const ys = recent.map(s => s.speed);
@@ -1129,8 +1213,117 @@ function recentTrendPerWeek(){
   const sumX = xs.reduce((a,b)=>a+b,0), sumY = ys.reduce((a,b)=>a+b,0);
   const sumXY = xs.reduce((a,x,i)=>a+x*ys[i],0), sumXX = xs.reduce((a,x)=>a+x*x,0);
   const denom = (n*sumXX - sumX*sumX);
-  if (!denom) return null;
-  return (n*sumXY - sumX*sumY) / denom; // km/h gagnés par semaine
+  out.spanWeeks = xs[n-1] - xs[0];
+  if (denom){
+    out.slope = (n*sumXY - sumX*sumY) / denom;       // km/h gagnés par semaine
+  } else if (out.spanWeeks > 0){
+    /* Toutes les séances le même jour : on retombe sur une comparaison de
+       moyennes glissantes plutôt que de renoncer à toute estimation. */
+    const half = Math.ceil(n/2);
+    const avg = a => a.reduce((x,y)=>x+y,0)/a.length;
+    out.slope = (avg(ys.slice(half)) - avg(ys.slice(0,half))) / out.spanWeeks;
+  }
+  out.reliable = list.length >= MIN_TREND_SESSIONS && out.slope !== null;
+  return out;
+}
+
+/** Compatibilité : l'ancienne API, désormais adossée à trendStats(). */
+function recentTrendPerWeek(){ return trendStats().slope; }
+
+/** Dérive cardiaque moyenne des trois dernières séances exploitables. */
+function recentDrift(){
+  const list = qualifyingChrono().filter(s => s.drift !== undefined).slice(-3);
+  if (!list.length) return null;
+  return list.reduce((a,s) => a + s.drift, 0) / list.length;
+}
+
+/** Régularité : courses par semaine sur les 21 derniers jours + coupure éventuelle. */
+function recentRegularity(){
+  const todayISO = new Date().toISOString().slice(0,10);
+  const from = new Date(todayISO + "T12:00:00"); from.setDate(from.getDate() - 20);
+  const fromISO = from.toISOString().slice(0,10);
+  const past = sorted().filter(s => s.date <= todayISO);
+  const inWindow = past.filter(s => s.date >= fromISO);
+  const last = past[past.length-1] || null;
+  const daysSinceLast = last
+    ? Math.round((new Date(todayISO+"T12:00:00") - new Date(last.date+"T12:00:00")) / 86400000)
+    : null;
+  return {
+    count: inWindow.length,
+    perWeek: inWindow.length / 3,
+    daysSinceLast,
+    comeback: daysSinceLast !== null && daysSinceLast >= 10
+  };
+}
+
+/** Estimation théorique : le nombre de semaines prévu par le plan initial. */
+function theoreticalWeeks(l){ return levelWeeksSpan(l).weeks; }
+
+/**
+ * Perspective adaptative pour le niveau en cours.
+ * @param {number|null} speed vitesse zone 2 actuelle
+ * @param {number} lvl        numéro du niveau en cours (1..8)
+ */
+function adaptiveOutlook(speed, lvl){
+  const level = LEVELS[lvl-1];
+  const next = LEVELS[lvl];                       // undefined au niveau 8
+  const t = trendStats();
+  const drift = recentDrift();
+  const reg = recentRegularity();
+  const gap = next ? Math.max(0, next.threshold - (speed || 0)) : 0;
+  const theoWeeks = theoreticalWeeks(level);
+
+  /* Freins : produit de coefficients tous ≤ 1. On ne promet jamais mieux
+     que ce que la tendance brute annonce. */
+  let brake = 1;
+  const brakes = [];
+  if (drift !== null && drift > 12){
+    brake *= 0.55; brakes.push(`dérive cardiaque élevée (+${Math.round(drift)} bpm en moyenne sur les dernières séances)`);
+  } else if (drift !== null && drift > 8){
+    brake *= 0.75; brakes.push(`dérive cardiaque encore marquée (+${Math.round(drift)} bpm en moyenne)`);
+  }
+  if (reg.comeback){
+    brake *= 0.6; brakes.push(`reprise après ${reg.daysSinceLast} jours sans courir`);
+  } else if (reg.perWeek < 1.5){
+    brake *= 0.8; brakes.push(`régularité en retrait (${reg.count} course${reg.count>1?'s':''} sur trois semaines)`);
+  }
+
+  const out = {
+    mode: 'theorique', weeks: theoWeeks, theoWeeks, gap, next, level,
+    slope: t.slope, effSlope: null, sessionsUsed: t.n, sessionsTotal: t.total,
+    needed: MIN_TREND_SESSIONS, drift, reg, brakes, brake
+  };
+
+  if (!next){ out.mode = 'final'; out.weeks = null; return out; }
+
+  if (!t.reliable){
+    out.message = `Estimation encore théorique : il faut <strong>${MIN_TREND_SESSIONS} séances validées en zone 2</strong> pour mesurer une tendance fiable (tu en as ${t.total}). D'ici là, le programme garde le calendrier initial, soit environ ${theoWeeks} semaine${theoWeeks>1?'s':''}.`;
+    return out;
+  }
+
+  if (t.slope <= 0.005){
+    /* Tendance plate ou en repli : on le dit, sans dramatiser, et on retient
+       l'estimation théorique plutôt que d'annoncer un délai infini. */
+    out.mode = 'baisse';
+    const declining = t.slope < -0.01;
+    out.message = declining
+      ? `Sur tes ${t.n} dernières séances validées, la vitesse est en léger repli (${fmtSpeed(t.slope)} km/h par semaine). Ça arrive — fatigue, chaleur, récupération incomplète. La réponse n'est pas d'accélérer : deux sorties faciles, un sommeil correct et la régularité suffisent en général à relancer la courbe.`
+      : `Sur tes ${t.n} dernières séances validées, la vitesse stagne. C'est souvent le signe qu'un palier s'installe : garde le volume, soigne la régularité, et l'accélération reviendra d'elle-même.`;
+    return out;
+  }
+
+  const effSlope = t.slope * brake;
+  const weeks = Math.max(1, Math.ceil(gap / effSlope));
+  out.mode = 'reelle';
+  out.effSlope = effSlope;
+  out.weeks = weeks;
+  let msg = `Sur tes <strong>${t.n} dernières séances validées</strong>, tu gagnes +${fmtSpeed(t.slope)} km/h par semaine.`;
+  if (brakes.length){
+    msg += ` Estimation tempérée par ${brakes.join(' et ')} : on retient ${fmtSpeed(effSlope)} km/h par semaine.`;
+  }
+  msg += ` Délai révisé pour le niveau ${next.n} : environ <strong>${weeks} semaine${weeks>1?'s':''}</strong> (le plan initial en prévoyait ${theoWeeks}).`;
+  out.message = msg;
+  return out;
 }
 function currentLevelIndex(speed){
   if (speed == null) return 1;
@@ -1215,6 +1408,120 @@ function nextSessionRecommendation(){
 
   return { title: `Prochaine course conseillée : ${dayLabel.charAt(0).toUpperCase()+dayLabel.slice(1)}`, sub, icon: tone==='ready' ? 'ph-fill ph-play-circle' : 'ph-bold ph-battery-charging', tone };
 }
+/* ============================================================
+   OBJECTIF CHIFFRÉ DE LA PROCHAINE SORTIE
+   ------------------------------------------------------------
+   « Qu'est-ce que je fais à la prochaine séance ? » — la réponse
+   est déduite des séances réellement enregistrées : dernière
+   vitesse validée en zone 2, dérive cardiaque, régularité et
+   récupération en cours. Rien n'est inventé : sans données
+   exploitables, on le dit et on propose une séance de référence.
+   ============================================================ */
+function typicalDuration(){
+  const list = sorted().filter(s => s.duree > 0).slice(-5).map(s => s.duree).sort((a,b) => a-b);
+  if (!list.length) return null;
+  return list[Math.floor(list.length/2)];   // médiane : insensible à la sortie exceptionnelle
+}
+function speedLabel(v){ return v.toFixed(2).replace('.', ',') + ' km/h'; }
+
+function nextSessionObjective(){
+  const speed = bestZone2Speed();
+  const lvl = currentLevelIndex(speed);
+  const rec = nextSessionRecommendation();
+  const q = qualifyingChrono();
+  const last = q.length ? q[q.length-1] : null;
+  const drift = recentDrift();
+  const t = trendStats();
+  const reg = recentRegularity();
+  const out = adaptiveOutlook(speed, lvl);
+  const next = LEVELS[lvl];
+
+  const baseDur = typicalDuration();
+  const fcZone2 = `${Z2_LOW}–${Z2_HIGH} bpm`;
+
+  /* 1. Aucune séance validée en zone 2 : on ne fabrique pas de cible. */
+  if (!last){
+    const known = sorted().filter(s => s.speed);
+    const hint = known.length
+      ? `Tes ${known.length} séance${known.length>1?'s':''} enregistrée${known.length>1?'s':''} n'ont pas de fréquence cardiaque exploitable : impossible d'en déduire une vitesse de zone 2.`
+      : `Aucune séance enregistrée pour l'instant.`;
+    return {
+      kind: "Séance de référence, avec la ceinture cardio",
+      tone: 'unknown', icon: 'ph-bold ph-question',
+      volume: `${Math.round(baseDur || 30)} min`, distance: null,
+      speed: null, speedText: "à l'aise, réglée sur la FC",
+      fc: fcZone2,
+      why: `${hint} Cette sortie ne sert pas à aller vite : elle sert à créer le premier repère. Règle l'allure pour être à 130 bpm à la dixième minute, et note la FC de début et de fin.`
+    };
+  }
+
+  const lastSpeed = last.speed;
+  const durMin = Math.min(60, Math.max(25, Math.round(baseDur || last.duree || 40)));
+  const mk = (kind, tone, icon, targetSpeed, minutes, fc, why, speedText) => ({
+    kind, tone, icon,
+    volume: `${minutes} min`,
+    distance: targetSpeed ? (targetSpeed * minutes / 60) : null,
+    speed: targetSpeed,
+    speedText: speedText || (targetSpeed ? speedLabel(targetSpeed) : "—"),
+    fc, why
+  });
+
+  /* 2. Jambes encore chargées : la prochaine sortie, c'est du repos. */
+  if (rec.tone === 'wait'){
+    return mk("Repos ou récupération active", 'rest', 'ph-bold ph-battery-charging',
+      null, Math.min(30, durMin), `sous ${Z2_LOW} bpm`,
+      `${rec.sub} Marche, vélo souple ou mobilité : aucune course tant que les jambes n'ont pas encaissé.`,
+      "marche ou vélo très souple");
+  }
+
+  /* 3. Dérive cardiaque élevée : on stabilise avant d'accélérer. */
+  if (last.drift !== undefined && last.drift > 8){
+    return mk("Sortie en zone 2, à vitesse strictement constante", 'run', 'ph-bold ph-waves',
+      lastSpeed, durMin, fcZone2,
+      `Ta dérive cardiaque était de +${last.drift} bpm le ${dateLabel(last.date)} : le cœur montait encore en fin de séance. On garde exactement la même vitesse (${speedLabel(lastSpeed)}) pour la stabiliser avant d'accélérer. Si la FC dépasse ${Z2_HIGH} bpm, baisse de 0,3 km/h.`);
+  }
+
+  /* 4. Reprise après coupure : volume réduit, vitesse en retrait. */
+  if (reg.comeback){
+    const target = Math.max(5, lastSpeed - 0.2);
+    return mk("Sortie de reprise, courte et facile", 'rest', 'ph-bold ph-arrow-u-up-left',
+      target, Math.max(25, Math.round(durMin * 0.7)), fcZone2,
+      `${reg.daysSinceLast} jours sans courir depuis le ${dateLabel(sorted()[sorted().length-1].date)} : le cœur revient plus vite que les tendons. On repart légèrement sous ta dernière vitesse validée (${speedLabel(lastSpeed)}), sur un volume réduit. La vitesse reviendra en deux ou trois séances.`);
+  }
+
+  /* 5. Tendance plate ou en repli : on consolide, on n'ajoute rien. */
+  if (t.reliable && t.slope !== null && t.slope <= 0.005){
+    return mk("Sortie en zone 2, sans chercher la vitesse", 'run', 'ph-bold ph-wave-sine',
+      lastSpeed, durMin, fcZone2,
+      `${out.message ? out.message.replace(/<[^>]+>/g, '') : ''} Concrètement : même vitesse que le ${dateLabel(last.date)} (${speedLabel(lastSpeed)}), et on juge sur la dérive plutôt que sur le chrono.`);
+  }
+
+  /* 6. Mode Maintien : l'objectif n'est plus d'accélérer, mais de tenir. */
+  if (isMaintien(speed)){
+    return mk("Sortie de maintien en zone 2", 'run', 'ph-bold ph-shield-check',
+      lastSpeed, durMin, fcZone2,
+      `Objectif final atteint (${speedLabel(lastSpeed)} le ${dateLabel(last.date)}) : il n'y a plus rien à gagner en vitesse, tout à perdre en régularité. On reproduit la même séance, à la même allure, en surveillant la dérive.`);
+  }
+
+  /* 7. Le seuil suivant est à portée : séance test. */
+  if (next && next.threshold - lastSpeed <= 0.15 && (drift === null || drift <= 5)){
+    return mk("Séance test : valider le niveau " + next.n, 'run', 'ph-bold ph-flag-checkered',
+      next.threshold, durMin, fcZone2,
+      `Il ne reste que ${fmtSpeed(Math.max(0, next.threshold - lastSpeed))} km/h à gagner pour franchir le niveau ${next.n}, et ta dérive est maîtrisée${drift !== null ? ` (+${Math.round(drift)} bpm en moyenne)` : ''}. Tente ${speedLabel(next.threshold)} en gardant la FC sous ${Z2_HIGH} bpm — si elle décroche, redescends sans regret : le niveau se validera la fois suivante.`);
+  }
+
+  /* 8. Cas nominal : petite marche en avant, calibrée sur la dérive. */
+  const stepBase = (last.drift !== undefined && last.drift <= 4) ? 0.2 : 0.1;
+  const step = next ? Math.min(stepBase, Math.max(0.05, next.threshold - lastSpeed)) : stepBase;
+  const target = lastSpeed + step;
+  const driftTxt = last.drift !== undefined
+    ? `ta dérive du ${dateLabel(last.date)} était de +${last.drift} bpm, donc bien encaissée`
+    : `ta dernière séance validée date du ${dateLabel(last.date)}`;
+  return mk("Sortie en zone 2, +" + fmtSpeed(step) + " km/h", 'run', 'ph-bold ph-person-simple-run',
+    target, durMin, fcZone2,
+    `Dernière vitesse validée : ${speedLabel(lastSpeed)}, et ${driftTxt} : on peut ajouter ${fmtSpeed(step)} km/h sans forcer.${next ? ` Objectif du niveau ${next.n} : ${fmtSpeed(next.threshold)} km/h.` : ''} Si la FC dépasse ${Z2_HIGH} bpm avant la fin, reviens à ${speedLabel(lastSpeed)} : la zone prime sur la vitesse.`);
+}
+
 function adjustedWeeklyTarget(lvl, wKey){
   const base = weeklyTarget(lvl);
   const { units } = weekLoad(wKey);
@@ -1240,11 +1547,10 @@ function fmtSpeed(v){ return v.toFixed(2).replace('.', ','); }
 function levelPlanHTML(l, speed){
   const next = LEVELS[l.n];
   if (!next) return '';
-  const slope = recentTrendPerWeek();
-  const gap = Math.max(0, next.threshold - (speed||0));
-  let weeksAhead;
-  if (slope && slope > 0.005) weeksAhead = Math.max(1, Math.ceil(gap/slope));
-  else weeksAhead = levelWeeksSpan(l).weeks;
+  /* La frise reflète l'estimation retenue : réelle si les données suffisent,
+     théorique sinon — pour que le nombre de pastilles ne mente pas. */
+  const outlook = adaptiveOutlook(speed, l.n);
+  let weeksAhead = outlook.weeks || levelWeeksSpan(l).weeks;
   weeksAhead = Math.min(Math.max(weeksAhead, 1), 20);
 
   const base = weeklyTarget(l.n);
@@ -1308,23 +1614,19 @@ function levelDetailHTML(l, state, speed){
   }
   if (state === 'current'){
     const next = LEVELS[l.n];
-    const gap = next ? Math.max(0, next.threshold - (speed||0)) : 0;
-    const slope = recentTrendPerWeek();
-    let etaMsg;
-    if (next && slope && slope > 0.005){
-      const weeks = Math.max(1, Math.ceil(gap / slope));
-      etaMsg = `Au rythme actuel (+${fmtSpeed(slope)} km/h par semaine), encore environ ${weeks} semaine${weeks>1?'s':''} avant le niveau ${next.n}.`;
-    } else if (next) {
-      etaMsg = `Pas encore assez de séances régulières en zone 2 pour estimer un rythme fiable — chaque séance affine l'estimation.`;
-    } else {
-      etaMsg = `Dernier niveau avant le mode Maintien : tiens 12 km/h en zone 2 pour le débloquer.`;
-    }
+    const out = adaptiveOutlook(speed, l.n);
+    const etaMsg = out.mode === 'final'
+      ? `Dernier niveau avant le mode Maintien : tiens 12 km/h en zone 2 pour le débloquer.`
+      : out.message;
+    const etaIcon = out.mode === 'baisse' ? 'ph-bold ph-wave-sine'
+                  : out.mode === 'reelle' ? 'ph-bold ph-trend-up'
+                  : 'ph-bold ph-hourglass-medium';
     const gapMsg = next
-      ? `Il reste <strong>${fmtSpeed(gap)} km/h</strong> à gagner pour franchir le niveau ${next.n} (${next.range}).`
+      ? `Il reste <strong>${fmtSpeed(out.gap)} km/h</strong> à gagner pour franchir le niveau ${next.n} (${next.range}).`
       : `Objectif final : maintenir 12,0 km/h en zone 2.`;
     return `<div class="path-detail">
       <div class="pd-row"><i class="ph-bold ph-flag-checkered"></i><span>${gapMsg}</span></div>
-      <div class="pd-row"><i class="ph-bold ph-trend-up"></i><span>${etaMsg}</span></div>
+      <div class="pd-row"><i class="${etaIcon}"></i><span>${etaMsg}</span></div>
       ${levelPlanHTML(l, speed)}
     </div>`;
   }
@@ -1509,12 +1811,26 @@ function renderPath(lvl, maintien){
    GRAPHIQUE
    ============================================================ */
 function renderChart(){
-  const pts = sorted().filter(s => s.speed && s.fcMoy).map(s => ({ x: dateLabel(s.date), y: s.speed }));
   const host = document.getElementById('chart-host');
+
+  /* Toutes les séances chronométrées sont tracées, mais elles ne jouent pas
+     le même rôle : seules celles dont la FC moyenne est exploitable (zone 2)
+     certifient un progrès et sont reliées par la courbe. Les autres — ceinture
+     oubliée, ou effort hors zone — sont affichées en cercles creux, à leur date
+     et à leur vitesse réelles, sans entrer dans la mesure de progression.
+     Avant, elles étaient purement et simplement écartées : une séance saisie
+     semblait avoir disparu. */
+  const inZone2 = s => s.fcMoy != null && s.fcMoy >= Z2_LOW - 6 && s.fcMoy <= Z2_HIGH + 6;
+  const pts = sorted().filter(s => s.speed).map(s => ({
+    x: dateLabel(s.date), y: s.speed, z2: inZone2(s), fcMoy: s.fcMoy
+  }));
   if (!pts.length){ host.innerHTML = `<div style="color:var(--ink-4);font-size:.85rem">Pas encore de données.</div>`; return; }
 
   const W = 780, H = 220, P = { t:16, r:20, b:26, l:36 };
-  const dataMax = Math.max(...pts.map(p => p.y));
+  const z2Pts = pts.filter(p => p.z2);
+  /* Les repères de niveau se calent sur la progression certifiée : une séance
+     sans FC ne doit pas déplacer les seuils affichés. */
+  const dataMax = Math.max(...(z2Pts.length ? z2Pts : pts).map(p => p.y));
 
   /* On ne garde que les seuils à venir les plus proches, pour ne pas noyer
      le graphe sous huit repères alors que l'écart avec la vitesse actuelle
@@ -1541,12 +1857,28 @@ function renderChart(){
     thresh += `<line class="gthresh" x1="${P.l}" y1="${Y(m.v)}" x2="${W-P.r}" y2="${Y(m.v)}"/>
       <text class="gthresh-label" x="${W-P.r}" y="${Y(m.v)-3}" text-anchor="end">${m.label}</text>`;
   });
-  const d = pts.map((p,i) => (i?"L":"M") + X(i).toFixed(1) + " " + Y(p.y).toFixed(1)).join(" ");
-  const dots = pts.map((p,i) => `<circle class="gpt" cx="${X(i).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="4"><title>${p.x} — ${p.y.toFixed(2)} km/h</title></circle>`).join("");
+  /* La courbe ne relie QUE les séances validées en zone 2 : les points creux
+     sont posés sur le même axe des dates, mais sautés par le tracé. */
+  const traced = pts.map((p,i) => ({ p, i })).filter(o => o.p.z2);
+  const d = traced.map((o,k) => (k?"L":"M") + X(o.i).toFixed(1) + " " + Y(o.p.y).toFixed(1)).join(" ");
+  const dots = pts.map((p,i) => {
+    const speedTxt = p.y.toFixed(2).replace('.', ',');
+    if (p.z2){
+      return `<circle class="gpt" cx="${X(i).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="4"><title>${p.x} — ${speedTxt} km/h · séance validée en zone 2 (FC ${p.fcMoy} bpm), elle compte dans la progression.</title></circle>`;
+    }
+    const why = p.fcMoy == null ? "sans fréquence cardiaque enregistrée" : `FC moyenne ${p.fcMoy} bpm, hors zone 2`;
+    return `<circle class="gpt-off" cx="${X(i).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="4"><title>${p.x} — ${speedTxt} km/h · ${why} : la séance est affichée mais reste hors de la courbe, car rien ne prouve qu'elle a été courue en zone 2.</title></circle>`;
+  }).join("");
   const step = Math.max(1, Math.ceil(pts.length/7));
   const labels = pts.map((p,i) => (i%step===0 || i===pts.length-1) ? `<text class="glabel" x="${X(i).toFixed(1)}" y="${H-P.b+16}" text-anchor="middle">${p.x}</text>` : "").join("");
 
-  host.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Vitesse zone 2 dans le temps">${grid}${thresh}<path class="gtrace" d="${d}"/>${dots}${labels}</svg>`;
+  const trace = traced.length > 1 ? `<path class="gtrace" d="${d}"/>` : "";
+  const legend = `<div class="chart-legend">
+    <span class="cl-item"><span class="cl-dot z2"></span>séance validée en zone 2 — reliée par la courbe</span>
+    <span class="cl-item"><span class="cl-dot off"></span>vitesse mesurée sans FC exploitable — affichée, hors progression</span>
+  </div>`;
+
+  host.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Vitesse zone 2 dans le temps, séances validées et séances sans fréquence cardiaque">${grid}${thresh}${trace}${dots}${labels}</svg>${legend}`;
 }
 
 /* ============================================================
@@ -1597,6 +1929,55 @@ function sessionImpact(list, i){
   return { tag:'normale', label:'Séance stable', reason:"Vitesse et dérive cardiaque cohérentes avec la progression en cours : une brique de plus dans l'édifice." };
 }
 
+/* ============================================================
+   ANALYSE IA D'UNE SÉANCE
+   ------------------------------------------------------------
+   La fonction Edge `ai-assist` construit les consignes côté
+   serveur : on ne lui envoie que des données. Le texte obtenu est
+   attaché à la séance (aiNote / aiAt) et sauvegardé comme le reste
+   du journal — inutile de le redemander à chaque affichage.
+   ============================================================ */
+const AI_HISTORY_SIZE = 8;
+
+function aiPayload(s){
+  const p = { date: s.date, type: s.type };
+  if (s.distance !== undefined) p.dist = s.distance;
+  if (s.duree !== undefined) p.duration = s.duree;
+  if (s.speed !== undefined){ p.speed = Math.round(s.speed * 100) / 100; p.pace = paceLabel(s.speed); }
+  if (s.fcMoy !== undefined) p.fcMoy = s.fcMoy;
+  if (s.drift !== undefined) p.drift = s.drift;
+  if (s.notes) p.notes = s.notes;
+  return p;
+}
+function aiDateLabel(iso){
+  if (!iso) return '';
+  const d = new Date(iso);
+  return isNaN(d) ? '' : `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
+function aiTextHTML(s){
+  return `<div class="ai-text">${escapeHtml(s.aiNote)}</div>` +
+         (s.aiAt ? `<div class="ai-meta">Analyse générée le ${aiDateLabel(s.aiAt)} · conservée avec la séance</div>` : '');
+}
+/* Message pédagogique : tant que la clé gratuite n'est pas posée dans
+   Supabase, la fonction répond `gemini_not_configured`. Ce n'est pas une
+   panne, c'est une étape de configuration — on l'explique plutôt que
+   d'afficher une erreur brute. */
+function aiSetupHTML(){
+  return `<div class="ai-msg setup">L'analyse n'est pas encore branchée : il manque la clé d'API Gemini.
+    Elle est gratuite — crée-la sur <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com</a>,
+    puis ajoute-la dans Supabase &gt; Edge Functions &gt; Secrets sous le nom <code>GEMINI_API_KEY</code>.
+    Rien d'autre à changer sur cette page : l'analyse fonctionnera à la prochaine tentative.</div>`;
+}
+function aiBlockHTML(s){
+  const has = !!s.aiNote;
+  return `<div class="ai-block">
+    <div class="btnrow" style="justify-content:flex-start">
+      <button class="btn sm ai-run" data-ai-date="${s.date}"><i class="ph-bold ph-sparkle"></i> ${has ? "Relancer l'analyse" : "Analyser cette séance"}</button>
+    </div>
+    <div class="ai-out">${has ? aiTextHTML(s) : ''}</div>
+  </div>`;
+}
+
 function noteEditorHTML(kind, key, notes){
   return `<div class="note-edit">
     <label class="qf-field" style="margin-bottom:8px"><span>Notes</span><textarea class="note-ta" rows="2" placeholder="Ajouter une note…">${escapeHtml(notes||"")}</textarea></label>
@@ -1642,6 +2023,7 @@ function renderTable(){
       </tr>
       <tr class="detail-row" data-for="${key}" hidden><td colspan="10">
         <div class="pd-explain"><i class="ph-bold ph-info"></i><span>${impact.reason}</span></div>
+        ${aiBlockHTML(s)}
         ${noteEditorHTML('run', s.date, s.notes)}
       </td></tr>`;
     }
@@ -1698,6 +2080,39 @@ function renderTable(){
     else if (b.dataset.strengthId !== undefined){ strength = strength.filter(x => x.id !== b.dataset.strengthId); saveStrength(); }
     renderAll();
   }));
+  host.querySelectorAll('.ai-run').forEach(btn => btn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    const s = sessions.find(x => x.date === btn.dataset.aiDate);
+    if (!s) return;
+    const out = btn.closest('.ai-block').querySelector('.ai-out');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ph-bold ph-circle-notch"></i> Analyse en cours…';
+    out.innerHTML = `<div class="ai-msg info">Lecture de la séance et des précédentes, rédaction en cours…</div>`;
+    try {
+      const db = await window.NM.dbReady;
+      const chrono = sorted();
+      const idx = chrono.indexOf(s);
+      const history = chrono.slice(Math.max(0, idx - AI_HISTORY_SIZE), idx).reverse().map(aiPayload);
+      const res = await db.askAI('running-session', { session: aiPayload(s), history });
+      if (res && res.ok && res.text){
+        s.aiNote = String(res.text).trim();
+        s.aiAt = new Date().toISOString();
+        save();                                   // même mécanisme que les notes : local + cloud
+        out.innerHTML = aiTextHTML(s);
+      } else if (res && res.code === 'gemini_not_configured'){
+        out.innerHTML = aiSetupHTML();
+      } else {
+        const why = (res && res.error) ? String(res.error) : "l'analyse n'a rien renvoyé";
+        out.innerHTML = `<div class="ai-msg err">Analyse impossible pour l'instant : ${escapeHtml(why)}. Tu peux réessayer dans un moment — la séance, elle, est bien enregistrée.</div>`;
+      }
+    } catch (err) {
+      console.error('Analyse IA impossible :', err);
+      out.innerHTML = `<div class="ai-msg err">Analyse impossible : la fonction d'analyse n'a pas répondu. Vérifie ta connexion et réessaie.</div>`;
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<i class="ph-bold ph-sparkle"></i> ${s.aiNote ? "Relancer l'analyse" : "Analyser cette séance"}`;
+    }
+  }));
   host.querySelectorAll('.note-save').forEach(b => b.addEventListener('click', (e) => {
     e.stopPropagation();
     const ta = b.closest('.note-edit').querySelector('.note-ta');
@@ -1719,6 +2134,36 @@ function renderNextCard(){
   const el = document.getElementById('next-card');
   el.className = 'next-card ' + (rec.tone === 'wait' ? 'wait' : '');
   el.innerHTML = `<i class="${rec.icon}"></i><div><div class="next-title">${rec.title}</div><div class="next-sub">${rec.sub}</div></div>`;
+}
+/* Objectif de la prochaine sortie : type, volume, vitesse, FC et le
+   « pourquoi », tous issus des séances enregistrées. */
+function renderNextGoal(){
+  const host = document.getElementById('next-goal');
+  if (!host) return;
+  const g = nextSessionObjective();
+  host.className = 'goal-card ' + (g.tone === 'rest' ? 'rest' : g.tone === 'unknown' ? 'unknown' : '');
+  const distCell = g.distance
+    ? `<div class="goal-cell"><div class="gk">Distance visée</div><div class="gv num">${g.distance.toFixed(2).replace('.', ',')} <small>km</small></div></div>`
+    : '';
+  const paceCell = g.speed
+    ? `<div class="goal-cell"><div class="gk">Allure</div><div class="gv num">${paceLabel(g.speed)} <small>min/km</small></div></div>`
+    : '';
+  host.innerHTML = `
+    <div class="goal-head">
+      <i class="${g.icon}"></i>
+      <div>
+        <div class="goal-kicker">Objectif de la prochaine séance</div>
+        <div class="goal-kind">${g.kind}</div>
+      </div>
+    </div>
+    <div class="goal-grid">
+      <div class="goal-cell"><div class="gk">Durée</div><div class="gv num" id="goal-duration">${g.volume}</div></div>
+      ${distCell}
+      <div class="goal-cell"><div class="gk">Vitesse cible</div><div class="gv num" id="goal-speed">${g.speedText}</div></div>
+      ${paceCell}
+      <div class="goal-cell"><div class="gk">FC à tenir</div><div class="gv num" id="goal-fc">${g.fc}</div></div>
+    </div>
+    <div class="goal-why"><i class="ph-bold ph-lightbulb"></i><span>${g.why}</span></div>`;
 }
 function renderWeekStrip(){
   const host = document.getElementById('week-strip');
@@ -1745,6 +2190,7 @@ function renderWeekStrip(){
 }
 function renderCharge(){
   renderNextCard();
+  renderNextGoal();
   renderWeekStrip();
 
   const wKey = currentWeekKey();
@@ -1903,7 +2349,8 @@ document.getElementById('exportBtn').addEventListener('click', () => {
   const clean = sorted().map(s => ({
     date:s.date, type:s.type, lieu:s.lieu, duree:s.duree, distance:s.distance,
     fcMoy:s.fcMoy, fcMax:s.fcMax, fcDebut:s.fcDebut, fcFin:s.fcFin,
-    denivele:s.denivele, ressenti:s.ressenti, notes:s.notes
+    denivele:s.denivele, ressenti:s.ressenti, notes:s.notes,
+    aiNote:s.aiNote, aiAt:s.aiAt
   }));
   const blob = new Blob([JSON.stringify(clean, null, 2)], { type:"application/json" });
   const a = document.createElement('a');
@@ -1911,8 +2358,15 @@ document.getElementById('exportBtn').addEventListener('click', () => {
   a.download = "seances-course-" + new Date().toISOString().slice(0,10) + ".json";
   a.click(); URL.revokeObjectURL(a.href);
 });
-document.getElementById('clearBtn').addEventListener('click', () => {
-  if (!confirm("Effacer toutes les séances enregistrées ? Pense à exporter avant.")) return;
+document.getElementById('clearBtn').addEventListener('click', async () => {
+  /* Confirmation maison (assets/js/confirm-dialog.js) : le projet bannit les
+     popups natifs du navigateur. Repli sur window.confirm seulement si le
+     helper n'a pas pu être chargé, pour ne jamais effacer sans demander. */
+  const ask = window.nmConfirm
+    ? window.nmConfirm("Effacer toutes les séances enregistrées ? Pense à exporter avant.",
+        { title: 'Vider le journal', okLabel: 'Tout effacer', danger: true })
+    : Promise.resolve(window.confirm("Effacer toutes les séances enregistrées ? Pense à exporter avant."));
+  if (!(await ask)) return;
   sessions = []; save(); renderAll();
   flash("Journal vidé.", true);
 });

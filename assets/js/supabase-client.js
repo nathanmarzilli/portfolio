@@ -273,6 +273,85 @@ async function sendStripeInvoice(payload) {
 	return data;
 }
 
+/**
+ * Demande une analyse rédigée par Gemini via la fonction Edge `ai-assist`.
+ *
+ * La clé d'API vit uniquement côté Supabase : elle n'apparaît jamais dans le
+ * navigateur, donc jamais dans le code public du site. Les consignes envoyées
+ * au modèle sont elles aussi construites côté serveur — ici on ne transmet
+ * que la tâche voulue et les données à analyser.
+ *
+ * @param {string} task    'running-session' | 'prospect-analysis'
+ * @param {object} payload Données de la tâche
+ * @returns {Promise<{ok:boolean, text?:string, data?:object, error?:string, code?:string}>}
+ */
+async function askAI(task, payload) {
+	const fnName = (SB.functions && SB.functions.aiAssist) || 'ai-assist';
+	const { data, error } = await client.functions.invoke(fnName, { body: { task, payload } });
+	if (error) {
+		let detail = error.message;
+		try {
+			const ctx = await error.context.json();
+			return { ok: false, error: ctx.error || detail, code: ctx.code };
+		} catch (e) { /* corps illisible */ }
+		return { ok: false, error: detail };
+	}
+	return data;
+}
+
+/* ------------------------------------------------------------
+   PROSPECTION (clubs, associations, commerces)
+   ------------------------------------------------------------
+   La recherche s'appuie sur l'annuaire public de l'État
+   (recherche-entreprises.api.gouv.fr) : gratuit, sans clé, et
+   il couvre les associations et clubs sportifs. L'appel passe
+   par une fonction Edge pour rester cohérent avec le reste du
+   site (contrôle d'accès administrateur) et parce que le
+   navigateur ne peut pas lire le site d'un tiers (CORS).
+   ------------------------------------------------------------ */
+async function prospectTools(action, payload) {
+	const fnName = (SB.functions && SB.functions.prospectTools) || 'prospect-tools';
+	const { data, error } = await client.functions.invoke(fnName, { body: { action, payload } });
+	if (error) {
+		let detail = error.message;
+		try {
+			const ctx = await error.context.json();
+			return { ok: false, error: ctx.error || detail, code: ctx.code };
+		} catch (e) { /* corps illisible */ }
+		return { ok: false, error: detail };
+	}
+	return data;
+}
+
+function searchProspects(payload) { return prospectTools('search', payload); }
+function inspectProspectSite(url) { return prospectTools('inspect', { url: url }); }
+
+async function listProspects() {
+	const { data, error } = await client
+		.from(T.prospects || 'nm_prospects')
+		.select('*')
+		.order('score', { ascending: false, nullsFirst: false })
+		.order('created_at', { ascending: false });
+	if (error) throw error;
+	return data || [];
+}
+
+async function saveProspect(record) {
+	const table = client.from(T.prospects || 'nm_prospects');
+	const query = record.id
+		? table.update(record).eq('id', record.id).select('*').single()
+		: table.insert(record).select('*').single();
+	const { data, error } = await query;
+	if (error) throw error;
+	return data;
+}
+
+async function deleteProspect(id) {
+	const { error } = await client.from(T.prospects || 'nm_prospects').delete().eq('id', id);
+	if (error) throw error;
+	return true;
+}
+
 /* ------------------------------------------------------------
    Export
    ------------------------------------------------------------ */
@@ -289,7 +368,12 @@ const NMDB = {
 	listClients, getClient, saveClient, deleteClient, listBriefs,
 	// documents
 	nextDocumentNumber, listDocuments, getDocument, saveDocument, deleteDocument,
-	sendStripeInvoice
+	sendStripeInvoice,
+	// intelligence artificielle (Gemini, offre gratuite)
+	askAI,
+	// prospection
+	searchProspects, inspectProspectSite,
+	listProspects, saveProspect, deleteProspect
 };
 
 window.NM = window.NM || {};

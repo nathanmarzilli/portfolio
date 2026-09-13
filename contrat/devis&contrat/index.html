@@ -87,6 +87,15 @@
         .saved-doc:hover { border-color: rgb(var(--t-accent-400) / .5); background: rgb(var(--t-slate-500) / .08); }
         .saved-doc.is-current { border-color: rgb(var(--t-accent-400)); background: rgb(var(--t-accent-400) / .1); }
 
+        /* Pendant la capture PDF : on neutralise le « sticky » de l'aperçu.
+           Sinon html2canvas mesure la position décalée de l'élément collant
+           et le document se retrouve poussé vers le bas dans le PDF, alors
+           que l'aperçu à l'écran est correct. */
+        .preview-container.pdf-capturing {
+            position: static !important;
+            top: auto !important;
+        }
+
         @media (max-width: 1024px) {
             .app-grid { grid-template-columns: 1fr; }
             .preview-container { display: none; }
@@ -217,7 +226,7 @@
                         <button type="button" class="btn-primary" onclick="saveDocument()">
                             <i class="ph-bold ph-floppy-disk" aria-hidden="true"></i> Enregistrer
                         </button>
-                        <button type="button" class="btn-ghost !py-[0.85rem]" onclick="generatePDF()">
+                        <button type="button" id="btn-download-pdf" class="btn-ghost !py-[0.85rem]" onclick="generatePDF()">
                             <i class="ph-bold ph-download-simple" aria-hidden="true"></i> Télécharger le PDF
                         </button>
                     </div>
@@ -988,30 +997,91 @@
         window.clearPad = clearPad;
 
         // --- PDF GENERATION ---
-        function generatePDF() {
-            window.scrollTo(0,0);
+        // Le PDF doit être le sosie de l'aperçu affiché à l'écran. Deux pièges
+        // rendaient le document décalé vers le bas (texte démarrant au milieu
+        // de la page au lieu du haut) :
+        //   1. la page est en `scroll-smooth` : `window.scrollTo(0,0)` est donc
+        //      ANIMÉ, et html2canvas capturait pendant que la page défilait
+        //      encore ;
+        //   2. l'aperçu est en `position: sticky`, donc sa position mesurée
+        //      pendant ce défilement ne correspondait pas à sa position réelle.
+        // On force donc un défilement instantané, on neutralise le sticky le
+        // temps de la capture, et on attend deux frames que la mise en page
+        // soit stabilisée avant de générer.
+        async function generatePDF() {
             const element = document.getElementById('pdf-content');
-            
-            // Mobile Fix
             const previewContainer = document.querySelector('.preview-container');
+            const btn = document.getElementById('btn-download-pdf');
+            const originalLabel = btn ? btn.innerHTML : null;
+
             const wasHidden = window.getComputedStyle(previewContainer).display === 'none';
-            if(wasHidden) previewContainer.classList.add('show-for-print');
+            if (wasHidden) previewContainer.classList.add('show-for-print');
+            previewContainer.classList.add('pdf-capturing');
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> Préparation…';
+            }
+
+            // Défilement instantané (insensible à scroll-behavior: smooth)
+            try {
+                window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            } catch (e) {
+                window.scrollTo(0, 0);
+            }
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+
+            // On laisse deux frames au navigateur pour appliquer la mise en page
+            await new Promise(function (resolve) {
+                requestAnimationFrame(function () { requestAnimationFrame(resolve); });
+            });
 
             const name = document.getElementById('clientName').value.replace(/[^a-z0-9]/gi, '_') || "Client";
             const type = currentMode === 'quote' ? 'DEVIS' : 'FACTURE';
             const num = document.getElementById('docNumber').value;
 
+            // Le document fait exactement 210 × 297 mm. En pixels, cette
+            // hauteur tombe rarement juste (1122,5 px à 96 dpi) : le navigateur
+            // arrondit vers le haut et html2pdf ajoutait alors une seconde page
+            // entièrement blanche. Quand le contenu tient sur une page, on
+            // coupe donc la capture à la hauteur A4 exacte.
+            const pageWidthPx = element.offsetWidth;
+            const pageHeightPx = pageWidthPx * (297 / 210);
+            const fitsOnOnePage = element.scrollHeight <= pageHeightPx + 4;
+
+            const html2canvasOpts = {
+                scale: 2,
+                useCORS: true,
+                // On ancre explicitement la capture en haut à gauche du
+                // document : sans ça html2canvas réutilise la position de
+                // défilement courante et réintroduit le décalage.
+                scrollX: 0,
+                scrollY: 0,
+                windowWidth: document.documentElement.scrollWidth,
+                windowHeight: document.documentElement.scrollHeight
+            };
+            if (fitsOnOnePage) html2canvasOpts.height = Math.floor(pageHeightPx);
+
             const opt = {
                 margin: 0,
                 filename: `${type}_${num}_${name}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                html2canvas: html2canvasOpts,
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['css', 'legacy'] }
             };
 
-            html2pdf().set(opt).from(element).save().then(() => {
-                if(wasHidden) previewContainer.classList.remove('show-for-print');
-            });
+            try {
+                await html2pdf().set(opt).from(element).save();
+            } catch (e) {
+                console.error(e);
+                hint('Téléchargement impossible : ' + (e.message || 'erreur inconnue'), true);
+            } finally {
+                previewContainer.classList.remove('pdf-capturing');
+                if (wasHidden) previewContainer.classList.remove('show-for-print');
+                if (btn) { btn.disabled = false; btn.innerHTML = originalLabel; }
+            }
         }
         window.generatePDF = generatePDF;
     </script>

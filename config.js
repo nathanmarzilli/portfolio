@@ -29,7 +29,11 @@
 		brand: {
 			name: 'Clic à l’aide',
 			tagline: 'Le numérique, sans prise de tête',
-			logo: 'images/logo/Logo-1.png'
+			logo: 'images/logo/Logo-1.png',
+			// Adresse du site imprimée sur les flyers et les cartes de visite.
+			// Le jour où un vrai nom de domaine est acheté, il suffit de
+			// changer CETTE SEULE LIGNE : tous les supports imprimés suivent.
+			site: 'nathanmarzilli.github.io/portfolio'
 		},
 
 		contact: {
@@ -338,10 +342,16 @@
 				leads: 'nm_leads',
 				clients: 'nm_clients',
 				briefs: 'nm_briefs',
-				documents: 'nm_documents'
+				documents: 'nm_documents',
+				prospects: 'nm_prospects'
 			},
 			functions: {
-				stripeInvoice: 'stripe-invoice'
+				stripeInvoice: 'stripe-invoice',
+				// Analyses rédigées par Gemini (niveau gratuit, clé côté serveur)
+				aiAssist: 'ai-assist',
+				// Recherche d'associations (annuaire public de l'État) et
+				// inspection du site d'un prospect
+				prospectTools: 'prospect-tools'
 			}
 		},
 

@@ -1,327 +1,419 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark">
+<html lang="fr" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LeadMachine V4.0 | Sniper Edition</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] },
-                    colors: {
-                        dark: { 950: '#020617', 900: '#0B1120', 800: '#1E293B' },
-                        accent: { 400: '#2DD4BF', 500: '#14B8A6' },
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { background-color: #020617; color: #E2E8F0; }
-        .glass-panel { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .glass-header { background: rgba(2, 6, 23, 0.9); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-        .progress-bar { transition: width 1s ease-in-out; }
-        [x-cloak] { display: none !important; }
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-    </style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="noindex, nofollow">
+	<title>Prospection | Nathan Marzilli</title>
+	<meta name="theme-color" content="#f6f8fb">
+	<link rel="icon" href="../images/profile-40.jpg">
+
+	<link rel="stylesheet" href="../assets/css/theme.css">
+	<link rel="stylesheet" href="../assets/css/app.css">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script src="../assets/js/tailwind-theme.js"></script>
+	<script src="../assets/js/nm-boot.js"></script>
+	<script src="../assets/js/theme.js"></script>
+	<script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+	<style>
+		/* Onglets — mêmes règles que l'espace clients, pour que les deux
+		   pages se ressemblent trait pour trait. */
+		.tab-btn {
+			padding: .6rem 1rem; border-radius: .75rem;
+			font-size: .82rem; font-weight: 700;
+			color: rgb(var(--t-slate-400));
+			display: inline-flex; align-items: center; gap: .5rem;
+			transition: background-color .2s, color .2s;
+			white-space: nowrap;
+		}
+		.tab-btn:hover { color: rgb(var(--t-white)); background: rgb(var(--t-slate-500) / .08); }
+		.tab-btn[aria-selected="true"] {
+			background: rgb(var(--t-accent-400) / .14);
+			color: rgb(var(--t-accent-400));
+		}
+		.tab-btn .count {
+			font-size: .65rem; padding: .1rem .4rem; border-radius: 999px;
+			background: rgb(var(--t-slate-500) / .18); color: rgb(var(--t-slate-400));
+		}
+		.tab-btn[aria-selected="true"] .count { background: rgb(var(--t-accent-400) / .2); color: rgb(var(--t-accent-400)); }
+
+		.stat-card { padding: 1.1rem 1.25rem; border-radius: 1rem; }
+		.stat-card .value { font-family: 'Space Grotesk', sans-serif; font-size: 1.75rem; font-weight: 700; line-height: 1; }
+		.stat-card .label { font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; color: rgb(var(--t-slate-500)); }
+
+		/* Raccourcis de recherche (cibles favorites) */
+		.preset-chip {
+			display: inline-flex; align-items: center; gap: .4rem;
+			padding: .4rem .8rem; border-radius: 999px;
+			font-size: .72rem; font-weight: 700;
+			color: rgb(var(--t-slate-400));
+			background: rgb(var(--t-slate-500) / .08);
+			border: 1px solid rgb(var(--t-hairline) / var(--t-hairline-alpha));
+			cursor: pointer; transition: all .2s ease;
+		}
+		.preset-chip:hover { color: rgb(var(--t-accent-400)); border-color: rgb(var(--t-accent-400) / .45); }
+		.preset-chip.is-active { background: rgb(var(--t-accent-400) / .14); color: rgb(var(--t-accent-400)); border-color: rgb(var(--t-accent-400) / .45); }
+
+		/* Pastille de score (0-100) */
+		.score-pill {
+			display: inline-flex; align-items: center; justify-content: center;
+			min-width: 2.6rem; padding: .2rem .55rem; border-radius: .6rem;
+			font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: .9rem;
+			border: 1px solid transparent;
+		}
+		.score-pill--high { background: rgb(var(--t-emerald-500) / .14); color: rgb(var(--t-emerald-400)); border-color: rgb(var(--t-emerald-400) / .35); }
+		.score-pill--mid  { background: rgb(var(--t-amber-500) / .16);  color: rgb(var(--t-amber-400));  border-color: rgb(var(--t-amber-400) / .35); }
+		.score-pill--low  { background: rgb(var(--t-slate-500) / .14);  color: rgb(var(--t-slate-400)); }
+
+		.nm-status-select--a_contacter { color: rgb(var(--t-accent-400));  border-color: rgb(var(--t-accent-400) / .45); }
+		.nm-status-select--contacte    { color: rgb(var(--t-blue-400));    border-color: rgb(var(--t-blue-400) / .45); }
+		.nm-status-select--relance     { color: rgb(var(--t-amber-400));   border-color: rgb(var(--t-amber-400) / .45); }
+		.nm-status-select--rdv         { color: rgb(var(--t-violet-400));  border-color: rgb(var(--t-violet-400) / .45); }
+		.nm-status-select--gagne       { color: rgb(var(--t-emerald-400)); border-color: rgb(var(--t-emerald-400) / .45); }
+		.nm-status-select--perdu       { color: rgb(var(--t-slate-500)); }
+
+		/* Fiche d'analyse dépliée sous une ligne de prospect */
+		.analysis-cell { background: rgb(var(--t-slate-500) / .05); }
+		.analysis-block {
+			border-radius: .9rem; padding: .9rem 1rem;
+			border: 1px solid rgb(var(--t-hairline) / var(--t-hairline-alpha));
+			background: rgb(var(--t-dark-900));
+		}
+		.analysis-block h4 {
+			font-size: .68rem; text-transform: uppercase; letter-spacing: .06em;
+			font-weight: 800; margin-bottom: .5rem;
+			display: flex; align-items: center; gap: .4rem;
+		}
+	</style>
 </head>
-<body x-data="leadApp()" x-init="init()" class="h-screen flex flex-col overflow-hidden bg-dark-950 font-sans selection:bg-accent-400/30 text-slate-200">
+<body class="selection:bg-accent-400/30">
 
-    <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
-        <template x-for="notif in notifications" :key="notif.id">
-            <div x-transition class="pointer-events-auto px-4 py-3 rounded-lg shadow-xl border flex items-center gap-3 bg-dark-800/90 border-accent-500/50 text-white">
-                <i class="ph-bold" :class="notif.type === 'error' ? 'ph-warning-circle text-red-400' : 'ph-check-circle text-accent-400'"></i>
-                <span class="text-sm font-medium" x-text="notif.message"></span>
-            </div>
-        </template>
-    </div>
+	<!-- ============================================================
+	     ÉCRAN DE CONNEXION (identique aux autres pages sécurisées)
+	     ============================================================ -->
+	<div id="auth-loader">
+		<div class="w-full max-w-sm">
+			<div id="auth-spinner" class="flex flex-col items-center">
+				<i class="ph-duotone ph-spinner animate-spin text-4xl text-accent-400 mb-4" aria-hidden="true"></i>
+				<p class="text-slate-400 font-display uppercase tracking-widest text-xs">Vérification de l'accès…</p>
+			</div>
 
-    <header class="glass-header shrink-0 z-20 h-16 flex items-center justify-between px-6 border-b border-white/5">
-        <div class="flex items-center gap-3">
-            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-white"><i class="ph-bold ph-list text-2xl"></i></button>
-            <div class="w-8 h-8 rounded-full bg-accent-400 flex items-center justify-center text-dark-950 font-bold font-display">N</div>
-            <span class="font-display font-bold text-white tracking-wide hidden md:inline">LeadMachine <span class="text-xs text-accent-400 font-mono">V4.0</span></span>
-        </div>
-        <div class="flex items-center gap-4 text-sm">
-            <span class="text-slate-400 text-xs font-bold uppercase">Objectif Jour</span>
-            <div class="flex items-center gap-2">
-                <span class="font-bold text-white font-mono" x-text="todayCount + ' / ' + dailyGoal"></span>
-                <div class="w-20 h-1.5 bg-dark-800 rounded-full overflow-hidden border border-white/5">
-                    <div class="h-full bg-accent-400 progress-bar" :style="`width: ${(todayCount / dailyGoal) * 100}%`"></div>
-                </div>
-            </div>
-        </div>
-    </header>
+			<form id="auth-form" class="hidden glass-card p-7 text-left space-y-4">
+				<div class="flex items-center gap-3 mb-2">
+					<span class="w-10 h-10 rounded-full overflow-hidden border border-slate-500/20 block shrink-0">
+						<img src="../images/profile-96.jpg" srcset="../images/profile-96.jpg 1x, ../images/profile-192.jpg 2x" width="40" height="40" alt="" class="w-full h-full object-cover">
+					</span>
+					<div>
+						<h1 class="font-display font-bold text-lg text-white leading-tight">Espace sécurisé</h1>
+						<p class="text-[11px] text-slate-500">Prospection — clubs &amp; associations</p>
+					</div>
+				</div>
 
-    <div class="flex flex-1 overflow-hidden relative">
-        <aside class="glass-panel border-r border-white/5 flex flex-col shrink-0 z-30 transition-transform duration-300 absolute md:relative h-full w-full md:w-80 bg-dark-950 md:bg-transparent"
-               :class="mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'">
-            
-            <button @click="mobileMenuOpen = false" class="md:hidden absolute top-4 right-4 text-white p-2"><i class="ph-bold ph-x text-xl"></i></button>
+				<div>
+					<label class="label-premium" for="auth-id">Identifiant</label>
+					<input type="email" id="auth-id" class="input-premium" autocomplete="username" placeholder="nathan.marzilli@gmail.com" required>
+				</div>
+				<div>
+					<label class="label-premium" for="auth-pass">Mot de passe</label>
+					<input type="password" id="auth-pass" class="input-premium" autocomplete="current-password" placeholder="••••••••" required>
+				</div>
 
-            <div class="p-4 gap-2 flex flex-col shrink-0 border-b border-white/5">
-                <button @click="currentTab = 'search'; mobileMenuOpen = false" :class="currentTab === 'search' ? 'bg-accent-400 text-dark-950 font-bold' : 'text-slate-400 hover:bg-white/5'" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm">
-                    <i class="ph-bold ph-magnifying-glass text-lg"></i> Prospection
-                </button>
-                <button @click="currentTab = 'crm'; mobileMenuOpen = false" :class="currentTab === 'crm' ? 'bg-accent-400 text-dark-950 font-bold' : 'text-slate-400 hover:bg-white/5'" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm relative">
-                    <i class="ph-bold ph-kanban text-lg"></i> Pipeline CRM
-                    <span x-show="followUpCount > 0" class="absolute right-3 top-3 w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                </button>
-            </div>
+				<p id="auth-msg" class="hidden text-xs font-bold text-red-400 flex items-start gap-2">
+					<i class="ph-bold ph-warning mt-0.5 shrink-0" aria-hidden="true"></i><span></span>
+				</p>
 
-            <div class="flex-1 flex flex-col min-h-0">
-                <div class="flex-1 overflow-y-auto p-4 border-b border-white/10 relative">
-                    <h3 class="sticky top-0 bg-dark-950/90 py-2 text-xs font-bold text-accent-400 uppercase border-b border-white/5 mb-2 z-10"><i class="ph-bold ph-briefcase"></i> Métiers</h3>
-                    <template x-for="(items, category) in nichesCategories">
-                        <div class="mb-4">
-                            <div class="text-[10px] font-bold text-slate-400 mb-1 uppercase" x-text="category"></div>
-                            <div class="flex flex-wrap gap-2">
-                                <template x-for="niche in items">
-                                    <button @click="searchQuery = niche" class="px-2 py-1 rounded border border-white/5 bg-white/5 text-[11px] hover:bg-accent-400/20 hover:text-white transition-colors" x-text="niche"></button>
-                                </template>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-                <div class="flex-1 overflow-y-auto p-4 bg-dark-900/30">
-                    <h3 class="sticky top-0 bg-dark-900/90 py-2 text-xs font-bold text-accent-400 uppercase border-b border-white/5 mb-2 z-10"><i class="ph-bold ph-map-pin"></i> Villes</h3>
-                    <template x-for="city in targetCities">
-                        <button @click="searchLocation = city" class="w-full text-left px-3 py-2 rounded text-xs text-slate-400 hover:text-white hover:bg-white/5 flex justify-between" :class="searchLocation === city ? 'bg-white/10 text-white font-bold' : ''">
-                            <span x-text="city"></span>
-                        </button>
-                    </template>
-                </div>
-            </div>
-            
-            <div class="p-4 border-t border-white/5 bg-dark-900/50">
-                <button @click="exportCSV()" class="w-full py-2 border border-white/10 rounded-lg text-xs hover:bg-white/5 text-slate-300">Exporter CSV</button>
-            </div>
-        </aside>
+				<button type="submit" class="btn-primary w-full">Connexion</button>
+				<div class="flex items-center justify-between text-[11px]">
+					<button type="button" id="auth-reset" class="text-slate-500 hover:text-accent-400 underline underline-offset-2">Mot de passe oublié ?</button>
+					<a href="../" class="text-slate-500 hover:text-accent-400">Retour à l'accueil</a>
+				</div>
+			</form>
 
-        <main class="flex-1 overflow-y-auto relative p-4 md:p-6 scroll-smooth" @click="mobileMenuOpen = false">
-            
-            <div x-show="currentTab === 'search'" class="max-w-5xl mx-auto space-y-6">
-                
-                <div class="glass-panel p-6 rounded-2xl shadow-2xl relative overflow-hidden">
-                    <div class="flex flex-col md:flex-row gap-4 items-end relative z-10">
-                        <div class="flex-1 w-full">
-                            <label class="text-[10px] font-bold text-accent-400 uppercase ml-1">Activité</label>
-                            <input x-model="searchQuery" type="text" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 outline-none" placeholder="Ex: Menuisier...">
-                        </div>
-                        <div class="flex-1 w-full">
-                            <label class="text-[10px] font-bold text-accent-400 uppercase ml-1">Ville (Zone Morte = Jackpot)</label>
-                            <input x-model="searchLocation" type="text" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-accent-400 outline-none" placeholder="Ville...">
-                        </div>
-                        <div class="flex items-center gap-2">
-                             <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-400 select-none">
-                                <input type="checkbox" x-model="filterHighPot" class="rounded border-white/20 bg-dark-950 text-accent-400 focus:ring-accent-400">
-                                <span class="font-bold">Score > 75 Only</span>
-                             </label>
-                        </div>
-                        <button @click="performRealSearch()" :disabled="isLoading" class="w-full md:w-auto px-8 py-3 rounded-xl bg-accent-400 text-dark-950 font-bold hover:bg-white transition-all flex items-center justify-center gap-2">
-                            <span x-text="isLoading ? 'Analyse en cours...' : 'SCANNER'"></span>
-                        </button>
-                    </div>
-                </div>
+			<!-- Définition d'un nouveau mot de passe (lien reçu par e-mail) -->
+			<form id="recovery-form" class="hidden glass-card p-7 text-left space-y-4">
+				<h1 class="font-display font-bold text-lg text-white">Nouveau mot de passe</h1>
+				<p class="text-xs text-slate-400">Choisissez un mot de passe d'au moins 8 caractères.</p>
+				<div>
+					<label class="label-premium" for="recovery-pass">Nouveau mot de passe</label>
+					<input type="password" id="recovery-pass" class="input-premium" autocomplete="new-password" minlength="8" required>
+				</div>
+				<p id="recovery-msg" class="hidden text-xs font-bold text-red-400"></p>
+				<button type="submit" class="btn-primary w-full">Enregistrer</button>
+			</form>
+		</div>
+	</div>
 
-                <div class="space-y-4" x-show="searchResults.length > 0">
-                    <h3 class="text-white font-bold text-lg flex justify-between items-center">
-                        <span>Résultats de l'analyse</span>
-                        <span class="text-xs text-slate-500 font-normal" x-text="searchResults.length + ' leads trouvés'"></span>
-                    </h3>
-                    
-                    <template x-for="result in searchResults" :key="result.id">
-                        <div x-show="!filterHighPot || result.score >= 75"
-                             class="glass-panel p-5 rounded-xl border border-white/5 hover:border-accent-400/30 transition-all relative overflow-hidden"
-                             :class="result.crmStatus === 'Contacted' ? 'opacity-60 bg-dark-900 grayscale-[0.8]' : ''">
-                            
-                            <div class="absolute top-0 right-0 flex">
-                                <div x-show="result.crmStatus === 'Contacted'" class="bg-purple-600 text-white text-[9px] font-bold px-3 py-1 rounded-bl-lg">
-                                    CONTACTÉ
-                                </div>
-                             </div>
+	<!-- ============================================================
+	     CONTENU SÉCURISÉ
+	     ============================================================ -->
+	<div id="secure-content">
 
-                            <div class="flex flex-col md:flex-row gap-6">
-                                
-                                <div class="w-32 shrink-0 flex flex-col gap-2">
-                                    <div class="rounded-xl flex flex-col items-center justify-center border bg-dark-950/50 p-3"
-                                         :class="getScoreColor(result.score)">
-                                        <span class="text-3xl font-bold font-display tracking-tight" x-text="result.score + '%'"></span>
-                                        <span class="text-[8px] uppercase font-bold opacity-70">Potentiel</span>
-                                    </div>
-                                    
-                                    <div class="flex flex-col gap-1">
-                                        <template x-for="issue in result.issues">
-                                            <span class="text-[9px] px-2 py-1 rounded border flex items-center gap-1 font-bold"
-                                                  :class="getIssueColor(issue)">
-                                                <i class="ph-bold" :class="getIssueIcon(issue)"></i>
-                                                <span x-text="issue"></span>
-                                            </span>
-                                        </template>
-                                        <span x-show="result.score > 80" class="text-[9px] px-2 py-1 rounded border border-green-500/20 bg-green-500/10 text-green-400 text-center font-bold">
-                                            🔥 HOT LEAD
-                                        </span>
-                                    </div>
-                                </div>
+		<nav class="w-full nav-glass sticky top-0 z-40">
+			<div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+				<a href="../" class="flex items-center gap-3 group shrink-0" title="Retour à l'accueil">
+					<span class="w-9 h-9 rounded-full overflow-hidden border border-slate-500/20 group-hover:border-accent-400 transition-colors block shrink-0">
+						<img src="../images/profile-96.jpg" srcset="../images/profile-96.jpg 1x, ../images/profile-192.jpg 2x" width="36" height="36" alt="" class="w-full h-full object-cover">
+					</span>
+					<span class="leading-tight">
+						<span class="font-display font-bold text-base tracking-wide text-white block">Prospection</span>
+						<span class="block text-[10px] text-accent-400 font-bold uppercase tracking-wider">Clubs &amp; associations</span>
+					</span>
+				</a>
+				<div class="flex items-center gap-2">
+					<div data-theme-toggle></div>
+					<a href="../admin/" class="btn-ghost hidden sm:inline-flex"><i class="ph-bold ph-users-three" aria-hidden="true"></i> Espace clients</a>
+					<a href="../" class="btn-ghost"><i class="ph-bold ph-arrow-left" aria-hidden="true"></i> <span class="hidden sm:inline">Accueil</span></a>
+					<button type="button" id="logout-btn" class="btn-ghost btn-danger"><i class="ph-bold ph-sign-out" aria-hidden="true"></i><span class="hidden sm:inline">Quitter</span></button>
+				</div>
+			</div>
+		</nav>
 
-                                <div class="flex-1 min-w-0">
-                                    <h3 class="font-bold text-white text-lg leading-tight mb-2" x-text="result.name"></h3>
-                                    
-                                    <div class="text-sm text-slate-300 space-y-2 mb-3">
-                                        <div class="flex items-start gap-2">
-                                            <i class="ph-bold ph-map-pin mt-1 text-slate-500"></i>
-                                            <span x-text="result.address" class="break-words w-full"></span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <i class="ph-bold ph-globe text-slate-500"></i>
-                                            <a x-show="result.website" :href="result.website" target="_blank" class="text-accent-400 hover:underline">Voir le site</a>
-                                            <span x-show="!result.website" class="text-red-400 font-bold text-xs uppercase">⛔ Pas de Site Web</span>
-                                        </div>
-                                    </div>
+		<main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
 
-                                    <div class="mb-3">
-                                        <label class="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Canaux détectés</label>
-                                        <div class="flex flex-wrap gap-2">
-                                            <span x-show="result.email" class="px-2 py-1 rounded bg-blue-500/10 text-blue-400 border border-blue-500/30 text-[10px] font-bold flex items-center gap-1">
-                                                <i class="ph-bold ph-envelope"></i> Email
-                                            </span>
-                                            <span x-show="result.phone" class="px-2 py-1 rounded bg-green-500/10 text-green-400 border border-green-500/30 text-[10px] font-bold flex items-center gap-1 cursor-pointer" @click="navigator.clipboard.writeText(result.phone); notify('Tél copié')">
-                                                <i class="ph-bold ph-phone"></i> <span x-text="result.phone"></span>
-                                            </span>
-                                            <span x-show="result.socials && result.socials.facebook" class="px-2 py-1 rounded bg-blue-600/20 text-blue-400 border border-blue-600/30 text-[10px] font-bold flex items-center gap-1">
-                                                <i class="ph-bold ph-facebook-logo"></i> Facebook
-                                            </span>
-                                            <span x-show="result.socials && result.socials.instagram" class="px-2 py-1 rounded bg-pink-500/20 text-pink-400 border border-pink-500/30 text-[10px] font-bold flex items-center gap-1">
-                                                <i class="ph-bold ph-instagram-logo"></i> Instagram
-                                            </span>
-                                        </div>
-                                    </div>
+			<!-- Chiffres clés -->
+			<section class="grid grid-cols-2 lg:grid-cols-4 gap-3" aria-label="Vue d'ensemble">
+				<div class="stat-card glass-card border border-accent-400/25">
+					<div class="value text-accent-400" id="stat-todo">—</div>
+					<div class="label mt-1">À contacter</div>
+				</div>
+				<div class="stat-card glass-card border border-amber-500/25">
+					<div class="value text-amber-400" id="stat-followup">—</div>
+					<div class="label mt-1">Relances dues</div>
+				</div>
+				<div class="stat-card glass-card border border-blue-500/25">
+					<div class="value text-blue-400" id="stat-today">—</div>
+					<div class="label mt-1">Contactés aujourd'hui</div>
+				</div>
+				<div class="stat-card glass-card border border-slate-500/15">
+					<div class="value text-white" id="stat-total">—</div>
+					<div class="label mt-1">Prospects suivis</div>
+				</div>
+			</section>
 
-                                    <div class="flex flex-wrap gap-2 mt-2">
-                                        <button @click="addToCRM(result)" x-show="!getExistingLead(result.id)" class="px-3 py-2 rounded bg-white/5 hover:bg-white/10 text-xs font-bold border border-white/10">
-                                            + CRM
-                                        </button>
-                                        <button @click="toggleEmailPanel(result)" 
-                                                class="px-4 py-2 rounded text-dark-950 text-xs font-bold transition-all flex items-center gap-2 shadow-lg"
-                                                :class="result.crmStatus === 'Contacted' ? 'bg-slate-500 text-white' : 'bg-accent-400 hover:bg-white'">
-                                            <i class="ph-bold ph-paper-plane-tilt"></i>
-                                            <span x-text="result.crmStatus === 'Contacted' ? 'Relancer' : 'CONTACTER'"></span>
-                                        </button>
-                                        
-                                        <a x-show="!result.email && (!result.probableEmails || result.probableEmails.length === 0)" 
-                                           :href="getSearchLink(result)" target="_blank"
-                                           class="px-3 py-2 rounded bg-red-500/20 text-red-400 border border-red-500/50 hover:bg-red-500 hover:text-white transition-colors text-xs font-bold flex items-center gap-2">
-                                            <i class="ph-bold ph-magnifying-glass"></i> CHERCHER EMAIL
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+			<!-- Onglets -->
+			<div class="flex items-center gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Sections">
+				<button class="tab-btn" role="tab" aria-selected="true" data-tab="recherche">
+					<i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i> Rechercher <span class="count" id="count-results">0</span>
+				</button>
+				<button class="tab-btn" role="tab" aria-selected="false" data-tab="prospects">
+					<i class="ph-bold ph-address-book" aria-hidden="true"></i> Mes prospects <span class="count" id="count-prospects">0</span>
+				</button>
+				<button class="tab-btn" role="tab" aria-selected="false" data-tab="email">
+					<i class="ph-bold ph-envelope-simple" aria-hidden="true"></i> E-mail
+				</button>
+			</div>
 
-                            <div x-show="expandedEmail === result.id" x-collapse class="mt-4 pt-4 border-t border-white/10 bg-dark-950/50 -mx-5 px-5 -mb-5 pb-5 rounded-b-xl">
-                                <div class="grid md:grid-cols-2 gap-4">
-                                    <div>
-                                        <div class="flex justify-between mb-1 items-center">
-                                            <label class="text-[10px] font-bold text-slate-500 uppercase">Message (Optimisé Pain-Points)</label>
-                                            <button @click="copyEmail()" class="text-[10px] text-accent-400">Copier</button>
-                                        </div>
-                                        <div x-show="result.painPointsDetected" class="mb-2 p-2 bg-red-500/10 border border-red-500/20 rounded text-[10px] text-red-300">
-                                            <b>🧠 Douleurs détectées et injectées :</b><br>
-                                            <span x-text="result.painPointsDetected"></span>
-                                        </div>
-                                        <textarea x-model="generatedEmail.body" rows="15" class="w-full bg-dark-950 border border-white/10 rounded px-3 py-2 text-white text-xs font-mono leading-relaxed resize-none focus:border-accent-400 outline-none"></textarea>
-                                    </div>
-                                    <div class="space-y-3">
-                                        <div>
-                                            <label class="text-[10px] font-bold text-slate-500 uppercase">Email Destinataire</label>
-                                            <input type="text" x-model="generatedEmail.to" placeholder="Email..." class="w-full bg-dark-950 border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-accent-400 outline-none">
-                                            
-                                            <div x-show="result.probableEmails && result.probableEmails.length > 0" class="mt-2">
-                                                <p class="text-[10px] font-bold text-accent-400 mb-1">🧠 Emails Probables (cliquez pour tester) :</p>
-                                                <div class="flex flex-wrap gap-1">
-                                                    <template x-for="prob in result.probableEmails">
-                                                        <button @click="generatedEmail.to = prob" class="px-2 py-1 rounded bg-white/5 border border-white/10 hover:bg-accent-400 hover:text-dark-950 text-[10px] transition-colors" x-text="prob"></button>
-                                                    </template>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label class="text-[10px] font-bold text-slate-500 uppercase">Sujet</label>
-                                            <input type="text" x-model="generatedEmail.subject" class="w-full bg-dark-950 border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-accent-400 outline-none">
-                                        </div>
-                                        <button @click="sendEmailDirectly(result)" :disabled="isSending" class="w-full py-3 rounded bg-accent-400 text-dark-950 font-bold hover:bg-white text-sm shadow-lg disabled:opacity-50">
-                                            <span x-text="isSending ? 'Envoi...' : 'Envoyer Maintenant'"></span>
-                                        </button>
-                                        <button @click="openGmail(result)" class="w-full py-2 rounded border border-white/10 text-slate-400 text-xs hover:bg-white/5">Ouvrir dans Gmail</button>
-                                        
-                                        <div class="pt-2 border-t border-white/10 mt-2">
-                                            <label class="text-[10px] font-bold text-slate-500 uppercase">Mise à jour manuelle</label>
-                                            <div class="flex gap-2 mt-1">
-                                                <button @click="updateLeadChannel(result, 'Facebook')" class="flex-1 py-1 rounded bg-blue-900/30 text-blue-400 text-[10px] border border-blue-900/50">Via Facebook</button>
-                                                <button @click="updateLeadChannel(result, 'Phone')" class="flex-1 py-1 rounded bg-green-900/30 text-green-400 text-[10px] border border-green-900/50">Via Tél</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-            </div>
-            
-            <div x-show="currentTab === 'crm'" class="max-w-7xl mx-auto">
-                 <h2 class="font-display text-2xl font-bold text-white mb-4">Pipeline CRM</h2>
-                 <div class="overflow-x-auto rounded-lg border border-white/10 bg-dark-900/30">
-                    <table class="w-full text-left border-collapse">
-                        <thead class="bg-white/5 text-[10px] font-bold text-slate-400 uppercase">
-                            <tr><th class="p-3">Nom</th><th class="p-3">Contact</th><th class="p-3">Statut</th><th class="p-3">Relances</th><th class="p-3">Action</th></tr>
-                        </thead>
-                        <tbody class="divide-y divide-white/5 text-sm">
-                            <template x-for="lead in leads" :key="lead.id">
-                                <tr class="hover:bg-white/5">
-                                    <td class="p-3">
-                                        <div class="font-bold text-white" x-text="lead.name"></div>
-                                        <div class="text-[10px] text-slate-500" x-text="lead.city"></div>
-                                    </td>
-                                    <td class="p-3 text-slate-300">
-                                        <div x-text="lead.email"></div>
-                                        <div x-text="lead.phone" class="text-xs text-slate-500"></div>
-                                    </td>
-                                    <td class="p-3">
-                                        <select x-model="lead.status" @change="updateStatus(lead)" class="bg-dark-950 border border-white/10 rounded px-2 py-1 text-xs text-white">
-                                            <option value="To Contact">À contacter</option>
-                                            <option value="Contacted">Contacté</option>
-                                            <option value="Relance">À Relancer</option>
-                                            <option value="Won">Gagné</option>
-                                        </select>
-                                    </td>
-                                    <td class="p-3">
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-xs font-mono bg-white/10 px-2 py-0.5 rounded" x-text="(lead.contactCount || 0) + ' fois'"></span>
-                                            <span x-show="lead.lastContactChannel" class="text-[10px] uppercase text-slate-500" x-text="lead.lastContactChannel"></span>
-                                        </div>
-                                        <div x-show="lead.nextFollowUpDate" class="text-[10px] text-accent-400 mt-1">
-                                            Prochaine: <span x-text="formatDate(lead.nextFollowUpDate)"></span>
-                                        </div>
-                                    </td>
-                                    <td class="p-3">
-                                        <button @click="removeLead(lead)" class="text-slate-500 hover:text-red-500"><i class="ph-bold ph-trash"></i></button>
-                                    </td>
-                                </tr>
-                            </template>
-                        </tbody>
-                    </table>
-                 </div>
-            </div>
-        </main>
-    </div>
-    <script src="app.js"></script>
+			<!-- ============================================================
+			     ONGLET 1 — RECHERCHER
+			     ============================================================ -->
+			<section id="tab-recherche" role="tabpanel" class="space-y-4">
+
+				<div class="glass-card p-5 border border-slate-500/15">
+					<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+						<h2 class="font-display font-bold text-lg text-white">Trouver des clubs et des associations</h2>
+						<span class="nm-badge nm-badge--ok"><i class="ph-bold ph-gift" aria-hidden="true"></i> Annuaire public, gratuit</span>
+					</div>
+
+					<p class="text-[11px] text-slate-500 -mt-2 mb-4 max-w-3xl leading-relaxed">
+						La recherche interroge l'annuaire des entreprises et associations de l'État français :
+						aucune clé d'API, aucun abonnement, aucune facturation à l'usage.
+					</p>
+
+					<form id="search-form" class="space-y-4">
+						<div class="grid md:grid-cols-3 gap-3">
+							<div class="md:col-span-1">
+								<label class="label-premium" for="search-query">Que cherchez-vous ?</label>
+								<input class="input-premium" id="search-query" placeholder="club de badminton, comité des fêtes…">
+							</div>
+							<div>
+								<label class="label-premium" for="search-commune">Code postal ou département</label>
+								<input class="input-premium" id="search-commune" placeholder="74500 ou 74" inputmode="numeric">
+							</div>
+							<div>
+								<label class="label-premium" for="search-naf">Type d'activité</label>
+								<select class="select-premium" id="search-naf">
+									<option value="">Toutes activités</option>
+									<option value="93.12Z">Clubs de sport (93.12Z)</option>
+									<option value="93.19Z">Autres activités sportives (93.19Z)</option>
+									<option value="93.29Z">Loisirs &amp; animation (93.29Z)</option>
+									<option value="94.99Z">Associations, tous domaines (94.99Z)</option>
+								</select>
+							</div>
+						</div>
+
+						<div>
+							<span class="label-premium">Raccourcis</span>
+							<div class="flex flex-wrap gap-2" id="search-presets">
+								<button type="button" class="preset-chip" data-preset='{"query":"club de badminton","naf":"93.12Z"}'><i class="ph-bold ph-shuttlecock" aria-hidden="true"></i> Clubs de badminton</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"club de tennis","naf":"93.12Z"}'><i class="ph-bold ph-tennis-ball" aria-hidden="true"></i> Clubs de tennis</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"club de football","naf":"93.12Z"}'><i class="ph-bold ph-soccer-ball" aria-hidden="true"></i> Clubs de football</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"","naf":"93.12Z"}'><i class="ph-bold ph-trophy" aria-hidden="true"></i> Tous les clubs de sport</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"","naf":"93.19Z"}'><i class="ph-bold ph-medal" aria-hidden="true"></i> Autres activités sportives</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"","naf":"94.99Z"}'><i class="ph-bold ph-users-four" aria-hidden="true"></i> Associations</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"comité des fêtes","naf":""}'><i class="ph-bold ph-confetti" aria-hidden="true"></i> Comités des fêtes</button>
+							</div>
+						</div>
+
+						<div class="flex flex-wrap items-center gap-3">
+							<label class="chk-label !p-2 !text-[11px] !w-auto">
+								<input type="checkbox" class="chk-input" id="search-assos" checked>
+								<span class="text-slate-300">Associations uniquement</span>
+							</label>
+							<button type="submit" class="btn-primary" id="search-submit"><i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i> Rechercher</button>
+							<span class="text-xs text-slate-500" id="search-hint"></span>
+						</div>
+					</form>
+				</div>
+
+				<div class="glass-card p-4 border border-blue-500/25 text-[11px] text-slate-400 leading-relaxed">
+					<strong class="text-white flex items-center gap-2 mb-1"><i class="ph-bold ph-info text-blue-400" aria-hidden="true"></i> L'annuaire public ne donne pas l'adresse du site</strong>
+					C'est la contrepartie d'une source gratuite : collez l'adresse du site dans le champ prévu quand
+					vous la connaissez, ou utilisez le lien « Trouver le site » qui lance la recherche web pré-remplie.
+					Sans adresse de site, le prospect s'enregistre quand même — l'analyse se fera plus tard.
+				</div>
+
+				<div id="search-results" class="grid gap-3 md:grid-cols-2">
+					<p class="text-slate-500 italic text-sm">Lancez une recherche pour voir des résultats.</p>
+				</div>
+			</section>
+
+			<!-- ============================================================
+			     ONGLET 2 — MES PROSPECTS
+			     ============================================================ -->
+			<section id="tab-prospects" role="tabpanel" class="space-y-4 hidden">
+				<div class="glass-card p-5 border border-slate-500/15">
+					<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+						<div>
+							<h2 class="font-display font-bold text-lg text-white">Mes prospects</h2>
+							<p class="text-[11px] text-slate-500 mt-0.5">Classés du plus intéressant au moins intéressant (score décroissant).</p>
+						</div>
+						<div class="flex flex-wrap items-center gap-2">
+							<input type="search" id="prospect-search" class="input-premium !py-2 !text-sm w-44" placeholder="Rechercher…" aria-label="Rechercher un prospect">
+							<select id="prospect-filter-status" class="select-premium !py-2 !text-sm w-40" aria-label="Filtrer par statut">
+								<option value="">Tous les statuts</option>
+							</select>
+							<label class="chk-label !p-2 !text-[11px] !w-auto">
+								<input type="checkbox" class="chk-input" id="prospect-filter-followup">
+								<span class="text-slate-300">À relancer</span>
+							</label>
+							<button type="button" class="btn-ghost !py-2 !px-3 !text-sm" data-refresh><i class="ph-bold ph-arrows-clockwise" aria-hidden="true"></i> Actualiser</button>
+						</div>
+					</div>
+
+					<div class="overflow-x-auto">
+						<table class="nm-table">
+							<thead>
+								<tr>
+									<th>Score</th>
+									<th>Prospect</th>
+									<th class="hidden md:table-cell">Site</th>
+									<th>Statut</th>
+									<th class="hidden sm:table-cell">Dernier contact</th>
+									<th class="hidden sm:table-cell">Relance</th>
+									<th class="nm-table-actions-col"></th>
+								</tr>
+							</thead>
+							<tbody id="prospects-body">
+								<tr><td colspan="7" class="text-slate-500 italic">Chargement…</td></tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</section>
+
+			<!-- ============================================================
+			     ONGLET 3 — E-MAIL
+			     ============================================================ -->
+			<section id="tab-email" role="tabpanel" class="space-y-4 hidden">
+				<div class="glass-card p-5 border border-slate-500/15">
+					<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+						<div>
+							<h2 class="font-display font-bold text-lg text-white">E-mail de prise de contact</h2>
+							<p class="text-[11px] text-slate-500 mt-0.5" id="email-target">Aucun prospect sélectionné.</p>
+						</div>
+						<span class="nm-badge nm-badge--warn"><i class="ph-bold ph-hand-palm" aria-hidden="true"></i> Aucun envoi automatique</span>
+					</div>
+
+					<div id="email-empty" class="text-slate-500 italic text-sm">
+						Choisissez un prospect dans l'onglet « Mes prospects », puis cliquez sur « E-mail ».
+					</div>
+
+					<div id="email-editor" class="hidden space-y-4">
+						<div class="grid sm:grid-cols-2 gap-3">
+							<div>
+								<label class="label-premium" for="email-to">Destinataire</label>
+								<input type="email" class="input-premium" id="email-to" placeholder="contact@club-exemple.fr">
+							</div>
+							<div>
+								<label class="label-premium" for="email-subject">Objet</label>
+								<input class="input-premium" id="email-subject">
+							</div>
+						</div>
+						<div>
+							<label class="label-premium" for="email-body">Message</label>
+							<textarea class="textarea-premium !min-h-[260px]" id="email-body" rows="12"></textarea>
+						</div>
+
+						<div class="flex flex-wrap items-center gap-2">
+							<button type="button" class="btn-ghost" id="email-copy"><i class="ph-bold ph-copy" aria-hidden="true"></i> Copier</button>
+							<a class="btn-ghost" id="email-mailto" href="#"><i class="ph-bold ph-arrow-square-out" aria-hidden="true"></i> Ouvrir dans ma messagerie</a>
+							<button type="button" class="btn-ghost" id="email-save"><i class="ph-bold ph-floppy-disk" aria-hidden="true"></i> Enregistrer le brouillon</button>
+							<button type="button" class="btn-primary" id="email-sent"><i class="ph-bold ph-check-circle" aria-hidden="true"></i> Je l'ai envoyé</button>
+						</div>
+						<p class="text-[11px] text-slate-500 leading-relaxed max-w-3xl">
+							« Je l'ai envoyé » ne poste rien : c'est vous qui envoyez depuis votre messagerie. Le bouton
+							note simplement le contact du jour, passe le prospect en « Contacté » et programme une relance
+							dans sept jours.
+						</p>
+					</div>
+				</div>
+
+				<!-- Rappel des offres — prix rendus par assets/js/i18n.js -->
+				<div class="glass-card p-5 border border-slate-500/15">
+					<h3 class="font-display font-bold text-white mb-1">Ce que vous pouvez leur proposer</h3>
+					<p class="text-[11px] text-slate-500 mb-4">
+						Cette liste est aussi celle transmise à l'assistant : elle vient de <code class="text-accent-400">config.js</code>,
+						jamais d'un prix recopié à la main.
+					</p>
+					<div id="offers-list" class="grid gap-2 sm:grid-cols-2"></div>
+				</div>
+			</section>
+
+			<!-- Message pédagogique si la clé Gemini n'est pas encore posée -->
+			<div id="gemini-notice" class="hidden glass-card p-5 border border-amber-500/25 text-xs text-slate-400 leading-relaxed">
+				<strong class="text-white block mb-1 flex items-center gap-2"><i class="ph-bold ph-lightbulb text-amber-400" aria-hidden="true"></i> L'analyse par l'assistant n'est pas encore activée</strong>
+				Ce n'est pas une panne : il manque simplement une clé, et elle est gratuite.
+				<ol class="list-decimal pl-5 space-y-1 mt-2">
+					<li>Ouvrez <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" class="text-accent-400 underline">aistudio.google.com</a> avec votre compte Google et créez une clé d'API (offre gratuite).</li>
+					<li>Dans Supabase, allez dans <em>Edge Functions → Secrets</em>.</li>
+					<li>Ajoutez-la sous le nom <code class="text-accent-400">GEMINI_API_KEY</code>, puis rechargez cette page.</li>
+				</ol>
+				<p class="mt-2">En attendant, la recherche, l'inspection des sites et le suivi CRM fonctionnent normalement.</p>
+			</div>
+		</main>
+
+		<footer class="max-w-7xl mx-auto px-4 pb-10 text-center text-xs text-slate-500">
+			<a href="../" class="inline-flex items-center gap-2 hover:text-accent-400 transition-colors font-bold">
+				<i class="ph-bold ph-arrow-left" aria-hidden="true"></i> Retour à l'accueil
+			</a>
+		</footer>
+	</div>
+
+	<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 glass-card px-5 py-3 flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300 z-[80] bg-dark-900">
+		<i id="toast-icon" class="ph-fill ph-check-circle text-accent-400 text-xl" aria-hidden="true"></i>
+		<span id="toast-message" class="font-medium text-sm text-white"></span>
+	</div>
+
+	<script src="../config.js"></script>
+	<script type="module" src="../assets/js/supabase-client.js"></script>
+	<script src="../assets/js/i18n.js"></script>
+	<script src="../assets/js/confirm-dialog.js"></script>
+	<script src="./app.js"></script>
 </body>
 </html>

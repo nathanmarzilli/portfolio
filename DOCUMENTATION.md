@@ -103,11 +103,12 @@ offre-club/                  Offre clubs & associations
 offre-club/images-tournoi/   Captures du module tournois (miniatures + loupe)
 kickoff/                     Formulaire de préparation de projet
 merci/                       Page de confirmation
+supports/                    Flyers A4 (5 thèmes) + planche de cartes de visite (noindex)
 contrat/devis&contrat/       Générateur de devis et factures (protégé)
 contrat/quittance/           Générateur de quittances (protégé)
 contrat/bail/                Générateur de baux (protégé)
 running/                     Suivi running personnel (protégé)
-prospect/                    Outil de prospection (laissé tel quel)
+prospect/                    Prospection clubs & associations (protégé)
 ```
 
 ---
@@ -337,29 +338,31 @@ Ce qui est déjà perdu ne peut pas être récupéré — il n'en existait aucun
 
 ---
 
-## 12. Devis / facture en un clic depuis une demande, et transformation devis → facture
+## 12. De la demande à la fiche client, puis au devis et à la facture
 
-Dans `/admin/` → onglet **Demandes**, chaque ligne propose maintenant trois
-boutons : **Devis**, **Facture**, **Fiche client**.
+Dans `/admin/` → onglet **Demandes**, chaque ligne propose un bouton
+**« Fiche client »**. C'est le point de passage unique vers la suite :
 
-- Cliquer sur **Devis** ou **Facture** ouvre directement le générateur
-  (`contrat/devis&contrat/`) avec un document pré-rempli à partir des
-  informations de la demande (formule, options, coordonnées).
-- Si la demande n'est pas encore liée à un client, la fiche client est
-  **créée automatiquement en arrière-plan** (mêmes informations que la
-  demande) avant l'ouverture du document, et la demande passe au statut
-  « Client ». Vous n'avez rien à faire de plus : il suffit ensuite de
-  vérifier/ajuster le devis ou la facture et de l'enregistrer.
-- Le document enregistré reste **lié au client** (et donc retrouvable dans
-  l'onglet Clients).
+- S'il n'y a pas encore de client lié à cette demande, il ouvre une fiche
+  client **pré-remplie** (nom, société, e-mail, pack, options) à vérifier
+  puis enregistrer.
+- S'il y en a déjà un, il rouvre directement sa fiche.
+
+Une fois la fiche client enregistrée, c'est dans l'onglet **Clients** que se
+génèrent le devis et la facture (boutons « Générer le devis » /
+« Créer la facture » sur la fiche) — c'est le fonctionnement d'origine du
+site. *(Une première version de cette mise à jour ajoutait des boutons
+« Devis » / « Facture » directement sur chaque ligne de Demandes ; ils
+faisaient double emploi avec la fiche client et ont été retirés à la
+demande de Nathan.)*
 
 **Transformer un devis en facture** — sur un devis déjà enregistré, un
-nouveau bouton **« Transformer ce devis en facture »** apparaît dans le
-générateur. Il crée une **nouvelle facture** reprenant les mêmes lignes, le
-même client, et référençant le devis d'origine (le devis lui-même n'est pas
-modifié — vous gardez une trace des deux documents, comme pour une vraie
-facturation). La fiche du document affiche ensuite « Issue du devis n°… »
-côté facture, et « Déjà transformé en facture n°… » côté devis.
+bouton **« Transformer ce devis en facture »** apparaît dans le générateur
+(`contrat/devis&contrat/`). Il crée une **nouvelle facture** reprenant les
+mêmes lignes et le même client, et référençant le devis d'origine (le devis
+lui-même n'est pas modifié — vous gardez une trace des deux documents, comme
+pour une vraie facturation). La fiche du document affiche ensuite « Issue du
+devis n°… » côté facture, et « Déjà transformé en facture n°… » côté devis.
 
 *Correction associée — passage du statut d'une demande à « Client » :*
 auparavant, choisir « Client » dans la liste déroulante des statuts changeait
@@ -372,11 +375,157 @@ change vraiment qu'une fois la fiche enregistrée. Un deuxième bug lié a été
 corrigé au passage : l'enregistrement de la fiche client depuis cette
 modale échouait silencieusement (un champ inexistant était envoyé à la base
 de données), ce qui explique que « 0 client » apparaissait jusqu'ici même
-après avoir suivi la procédure.
+après avoir suivi la procédure. Comme les deux façons de créer un client ont
+un temps coexisté, il est possible que certaines fiches soient en double :
+un bouton **« Supprimer »** a été ajouté sur chaque fiche (onglet Clients)
+pour faire le ménage — supprimer une fiche ne touche pas aux devis/factures
+déjà émis, qui restent consultables dans l'onglet Documents.
 
 ---
 
-## 13. Publier les changements (GitHub Pages)
+## 13. Fenêtres de confirmation « maison » (fini les popups du navigateur)
+
+Les confirmations avant un envoi de facture Stripe, une suppression de
+document ou de client, ou une transformation devis → facture, ne passent
+plus par les popups natifs du navigateur (`window.confirm`) — ceux qui
+affichent « nathanmarzilli.github.io indique… » avec l'icône du navigateur.
+Elles utilisent désormais une petite fenêtre stylée, cohérente avec le reste
+du site (`assets/js/confirm-dialog.js`, chargé sur les pages `/admin/` et
+`contrat/devis&contrat/`). Le comportement est le même (Annuler / confirmer),
+juste sans l'aspect intrusif du popup système.
+
+**Bug corrigé — envoi de facture par Stripe impossible** : cliquer sur
+« Envoyer » renvoyait l'erreur *« Received unknown parameter: unit_amount.
+Did you mean unit_amount_decimal? »*. L'API Stripe de votre compte
+n'accepte plus le paramètre `unit_amount` tel quel sur la création d'une
+ligne de facture — Stripe suggère lui-même `unit_amount_decimal` (même
+valeur, en centimes, sous forme de texte). La fonction Supabase
+`stripe-invoice` a été corrigée en ce sens et redéployée (version 3) ; le
+bouton « Envoyer la facture » fonctionne à nouveau.
+
+**Affichage sur mobile/tablette** — dans `/admin/` → Demandes, le bouton
+« Fiche client » était poussé hors de l'écran sur petit écran (il fallait
+faire défiler le tableau horizontalement pour l'atteindre). Deux colonnes
+moins utiles (« Reçue le », « Estimation ») se masquent maintenant sur les
+petits écrans, et la colonne d'actions reste **toujours visible** à droite
+pendant le défilement du tableau.
+
+**Offre club — sélection de plusieurs modules** — cliquer sur « Ajouter à ma
+demande » depuis le catalogue de modules faisait défiler la page jusqu'au
+formulaire à chaque clic, empêchant d'en sélectionner plusieurs à la suite.
+Ce défilement automatique a été retiré : le bouton cliqué change déjà
+d'apparence sur place pour confirmer l'ajout, on peut donc enchaîner les
+clics puis descendre au formulaire une fois la sélection terminée.
+
+**Tarif des modules club** — l'étiquette « 100 € par module » a été
+remplacée par « dès 100 € », pour ne pas laisser penser que le module
+« Actualités simplifiées » (1 000 €) coûte 100 €.
+
+---
+
+## 14. Supports imprimés : flyers et cartes de visite
+
+Ils ont quitté la page d'accueil pour une page dédiée : **`/supports/`**
+(le bouton « Flyers & cartes de visite » de l'accueil y mène).
+
+**Cinq flyers A4**, au choix selon ce que vous mettez en avant : souvenirs
+(numérisation), dépannage, sécurité, formation, démarches numériques. Ils
+partagent le même gabarit — logo, titre, visuel, prix, téléphone — seuls le
+titre, la liste et l'illustration changent. Les prix viennent de `config.js`
+(`facilitateur`) : changez-les là, les cinq flyers suivent.
+
+Les illustrations sont dessinées en vectoriel (SVG) : elles restent nettes à
+l'impression, quel que soit l'agrandissement.
+
+**Les cartes de visite** sont prêtes pour un imprimeur professionnel : format
+fini 85 × 55 mm, **3 mm de fonds perdus**, traits de coupe et zone de sécurité
+de 4 mm. Pour commander en ligne, imprimez la planche en choisissant
+« Enregistrer au format PDF » comme destination (échelle 100 %, marges
+« aucune », graphiques d'arrière-plan cochés), et envoyez ce PDF en précisant
+« 85 × 55 mm, fonds perdus 3 mm, recto/verso ».
+
+L'adresse du site affichée en pied de flyer se règle dans `config.js` →
+`brand.site`. Le jour où vous prenez un vrai nom de domaine, c'est la seule
+ligne à changer.
+
+---
+
+## 15. Assistant d'analyse (Gemini) — gratuit, et sans risque de facturation
+
+Deux pages font appel à une intelligence artificielle : le suivi sportif
+(analyse de séance) et l'outil de prospection (analyse de site + e-mail).
+
+**C'est gratuit.** L'offre gratuite de l'API Gemini ne demande aucune carte
+bancaire, et **sans facturation activée, aucun frais ne peut survenir** : en
+cas de dépassement de quota, l'API renvoie une erreur et c'est tout, elle ne
+bascule jamais sur une offre payante toute seule. Le passage au payant est un
+acte volontaire (lier un compte de facturation et prépayer).
+
+**Pour l'activer** : créez une clé sur `aistudio.google.com`, puis déposez-la
+dans Supabase → *Edge Functions* → *Secrets*, sous le nom `GEMINI_API_KEY`.
+Tant que ce n'est pas fait, les deux pages fonctionnent normalement et
+affichent simplement un message expliquant que l'analyse rédigée n'est pas
+encore branchée.
+
+**La clé ne vit que côté serveur.** Elle est utilisée par la fonction Supabase
+`ai-assist` (`integrations/ai-assist.ts`), jamais par le navigateur : le site
+étant public, une clé placée dans le JavaScript serait lisible — et utilisable
+— par n'importe qui. Les consignes envoyées au modèle sont elles aussi
+écrites côté serveur.
+
+*À savoir* : sur l'offre gratuite, Google utilise les contenus envoyés pour
+améliorer ses produits. On ne lui envoie donc que vos séances de sport et des
+pages de sites publics — rien de confidentiel, aucune donnée client.
+
+---
+
+## 16. Prospection (`/prospect/`) — refaite de fond en comble
+
+L'ancienne version reposait sur un fichier `proxy.php` qui **ne pouvait pas
+fonctionner en ligne** (GitHub Pages n'exécute pas PHP), stockait le CRM dans
+un fichier JSON (impossible à écrire sur un hébergement statique), utilisait
+l'API **payante** Google Places, et contenait une clé d'API Google en clair
+dans un dépôt public.
+
+Tout cela a été remplacé :
+
+- **La recherche** interroge l'annuaire des entreprises et associations de
+  l'État français (`recherche-entreprises.api.gouv.fr`) : gratuit, sans clé,
+  et il couvre précisément les clubs sportifs et les associations. Des
+  raccourcis sont prévus (clubs de badminton, tennis, football, associations,
+  comités des fêtes…).
+- **Le CRM** vit maintenant dans Supabase, table `nm_prospects` (vos 13
+  prospects existants ont été repris). Statut, relances, notes, score.
+- **L'analyse d'un site** se fait en deux temps : la fonction
+  `prospect-tools` va lire la page et en relève les faiblesses mesurables
+  (pas de HTTPS, pas de version mobile, lenteur, copyright périmé…), puis
+  l'assistant rédige le verdict, choisit **l'offre la plus adaptée** parmi
+  votre catalogue et propose **un e-mail personnalisé**.
+- **La liste est classée du plus intéressant au moins intéressant** (score
+  décroissant), comme demandé.
+- **Aucun e-mail n'est envoyé automatiquement** : vous le relisez, vous le
+  modifiez, et vous l'envoyez depuis votre propre messagerie (bouton
+  « Ouvrir dans ma messagerie »). C'est aussi meilleur pour la délivrabilité.
+
+*Limite assumée* : l'annuaire public ne donne pas l'adresse du site. Un lien
+de recherche pré-rempli est proposé pour la trouver en un clic, puis vous la
+collez sur la fiche.
+
+⚠️ **Fichiers à supprimer du dépôt.** `prospect/proxy.php`, `prospect/info.php`,
+`prospect/database_crm.json` et `prospect/cache_quota.json` ne servent plus.
+Leur contenu a été neutralisé (la clé Google en a été retirée), mais il faut
+les sortir du dépôt :
+
+```bash
+git rm prospect/proxy.php prospect/info.php prospect/database_crm.json prospect/cache_quota.json
+```
+
+Et surtout : **la clé Google doit être révoquée** dans la console Google Cloud,
+car elle reste lisible dans l'historique Git du dépôt public.
+
+---
+
+## 17. Publier les changements (GitHub Pages)
 
 Le site est hébergé sur GitHub Pages, à partir de ce dépôt. Les fichiers de
 cette livraison ont été **écrits sur votre disque**, mais le site en ligne ne
