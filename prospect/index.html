@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="robots" content="noindex, nofollow">
-	<title>Prospection | Nathan Marzilli</title>
+	<title>Prospection | Clic à l'aide</title>
 	<meta name="theme-color" content="#f6f8fb">
 	<link rel="icon" href="../images/profile-40.jpg">
 
@@ -250,9 +250,38 @@
 						<div>
 							<span class="label-premium">Raccourcis</span>
 							<div class="flex flex-wrap gap-2" id="search-presets">
+								<!-- Raccourcis d'origine -->
 								<button type="button" class="preset-chip" data-preset='{"query":"club de badminton","naf":"93.12Z"}'><i class="ph-bold ph-shuttlecock" aria-hidden="true"></i> Clubs de badminton</button>
 								<button type="button" class="preset-chip" data-preset='{"query":"club de tennis","naf":"93.12Z"}'><i class="ph-bold ph-tennis-ball" aria-hidden="true"></i> Clubs de tennis</button>
 								<button type="button" class="preset-chip" data-preset='{"query":"club de football","naf":"93.12Z"}'><i class="ph-bold ph-soccer-ball" aria-hidden="true"></i> Clubs de football</button>
+								
+								<!-- Arts martiaux & Combat -->
+								<button type="button" class="preset-chip" data-preset='{"query":"club de judo","naf":"93.12Z"}'><i class="ph-bold ph-shield-check" aria-hidden="true"></i> Judo</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"club de karaté","naf":"93.12Z"}'><i class="ph-bold ph-shield-chevron" aria-hidden="true"></i> Karaté</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"club de mma","naf":"93.12Z"}'><i class="ph-bold ph-target" aria-hidden="true"></i> MMA</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"club de jujitsu brésilien","naf":"93.12Z"}'><i class="ph-bold ph-shield" aria-hidden="true"></i> Jujitsu brésilien</button>
+
+								<!-- Extérieur & Nature -->
+								<button type="button" class="preset-chip" data-preset='{"query":"club escalade","naf":"93.12Z"}'><i class="ph-bold ph-mountains" aria-hidden="true"></i> Escalade</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"club de ski","naf":"93.12Z"}'><i class="ph-bold ph-snowflake" aria-hidden="true"></i> Ski</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"club de voile","naf":"93.12Z"}'><i class="ph-bold ph-sailboat" aria-hidden="true"></i> Voile</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"club de randonnée","naf":"93.12Z"}'><i class="ph-bold ph-footprints" aria-hidden="true"></i> Rando</button>
+
+								<!-- Forme & Danse -->
+								<button type="button" class="preset-chip" data-preset='{"query":"club de danse","naf":"93.12Z"}'><i class="ph-bold ph-music-notes" aria-hidden="true"></i> Danse</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"fitness","naf":""}'><i class="ph-bold ph-barbell" aria-hidden="true"></i> Fitness</button>
+
+								<!-- Raquettes (Complément) -->
+								<button type="button" class="preset-chip" data-preset='{"query":"club de squash","naf":"93.12Z"}'><i class="ph-bold ph-tennis-ball" aria-hidden="true"></i> Squash</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"club de padel","naf":"93.12Z"}'><i class="ph-bold ph-tennis-ball" aria-hidden="true"></i> Padel</button>
+
+								<!-- Collectifs & Associations -->
+								<button type="button" class="preset-chip" data-preset='{"query":"club de basket","naf":"93.12Z"}'><i class="ph-bold ph-basketball" aria-hidden="true"></i> Basket</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"club de handball","naf":"93.12Z"}'><i class="ph-bold ph-hand-palm" aria-hidden="true"></i> Handball</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"club de volleyball","naf":"93.12Z"}'><i class="ph-bold ph-volleyball" aria-hidden="true"></i> Volleyball</button>
+								<button type="button" class="preset-chip" data-preset='{"query":"mjc","naf":"94.99Z"}'><i class="ph-bold ph-house-line" aria-hidden="true"></i> MJC</button>
+
+								<!-- Raccourcis génériques d'origine -->
 								<button type="button" class="preset-chip" data-preset='{"query":"","naf":"93.12Z"}'><i class="ph-bold ph-trophy" aria-hidden="true"></i> Tous les clubs de sport</button>
 								<button type="button" class="preset-chip" data-preset='{"query":"","naf":"93.19Z"}'><i class="ph-bold ph-medal" aria-hidden="true"></i> Autres activités sportives</button>
 								<button type="button" class="preset-chip" data-preset='{"query":"","naf":"94.99Z"}'><i class="ph-bold ph-users-four" aria-hidden="true"></i> Associations</button>
@@ -280,6 +309,11 @@
 
 				<div id="search-results" class="grid gap-3 md:grid-cols-2">
 					<p class="text-slate-500 italic text-sm">Lancez une recherche pour voir des résultats.</p>
+				</div>
+				<div id="pagination-container" class="mt-4 flex justify-center hidden">
+					<button type="button" class="btn-ghost" id="search-load-more">
+						<i class="ph-bold ph-plus" aria-hidden="true"></i> Charger la suite
+					</button>
 				</div>
 			</section>
 

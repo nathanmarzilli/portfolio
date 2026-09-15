@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Préparation RDV Projet | Nathan Marzilli</title>
-    
+    <title>Préparation RDV Projet | Clic à l'aide</title>
+    <meta name="robots" content="noindex">
+
     <meta name="theme-color" content="#f6f8fb">
     <link rel="icon" href="../images/profile-40.jpg">
 
@@ -145,7 +146,7 @@
                         </div>
                         <div class="relative">
                             <input type="radio" name="project_pack" id="pack-premium" value="Premium" data-price="2990" class="hidden pack-radio-input" onchange="updateCardSelection('Premium', 2990)">
-                            <label for="pack-premium" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Premium</label>
+                            <label for="pack-premium" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Vitrine Premium</label>
                         </div>
                     </div>
                 </div>
@@ -181,6 +182,10 @@
                     <div>
                         <label class="label-premium">Votre Nom & Prénom</label>
                         <input type="text" name="contact_name" id="contactName" placeholder="Votre nom complet" class="input-premium" required>
+                    </div>
+                    <div>
+                        <label class="label-premium">Nom du site souhaité</label>
+                        <input type="text" name="desired_site_name" id="desiredSiteName" placeholder="Ex: menuiserie-dupont.fr" class="input-premium">
                     </div>
                     <div>
                         <label class="label-premium">Site actuel (si existant)</label>
@@ -311,18 +316,29 @@
                     </div>
                 </div>
 
+                <div class="p-4 rounded-xl bg-accent-400/10 border border-accent-400/20 mb-4">
+                    <div class="flex gap-3">
+                        <i class="ph-fill ph-cloud-check text-accent-400 text-xl"></i>
+                        <div>
+                            <h4 class="text-sm font-bold text-accent-400 mb-1">L'hébergement, c'est mon affaire</h4>
+                            <p class="text-xs text-slate-300">Hébergement, nom de domaine et certificat de sécurité sont compris dans votre abonnement : vous n'avez aucun compte à ouvrir ni aucune facture d'hébergeur à gérer. Les questions ci-dessous servent juste à savoir d'où l'on part.</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="label-premium">Nom de domaine (adresse .fr/.com)</label>
+                        <label class="label-premium">Avez-vous déjà un nom de domaine ?</label>
                         <select name="domain_status" id="domainStatus" class="select-premium">
-                            <option>Je ne l'ai pas encore acheté</option>
-                            <option>Je l'ai déjà (OVH, Ionos...)</option>
-                            <option>Je veux que tu t'en occupes</option>
+                            <option>Non, je pars de zéro — occupe-t'en</option>
+                            <option>J'en ai déjà un et je veux le garder</option>
+                            <option>J'en ai un mais je suis prêt à en changer</option>
+                            <option>Je ne sais pas</option>
                         </select>
                     </div>
                     <div>
-                        <label class="label-premium">Hébergeur (si existant)</label>
-                        <input type="text" name="host_provider" id="hostProvider" placeholder="Ex: OVH, Hostinger..." class="input-premium">
+                        <label class="label-premium">Si vous en avez déjà un, lequel ?</label>
+                        <input type="text" name="existing_domain" id="existingDomain" placeholder="Ex: menuiserie-dupont.fr" class="input-premium">
                     </div>
                 </div>
             </div>
@@ -687,7 +703,8 @@
             body += `DESIGN: Logo ${window.getVal('hasLogo')}, Style ${window.getVal('designVibe')}\n`;
             body += `CONTENU: ${window.getRadio('content_status')}\n\n`;
             body += `TECH: ${window.getChecks('features')}\n`;
-            body += `DOMAINE: ${window.getVal('domainStatus')}, HÉBERGEUR: ${window.getVal('hostProvider')}\n\n`;
+            body += `DOMAINE: ${window.getVal('domainStatus')}, EXISTANT: ${window.getVal('existingDomain')}\n`;
+            body += `NOM DE SITE SOUHAITÉ: ${window.getVal('desiredSiteName')}\n\n`;
             body += `DEADLINE: ${window.getVal('deadline')}\n`;
             body += `NOTE: ${window.getVal('magicQuestion')}`;
             return body;
@@ -779,7 +796,10 @@
                                 club_options: clubOptions,
                                 intervention_type: stored.intervention || null,
                                 serenity_tier: stored.serenite || null,
-                                serenity_cycle: stored.sereniteCycle || null
+                                serenity_cycle: stored.sereniteCycle || null,
+                                // Rythme de l'abonnement du site (annuel par
+                                // défaut : c'est le tarif de référence).
+                                pack_cycle: stored.packCycle || null
                             };
                             const draft = (window.NM && NM.quote) ? NM.quote.build(quoteSource) : null;
 
@@ -798,6 +818,7 @@
                                     club_options: clubOptions,
                                     serenity_tier: quoteSource.serenity_tier,
                                     serenity_cycle: quoteSource.serenity_cycle,
+                                    pack_cycle: quoteSource.pack_cycle,
                                     intervention_type: quoteSource.intervention_type,
                                     quote_draft: draft
                                 })

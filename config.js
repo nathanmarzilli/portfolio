@@ -25,21 +25,35 @@
 		// --------------------------------------------------------
 		// Coordonnées
 		// --------------------------------------------------------
-		// Marque de l'activité d'accompagnement à domicile.
+		// Marque de l'activité : « Clic à l'aide » est mise en avant en
+		// premier sur tout le site (SEO, réseaux, supports imprimés).
+		// Nathan reste visible en second plan, comme garantie du contact
+		// humain direct derrière la marque.
 		brand: {
 			name: 'Clic à l’aide',
 			tagline: 'Le numérique, sans prise de tête',
 			logo: 'images/logo/Logo-1.png',
-			// Adresse du site imprimée sur les flyers et les cartes de visite.
-			// Le jour où un vrai nom de domaine est acheté, il suffit de
-			// changer CETTE SEULE LIGNE : tous les supports imprimés suivent.
-			site: 'nathanmarzilli.github.io/portfolio'
+			// Adresse du site imprimée sur les flyers, les cartes de visite et
+			// les balises SEO (canonical, Open Graph, données structurées).
+			// Site en ligne depuis septembre 2026 sur ces deux domaines.
+			site: 'clicalaide.fr',
+			siteAlt: 'clicalaide.com',
+			url: 'https://www.clicalaide.fr/'
 		},
 
 		contact: {
 			name: 'Nathan Marzilli',
 			role: 'Ingénieur & Artisan du web',
-			email: 'nathan.marzilli@gmail.com',
+			// E-mail AFFICHÉ publiquement (footer, mentions légales, CGV,
+			// balises SEO/structured data, supports imprimés). Boîte pro
+			// dédiée à l'activité « Clic à l'aide ».
+			email: 'contact@clicalaide.com',
+			// ⚠️ Identifiant de connexion Supabase Auth pour l'espace
+			// d'administration (/admin/). NE JAMAIS afficher publiquement,
+			// et ne jamais remplacer par `email` ci-dessus : ce champ est
+			// utilisé UNIQUEMENT par admin.js pour vérifier qui est admin,
+			// jamais rendu dans une page publique.
+			authEmail: 'nathan.marzilli@gmail.com',
 			phoneDisplay: '06 25 96 51 12',
 			phoneHref: 'tel:+33625965112',
 			city: '74500 Évian-les-Bains',
@@ -64,28 +78,38 @@
 		// `rate` sert de repli pour tout autre montant.
 		// --------------------------------------------------------
 		conversion: {
+			// Les paliers couvrent les montants « libres » réellement
+			// affichés : options mensuelles (5 / 10 / 15 / 33 €), lot de
+			// 3 options (10 €), relifting (66 € / mois, 1 580 € pour 2 ans),
+			// interventions et tarifs du facilitateur. Les anciens paliers
+			// des packs (690 / 990 / 1790 / 2990) et de l'hébergement OVH
+			// (22,05 / 54,79) ont été retirés : les packs ont désormais leur
+			// propre table par devise, et l'hébergement n'est plus facturé.
 			CHF: {
 				rate: 0.94,
 				exact: {
-					'0.15': 0.15, '50': 47, '70': 65, '90': 85, '100': 95, '200': 190,
-					'250': 235, '300': 285, '320': 300, '690': 650, '990': 930,
-					'1000': 940, '1790': 1690, '2990': 2820, '22.05': 20.90, '54.79': 51.90
+					'0.15': 0.15, '5': 5, '10': 9.5, '15': 14, '33': 31,
+					'50': 47, '66': 62, '70': 65, '90': 85, '100': 95,
+					'120': 115, '200': 190, '250': 235, '300': 285, '320': 300,
+					'1580': 1490
 				}
 			},
 			GBP: {
 				rate: 0.855,
 				exact: {
-					'0.15': 0.13, '50': 43, '70': 60, '90': 77, '100': 85, '200': 170,
-					'250': 215, '300': 255, '320': 275, '690': 590, '990': 850,
-					'1000': 850, '1790': 1530, '2990': 2560, '22.05': 18.90, '54.79': 46.90
+					'0.15': 0.13, '5': 4.5, '10': 9, '15': 13, '33': 28,
+					'50': 43, '66': 56, '70': 60, '90': 77, '100': 85,
+					'120': 105, '200': 170, '250': 215, '300': 255, '320': 275,
+					'1580': 1350
 				}
 			},
 			USD: {
 				rate: 1.15,
 				exact: {
-					'0.15': 0.17, '50': 58, '70': 80, '90': 105, '100': 115, '200': 230,
-					'250': 290, '300': 345, '320': 370, '690': 790, '990': 1150,
-					'1000': 1150, '1790': 2090, '2990': 3490, '22.05': 25.90, '54.79': 62.90
+					'0.15': 0.17, '5': 6, '10': 12, '15': 17, '33': 38,
+					'50': 58, '66': 76, '70': 80, '90': 105, '100': 115,
+					'120': 140, '200': 230, '250': 290, '300': 345, '320': 370,
+					'1580': 1820
 				}
 			}
 		},
@@ -103,27 +127,59 @@
 		// --------------------------------------------------------
 		// CATALOGUE — packs de création & formules de suivi
 		// --------------------------------------------------------
+		// --------------------------------------------------------
+		// LES PACKS DE CRÉATION SONT DES ABONNEMENTS ANNUELS
+		//
+		// `price` = le tarif de l'ANNÉE, payé en une seule fois, et
+		// reconductible chaque année au même tarif (hébergement, nom de
+		// domaine, sécurité et mise en ligne compris — plus rien à payer
+		// à un hébergeur tiers : tout est géré en interne).
+		//
+		// DEUX MONTANTS MENSUELS, À NE PAS CONFONDRE :
+		//
+		//  • l'ÉQUIVALENT MENSUEL du tarif annuel = prix annuel / 12,
+		//    arrondi. C'est le gros chiffre affiché quand le cycle
+		//    « annuel » est choisi (cycle par défaut partout) :
+		//      690 € / an -> 58 € / mois      890 € / an -> 74 € / mois
+		//      790 € / an -> 66 € / mois    1 188 € / an -> 99 € / mois
+		//    -> APP_CONFIG.packMonthlyEquivalent()
+		//
+		//  • le TARIF DU CYCLE MENSUEL, si le client préfère payer au
+		//    mois : c'est une facilité de paiement volontairement plus
+		//    chère, égale à l'équivalent mensuel × 14/12 (soit ~2 mois
+		//    de plus sur l'année) :
+		//      58 -> 68 € / mois       74 -> 86 € / mois
+		//      66 -> 77 € / mois       99 -> 116 € / mois
+		//    -> APP_CONFIG.packMonthlyPrice()
+		// --------------------------------------------------------
+		packBilling: {
+			// Surcoût du paiement au mois, en fraction de l'équivalent
+			// mensuel : 14/12 = l'année revient à 14 mensualités.
+			monthlySurcharge: { numerator: 14, denominator: 12 }
+		},
+
 		offers: {
 			eclair: {
 				key: 'eclair',
 				name: 'Vitrine Éclair',
 				type: 'one_time',
-				tagline: 'Le tremplin pour démarrer, livré en 48 h.',
-				price: { EUR: 690, CHF: 650, GBP: 590, USD: 790 },
-				deliveryDays: 2,
-				hostingKey: 'starter'
+				tagline: 'Le tremplin pour démarrer, livré en une semaine.',
+				price: { EUR: 690, CHF: 650, GBP: 590, USD: 795 },
+				deliveryDays: 7
 			},
 			essentiel: {
 				key: 'essentiel',
-				name: "L'Essentiel & Suivi",
+				name: 'Vitrine Essentiel',
 				type: 'one_time',
 				tagline: 'Un site one-page entretenu toute l’année, sans y penser.',
-				price: { EUR: 990, CHF: 930, GBP: 850, USD: 1150 },
+				price: { EUR: 790, CHF: 745, GBP: 675, USD: 910 },
 				deliveryDays: 7,
-				hostingKey: 'starter',
-				// Pack Sérénité (simple) inclus et obligatoire, facturé
-				// annuellement (10 mois payés, 2 mois offerts).
-				forcedSerenity: { tier: 'simple', cycle: 'annual' },
+				// Pack Sérénité (simple) vivement conseillé avec ce pack, mais
+				// PLUS obligatoire ni engagé : le client choisit librement, et
+				// bénéficie d'un mois offert supplémentaire la 1ère année s'il
+				// le prend en même temps que la création, en formule annuelle
+				// (voir offers.serenite.comboDiscount).
+				recommendedSerenity: { tier: 'simple' },
 				// Cette offre est aussi celle proposée aux clubs et
 				// associations, avec des options spécifiques (voir `club`).
 				clubVariant: true
@@ -132,32 +188,51 @@
 				key: 'vitrine',
 				name: 'Vitrine Artisan',
 				type: 'one_time',
-				tagline: 'Jusqu’à 5 pages pour présenter tout votre savoir-faire.',
-				price: { EUR: 1790, CHF: 1690, GBP: 1530, USD: 2090 },
+				tagline: 'Jusqu’à 5 pages, modulable avec les options de votre choix.',
+				price: { EUR: 890, CHF: 835, GBP: 760, USD: 1020 },
 				deliveryDays: 14,
-				hostingKey: 'starter',
-				popular: true
+				popular: true,
+				// Pack mis en avant pour la modularité : chaque option
+				// documentaire s'ajoute à l'abonnement (voir documentOptions).
+				modular: true
 			},
 			premium: {
 				key: 'premium',
-				name: 'Premium',
+				name: 'Vitrine Premium',
 				type: 'one_time',
 				tagline: 'Design sur-mesure, blog en autonomie et statistiques.',
-				price: { EUR: 2990, CHF: 2820, GBP: 2560, USD: 3490 },
-				deliveryDays: 21,
-				hostingKey: 'perso'
+				price: { EUR: 1188, CHF: 1120, GBP: 1020, USD: 1370 },
+				deliveryDays: 21
 			},
+			// --------------------------------------------------------
+			// Pack Sérénité / Sérénité+ — SANS engagement, résiliables à
+			// tout moment, sur les deux cycles proposés : mensuel (tarif
+			// de référence) et annuel (2 mois offerts, payé en une fois).
+			// --------------------------------------------------------
 			serenite: {
 				key: 'serenite',
 				name: 'Pack Sérénité',
 				type: 'recurring',
 				interval: 'mois',
 				intervalAnnual: 'an',
+				// Mensuel = tarif de référence.
 				price: { EUR: 49.90, CHF: 46.90, GBP: 42.90, USD: 58.90 },
-				// Facturation annuelle = 10 mois payés, 2 mois offerts.
+				// Annuel : 10 mois payés, 2 mois offerts (-17 % environ).
 				annualPrice: { EUR: 499.00, CHF: 469.00, GBP: 429.00, USD: 589.00 },
 				includedInterventions: 1,
-				commitmentMonths: 12
+				// Remise de bienvenue si souscrit EN MÊME TEMPS que la
+				// création du site (quel que soit le pack de création),
+				// UNIQUEMENT en formule annuelle : la formule annuelle
+				// comprend déjà 2 mois offerts par rapport au tarif mensuel
+				// (499 € au lieu de 10 × 49,90 € = 599 €) ; la remise combo
+				// ajoute UN MOIS OFFERT SUPPLÉMENTAIRE la première année
+				// (soit 3 mois offerts en tout la 1ère année), puis retour
+				// au tarif annuel normal au renouvellement.
+				// ⚠️ `cycles` : la remise ne s'applique QUE sur la formule
+				// annuelle. En mensuel, le tarif est toujours plein (49,90 €).
+				// (Avant septembre 2026 : -50 % la 1ère année — jugé bien
+				// trop généreux par Nathan, remplacé par ce mois offert.)
+				comboDiscount: { extraMonthsFree: 1, scope: 'firstYear', cycles: ['annual'], label: 'un mois offert supplémentaire, formule annuelle, si créé avec moi' }
 			},
 			serenitePlus: {
 				key: 'serenitePlus',
@@ -168,7 +243,13 @@
 				price: { EUR: 94.90, CHF: 89.90, GBP: 81.90, USD: 109.90 },
 				annualPrice: { EUR: 949.00, CHF: 899.00, GBP: 819.00, USD: 1099.00 },
 				includedInterventions: 2,
-				commitmentMonths: 12
+				// Même règle que Sérénité (voir ci-dessus) : un mois offert
+				// SUPPLÉMENTAIRE la première année, uniquement en formule
+				// annuelle, si le site est créé en même temps.
+				// (Avant septembre 2026 : -10 € / mois « à vie » — jugé bien
+				// trop généreux par Nathan, remplacé par ce mois offert, pour
+				// un traitement identique à Sérénité.)
+				comboDiscount: { extraMonthsFree: 1, scope: 'firstYear', cycles: ['annual'], label: 'un mois offert supplémentaire, formule annuelle, si créé avec moi' }
 			}
 		},
 
@@ -184,34 +265,38 @@
 		//   • un document entièrement sur-mesure : à partir de 300 €
 		// --------------------------------------------------------
 		documentOptions: [
-			{ key: 'devis', label: 'Devis', priceEur: 100, preview: 'images/documents/devis.png' },
-			{ key: 'facture', label: 'Factures', priceEur: 100, preview: 'images/documents/facture.png' },
-			{ key: 'quittance', label: 'Quittance de loyer', priceEur: 100, preview: 'images/documents/quittance.png' },
-			{ key: 'frais', label: 'Note de frais', priceEur: 100, preview: 'images/documents/frais.png' },
-			{ key: 'bail', label: 'Bail de location', priceEur: 300, preview: 'images/documents/bail.png', complex: true, note: 'Document complexe (clauses légales, annexes)' },
-			{ key: 'sur-mesure', label: 'Document sur-mesure', priceEur: 300, from: true, note: 'Tarif de départ, ajusté après étude de votre besoin' }
+			{ key: 'devis', label: 'Devis', monthlyEur: 5, preview: 'images/documents/devis.png' },
+			{ key: 'facture', label: 'Factures', monthlyEur: 5, preview: 'images/documents/facture.png' },
+			{ key: 'quittance', label: 'Quittance de loyer', monthlyEur: 5, preview: 'images/documents/quittance.png' },
+			{ key: 'frais', label: 'Note de frais', monthlyEur: 5, preview: 'images/documents/frais.png' },
+			{ key: 'bail', label: 'Bail de location', monthlyEur: 10, preview: 'images/documents/bail.png', complex: true, note: 'Document complexe (clauses légales, annexes)' },
+			{ key: 'sur-mesure', label: 'Document sur-mesure', monthlyEur: 15, from: true, note: 'Tarif de départ, ajusté après étude de votre besoin' }
 		],
 
 		// --------------------------------------------------------
 		// OPTIONS « Offre Club & Associations »
-		// Tarif unique de 100 € par module, avec une exception :
-		// « Actualités simplifiées » (1 000 €) est un back-office
-		// complet de publication. Il rend le club autonome : plus
-		// besoin de passer par une intervention de maintenance pour
-		// mettre le site à jour. Le tarif reflète ce travail-là.
+		// Tarif unique de 5 € / mois par module, qui s'ajoutent à
+		// l'abonnement du site (66 € / mois en annuel). Une exception :
+		// « Actualités simplifiées » à 33 € / mois — un back-office
+		// complet de publication qui rend le club autonome (plus besoin
+		// d'une intervention de maintenance pour mettre le site à jour).
+		// Ce module porte l'abonnement au niveau du pack Premium, ce qui
+		// est exactement l'intention : 66 + 33 = 99 € / mois.
+		// Le lot de 3 (voir `optionBundle`) s'applique aux modules à 5 €.
 		// --------------------------------------------------------
 		clubOptions: [
 			{
-				key: 'actus', label: 'Actualités simplifiées', priceEur: 1000,
+				key: 'actus', label: 'Actualités simplifiées', monthlyEur: 33,
 				icon: 'ph-megaphone', highlight: true,
 				desc: 'Un espace de publication rien qu’à vous : news, annonces et photos en autonomie totale, sans passer par moi et sans compétence technique.',
 				note: 'Rend le club autonome sur ses mises à jour de contenu'
 			},
-			{ key: 'resultats', label: 'Résultats & scores en direct', priceEur: 100, icon: 'ph-chart-line-up', desc: 'Classements et résultats de matchs mis à jour en temps réel.' },
-			{ key: 'deplacements', label: 'Gestion des déplacements interclubs', priceEur: 100, icon: 'ph-van', desc: 'Qui vient, quel transport, quels horaires : tout est centralisé.' },
-			{ key: 'frais', label: 'Gestionnaire de notes de frais', priceEur: 100, icon: 'ph-receipt', desc: 'Frais de déplacement et remboursements : moins de paperasse pour le trésorier.' },
+			{ key: 'resultats', label: 'Résultats & scores en direct', monthlyEur: 5, icon: 'ph-chart-line-up', desc: 'Classements et résultats de matchs mis à jour en temps réel.' },
+			{ key: 'deplacements', label: 'Gestion des déplacements interclubs', monthlyEur: 5, icon: 'ph-van', desc: 'Qui vient, quel transport, quels horaires : tout est centralisé.' },
+			{ key: 'presence', label: 'Suivi de présence dans les cours', monthlyEur: 5, icon: 'ph-user-check', desc: 'Qui est venu à quel cours : pointage simple, historique par adhérent et par créneau.' },
+			{ key: 'frais', label: 'Gestionnaire de notes de frais', monthlyEur: 5, icon: 'ph-receipt', desc: 'Frais de déplacement et remboursements : moins de paperasse pour le trésorier.' },
 			{
-				key: 'tournoi', label: 'Création de tournois internes', priceEur: 100,
+				key: 'tournoi', label: 'Création de tournois internes', monthlyEur: 5,
 				icon: 'ph-trophy',
 				desc: 'Poules, ronde suisse, mêlée, simple ou double, classements automatiques.',
 				previews: [
@@ -221,8 +306,20 @@
 					{ src: 'images-tournoi/04-participants.png', alt: 'Participants et classements en temps réel', caption: 'Participants et classements en temps réel' }
 				]
 			},
-			{ key: 'adhesions', label: 'Inscriptions & adhésions en ligne', priceEur: 100, icon: 'ph-user-plus', desc: 'Formulaire d’adhésion, liste des membres et relances de renouvellement.' }
+			{ key: 'adhesions', label: 'Inscriptions & adhésions en ligne', monthlyEur: 5, icon: 'ph-user-plus', desc: 'Formulaire d’adhésion, liste des membres et relances de renouvellement.' }
 		],
+
+		// --------------------------------------------------------
+		// LOT DE 3 OPTIONS
+		// Trois options à 5 € / mois reviennent à 10 € / mois au lieu
+		// de 15 €. La remise s'applique par groupe COMPLET de 3, aussi
+		// bien aux options documentaires (accueil) qu'aux modules club :
+		//   3 options -> 10 €     6 options -> 20 €     7 options -> 25 €
+		// Les options hors tarif unitaire (document sur-mesure à 15 €,
+		// Actualités simplifiées à 33 €) n'entrent jamais dans le lot.
+		// Voir APP_CONFIG.optionsMonthlyTotal().
+		// --------------------------------------------------------
+		optionBundle: { unitEur: 5, groupSize: 3, groupPriceEur: 10 },
 
 		// --------------------------------------------------------
 		// Interventions ponctuelles (hors pack de suivi)
@@ -231,7 +328,19 @@
 			{ key: 'simple', label: 'Simple', desc: 'Texte / photo', priceEur: 100 },
 			{ key: 'moyenne', label: 'Moyenne', desc: 'Mise en page', priceEur: 200 },
 			{ key: 'complexe', label: 'Complexe', desc: 'Nouvelle fonctionnalité', priceEur: 300 },
-			{ key: 'relifting', label: 'Relifting complet', desc: 'Ancien site → design moderne', priceEur: 690, from: true }
+			// Le relifting n'est plus une prestation ponctuelle : c'est un
+			// abonnement au tarif de Vitrine Essentiel (66 € / mois affichés),
+			// avec DEUX ANS réglés en une fois à la commande — le temps de
+			// rentabiliser la refonte complète d'un site existant.
+			{
+				key: 'relifting',
+				label: 'Relifting complet',
+				desc: 'Ancien site → design moderne',
+				subscription: true,
+				offerKey: 'essentiel',
+				prepaidYears: 2,
+				priceEur: 1580        // 790 € × 2 ans, réglés en une seule fois
+			}
 		],
 
 		// --------------------------------------------------------
@@ -246,18 +355,19 @@
 		},
 
 		// --------------------------------------------------------
-		// Hébergement OVH (payé directement à l'hébergeur)
+		// Hébergement : PLUS DE LIGNE À PART depuis septembre 2026.
+		// L'hébergement professionnel, le nom de domaine, les certificats
+		// et les sauvegardes sont pris en charge en interne et compris
+		// dans l'abonnement annuel du pack. Il n'y a donc plus de tarif
+		// d'hébergeur tiers (OVH Starter / Perso) à afficher : l'ancien
+		// objet `hosting` a été retiré volontairement. Ne pas le
+		// réintroduire sans en reparler à Nathan.
 		// --------------------------------------------------------
-		hosting: {
-			starter: { label: 'OVH Starter', yearlyEur: 22.05, hostingEur: 14.26, domainEur: 7.79, storage: '1 Go' },
-			perso: { label: 'OVH Perso', yearlyEur: 54.79, hostingEur: 47.00, domainEur: 7.79, storage: '100 Go' },
-			firstYearFree: true
-		},
 
 		// --------------------------------------------------------
 		// Offre Club & Associations (page /offre-club/)
 		// Ce n'est PAS un pack séparé : c'est le pack
-		// « L'Essentiel & Suivi » décliné pour les clubs, avec ses
+		// « Vitrine Essentiel » décliné pour les clubs, avec ses
 		// propres options. Un seul prix de base, partout.
 		// --------------------------------------------------------
 		club: {
@@ -265,7 +375,7 @@
 			baseOfferKey: 'essentiel',
 			serenityOfferKey: 'serenite',
 			badgeLabel: 'Offre club / associations',
-			description: 'Le pack L’Essentiel & Suivi, décliné pour les clubs et les associations : site complet, suivi inclus et modules dédiés à la vie du club.'
+			description: 'Le pack Vitrine Essentiel, décliné pour les clubs et les associations : site complet, suivi inclus et modules dédiés à la vie du club.'
 		},
 
 		// --------------------------------------------------------
@@ -437,6 +547,119 @@
 	};
 	APP_CONFIG.findIntervention = function (key) {
 		return APP_CONFIG.interventions.filter(function (o) { return o.key === key; })[0] || null;
+	};
+
+	// ------------------------------------------------------------
+	// Remise « combo » Sérénité — utilisée par script.js, offre-club.js
+	// ET quote-builder.js (une seule règle, partout). Un pack de
+	// création (eclair/essentiel/vitrine/premium/club) souscrit EN
+	// MÊME TEMPS qu'un abonnement Sérénité ou Sérénité+ déclenche la
+	// remise décrite sur l'offre correspondante (`comboDiscount`).
+	//   APP_CONFIG.comboDiscountFor('vitrine', 'plus') -> {percent:10,...}
+	//   APP_CONFIG.comboDiscountFor(null, 'simple')     -> null (pas de création = pas de combo)
+	// ------------------------------------------------------------
+	// `cycle` (optionnel) : 'monthly' | 'annual'. Les remises ne
+	// s'appliquent QUE sur la formule annuelle (`comboDiscount.cycles`) —
+	// en mensuel, le tarif affiché est toujours le plein tarif.
+	APP_CONFIG.comboDiscountFor = function (packKey, tier, cycle) {
+		if (!packKey || !tier) return null;
+		var creationOffers = ['eclair', 'essentiel', 'vitrine', 'premium'];
+		var normalizedPack = String(packKey).toLowerCase();
+		var isCreation = creationOffers.indexOf(normalizedPack) !== -1 || normalizedPack === 'club';
+		if (!isCreation) return null;
+		var offerKey = tier === 'plus' ? 'serenitePlus' : 'serenite';
+		var offer = APP_CONFIG.offers[offerKey];
+		var combo = (offer && offer.comboDiscount) || null;
+		if (!combo) return null;
+		if (cycle && combo.cycles && combo.cycles.indexOf(cycle) === -1) return null;
+		return combo;
+	};
+
+	// Applique une remise combo à un montant ANNUEL. Formes possibles :
+	//   { extraMonthsFree: 1 } -> retire N mois offerts SUPPLÉMENTAIRES, au
+	//                             tarif mensuel PLEIN de référence (Sérénité
+	//                             ET Sérénité+ depuis septembre 2026 : 1 mois
+	//                             offert en plus des 2 déjà inclus dans le
+	//                             tarif annuel). `monthlyRefEur` est le tarif
+	//                             mensuel plein de l'offre concernée — les
+	//                             appelants doivent le transmettre (c'est le
+	//                             prix `price.EUR` du catalogue, jamais
+	//                             recalculé depuis l'annuel).
+	//   { percent: N }         -> pourcentage (ancienne forme, conservée
+	//                             pour compatibilité si réutilisée ailleurs)
+	//   { monthlyEur: N }      -> montant rond retiré par mois, × 12 sur
+	//                             l'année (ancienne forme Sérénité+)
+	APP_CONFIG.applyComboToAnnual = function (annualEur, combo, monthlyRefEur) {
+		if (!annualEur || !combo) return annualEur;
+		if (combo.extraMonthsFree) {
+			var ref = (monthlyRefEur != null) ? monthlyRefEur : (annualEur / 10);
+			return Math.max(0, Math.round((annualEur - ref * combo.extraMonthsFree) * 100) / 100);
+		}
+		if (combo.percent) return APP_CONFIG.applyDiscount(annualEur, combo.percent);
+		if (combo.monthlyEur) return Math.max(0, Math.round((annualEur - combo.monthlyEur * 12) * 100) / 100);
+		return annualEur;
+	};
+
+	// Applique un pourcentage de remise à un montant (arrondi au centime).
+	APP_CONFIG.applyDiscount = function (amount, percent) {
+		if (!amount || !percent) return amount;
+		return Math.round(amount * (1 - percent / 100) * 100) / 100;
+	};
+
+	// ------------------------------------------------------------
+	// Packs de création — les deux montants mensuels (voir le gros
+	// commentaire au-dessus de `packBilling`).
+	//
+	//   packMonthlyEquivalent('vitrine','EUR') -> 74   (890 / 12)
+	//     = le gros chiffre affiché quand le cycle ANNUEL est choisi.
+	//   packMonthlyPrice('vitrine','EUR')      -> 86   (74 × 14/12)
+	//     = ce que paie réellement un client qui règle au mois.
+	//
+	// Le tarif mensuel se calcule à partir de l'équivalent DÉJÀ arrondi,
+	// et non du prix annuel brut : c'est ce qui garantit que le chiffre
+	// affiché (58 €) et le chiffre facturé (68 €) restent cohérents.
+	// ------------------------------------------------------------
+	APP_CONFIG.packMonthlyEquivalent = function (offerKey, currencyCode) {
+		var offer = APP_CONFIG.offers[offerKey];
+		if (!offer || !offer.price) return null;
+		var annual = offer.price[currencyCode || 'EUR'];
+		if (annual === undefined || annual === null) return null;
+		return Math.round(annual / 12);
+	};
+
+	APP_CONFIG.packMonthlyPrice = function (offerKey, currencyCode) {
+		var equivalent = APP_CONFIG.packMonthlyEquivalent(offerKey, currencyCode);
+		if (equivalent === null) return null;
+		var s = (APP_CONFIG.packBilling && APP_CONFIG.packBilling.monthlySurcharge) || { numerator: 14, denominator: 12 };
+		return Math.round(equivalent * s.numerator / s.denominator);
+	};
+
+	// ------------------------------------------------------------
+	// Total MENSUEL des options retenues, lot de 3 appliqué.
+	// Accepte une liste de montants mensuels en euros (ex : [5,5,5,33]).
+	// Seules les options au tarif unitaire (5 €) entrent dans le lot ;
+	// chaque groupe complet de 3 revient à 10 € au lieu de 15 €.
+	//   [5,5,5]       -> 10        [5,5,5,5,5,5] -> 20
+	//   [5,5]         -> 10        [5,5,5,33]    -> 43
+	// ------------------------------------------------------------
+	APP_CONFIG.optionsMonthlyTotal = function (monthlyAmounts) {
+		var bundle = APP_CONFIG.optionBundle || { unitEur: 5, groupSize: 3, groupPriceEur: 10 };
+		var unitCount = 0;
+		var others = 0;
+		(monthlyAmounts || []).forEach(function (amount) {
+			var value = Number(amount) || 0;
+			if (value === bundle.unitEur) unitCount++;
+			else others += value;
+		});
+		var groups = Math.floor(unitCount / bundle.groupSize);
+		var remainder = unitCount % bundle.groupSize;
+		return others + (groups * bundle.groupPriceEur) + (remainder * bundle.unitEur);
+	};
+
+	// Économie réalisée grâce au lot de 3 (0 si aucun groupe complet).
+	APP_CONFIG.optionsBundleSaving = function (monthlyAmounts) {
+		var raw = (monthlyAmounts || []).reduce(function (s, a) { return s + (Number(a) || 0); }, 0);
+		return Math.max(0, raw - APP_CONFIG.optionsMonthlyTotal(monthlyAmounts));
 	};
 
 	// ------------------------------------------------------------

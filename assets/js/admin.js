@@ -71,17 +71,17 @@
 		if (!tier) return null;
 		var offer = (CFG.offers || {})[tier === 'plus' ? 'serenitePlus' : 'serenite'];
 		if (!offer) return null;
-		var annual = cycle === 'annual';
-		var amount = annual ? offer.annualPrice.EUR : offer.price.EUR;
-		return offer.name + ' — ' + money(amount) + (annual ? ' / an' : ' / mois');
+		var suffix = cycle === 'annual' ? ' / an' : ' / mois';
+		var amount = cycle === 'annual' ? offer.annualPrice.EUR : offer.price.EUR;
+		return offer.name + ' — ' + money(amount) + suffix;
 	}
 
 	// Toutes les options proposées sur le site, dans un seul tableau.
 	function allOptions() {
 		return (CFG.documentOptions || []).map(function (o) {
-			return { key: 'doc:' + o.key, label: o.label, priceEur: o.priceEur, family: 'documents' };
+			return { key: 'doc:' + o.key, label: o.label, monthlyEur: o.monthlyEur, family: 'documents' };
 		}).concat((CFG.clubOptions || []).map(function (o) {
-			return { key: 'club:' + o.key, label: o.label, priceEur: o.priceEur, family: 'club' };
+			return { key: 'club:' + o.key, label: o.label, monthlyEur: o.monthlyEur, family: 'club' };
 		}));
 	}
 
@@ -448,9 +448,9 @@
 		grid.innerHTML = allOptions().map(function (o) {
 			var checked = selectedKeys.indexOf(o.key) !== -1 ? ' checked' : '';
 			return '<label class="chk-label !p-2 text-[11px]">' +
-				'<input type="checkbox" class="chk-input" value="' + o.key + '" data-price="' + o.priceEur + '" data-label="' + esc(o.label) + '"' + checked + '>' +
+				'<input type="checkbox" class="chk-input" value="' + o.key + '" data-price="' + o.monthlyEur + '" data-label="' + esc(o.label) + '"' + checked + '>' +
 				'<span class="text-slate-300">' + esc(o.label) +
-					'<span class="block text-[10px] text-slate-500">' + money(o.priceEur) + '</span></span>' +
+					'<span class="block text-[10px] text-slate-500">' + money(o.monthlyEur) + ' / mois</span></span>' +
 			'</label>';
 		}).join('');
 		grid.addEventListener('change', refreshModalTotal);
@@ -464,13 +464,23 @@
 
 	function refreshModalTotal() {
 		var packKey = $('#cf-pack').value;
-		var offer = (CFG.offers || {})[packKey === 'club' ? (CFG.club.baseOfferKey) : packKey];
-		var packPrice = offer && offer.type === 'one_time' ? offer.price.EUR : 0;
+		var resolvedKey = packKey === 'club' ? (CFG.club.baseOfferKey) : packKey;
+		var offer = (CFG.offers || {})[resolvedKey];
+		var packCycle = ($('#cf-pack-cycle') && $('#cf-pack-cycle').value) || 'annual';
+		var packPrice = 0;
+		if (offer && offer.type === 'one_time') {
+			packPrice = packCycle === 'monthly'
+				? (CFG.packMonthlyPrice ? CFG.packMonthlyPrice(resolvedKey, 'EUR') : Math.round(offer.price.EUR / 10))
+				: offer.price.EUR;
+		}
 		var optionsTotal = collectOptions().reduce(function (s, o) { return s + o.price; }, 0);
 		$('#cf-total').textContent = money(packPrice + optionsTotal);
 
+		var bits = [];
+		if (packPrice) bits.push('site : <strong class="text-accent-300">' + esc(money(packPrice) + (packCycle === 'monthly' ? ' / mois' : ' / an')) + '</strong>');
 		var serenity = serenityLabel($('#cf-serenity').value, $('#cf-cycle').value);
-		$('#cf-recurring').innerHTML = serenity ? '· suivi : <strong class="text-blue-300">' + esc(serenity) + '</strong>' : '';
+		if (serenity) bits.push('suivi : <strong class="text-blue-300">' + esc(serenity) + '</strong>');
+		$('#cf-recurring').innerHTML = bits.length ? '· ' + bits.join(' · ') : '';
 	}
 
 	function openLeadModal() {
@@ -554,6 +564,7 @@
 		$('#cf-notes').value = c.notes || '';
 		$('#cf-serenity').value = c.serenity_tier || '';
 		$('#cf-cycle').value = c.serenity_cycle || 'annual';
+		if ($('#cf-pack-cycle')) $('#cf-pack-cycle').value = c.pack_cycle || 'annual';
 
 		fillPackSelect();
 		$('#cf-pack').value = c.pack || '';
@@ -569,11 +580,11 @@
 			var opt = (CFG.documentOptions || []).filter(function (o) {
 				return label.toLowerCase().indexOf(o.key) !== -1 || o.label.toLowerCase() === label.toLowerCase();
 			})[0];
-			options.push({ key: 'doc:' + (opt ? opt.key : 'sur-mesure'), label: opt ? opt.label : label, price: opt ? opt.priceEur : 100 });
+			options.push({ key: 'doc:' + (opt ? opt.key : 'sur-mesure'), label: opt ? opt.label : label, price: opt ? opt.monthlyEur : 5 });
 		});
 		(lead.club_options || []).forEach(function (label) {
 			var opt = (CFG.clubOptions || []).filter(function (o) { return o.label === label || o.key === label; })[0];
-			options.push({ key: 'club:' + (opt ? opt.key : label), label: opt ? opt.label : label, price: opt ? opt.priceEur : 100 });
+			options.push({ key: 'club:' + (opt ? opt.key : label), label: opt ? opt.label : label, price: opt ? opt.monthlyEur : 5 });
 		});
 
 		return {
@@ -586,6 +597,7 @@
 			pack_price: lead.pack_price,
 			serenity_tier: lead.serenity_tier,
 			serenity_cycle: lead.serenity_cycle,
+			pack_cycle: lead.pack_cycle || 'annual',
 			options: options,
 			status: 'prospect',
 			source: lead.source,
@@ -599,12 +611,30 @@
 		var options = collectOptions();
 		var packKey = $('#cf-pack').value;
 		var offer = (CFG.offers || {})[packKey === 'club' ? CFG.club.baseOfferKey : packKey];
-		var packPrice = offer && offer.type === 'one_time' ? offer.price.EUR : null;
+		// Le pack est un abonnement annuel : `price` porte le tarif de l'année.
+		// En facturation mensuelle, c'est l'équivalent mensuel qui est retenu.
+		var packCycleSel = ($('#cf-pack-cycle') && $('#cf-pack-cycle').value) || 'annual';
+		var packOfferKey = packKey === 'club' ? CFG.club.baseOfferKey : packKey;
+		var packPrice = null;
+		if (offer && offer.type === 'one_time') {
+			packPrice = packCycleSel === 'monthly'
+				? (CFG.packMonthlyPrice ? CFG.packMonthlyPrice(packOfferKey, 'EUR') : Math.round(offer.price.EUR / 10))
+				: offer.price.EUR;
+		}
 		var optionsTotal = options.reduce(function (s, o) { return s + o.price; }, 0);
-		var serenityOffer = (CFG.offers || {})[$('#cf-serenity').value === 'plus' ? 'serenitePlus' : 'serenite'];
-		var serenityPrice = $('#cf-serenity').value
+		var serenityTierSel = $('#cf-serenity').value;
+		var serenityOffer = (CFG.offers || {})[serenityTierSel === 'plus' ? 'serenitePlus' : 'serenite'];
+		var serenityRef = serenityTierSel
 			? ($('#cf-cycle').value === 'annual' ? serenityOffer.annualPrice.EUR : serenityOffer.price.EUR)
 			: null;
+		// Remise combo si le client a aussi un pack de création : un mois
+		// offert supplémentaire (Sérénité comme Sérénité+). Uniquement sur
+		// la formule ANNUELLE (cf. config.js -> comboDiscount.cycles).
+		var serenityCycleSel = $('#cf-cycle').value;
+		var serenityCombo = serenityTierSel && CFG.comboDiscountFor
+			? CFG.comboDiscountFor(packKey, serenityTierSel, serenityCycleSel) : null;
+		var serenityPrice = serenityRef != null && serenityCombo
+			? CFG.applyComboToAnnual(serenityRef, serenityCombo, serenityOffer.price.EUR) : serenityRef;
 
 		var record = {
 			first_name: $('#cf-firstname').value.trim() || null,
@@ -619,6 +649,7 @@
 			currency: 'EUR',
 			serenity_tier: $('#cf-serenity').value || null,
 			serenity_cycle: $('#cf-serenity').value ? $('#cf-cycle').value : null,
+			pack_cycle: packKey ? packCycleSel : null,
 			serenity_price: serenityPrice,
 			options: options,
 			options_total: optionsTotal,
@@ -669,7 +700,8 @@
 			club_options: (client.options || []).filter(function (o) { return o.key.indexOf('club:') === 0; })
 				.map(function (o) { return o.label; }),
 			serenity_tier: client.serenity_tier,
-			serenity_cycle: client.serenity_cycle
+			serenity_cycle: client.serenity_cycle,
+			pack_cycle: client.pack_cycle || 'annual'
 		});
 
 		if (!draft.items.length) {
@@ -776,6 +808,7 @@
 		$('#cf-pack').addEventListener('change', refreshModalTotal);
 		$('#cf-serenity').addEventListener('change', refreshModalTotal);
 		$('#cf-cycle').addEventListener('change', refreshModalTotal);
+		if ($('#cf-pack-cycle')) $('#cf-pack-cycle').addEventListener('change', refreshModalTotal);
 		var addLeadBtn = $('#add-manual-lead');
 		if (addLeadBtn) addLeadBtn.addEventListener('click', openLeadModal);
 		var leadForm = $('#lead-form');

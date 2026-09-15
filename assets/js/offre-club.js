@@ -24,9 +24,12 @@
 		requestType: 'newsite',      // 'newsite' | 'existing'
 		options: [],                 // clés des modules club retenus
 		serenityTier: null,          // null | 'simple' | 'plus'
-		serenityCycle: 'monthly',    // 'monthly' | 'annual'
+		serenityCycle: 'annual',     // 'monthly' | 'annual' — annuel par défaut
+		packCycle: 'annual',         // 'monthly' | 'annual' (abonnement du site)
 		intervention: null           // null | { key, label, priceEur }
 	};
+
+	var CYCLE_LABELS = { monthly: ' / mois', annual: ' / an' };
 
 	// ------------------------------------------------------------
 	// Aides
@@ -46,17 +49,35 @@
 		return (CFG.clubOptions || []).filter(function (o) { return o.key === key; })[0] || null;
 	}
 
+	// Montant du site club qui entre dans le premier versement : tarif
+	// annuel du catalogue si le club règle l'année en une fois, sinon
+	// l'équivalent mensuel (voir clubPackAmountEur plus bas).
 	function baseAmountEur() {
 		if (state.requestType === 'existing') return 0;
-		var base = (CFG.offers || {})[(CFG.club && CFG.club.baseOfferKey) || 'essentiel'];
-		return base && base.price ? base.price.EUR : 990;
+		return clubPackAmountEur(state.packCycle);
 	}
 
-	function optionsAmountEur() {
-		return state.options.reduce(function (sum, key) {
+	// Total MENSUEL des modules retenus, lot de 3 appliqué (config.js).
+	function optionsMonthlyEur() {
+		var amounts = state.options.map(function (key) {
 			var o = optionByKey(key);
-			return sum + (o ? o.priceEur : 0);
-		}, 0);
+			return o ? (o.monthlyEur || 0) : 0;
+		});
+		return CFG.optionsMonthlyTotal ? CFG.optionsMonthlyTotal(amounts)
+			: amounts.reduce(function (s, a) { return s + a; }, 0);
+	}
+	function optionsBundleSavingEur() {
+		var amounts = state.options.map(function (key) {
+			var o = optionByKey(key);
+			return o ? (o.monthlyEur || 0) : 0;
+		});
+		return CFG.optionsBundleSaving ? CFG.optionsBundleSaving(amounts) : 0;
+	}
+	// Part des modules dans le versement, selon le cycle choisi : réglés
+	// pour l'année entière en annuel, au mois sinon.
+	function optionsAmountEur() {
+		var monthly = optionsMonthlyEur();
+		return state.packCycle === 'annual' ? monthly * 12 : monthly;
 	}
 
 	// ------------------------------------------------------------
@@ -105,7 +126,7 @@
 						'<h4 class="font-bold text-white text-sm flex items-center gap-2">' +
 							'<i class="ph-duotone ' + esc(opt.icon) + ' text-accent-400 text-lg" aria-hidden="true"></i>' + esc(opt.label) +
 						'</h4>' +
-						'<span class="text-sm font-bold text-accent-400 whitespace-nowrap" data-price-eur="' + opt.priceEur + '" data-price-prefix="+ ">+ ' + opt.priceEur + ' €</span>' +
+						'<span class="text-sm font-bold text-accent-400 whitespace-nowrap" data-price-eur="' + opt.monthlyEur + '" data-price-prefix="+ " data-price-suffix=" / mois">+ ' + opt.monthlyEur + ' € / mois</span>' +
 					'</div>' +
 					'<p class="text-xs text-slate-400 leading-relaxed">' + esc(opt.desc) + '</p>' +
 					(opt.note ? '<p class="text-[10px] text-accent-400 mt-2 font-bold">' + esc(opt.note) + '</p>' : '') +
@@ -213,7 +234,7 @@
 						'</span>' +
 						'<span class="text-xs text-slate-300 font-medium truncate">' + esc(opt.label) + '</span>' +
 					'</span>' +
-					'<span class="text-[10px] font-bold text-slate-500 whitespace-nowrap" data-price-eur="' + opt.priceEur + '" data-price-prefix="+ ">+ ' + opt.priceEur + ' €</span>' +
+					'<span class="text-[10px] font-bold text-slate-500 whitespace-nowrap" data-price-eur="' + opt.monthlyEur + '" data-price-prefix="+ " data-price-suffix=" / mois">+ ' + opt.monthlyEur + ' € / mois</span>' +
 				'</button>';
 		}).join('');
 
@@ -291,8 +312,10 @@
 		if (label) {
 			label.innerHTML = type === 'existing'
 				? 'Estimation <span class="text-[10px] font-normal lowercase text-slate-500">(intervention / suivi)</span>'
-				: 'Estimation <span class="text-[10px] font-normal lowercase text-slate-500">(création)</span>';
+				: 'Estimation <span class="text-[10px] font-normal lowercase text-slate-500">(1<sup>er</sup> versement)</span>';
 		}
+		// Le type de demande change l'éligibilité à la remise combo Sérénité.
+		renderSerenityPrices();
 		updateTotal();
 	}
 
@@ -336,9 +359,12 @@
 	}
 
 	function setCycle(cycle) {
+		if (['monthly', 'annual'].indexOf(cycle) === -1) return;
 		state.serenityCycle = cycle;
 		if (window.NM) NM.serenityCycle = cycle;
-		document.querySelectorAll('.billing-cycle-pill').forEach(function (pill) {
+		// `[data-cycle]` = pastilles Sérénité. Les pastilles de l'abonnement
+		// du site portent `[data-pack-cycle]` (voir setPackCycle).
+		document.querySelectorAll('.billing-cycle-pill[data-cycle]').forEach(function (pill) {
 			pill.classList.toggle('active', pill.dataset.cycle === cycle);
 		});
 		['serenite', 'serenitePlus'].forEach(function (key) {
@@ -349,37 +375,159 @@
 		updateTotal();
 	}
 
-	function serenityAmountEur(tier, cycle) {
-		var offer = (CFG.offers || {})[tier === 'plus' ? 'serenitePlus' : 'serenite'];
-		if (!offer) return 0;
+	// Pack de création concerné par la remise combo (mois offert supplémentaire « créé avec
+	// moi ») : ici, systématiquement le pack club (base « Essentiel ») dès
+	// lors qu'on crée un site (pas en mode « club a déjà un site »).
+	function comboPackKey() {
+		return state.requestType === 'existing' ? null : 'club';
+	}
+
+	function refPriceEur(offer, cycle) {
 		return cycle === 'annual' ? offer.annualPrice.EUR : offer.price.EUR;
 	}
 
-	function renderSerenityPrices() {
-		var annual = state.serenityCycle === 'annual';
-		var suffix = annual ? ' / an' : ' / mois';
-
-		[['serenite', 'club-serenite-price'], ['serenitePlus', 'club-serenite-plus-price']].forEach(function (pair) {
-			var offer = (CFG.offers || {})[pair[0]];
-			if (!offer) return;
-			var amount = annual ? offer.annualPrice.EUR : offer.price.EUR;
-
-			// Carte du catalogue (devise active)
-			var card = document.querySelector('[data-offer-key="' + pair[0] + '"][data-offer-skip]');
-			if (card) {
-				var amountEl = card.querySelector('.price-amount');
-				var suffixEl = card.querySelector('.price-suffix');
-				if (amountEl) amountEl.textContent = fmt(amount);
-				if (suffixEl) suffixEl.textContent = suffix;
+	// ------------------------------------------------------------
+	// Abonnement du site club : tarif annuel du catalogue (réglé en une
+	// fois, reconductible chaque année) ou équivalent mensuel (÷ 10, ce
+	// qui fait apparaître « 2 mois offerts » sur l'annuel).
+	// ------------------------------------------------------------
+	function clubBaseEur() {
+		var offer = (CFG.offers || {}).essentiel;
+		return offer && offer.price ? offer.price.EUR : 990;
+	}
+	function clubOfferKey() {
+		return (CFG.club && CFG.club.baseOfferKey) || 'essentiel';
+	}
+	// Montant du site qui entre dans le versement : l'année entière en
+	// annuel, l'équivalent mensuel majoré (× 14/12) en mensuel.
+	function clubPackAmountEur(cycle) {
+		if ((cycle || state.packCycle) === 'annual') return clubBaseEur();
+		return CFG.packMonthlyPrice
+			? CFG.packMonthlyPrice(clubOfferKey(), 'EUR')
+			: Math.round(Math.round(clubBaseEur() / 12) * 14 / 12);
+	}
+	// Gros chiffre affiché : toujours un montant mensuel.
+	function clubMonthlyEquivalentEur() {
+		return CFG.packMonthlyEquivalent
+			? CFG.packMonthlyEquivalent(clubOfferKey(), 'EUR')
+			: Math.round(clubBaseEur() / 12);
+	}
+	function setPackCycle(cycle) {
+		if (['monthly', 'annual'].indexOf(cycle) === -1) return;
+		state.packCycle = cycle;
+		document.querySelectorAll('.billing-cycle-pill[data-pack-cycle]').forEach(function (pill) {
+			pill.classList.toggle('active', pill.dataset.packCycle === cycle);
+		});
+		renderClubPackPrice();
+		updateTotal();
+	}
+	function renderClubPackPrice() {
+		var monthly = clubPackAmountEur('monthly');
+		var annual = clubBaseEur();
+		var equivalent = clubMonthlyEquivalentEur();
+		document.querySelectorAll('[data-club-pack-price]').forEach(function (container) {
+			var amountEl = container.querySelector('.pack-price-amount');
+			var suffixEl = container.querySelector('.pack-price-suffix');
+			var detailEl = container.querySelector('.pack-price-detail');
+			if (suffixEl) suffixEl.textContent = ' / mois';
+			if (state.packCycle === 'annual') {
+				if (amountEl) amountEl.textContent = fmt(equivalent);
+				if (detailEl) detailEl.innerHTML = 'soit <strong class="text-white">' + fmt(annual) +
+					' / an</strong>, réglés en une fois et reconduits chaque saison';
+			} else {
+				if (amountEl) amountEl.textContent = fmt(monthly);
+				if (detailEl) detailEl.innerHTML = 'soit ' + fmt(monthly * 12) + ' sur l\'année · <strong class="text-emerald-400">' +
+					fmt(equivalent) + ' / mois en annuel</strong>';
 			}
+		});
+	}
+
+	// Montant Sérénité (EUR) pour un cycle donné, remise combo appliquée
+	// si un pack de création est commandé en même temps — même règle que
+	// la page d'accueil (voir APP_CONFIG.comboDiscountFor).
+	// La remise combo ne s'applique QUE sur la formule annuelle : en
+	// mensuel, Sérénité reste à 49,90 € et Sérénité+ à 94,90 €.
+	function serenityComboFor(tier, cycle) {
+		return CFG.comboDiscountFor ? CFG.comboDiscountFor(comboPackKey(), tier, cycle) : null;
+	}
+	function serenityAmountEur(tier, cycle) {
+		var offer = (CFG.offers || {})[tier === 'plus' ? 'serenitePlus' : 'serenite'];
+		if (!offer) return 0;
+		if (cycle !== 'annual') return offer.price.EUR;
+		var combo = serenityComboFor(tier, 'annual');
+		return combo ? CFG.applyComboToAnnual(offer.annualPrice.EUR, combo, offer.price.EUR) : offer.annualPrice.EUR;
+	}
+	// Gros chiffre affiché : toujours un montant mensuel.
+	function serenityMonthlyShownEur(tier, cycle) {
+		var offer = (CFG.offers || {})[tier === 'plus' ? 'serenitePlus' : 'serenite'];
+		if (!offer) return 0;
+		if (cycle !== 'annual') return offer.price.EUR;
+		return Math.round(serenityAmountEur(tier, 'annual') / 12 * 100) / 100;
+	}
+
+	// Même règle d'affichage que la page d'accueil : le GROS chiffre est
+	// toujours mensuel, le tarif annuel est rappelé en petit dessous, et
+	// quand la remise combo s'applique (annuel + création avec moi) les
+	// deux tarifs pleins — mensuel ET annuel — sont barrés au-dessus.
+	function renderSerenityPrices() {
+		var cycle = state.serenityCycle;
+
+		['serenite', 'serenitePlus'].forEach(function (key) {
+			var offer = (CFG.offers || {})[key];
+			if (!offer) return;
+			var tier = key === 'serenite' ? 'simple' : 'plus';
+			var combo = serenityComboFor(tier, cycle);
+			var monthlyShown = serenityMonthlyShownEur(tier, cycle);
+			var annualShown = cycle === 'annual'
+				? serenityAmountEur(tier, 'annual')
+				: offer.price.EUR * 12;
+
+			var card = document.querySelector('[data-offer-key="' + key + '"][data-offer-skip]');
+			if (card) {
+				var wrap = card.querySelector('.price-wrap');
+				if (!wrap) {
+					var existingAmount = card.querySelector('.price-amount');
+					wrap = document.createElement('span');
+					wrap.className = 'price-wrap';
+					if (existingAmount) { existingAmount.replaceWith(wrap); } else { card.appendChild(wrap); }
+				}
+				var struck = '';
+				if (combo) {
+					struck = '<span class="block text-[0.55em] font-normal opacity-60 leading-tight">' +
+						'<span class="line-through">' + fmt(offer.price.EUR) + ' / mois</span>' +
+						' · <span class="line-through">' + fmt(offer.annualPrice.EUR) + ' / an</span>' +
+						'</span>';
+				}
+				wrap.innerHTML = struck + '<span class="price-amount">' + fmt(monthlyShown) + '</span>';
+
+				var suffixEl = card.querySelector('.price-suffix');
+				if (suffixEl) suffixEl.textContent = ' / mois';
+
+				var detailEl = card.parentElement
+					&& card.parentElement.querySelector('.serenity-price-detail');
+				if (detailEl) {
+					detailEl.innerHTML = cycle === 'annual'
+						? 'soit <strong class="text-white">' + fmt(annualShown) + ' / an</strong>, réglés en une fois'
+						: 'soit ' + fmt(annualShown) + ' sur l\'année · sans engagement';
+				}
+			}
+
 			// Bouton du formulaire (toujours en euros : le devis l'est aussi)
-			var btn = document.getElementById(pair[1]);
+			var btnId = key === 'serenite' ? 'club-serenite-price' : 'club-serenite-plus-price';
+			var btn = document.getElementById(btnId);
 			if (btn) {
 				btn.textContent = new Intl.NumberFormat('fr-FR', {
 					style: 'currency', currency: 'EUR',
-					minimumFractionDigits: (Math.abs(amount % 1) > 0.001) ? 2 : 0,
-					maximumFractionDigits: (Math.abs(amount % 1) > 0.001) ? 2 : 0
-				}).format(amount) + suffix;
+					minimumFractionDigits: (Math.abs(monthlyShown % 1) > 0.001) ? 2 : 0,
+					maximumFractionDigits: (Math.abs(monthlyShown % 1) > 0.001) ? 2 : 0
+				}).format(monthlyShown) + ' / mois';
+			}
+			var detailBtnId = key === 'serenite' ? 'club-serenite-detail' : 'club-serenite-plus-detail';
+			var detailBtn = document.getElementById(detailBtnId);
+			if (detailBtn) {
+				detailBtn.textContent = cycle === 'annual'
+					? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 }).format(annualShown) + ' / an'
+					: 'sans engagement';
 			}
 		});
 	}
@@ -414,14 +562,45 @@
 		var el = document.getElementById('club-total');
 		if (el) el.textContent = oneShot > 0 ? fmt(oneShot) : '—';
 
+		// Rappel du rythme de facturation : le site, puis les modules.
+		var packNote = document.getElementById('club-pack-note');
+		if (packNote) {
+			var packAmount = baseAmountEur();
+			var modulesMonthly = optionsMonthlyEur();
+			var lines = [];
+			if (packAmount > 0) {
+				lines.push(state.packCycle === 'annual'
+					? 'Site : ' + fmt(packAmount) + ' pour la saison, réglés en une fois et reconduits chaque année.'
+					: 'Site : ' + fmt(packAmount) + ' / mois, reconductible.');
+			}
+			if (modulesMonthly > 0) {
+				var saving = optionsBundleSavingEur();
+				var text = 'Modules : ' + fmt(modulesMonthly) + ' / mois';
+				if (saving > 0) text += ' (lot de 3 appliqué, ' + fmt(saving) + ' / mois économisés)';
+				if (state.packCycle === 'annual') text += ', soit ' + fmt(modulesMonthly * 12) + ' sur l\'année';
+				lines.push(text + '.');
+			}
+			if (lines.length) {
+				packNote.innerHTML = lines.join('<br>');
+				packNote.classList.remove('hidden');
+			} else {
+				packNote.classList.add('hidden');
+				packNote.innerHTML = '';
+			}
+		}
+
 		var chip = document.getElementById('club-recurring-chip');
 		var chipText = document.getElementById('club-recurring-text');
 		if (chip && chipText) {
 			if (state.serenityTier) {
 				var offer = (CFG.offers || {})[state.serenityTier === 'plus' ? 'serenitePlus' : 'serenite'];
-				var amount = serenityAmountEur(state.serenityTier, state.serenityCycle);
-				chipText.textContent = fmt(amount) +
-					(state.serenityCycle === 'annual' ? ' / an · ' : ' / mois · ') + offer.name;
+				var combo = serenityComboFor(state.serenityTier, state.serenityCycle);
+				// Montant MENSUEL affiché, montant réellement facturé rappelé.
+				var monthly = serenityMonthlyShownEur(state.serenityTier, state.serenityCycle);
+				var billed = serenityAmountEur(state.serenityTier, state.serenityCycle);
+				var note = combo ? offer.name + ', ' + combo.label : offer.name + ', sans engagement';
+				var billedText = state.serenityCycle === 'annual' ? ' (' + fmt(billed) + ' / an)' : '';
+				chipText.textContent = fmt(monthly) + ' / mois' + billedText + ' · ' + note;
 				chip.classList.remove('hidden');
 				chip.classList.add('inline-flex');
 			} else {
@@ -531,6 +710,9 @@
 				currency: 'EUR',
 				serenity_tier: state.serenityTier,
 				serenity_cycle: state.serenityTier ? state.serenityCycle : null,
+				// Rythme de l'abonnement du site club ('annual' = saison réglée
+				// en une fois, 'monthly' = facilité de paiement).
+				pack_cycle: state.requestType === 'existing' ? null : state.packCycle,
 				club_options: optionLabels,
 				intervention_type: state.intervention ? state.intervention.key : null,
 				intervention_price: state.intervention ? state.intervention.priceEur : null,
@@ -581,6 +763,7 @@
 					interventionLabel: state.intervention ? state.intervention.label : null,
 					serenite: state.serenityTier,
 					sereniteCycle: state.serenityTier ? state.serenityCycle : null,
+					packCycle: state.requestType === 'existing' ? null : state.packCycle,
 					estimatedTotal: estimated,
 					message: message,
 					leadId: leadId
@@ -619,20 +802,25 @@
 		document.querySelectorAll('[data-club-serenity]').forEach(function (btn) {
 			btn.addEventListener('click', function () { setSerenity(btn.dataset.clubSerenity); });
 		});
-		document.querySelectorAll('.billing-cycle-pill').forEach(function (pill) {
+		document.querySelectorAll('.billing-cycle-pill[data-cycle]').forEach(function (pill) {
 			pill.addEventListener('click', function () { setCycle(pill.dataset.cycle); });
+		});
+		document.querySelectorAll('.billing-cycle-pill[data-pack-cycle]').forEach(function (pill) {
+			pill.addEventListener('click', function () { setPackCycle(pill.dataset.packCycle); });
 		});
 
 		if (window.NM && NM.i18n) {
 			NM.i18n.render();
 			NM.i18n.onChange(function () {
 				renderSerenityPrices();
+				renderClubPackPrice();
 				updateTotal();
 			});
 		}
 
 		setRequestType('newsite');
-		setCycle('monthly');
+		setCycle('annual');
+		setPackCycle('annual');
 		syncOptions();
 		syncSerenity();
 		updateTotal();

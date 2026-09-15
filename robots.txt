@@ -1,0 +1,12 @@
+# Clic à l'aide — clicalaide.fr
+# Autorise l'indexation du site public ; exclut les outils internes
+# (administration, générateurs de documents, page de prospection).
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /prospect/
+Disallow: /contrat/
+Disallow: /running/
+
+Sitemap: https://www.clicalaide.fr/sitemap.xml

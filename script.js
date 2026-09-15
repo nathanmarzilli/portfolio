@@ -15,11 +15,74 @@
 
 var CFG = window.APP_CONFIG || { offers: {}, currencies: {}, launchPromo: { active: false }, defaultCurrency: 'EUR' };
 
-// Cycle de facturation des packs Sérénité : 'monthly' | 'annual'
-// (forcé sur 'annual' quand le pack Essentiel est sélectionné).
+// Type de demande ('newsite' | 'existing') — déclaré ici (et non dans
+// le callback DOMContentLoaded plus bas, comme `serenityBillingCycle`)
+// car `currentComboPackKey()` le lit dès le tout premier rendu des prix
+// (`renderSerenityCardPrices()`, appelée juste après `applyI18n()`).
+var requestType = 'newsite';
+
+// ------------------------------------------------------------
+// Tables de prix Sérénité / Sérénité+ par cycle — déclarées au
+// niveau du module (et non dans le callback DOMContentLoaded plus
+// bas) car `renderSerenityCardPrices()` est déjà appelée très tôt
+// (juste après `applyI18n()`), avant que le reste de l'init du
+// formulaire ne s'exécute. Ne dépendent que de CFG, disponible dès
+// le chargement du script.
+// ------------------------------------------------------------
+var SERENITY_PRICES = {
+	simple: CFG.offers.serenite.price.EUR,
+	plus: CFG.offers.serenitePlus.price.EUR
+};
+var SERENITY_PRICES_ANNUAL = {
+	simple: CFG.offers.serenite.annualPrice.EUR,
+	plus: CFG.offers.serenitePlus.annualPrice.EUR
+};
+// Nombre de mois couverts par un règlement de chaque cycle — sert à
+// calculer l'équivalent mensuel affiché (barré/comparé) et le libellé.
+var CYCLE_MONTHS = { monthly: 1, annual: 12 };
+var CYCLE_LABELS = { monthly: '/mois', annual: '/an' };
+
+// Cycle de facturation des packs Sérénité : 'monthly' | 'annual'.
+// Jamais forcé : le client choisit librement, sans engagement.
+// L'ANNUEL est le cycle sélectionné par défaut partout sur le site.
 // Déclaré en `var` au niveau du module car il est lu par des fonctions
 // hissées appelées dès le premier rendu.
-var serenityBillingCycle = 'monthly';
+var serenityBillingCycle = 'annual';
+
+// Cycle de facturation des PACKS DE CRÉATION : 'monthly' | 'annual'.
+// L'annuel est le tarif de référence du catalogue (réglé en une fois,
+// reconductible chaque année) et le cycle par défaut : on y affiche le
+// gros chiffre « X € / mois » = prix annuel / 12. Le cycle mensuel est
+// une facilité de paiement plus chère (équivalent mensuel × 14/12).
+var packBillingCycle = 'annual';
+
+// Correspondance entre la valeur d'une case « document » dans le HTML et
+// sa clé dans le catalogue (config.js -> documentOptions).
+var DOC_OPTION_KEYS = {
+	'Devis': 'devis',
+	'Facture': 'facture',
+	'Quittance': 'quittance',
+	'Note de Frais': 'frais',
+	'Bail Location': 'bail',
+	'Autre': 'sur-mesure'
+};
+function docOptionFor(value) {
+	var key = DOC_OPTION_KEYS[value];
+	if (!key) return null;
+	return (CFG.documentOptions || []).filter(function (o) { return o.key === key; })[0] || null;
+}
+// Total MENSUEL des options cochées, lot de 3 appliqué (voir config.js
+// -> optionBundle / optionsMonthlyTotal). Les `data-price` des cases
+// portent un montant mensuel depuis la refonte de septembre 2026.
+function docMonthlyTotal(selector) {
+	var amounts = [];
+	document.querySelectorAll(selector).forEach(function (cb) {
+		amounts.push(parseInt(cb.getAttribute('data-price'), 10) || 0);
+	});
+	return (window.APP_CONFIG && APP_CONFIG.optionsMonthlyTotal)
+		? APP_CONFIG.optionsMonthlyTotal(amounts)
+		: amounts.reduce(function (s, a) { return s + a; }, 0);
+}
 
 // --- Ponts vers le module i18n partagé ------------------------------
 function getCurrentCurrency() {
@@ -32,6 +95,13 @@ function formatMoney(amount, currencyCode) {
 	if (window.NM && NM.i18n) return NM.i18n.format(amount, currencyCode);
 	return amount + ' €';
 }
+// Convertit un montant EUR « libre » (ex : quarterlyPriceEur) vers la
+// devise active, en réutilisant EXACTEMENT la même table de conversion
+// que les prix affichés via data-price-eur ailleurs sur le site.
+function convertEur(amountEur, currencyCode) {
+	if (window.NM && NM.i18n && NM.i18n.convert) return NM.i18n.convert(amountEur, currencyCode);
+	return amountEur;
+}
 function applyI18n() {
 	if (window.NM && NM.i18n) NM.i18n.render();
 }
@@ -42,8 +112,9 @@ window.applyI18n = applyI18n;
 // ------------------------------------------------------------
 // Point d'entrée unique du tunnel : enregistre la demande dans
 // Supabase (table nm_leads). C'est Supabase lui-même qui prévient
-// ensuite Zapier (déclencheur SQL sur la table), donc rien à faire
-// ici : voir /admin/ → Réglages pour coller l'URL « Catch Hook ».
+// ensuite le service de notification (déclencheur SQL sur la
+// table — Google Apps Script par défaut, Zapier en option), donc
+// rien à faire ici : voir /admin/ → Réglages pour coller l'adresse.
 // Best-effort : une erreur ici ne doit JAMAIS empêcher l'affichage
 // de la confirmation à l'internaute.
 // ============================================================
@@ -61,7 +132,7 @@ window.submitForm = async function (data) {
 				body: JSON.stringify(data)
 			});
 		} catch (e) {
-			console.error('submitForm : webhook Zapier injoignable (non bloquant)', e);
+			console.error('submitForm : webhook de secours injoignable (non bloquant)', e);
 		}
 	}
 
@@ -120,9 +191,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 3. Les prix affichés (cartes, pastilles, options) sont rendus par
         //    NM.i18n à partir des attributs data-offer-key / data-price-eur.
-        //    Les cartes Sérénité gèrent en plus le cycle mensuel/annuel.
+        //    Les cartes Sérénité ET les cartes de packs gèrent en plus leur
+        //    propre cycle mensuel/annuel : elles se rendent elles-mêmes.
         applyI18n();
         renderSerenityCardPrices();
+        if (window.renderPackCardPrices) renderPackCardPrices();
 
         // 4. Montants de référence du formulaire de demande (toujours en EUR :
         //    le devis et le brief projet sont établis en euros).
@@ -133,6 +206,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!offer || !input) return;
             var applyDiscount = isPromoValid && (promo.appliesTo || []).indexOf(key) !== -1;
             input.setAttribute('data-price', getDiscounted(offer.price.EUR, applyDiscount));
+        });
+
+        // 5. Options documentaires : leur `data-price` porte désormais un
+        //    montant MENSUEL (5 € l'unité, 15 € pour le sur-mesure). Il est
+        //    posé depuis le catalogue pour qu'aucun montant ne reste figé
+        //    dans le HTML — voir DOC_OPTION_KEYS juste en dessous.
+        document.querySelectorAll('.doc-sub-checkbox, .service-doc-chk').forEach(function (cb) {
+            var option = docOptionFor(cb.value);
+            if (option) cb.setAttribute('data-price', option.monthlyEur);
         });
     }
 
@@ -601,21 +683,45 @@ document.addEventListener('DOMContentLoaded', () => {
     // Variables globales pour le calcul
 	let currentBasePrice = 1790;
 	let serenityTier = null; // null | 'simple' | 'plus'
-	// serenityBillingCycle est déclaré tout en haut du fichier (voir commentaire là-bas)
+	// serenityBillingCycle et requestType sont déclarés tout en haut du
+	// fichier (voir commentaires là-bas)
 	let isDocumentSelected = false;
-	let requestType = 'newsite'; // 'newsite' | 'existing'
 	let selectedIntervention = null; // { type, price } | null
 	// Récapitulatif du formulaire : toujours exprimé en euros, et TOUJOURS
 	// lu depuis le catalogue central (config.js). Aucun montant n'est figé
 	// ici : modifier un prix dans config.js suffit à mettre à jour le site.
-	const SERENITY_PRICES = {
-		simple: CFG.offers.serenite.price.EUR,
-		plus: CFG.offers.serenitePlus.price.EUR
-	};
-	const SERENITY_PRICES_ANNUAL = {
-		simple: CFG.offers.serenite.annualPrice.EUR,
-		plus: CFG.offers.serenitePlus.annualPrice.EUR
-	};
+	// (Tables SERENITY_PRICES* / CYCLE_MONTHS / CYCLE_LABELS déclarées au
+	// niveau du module, tout en haut du fichier — voir le commentaire
+	// à côté de `var CFG`.)
+
+	// Pack de création actuellement sélectionné dans le formulaire (ou
+	// null en mode « site existant ») — utilisé pour savoir si la remise
+	// combo Sérénité (mois offert supplémentaire « créé avec moi ») s'applique.
+	function currentComboPackKey() {
+		if (requestType === 'existing') return null;
+		const radio = document.querySelector('input[name="project_pack"]:checked');
+		return radio ? radio.value.toLowerCase() : null;
+	}
+	// Montant Sérénité (EUR) pour un cycle donné, remise combo appliquée
+	// si un pack de création est sélectionné en même temps.
+	// La remise combo ne s'applique QUE sur la formule annuelle : en
+	// mensuel, Sérénité reste à 49,90 € et Sérénité+ à 94,90 €.
+	function serenityComboFor(tier, cycle) {
+		if (!window.APP_CONFIG) return null;
+		return APP_CONFIG.comboDiscountFor(currentComboPackKey(), tier, cycle);
+	}
+	function serenityAmountFor(tier, cycle) {
+		if (!tier) return 0;
+		if (cycle !== 'annual') return SERENITY_PRICES[tier];
+		var base = SERENITY_PRICES_ANNUAL[tier];
+		var combo = serenityComboFor(tier, 'annual');
+		return combo ? APP_CONFIG.applyComboToAnnual(base, combo, SERENITY_PRICES[tier]) : base;
+	}
+	// Équivalent mensuel du montant annuel (le gros chiffre affiché).
+	function serenityMonthlyShownFor(tier, cycle) {
+		if (cycle !== 'annual') return SERENITY_PRICES[tier];
+		return Math.round(serenityAmountFor(tier, 'annual') / 12 * 100) / 100;
+	}
 
 	// Formatage court d'un montant en euros (49,90 € — 1 790 €).
 	function eur(amount) {
@@ -759,48 +865,68 @@ document.addEventListener('DOMContentLoaded', () => {
 		window.toggleSerenityForm(tier);
 	};
 
-	// --- Facturation Sérénité : mensuel ou annuel (2 mois offerts) ---
-	// locked=true : verrouille visuellement le choix sur 'annual' (cas Essentiel).
-	window.setSerenityBillingCycle = function(cycle, locked) {
-		if (cycle !== 'monthly' && cycle !== 'annual') return;
+	// --- Facturation Sérénité : mensuel / annuel ---
+	// Sans engagement sur les deux cycles : rien n'est jamais imposé.
+	window.setSerenityBillingCycle = function(cycle) {
+		if (['monthly', 'annual'].indexOf(cycle) === -1) return;
 		serenityBillingCycle = cycle;
 
-		document.querySelectorAll('.billing-cycle-pill').forEach(function (pill) {
+		// `[data-cycle]` = pastilles Sérénité uniquement. Les pastilles des
+		// packs de création portent `[data-pack-cycle]` et sont pilotées par
+		// setPackBillingCycle() : les deux sélecteurs ne se marchent pas dessus.
+		document.querySelectorAll('.billing-cycle-pill[data-cycle]').forEach(function (pill) {
 			const isActive = pill.getAttribute('data-cycle') === cycle;
 			pill.classList.toggle('active', isActive);
-			pill.disabled = !!locked && pill.getAttribute('data-cycle') === 'monthly';
-			pill.classList.toggle('opacity-40', pill.disabled);
-			pill.classList.toggle('cursor-not-allowed', pill.disabled);
+			pill.disabled = false;
+			pill.classList.remove('opacity-40', 'cursor-not-allowed');
 		});
 
-		// Prix (EUR) affichés dans les boutons du formulaire — le devis/kickoff
-		// reste toujours en EUR, indépendamment de la devise du header.
-		const priceSimpleEl = document.getElementById('serenite-form-price');
-		const pricePlusEl = document.getElementById('serenitePlus-form-price');
-		if (cycle === 'annual') {
-			if (priceSimpleEl) priceSimpleEl.textContent = eur(SERENITY_PRICES_ANNUAL.simple) + ' / an';
-			if (pricePlusEl) pricePlusEl.textContent = eur(SERENITY_PRICES_ANNUAL.plus) + ' / an';
-		} else {
-			if (priceSimpleEl) priceSimpleEl.textContent = eur(SERENITY_PRICES.simple) + ' / mois';
-			if (pricePlusEl) pricePlusEl.textContent = eur(SERENITY_PRICES.plus) + ' / mois';
-		}
-
+		renderSerenityFormPrices();
 		renderSerenityCardPrices();
 		updateTotal();
 	};
 
+	// Prix (EUR) affichés dans les DEUX boutons du formulaire — le devis et
+	// le brief restent en euros, indépendamment de la devise du header.
+	// ⚠️ Appelée aussi depuis refreshComboHint() : sans ça, passer sur
+	// « j'ai déjà un site » laissait le tarif remisé affiché dans les
+	// boutons alors que la remise ne s'applique plus (bug signalé).
+	function renderSerenityFormPrices() {
+		const cycle = serenityBillingCycle;
+		const priceSimpleEl = document.getElementById('serenite-form-price');
+		const pricePlusEl = document.getElementById('serenitePlus-form-price');
+		const suffixLabel = CYCLE_LABELS[cycle].replace('/', ' / ');
+		if (priceSimpleEl) priceSimpleEl.textContent = eur(serenityMonthlyShownFor('simple', cycle)) + ' / mois';
+		if (pricePlusEl) pricePlusEl.textContent = eur(serenityMonthlyShownFor('plus', cycle)) + ' / mois';
+		// Le montant réellement facturé (annuel en une fois, ou mensuel)
+		// est rappelé sous le bouton.
+		const detailSimpleEl = document.getElementById('serenite-form-detail');
+		const detailPlusEl = document.getElementById('serenitePlus-form-detail');
+		if (detailSimpleEl) detailSimpleEl.textContent = cycle === 'annual'
+			? eur(serenityAmountFor('simple', 'annual')) + ' / an' : 'sans engagement';
+		if (detailPlusEl) detailPlusEl.textContent = cycle === 'annual'
+			? eur(serenityAmountFor('plus', 'annual')) + ' / an' : 'sans engagement';
+		void suffixLabel;
+	}
+
 	// Prix des cartes Sérénité / Sérénité+ dans la section Services,
 	// selon la devise active (pill-menu du header) et le cycle choisi.
+	// Applique aussi la remise combo (mois offert supplémentaire) si un pack de création
+	// est sélectionné en même temps, avec le tarif de référence barré.
 	function renderSerenityCardPrices() {
 		var currency = getCurrentCurrency();
-
-		// La pastille « Sérénité annuel inclus » de la carte Essentiel est rendue
-		// par NM.i18n (data-offer-key="serenite-annual") : rien à faire ici.
+		var cycle = serenityBillingCycle;
 
 		['serenite', 'serenitePlus'].forEach(function (key) {
 			var offer = CFG.offers[key];
 			if (!offer) return;
-			var container = document.querySelector('[data-offer-key="' + key + '"]');
+			var tier = key === 'serenite' ? 'simple' : 'plus';
+			// ⚠️ `[data-offer-skip]` est OBLIGATOIRE ici : « serenite » apparaît
+			// aussi dans le comparatif et la FAQ (rendus par i18n.js). Sans ce
+			// filtre, querySelector attrapait le PREMIER de ces textes et
+			// écrivait le prix de la carte dedans — la carte, elle, ne bougeait
+			// jamais. Seules les cartes portent `data-offer-skip`.
+			var container = document.querySelector('[data-offer-key="' + key + '"][data-offer-skip]');
 			var badge = document.getElementById(key === 'serenite' ? 'serenite-annual-badge' : 'serenitePlus-annual-badge');
 			if (!container) return;
 
@@ -812,20 +938,110 @@ document.addEventListener('DOMContentLoaded', () => {
 				if (existingAmount) { existingAmount.replaceWith(wrap); } else { container.appendChild(wrap); }
 			}
 
-			if (serenityBillingCycle === 'annual' && offer.annualPrice && offer.annualPrice[currency] != null) {
-				wrap.innerHTML = '<span class="price-amount">' + formatMoney(offer.annualPrice[currency], currency) + '</span>';
-				var suffix = container.querySelector('.price-suffix');
-				if (suffix) suffix.textContent = '/an';
-				if (badge) badge.classList.remove('hidden');
-			} else {
-				wrap.innerHTML = '<span class="price-amount">' + formatMoney(offer.price[currency], currency) + '</span>';
-				var suffix2 = container.querySelector('.price-suffix');
-				if (suffix2) suffix2.textContent = '/mois';
-				if (badge) badge.classList.add('hidden');
+			// Règle d'affichage, identique aux packs de création :
+			// le GROS chiffre est toujours un montant mensuel, le tarif
+			// annuel est rappelé en petit dessous. Quand la remise combo
+			// s'applique (formule annuelle + création avec moi), les deux
+			// tarifs pleins — mensuel ET annuel — sont barrés au-dessus.
+			var fullMonthly = offer.price[currency];
+			var fullAnnual = offer.annualPrice[currency];
+
+			var combo = serenityComboFor(tier, cycle);
+			var shownMonthlyEur = serenityMonthlyShownFor(tier, cycle);
+			var shownAnnualEur = cycle === 'annual'
+				? serenityAmountFor(tier, 'annual')
+				: offer.price.EUR * 12;
+			var shownMonthly = combo ? convertEur(shownMonthlyEur, currency)
+				: (cycle === 'annual' ? convertEur(shownMonthlyEur, currency) : fullMonthly);
+			var shownAnnual = combo ? convertEur(shownAnnualEur, currency)
+				: (cycle === 'annual' ? fullAnnual : convertEur(shownAnnualEur, currency));
+
+			var struck = '';
+			if (combo) {
+				struck = '<span class="block text-[0.55em] font-normal opacity-60 leading-tight">' +
+					'<span class="line-through">' + formatMoney(fullMonthly, currency) + ' / mois</span>' +
+					' · <span class="line-through">' + formatMoney(fullAnnual, currency) + ' / an</span>' +
+					'</span>';
 			}
+			wrap.innerHTML = struck + '<span class="price-amount">' + formatMoney(shownMonthly, currency) + '</span>';
+
+			var suffixEl = container.querySelector('.price-suffix');
+			if (suffixEl) suffixEl.textContent = '/mois';
+
+			// Ligne de détail : ce qui est réellement facturé.
+			var detailEl = container.parentElement
+				&& container.parentElement.querySelector('.serenity-price-detail');
+			if (detailEl) {
+				detailEl.innerHTML = cycle === 'annual'
+					? 'soit <strong class="text-white">' + formatMoney(shownAnnual, currency) + ' / an</strong>, réglés en une fois'
+					: 'soit ' + formatMoney(shownAnnual, currency) + ' sur l\'année · sans engagement';
+			}
+			if (badge) badge.classList.toggle('hidden', cycle !== 'annual');
 		});
 	}
 	window.renderSerenityCardPrices = renderSerenityCardPrices;
+
+	// ------------------------------------------------------------
+	// PACKS DE CRÉATION — abonnement annuel affiché au mois
+	// ------------------------------------------------------------
+	// Le catalogue (`offers.<pack>.price`) porte le tarif ANNUEL, réglé en
+	// une fois et reconductible chaque année. Le cycle mensuel est une
+	// facilité de paiement plus chère (annuel ÷ 10), ce qui fait apparaître
+	// « 2 mois offerts » sur l'annuel. Les cartes sont rendues ici (et pas
+	// par i18n.js) parce que leur contenu dépend du cycle choisi.
+	// Dans les DEUX cycles, le gros chiffre est un montant MENSUEL —
+	// c'est ce que le client compare. Ce qui change, c'est lequel :
+	//   • annuel  -> prix annuel / 12 (58 €), avec le coût annuel en petit ;
+	//   • mensuel -> équivalent × 14/12 (68 €), avec le total sur l'année.
+	function renderPackCardPrices() {
+		var currency = getCurrentCurrency();
+
+		document.querySelectorAll('[data-pack-price]').forEach(function (container) {
+			var key = container.getAttribute('data-pack-price');
+			var offer = CFG.offers[key];
+			if (!offer || !offer.price) return;
+
+			var annual = offer.price[currency];
+			var equivalent = APP_CONFIG.packMonthlyEquivalent(key, currency);
+			var monthly = APP_CONFIG.packMonthlyPrice(key, currency);
+			if (annual == null || equivalent == null || monthly == null) return;
+
+			var amountEl = container.querySelector('.pack-price-amount');
+			var suffixEl = container.querySelector('.pack-price-suffix');
+			var detailEl = container.querySelector('.pack-price-detail');
+
+			if (suffixEl) suffixEl.textContent = ' / mois';
+
+			if (packBillingCycle === 'annual') {
+				if (amountEl) amountEl.textContent = formatMoney(equivalent, currency);
+				if (detailEl) {
+					detailEl.innerHTML = 'soit <strong class="text-white">' +
+						formatMoney(annual, currency) + ' / an</strong>, réglés en une fois';
+				}
+			} else {
+				if (amountEl) amountEl.textContent = formatMoney(monthly, currency);
+				if (detailEl) {
+					detailEl.innerHTML = 'soit ' + formatMoney(monthly * 12, currency) +
+						' sur l\'année · <strong class="text-emerald-400">' +
+						formatMoney(equivalent, currency) + ' / mois en annuel</strong>';
+				}
+			}
+		});
+	}
+	window.renderPackCardPrices = renderPackCardPrices;
+
+	// Bascule mensuel / annuel des packs de création.
+	window.setPackBillingCycle = function (cycle) {
+		if (['monthly', 'annual'].indexOf(cycle) === -1) return;
+		packBillingCycle = cycle;
+
+		document.querySelectorAll('.billing-cycle-pill[data-pack-cycle]').forEach(function (pill) {
+			pill.classList.toggle('active', pill.getAttribute('data-pack-cycle') === cycle);
+		});
+
+		renderPackCardPrices();
+		updateTotal();
+	};
 
 	// Mise à jour visuelle des DEUX cartes dans la section Services
 	window.updateSerenityCardInServices = function() {
@@ -873,29 +1089,23 @@ document.addEventListener('DOMContentLoaded', () => {
 	};
 
 	window.toggleSerenityForm = function(tier) {
-		// Si "Essentiel" est sélectionné, Sérénité simple est le minimum forcé et inclus :
-		// on ne peut pas le désélectionner complètement, mais on DOIT pouvoir basculer
-		// librement entre "simple" et "plus" dans les deux sens (bug historique : un clic
-		// sur "plus" bloquait tout retour vers "simple").
-		const radioEssentiel = document.querySelector('input[name="project_pack"][value="Essentiel"]');
-		const isForced = !!(radioEssentiel && radioEssentiel.checked);
-
-		if (isForced && tier === 'simple' && serenityTier === 'simple') {
-			// Déjà sur le minimum forcé : un reclic ne doit pas désélectionner.
-			return;
-		}
-
+		// Sérénité est TOUJOURS facultatif et librement désélectionnable,
+		// quel que soit le pack de création choisi (plus aucun pack ne
+		// l'impose — voir config.js : `recommendedSerenity` remplace
+		// l'ancien `forcedSerenity`). Basculer librement entre "simple" et
+		// "plus" dans les deux sens.
 		window.vibrate();
 
 		if (serenityTier === tier) {
-			// Reclique sur l'option active -> on désélectionne (sauf si forcé par Essentiel)
-			serenityTier = isForced ? 'simple' : null;
+			// Reclique sur l'option active -> on désélectionne.
+			serenityTier = null;
 		} else {
 			serenityTier = tier;
 		}
 
 		updateSerenityFormButtons();
 		updateSerenityCardInServices();
+		renderSerenityCardPrices();
 		updateTotal();
 	};
 
@@ -956,65 +1166,47 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 		}
 
-		// Gestion Forçage Sérénité pour Essentiel
-		if (packName === 'Essentiel') {
-			forceSerenity(true);
-		} else {
-			forceSerenity(false);
-		}
+		// Sérénité n'est plus jamais imposé par un pack : on se contente de
+		// rafraîchir les prix/remise combo affichés (le pack sélectionné
+		// influe sur la remise combo (mois offert supplémentaire), voir serenityAmountFor()).
+		refreshComboHint();
 
 		updateTotal();
 	};
 
-	// Gestion de l'état "Forcé" du pack Sérénité (simple, jamais Plus, quand Essentiel est choisi)
-	// Essentiel INCLUT obligatoirement Sérénité simple, facturée annuellement (2 mois offerts).
-	function forceSerenity(forced) {
-		const btnSimple = document.getElementById('serenite-toggle-btn');
-
-		if (forced) {
-			// Si Plus était choisi, on redescend sur Simple (Essentiel n'inclut que la base)
-			serenityTier = 'simple';
-			// Remarque : "Simple" reste cliquable (pas de cursor-not-allowed) — on peut
-			// toujours basculer vers "Plus" puis revenir sur "Simple", seule la désélection
-			// complète est bloquée (voir toggleSerenityForm).
-			btnSimple?.classList.add('opacity-80');
-
-			if (btnSimple && !document.getElementById('forced-msg')) {
-				const msg = document.createElement('span');
-				msg.id = 'forced-msg';
-				msg.className = 'text-[9px] text-blue-300 absolute top-1 right-2 uppercase font-bold tracking-widest';
-				msg.innerText = 'Engagement : 1 an';
-				btnSimple.classList.add('relative');
-				btnSimple.appendChild(msg);
-			}
-
-			// Essentiel impose la facturation annuelle (pas de mensuel possible)
-			window.setSerenityBillingCycle('annual', true);
-		} else {
-			btnSimple?.classList.remove('opacity-80');
-			const msg = document.getElementById('forced-msg');
-			if(msg) msg.remove();
-
-			// On repasse la facturation en libre choix (retour au mensuel par défaut)
-			window.setSerenityBillingCycle('monthly', false);
-		}
-
+	// Rafraîchit l'affichage de la remise combo Sérénité (prix barré +
+	// libellé) chaque fois que le pack de création sélectionné change,
+	// sans jamais forcer ni verrouiller le choix du client.
+	function refreshComboHint() {
+		renderSerenityCardPrices();
+		renderSerenityFormPrices();
 		updateSerenityFormButtons();
 		updateSerenityCardInServices();
 	}
 
 	function updateTotal() {
-		let totalOneShot = currentBasePrice;
-		let docTotal = 0;
-
-		if (isDocumentSelected) {
-			const checkedDocs = document.querySelectorAll('.doc-sub-checkbox:checked');
-			checkedDocs.forEach(cb => {
-				const price = parseInt(cb.getAttribute('data-price')) || 0;
-				docTotal += price;
-			});
-			totalOneShot += docTotal;
+		// Le pack de création est un abonnement annuel : `currentBasePrice`
+		// porte toujours le tarif de l'ANNÉE (catalogue). En facturation
+		// mensuelle, c'est l'équivalent mensuel majoré (× 14/12) qui entre
+		// dans le versement.
+		const packKeyForCycle = currentComboPackKey();
+		let packAmount = 0;
+		if (requestType !== 'existing' && currentBasePrice) {
+			if (packBillingCycle === 'annual') {
+				packAmount = currentBasePrice;
+			} else {
+				packAmount = (packKeyForCycle && APP_CONFIG.packMonthlyPrice(packKeyForCycle, 'EUR'))
+					|| Math.round(Math.round(currentBasePrice / 12) * 14 / 12);
+			}
 		}
+
+		// Les options sont des suppléments MENSUELS (5 € l'unité, 15 € le
+		// document sur-mesure), avec le lot de 3 à 10 €. En facturation
+		// annuelle, elles sont réglées pour l'année entière, comme le pack.
+		const docMonthly = isDocumentSelected ? docMonthlyTotal('.doc-sub-checkbox:checked') : 0;
+		const docTotal = packBillingCycle === 'annual' ? docMonthly * 12 : docMonthly;
+
+		let totalOneShot = packAmount + docTotal;
 
 		if (selectedIntervention) {
 			totalOneShot += selectedIntervention.price;
@@ -1023,8 +1215,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		const priceTag = document.getElementById('docs-price-tag');
 		if(priceTag) {
 			if(isDocumentSelected) {
-				priceTag.textContent = `+${docTotal}€`;
-				if(docTotal > 0) {
+				priceTag.textContent = `+${docMonthly}€/mois`;
+				if(docMonthly > 0) {
 					priceTag.classList.remove('text-slate-500');
 					priceTag.classList.add('text-emerald-400', 'bg-emerald-400/10');
 				} else {
@@ -1049,7 +1241,9 @@ document.addEventListener('DOMContentLoaded', () => {
 			// plutôt qu'un seul texte fusionné — pour une hiérarchie plus claire.
 			let text;
 			if (totalOneShot > 0) {
-				const prefix = (selectedIntervention && selectedIntervention.type === 'relifting') ? 'Dès ' : '';
+				// Le relifting est un abonnement 2 ans réglé en une fois :
+				// son montant est ferme, pas un « à partir de ».
+				const prefix = '';
 				text = prefix + eur(totalOneShot);
 			} else {
 				text = '—';
@@ -1059,22 +1253,54 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (recurringChip && recurringChipText) {
 				if (serenityTier) {
 					const label = serenityTier === 'plus' ? 'Sérénité+' : 'Sérénité';
-					const isEssentielBundle = requestType !== 'existing' && document.querySelector('input[name="project_pack"][value="Essentiel"]')?.checked;
+					const combo = serenityComboFor(serenityTier, serenityBillingCycle);
+					// On affiche le montant MENSUEL, avec le montant réellement
+					// facturé (l'année en une fois) rappelé juste derrière.
+					const monthly = serenityMonthlyShownFor(serenityTier, serenityBillingCycle);
+					const billed = serenityAmountFor(serenityTier, serenityBillingCycle);
 
-					if (serenityBillingCycle === 'annual') {
-						const annual = SERENITY_PRICES_ANNUAL[serenityTier];
-						const bundleNote = isEssentielBundle ? `${label} incluse, payée avec le pack` : `${label}, -2 mois offerts`;
-						recurringChipText.textContent = `${eur(annual)} / an · ${bundleNote}`;
-					} else {
-						const monthly = SERENITY_PRICES[serenityTier];
-						recurringChipText.textContent = `${eur(monthly)} / mois · ${label}`;
-					}
+					let note = label + ', sans engagement';
+					if (combo) note = `${label}, ${combo.label}`;
+					else if (serenityBillingCycle === 'annual') note = `${label}, -2 mois offerts`;
+
+					const billedText = serenityBillingCycle === 'annual'
+						? ` (${eur(billed)} / an)` : '';
+					recurringChipText.textContent = `${eur(monthly)} / mois${billedText} · ${note}`;
 					recurringChip.classList.remove('hidden');
 					recurringChip.classList.add('flex');
 				} else {
 					recurringChip.classList.add('hidden');
 					recurringChip.classList.remove('flex');
 					recurringChipText.textContent = '';
+				}
+			}
+
+			// Rappel du rythme de facturation : le site, puis les options.
+			const packNote = document.getElementById('total-pack-note');
+			if (packNote) {
+				const bits = [];
+				if (packAmount > 0) {
+					bits.push(packBillingCycle === 'annual'
+						? `Site : ${eur(packAmount)} pour l'année, réglés en une fois et reconduits chaque année.`
+						: `Site : ${eur(packAmount)} / mois, reconductible.`);
+				}
+				if (docMonthly > 0) {
+					const amounts = [];
+					document.querySelectorAll('.doc-sub-checkbox:checked').forEach(cb => {
+						amounts.push(parseInt(cb.getAttribute('data-price'), 10) || 0);
+					});
+					const saving = APP_CONFIG.optionsBundleSaving(amounts);
+					let optionText = `Options : ${eur(docMonthly)} / mois`;
+					if (saving > 0) optionText += ` (lot de 3 appliqué, ${eur(saving)} / mois économisés)`;
+					if (packBillingCycle === 'annual') optionText += `, soit ${eur(docMonthly * 12)} sur l'année`;
+					packNote.innerHTML = bits.concat(optionText + '.').join('<br>');
+					packNote.classList.remove('hidden');
+				} else if (bits.length) {
+					packNote.innerHTML = bits.join('<br>');
+					packNote.classList.remove('hidden');
+				} else {
+					packNote.classList.add('hidden');
+					packNote.innerHTML = '';
 				}
 			}
 		}
@@ -1236,10 +1462,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="ph-bold ph-spinner animate-spin text-xl"></i> Envoi...';
 
-                // Payload complet de la demande de RDV — envoyé à la fois vers Firebase
-                // (trace interne) et vers submitForm() (webhook Zapier -> email de
-                // confirmation), pour que le mail parte bien sur ce tunnel aussi.
-                // Payload aligné sur les colonnes de la table nm_leads
+                // Payload complet de la demande de RDV, envoyé à submitForm()
+                // qui l'enregistre dans Supabase (déclenchant la notification
+                // agenda + e-mail côté base). Payload aligné sur les colonnes
+                // de la table nm_leads
                 // (voir migration nm_portfolio_core_schema). Il alimente à la
                 // fois l'espace d'administration et l'e-mail de confirmation.
                 const numericTotal = Number(String(total).replace(/[^0-9,.-]/g, '').replace(/\s/g, '').replace(',', '.')) || null;
@@ -1264,6 +1490,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     currency: 'EUR',
                     serenity_tier: serenityTier,               // null | 'simple' | 'plus'
                     serenity_cycle: hasSerenity ? serenityBillingCycle : null,
+                    // Rythme choisi pour l'abonnement du site lui-même
+                    // ('annual' = l'année réglée en une fois, 'monthly' =
+                    // facilité de paiement). NULL si pas de création de site.
+                    pack_cycle: requestType === 'existing' ? null : packBillingCycle,
                     documents: selectedDocumentsList,          // ex : ["Devis", "Autre : Attestation"]
                     intervention_type: selectedIntervention ? selectedIntervention.type : null,
                     intervention_price: selectedIntervention ? selectedIntervention.price : null,
@@ -1272,8 +1502,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     status: 'nouveau'
                 };
 
-                // submitForm() enregistre la demande dans Supabase ET déclenche
-                // l'e-mail de confirmation via le webhook Zapier. Best-effort :
+                // submitForm() enregistre la demande dans Supabase, qui déclenche
+                // elle-même la notification agenda + e-mail. Best-effort :
                 // un échec ne doit jamais bloquer la confirmation à l'écran.
                 let savedLeadId = null;
                 try {
@@ -1306,6 +1536,7 @@ document.addEventListener('DOMContentLoaded', () => {
 						intervention: selectedIntervention ? selectedIntervention.type : null,
 						serenite: serenityTier,
 						sereniteCycle: serenityTier ? serenityBillingCycle : null,
+						packCycle: requestType === 'existing' ? null : packBillingCycle,
 						// Permet de rattacher le brief à la demande enregistrée
 						// (et donc de pré-remplir le devis côté administration).
 						leadId: savedLeadId,
@@ -1355,40 +1586,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==============================================
 
     // ==============================================
-    // GESTION ACCORDÉON HÉBERGEMENT
+    // (L'accordéon « hébergement OVH » a été supprimé : l'hébergement,
+    //  le nom de domaine et la sécurité sont désormais pris en charge
+    //  en interne et compris dans l'abonnement annuel du pack. Il n'y a
+    //  donc plus de tarif d'hébergeur tiers à détailler au client.)
     // ==============================================
-    window.toggleHosting = function(forceOpen = false) {
-        window.vibrate();
-        const content = document.getElementById('hosting-content');
-        const chevron = document.getElementById('hosting-chevron');
-        const section = document.getElementById('hosting-section');
 
-        if (!content || !chevron) return;
-
-        const open = () => {
-            content.classList.add('open');
-            chevron.classList.add('rotate-chevron');
-        };
-
-        const close = () => {
-            content.classList.remove('open');
-            chevron.classList.remove('rotate-chevron');
-        };
-
-        if (forceOpen) {
-            open();
-            if(section) {
-                section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        } else {
-            if (content.classList.contains('open')) {
-                close();
-            } else {
-                open();
-            }
-        }
-    };
-    
     // --- GESTION FAQ ---
     window.toggleFaq = function(button) {
         // 1. Gestion de l'icone
@@ -1537,9 +1740,9 @@ document.addEventListener('DOMContentLoaded', () => {
     //    Le montant de repli vient du catalogue (config.js) : aucun tarif
     //    n'est écrit en dur ici.
     window.updateServicePrice = function() {
-        let total = 0;
+        // Montants MENSUELS, lot de 3 appliqué (config.js -> optionBundle).
         const checked = document.querySelectorAll('.service-doc-chk:checked');
-        checked.forEach(chk => { total += parseInt(chk.getAttribute('data-price'), 10) || 0; });
+        const total = docMonthlyTotal('.service-doc-chk:checked');
 
         const display = document.getElementById('service-price-display');
         const label = document.getElementById('service-price-label');
@@ -1547,19 +1750,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Tarif d'entrée = option de document la moins chère du catalogue.
         const cheapest = (CFG.documentOptions || [])
-            .reduce((min, o) => Math.min(min, o.priceEur), Infinity);
-        const baseEur = isFinite(cheapest) ? cheapest : 100;
+            .reduce((min, o) => Math.min(min, o.monthlyEur), Infinity);
+        const baseEur = isFinite(cheapest) ? cheapest : 5;
 
         if (total > 0) {
+            const amounts = [];
+            checked.forEach(chk => { amounts.push(parseInt(chk.getAttribute('data-price'), 10) || 0); });
+            const saving = APP_CONFIG.optionsBundleSaving(amounts);
             display.removeAttribute('data-price-eur');
             display.textContent = formatMoney(NM.i18n.convert(total), getCurrentCurrency());
-            label.textContent = "pour la sélection (" + checked.length +
-                (checked.length > 1 ? " documents)" : " document)");
+            label.textContent = "/ mois pour " + checked.length +
+                (checked.length > 1 ? " documents" : " document") +
+                (saving > 0 ? " (lot de 3 appliqué)" : "");
             label.classList.add('text-emerald-400');
         } else {
             display.setAttribute('data-price-eur', String(baseEur));
             display.textContent = formatMoney(NM.i18n.convert(baseEur), getCurrentCurrency());
-            label.textContent = "par type de document";
+            label.textContent = "/ mois par type de document";
             label.classList.remove('text-emerald-400');
         }
     }
@@ -1688,7 +1895,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			document.querySelectorAll('input[name="project_pack"]').forEach(r => r.checked = false);
 			currentBasePrice = 0;
-			forceSerenity(false);
+			refreshComboHint();
 
 		} else {
 			btnNew?.classList.add('active-request-type');

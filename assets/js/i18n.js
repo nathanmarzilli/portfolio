@@ -207,15 +207,25 @@
 
 			var key = el.getAttribute('data-offer-key');
 			var annual = false;
+			var monthlyPack = false;
 			if (key.length > 7 && key.slice(-7) === '-annual') {
 				annual = true;
 				key = key.slice(0, -7);
+			} else if (key.length > 8 && key.slice(-8) === '-monthly') {
+				// Packs de création : ÉQUIVALENT mensuel du tarif annuel,
+				// c'est-à-dire le gros chiffre affiché en facturation
+				// annuelle (690 €/an -> 58 €/mois). À ne pas confondre avec
+				// le tarif du cycle mensuel, plus cher — voir config.js.
+				monthlyPack = true;
+				key = key.slice(0, -8);
 			}
 			var offer = C.offers && C.offers[key];
 			if (!offer) return;
-			var amount = annual
-				? (offer.annualPrice && offer.annualPrice[code])
-				: (offer.price && offer.price[code]);
+			var amount = monthlyPack
+				? (C.packMonthlyEquivalent ? C.packMonthlyEquivalent(key, code) : null)
+				: annual
+					? (offer.annualPrice && offer.annualPrice[code])
+					: (offer.price && offer.price[code]);
 			if (amount === undefined || amount === null) return;
 
 			var suffix = '';
@@ -223,6 +233,8 @@
 				suffix = ' ' + el.getAttribute('data-price-suffix');
 			} else if (offer.type === 'recurring') {
 				suffix = annual ? ' / ' + t('perYear') : ' ' + t('perMonth');
+			} else if (monthlyPack) {
+				suffix = ' ' + t('perMonth');
 			}
 
 			// Offre de lancement : prix barré + prix remisé.

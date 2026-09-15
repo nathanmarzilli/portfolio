@@ -150,7 +150,7 @@ async function inspectSite(p: any) {
       redirect: "follow",
       signal: controller.signal,
       headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; ClicALaideBot/1.0; +https://nathanmarzilli.github.io/portfolio)",
+        "User-Agent": "Mozilla/5.0 (compatible; ClicALaideBot/1.0; +https://www.clicalaide.fr/)",
         "Accept": "text/html,application/xhtml+xml",
       },
     });

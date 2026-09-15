@@ -3,17 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nathan Marzilli | Expert Web & Ingénieur - France / Suisse</title>
-    <meta name="description" content="Ingénieur développeur web (14 ans d'expérience). Création de sites sur-mesure entre Évian et Lausanne.">
-    
-    <meta property="og:title" content="Nathan Marzilli | Expert Web & Ingénieur">
-    <meta property="og:description" content="Ingénieur développeur web (14 ans d'expérience). Sites sur-mesure, performants et design. Disponibilité immédiate.">
-    <meta property="og:image" content="https://nathanmarzilli.github.io/portfolio/images/og-share.jpg"> <meta property="og:url" content="https://nathanmarzilli.github.io/portfolio/">
+    <title>Clic à l’aide | Création de sites internet sur-mesure — Évian, Lausanne, Léman</title>
+    <meta name="description" content="Clic à l’aide, l'agence web d'un seul artisan : Nathan Marzilli, ingénieur diplômé, crée et entretient votre site internet sur le bassin lémanique (Évian-les-Bains, Lausanne). Devis clair, contact humain direct, sans engagement forcé.">
+    <link rel="canonical" href="https://www.clicalaide.fr/">
+
+    <meta property="og:title" content="Clic à l’aide | Création de sites internet sur-mesure">
+    <meta property="og:description" content="L'agence web d'un seul artisan, entre Évian-les-Bains et Lausanne. Sites sur-mesure, performants, et un vrai contact humain à chaque étape.">
+    <meta property="og:image" content="https://www.clicalaide.fr/images/og-share.jpg">
+    <meta property="og:url" content="https://www.clicalaide.fr/">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="fr_FR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Clic à l’aide | Création de sites internet sur-mesure">
+    <meta name="twitter:description" content="L'agence web d'un seul artisan, entre Évian-les-Bains et Lausanne. Sites sur-mesure, performants, et un vrai contact humain à chaque étape.">
+    <meta name="twitter:image" content="https://www.clicalaide.fr/images/og-share.jpg">
 
     <meta name="theme-color" content="#f6f8fb">
     <link rel="icon" href="images/profile-40.jpg">
+
+    <!-- Données structurées : aide Google à comprendre qu'il s'agit d'une
+         entreprise locale (LocalBusiness) et pas d'un simple CV en ligne. -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "Clic à l’aide",
+        "alternateName": "Nathan Marzilli — Clic à l’aide",
+        "url": "https://www.clicalaide.fr/",
+        "logo": "https://www.clicalaide.fr/images/logo/Logo-1.png",
+        "image": "https://www.clicalaide.fr/images/og-share.jpg",
+        "description": "Création et maintenance de sites internet sur-mesure pour artisans, commerçants, clubs et associations, entre Évian-les-Bains et Lausanne.",
+        "email": "contact@clicalaide.com",
+        "telephone": "+33625965112",
+        "priceRange": "€€",
+        "founder": { "@type": "Person", "name": "Nathan Marzilli" },
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Évian-les-Bains",
+            "postalCode": "74500",
+            "addressCountry": "FR"
+        },
+        "areaServed": ["Évian-les-Bains", "Thonon-les-Bains", "Lausanne", "Genève", "Haute-Savoie", "Bassin lémanique"],
+        "sameAs": []
+    }
+    </script>
 
     <!-- ============================================================
          SOCLE VISUEL PARTAGÉ
@@ -115,8 +148,6 @@
         }
 
         /* --- ACCORDÉON HÉBERGEMENT --- */
-        #hosting-content { transition: max-height 0.5s ease-out, opacity 0.4s ease-out; max-height: 0; opacity: 0; overflow: hidden; }
-        #hosting-content.open { max-height: 1200px; opacity: 1; }
         .rotate-chevron { transform: rotate(180deg); }
 
         /* --- SQUELETTE DE CHARGEMENT --- */
@@ -155,13 +186,13 @@
                 <span class="relative w-10 h-10 rounded-full overflow-hidden border border-slate-500/20 group-hover:border-accent-400 transition-colors shrink-0 block">
                     <img src="images/profile-96.jpg"
                          srcset="images/profile-96.jpg 1x, images/profile-192.jpg 2x"
-                         width="40" height="40" alt="Portrait de Nathan Marzilli"
+                         width="40" height="40" alt="Portrait de Nathan Marzilli, fondateur de Clic à l’aide"
                          class="w-full h-full object-cover" decoding="async"
                          onerror="this.onerror=null;this.srcset='';this.src='images/profile.jpg'">
                 </span>
                 <span class="leading-tight">
-                    Nathan Marzilli
-                    <span class="block text-[10px] text-accent-400 font-normal uppercase tracking-wider">Facilitateur Numérique</span>
+                    Clic à l’aide
+                    <span class="block text-[10px] text-accent-400 font-normal uppercase tracking-wider">Avec Nathan Marzilli</span>
                 </span>
             </a>
 
@@ -657,185 +688,250 @@
 			<!-- Conteneur pour la bannière de promotion générée par JS -->
 			<div id="promo-banner-container" class="hidden"></div>
 
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-    
-			<!-- 1. OFFRE ÉCLAIR (NOUVEAU) -->
-			<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover border-amber-400/20 bg-gradient-to-br from-amber-400/5 to-transparent relative overflow-visible pricing-card transition-all duration-300" id="card-eclair">
-				
-				<!-- Symbole Éclair de fond enfermé dans un conteneur pour ne pas couper l'étiquette -->
-				<div class="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
-					<i class="ph-fill ph-lightning text-8xl text-amber-400/5 absolute -top-4 -right-4 transform rotate-12"></i>
+			<!-- Choix du rythme de paiement des packs de création -->
+			<div class="flex flex-col items-center gap-3 mb-10 reveal">
+				<div class="billing-cycle-pills inline-flex items-center gap-1 bg-white/5 border border-white/10 rounded-full p-1">
+					<button type="button" class="billing-cycle-pill" data-pack-cycle="monthly" onclick="setPackBillingCycle('monthly')">Mensuel</button>
+					<button type="button" class="billing-cycle-pill active" data-pack-cycle="annual" onclick="setPackBillingCycle('annual')">Annuel <span class="ml-1 billing-cycle-pill__hint">— le plus avantageux</span></button>
 				</div>
-				
-				<h3 class="text-xl font-display font-bold text-white mb-2 flex items-center gap-2 relative z-10">
-					<i class="ph-fill ph-lightning text-amber-400 text-2xl drop-shadow-[0_0_10px_rgba(251,191,36,0.6)]"></i>
-					Vitrine Éclair
-				</h3>
-				
-				<div class="flex flex-col mb-6 relative z-10">
-					<span class="text-3xl font-bold text-amber-400" id="price-eclair-display" data-offer-key="eclair"><span class="price-amount">690 €</span></span>
-					<span class="text-[10px] text-amber-400/80 mt-2 flex items-center gap-1.5 font-bold tracking-wide uppercase">
-						<i class="ph-bold ph-timer text-sm"></i> Livraison sous 48h chrono
-					</span>
-				</div>
-
-				<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow relative z-10">
-					<!-- Badge de mise en avant -->
-					<li class="flex items-center gap-2 font-bold text-white bg-amber-400/10 border border-amber-400/20 p-2.5 rounded-xl -ml-1 mb-4 shadow-inner">
-						<i class="ph-bold ph-rocket-launch text-amber-400 text-lg"></i> 
-						Le tremplin parfait pour débuter son activité
-					</li>
-					
-					<li class="flex items-start gap-2"><i class="ph-bold ph-check text-amber-400 mt-0.5"></i> <span>Réunion de cadrage (on va à l'essentiel)</span></li>
-					<li class="flex items-start gap-2"><i class="ph-bold ph-check text-amber-400 mt-0.5"></i> <span>Design pro clé en main & sans compromis</span></li>
-					<li class="flex items-start gap-2"><i class="ph-bold ph-check text-amber-400 mt-0.5"></i> <span>Formulaire de contact & Bouton d'appel direct</span></li>
-					<li class="flex items-start gap-2"><i class="ph-bold ph-check text-amber-400 mt-0.5"></i> <span>Structure technique saine pour Google</span></li>
-					
-					<li class="flex items-center gap-2 cursor-pointer group mt-2" onclick="toggleHosting(true)">
-						<i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-amber-400"></i>
-						<span class="text-slate-200">
-							Hébergement OVH<br>
-							<strong class="text-amber-400 text-xs hover:underline">
-								~<span data-price-eur="22.05" data-price-suffix="/an">22,05 €/an</span> (Détails)
-							</strong>
-							<span class="block text-xs text-slate-400">
-								1ère année offerte
-							</span>
-						</span>
-					</li>
-				</ul>
-				<div class="relative z-10 space-y-2">
-					<button onclick="selectOffer(this, 'Eclair', document.getElementById('pack-eclair').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-amber-400/30 text-center text-amber-400 hover:bg-amber-400 hover:text-dark-950 transition-all font-bold flex items-center justify-center gap-2 text-sm">
-						<span>Sélectionner ce pack</span>
-					</button>
-				</div>
+				<p class="text-xs text-slate-500 max-w-xl text-center leading-relaxed">
+					<i class="ph-bold ph-info text-accent-400"></i>
+					L'abonnement annuel se règle <strong class="text-slate-300">en une seule fois</strong> et se renouvelle
+					chaque année au même tarif. Hébergement, nom de domaine et sécurité compris — rien à payer ailleurs.
+					Le paiement au mois reste possible, un peu plus cher sur l'année.
+				</p>
 			</div>
 
-			<!-- 2. OFFRE ESSENTIEL -->
-			<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-essentiel">
-				<h3 class="text-xl font-display font-bold text-white mb-2">L'Essentiel & Suivi</h3>
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch">
 
-				<!-- Pastille : ce pack est aussi celui proposé aux clubs et associations -->
-				<a href="offre-club/" class="pill-link self-start mb-4" title="Découvrir la déclinaison de ce pack pour les clubs et associations">
-					<i class="ph-fill ph-shield-star" aria-hidden="true"></i> Offre club / associations
-				</a>
-
-				<div class="flex flex-col mb-6">
-					<div id="price-essentiel-display" class="mb-1" data-offer-key="essentiel"><span class="text-3xl font-bold text-white price-amount">990 €</span></div>
-					<div class="flex items-center gap-2 mt-1 flex-wrap">
-						<span class="text-sm font-bold text-white">+ Pack Sérénité annuel inclus</span>
-						<span class="text-[10px] font-bold text-dark-950 bg-accent-400 px-2 py-0.5 rounded text-center" data-offer-key="serenite-annual" data-price-suffix="/ AN">499 € / AN</span>
+		<!-- 1. OFFRE ÉCLAIR -->
+		<div class="glass-card p-8 rounded-3xl flex flex-col justify-between interactive-hover border-amber-400/20 bg-gradient-to-br from-amber-400/5 to-transparent relative overflow-visible pricing-card transition-all duration-300" id="card-eclair">
+			<!-- Symbole Éclair de fond -->
+			<div class="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
+				<i class="ph-fill ph-lightning text-8xl text-amber-400/5 absolute -top-4 -right-4 transform rotate-12"></i>
+			</div>
+			
+			<div class="relative z-10">
+				<!-- Header -->
+				<div class="min-h-[64px] flex flex-col justify-center mb-2">
+					<h3 class="text-xl font-display font-bold text-white flex items-center gap-2">
+						<i class="ph-fill ph-lightning text-amber-400 text-2xl drop-shadow-[0_0_10px_rgba(251,191,36,0.6)]"></i>
+						Vitrine Éclair
+					</h3>
+				</div>
+				
+				<!-- Prix -->
+				<div class="min-h-[85px] flex flex-col justify-center mb-2" data-pack-price="eclair">
+					<div id="price-eclair-display" class="mb-1">
+						<span class="text-3xl font-bold text-amber-400 pack-price-amount">58 €</span><span class="text-sm font-normal text-slate-400 pack-price-suffix"> / mois</span>
+						<span class="block text-xs text-slate-400 mt-1 pack-price-detail">soit 690 € / an, réglés en une fois</span>
 					</div>
-					<span class="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
-						<i class="ph-bold ph-lock-simple"></i> Obligatoire · facturé à part chaque année · engagement 12 mois
+				</div>
+
+				<!-- Livraison -->
+				<div class="min-h-[28px] mb-4 flex items-center">
+					<span class="text-[10px] text-amber-400/80 flex items-center gap-1.5 font-bold tracking-wide uppercase">
+						<i class="ph-bold ph-timer text-sm"></i> Livré en 1 semaine
 					</span>
 				</div>
 
-				<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
-					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site One-Page personnalisé</li>
-					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne adapté à votre activité</li>
-					
-					<li class="flex items-center gap-2 font-bold text-white bg-white/5 p-1 rounded pr-2 -ml-1">
-						<i class="ph-bold ph-shield-check text-accent-400 pl-1"></i> Maintenance & Mises à jour incluses
-					</li>
-					<li class="flex items-center gap-2 font-bold text-white bg-white/5 p-1 rounded pr-2 -ml-1">
-						<i class="ph-bold ph-lifebuoy text-accent-400 pl-1"></i> Assistance prioritaire en cas de panne
-					</li>
-
-					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Optimisation mobile & performance</li>
-					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne clé en main</li>
-					<li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
-						<i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-accent-400"></i>
-						<span class="text-slate-200">
-							Hébergement OVH<br>
-							<strong class="text-accent-400 text-xs hover:underline">
-								~<span data-price-eur="22.05" data-price-suffix="/an">22,05 €/an</span> (Détails)
-							</strong>
-							<span class="block text-xs text-slate-400">
-								1ère année offerte
-							</span>
-						</span>
-					</li>
-				</ul>
-				<div class="relative z-10 space-y-2">
-					<button onclick="selectOffer(this, 'Essentiel', document.getElementById('pack-essentiel').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-all font-bold flex items-center justify-center gap-2 text-sm">
-						<span>Sélectionner ce pack</span>
-					</button>
+				<!-- Badge de mise en avant -->
+				<div class="min-h-[52px] mb-4 flex items-center">
+					<div class="w-full flex items-center gap-2 font-bold text-white bg-amber-400/10 border border-amber-400/20 p-2.5 rounded-xl shadow-inner">
+						<i class="ph-bold ph-rocket-launch text-amber-400 text-lg"></i> 
+						Le tremplin parfait pour débuter
+					</div>
 				</div>
 			</div>
 
-			<!-- 3. OFFRE VITRINE (POPULAIRE) -->
-			<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover border-accent-400/30 bg-accent-400/5 relative overflow-visible pricing-card transition-all duration-300 gold-selected-card" id="card-vitrine">
-				<div class="absolute top-4 right-4 text-xs font-bold text-accent-400 bg-accent-400/10 px-2 py-1 rounded tag-populaire">POPULAIRE</div>
-				<h3 class="text-xl font-display font-bold text-white mb-2">Vitrine Artisan</h3>
-				
-				<div id="price-vitrine-display" class="mb-6" data-offer-key="vitrine"><span class="text-3xl font-bold text-accent-400 price-amount">1 790 €</span></div>
+			<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow relative z-10">
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-amber-400 min-w-[16px]"></i> <span><strong>Réunion de cadrage</strong> (on va à l'essentiel)</span></li>
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-amber-400 min-w-[16px]"></i> <span>Design pro clé en main & sans compromis</span></li>
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-amber-400 min-w-[16px]"></i> <span>Formulaire de contact & Bouton d'appel direct</span></li>
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-amber-400 min-w-[16px]"></i> <span>Structure technique saine pour Google</span></li>
+				<li class="invisible opacity-0 select-none min-h-[40px] flex items-center" aria-hidden="true">Placeholder slot</li>
+			</ul>
 
-				<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
-					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Site jusqu’à 5 pages personnalisé</li>
-					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Option Site Multilingue incluse</li>
-					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Galerie de réalisations pour mettre en valeur vos projets</li>
-					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Formulaire de contact intégré</li>
-					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Design moderne et responsive mobile & tablette</li>
-					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400"></i> Mise en ligne et configuration technique</li>
-					<li class="flex items-center gap-2 text-slate-500 italic">
-						<i class="ph-bold ph-shield-plus"></i> Pack Sérénité en option (engagement 12 mois)
-					</li>
-					<li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
-							<i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-accent-400"></i>
-						<span class="text-slate-200">
-							Hébergement OVH<br>
-							<strong class="text-accent-400 text-xs hover:underline">
-								~<span data-price-eur="22.05" data-price-suffix="/an">22,05 €/an</span> (Détails)
-							</strong>
-							<span class="block text-xs text-slate-400">
-								1ère année offerte
-							</span>
-						</span>
-					</li>
-				</ul>
-				<div class="relative z-10 space-y-2">
-					<button onclick="selectOffer(this, 'Vitrine', document.getElementById('pack-vitrine').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-accent-400/30 text-center text-accent-400 hover:bg-accent-400 hover:text-dark-950 transition-all font-bold flex items-center justify-center gap-2 text-sm">
-						<span>Sélectionner ce pack</span>
-					</button>
+			<div class="relative z-10 space-y-2 mt-auto">
+				<div class="flex items-start gap-2 text-slate-400 italic pt-3 border-t border-slate-700/50 text-xs">
+					<i class="ph-bold ph-shield-plus mt-0.5 min-w-[16px]"></i> 
+					<span>Pack Sérénité en option (-50% la 1ère année)</span>
 				</div>
-			</div>
-
-			<!-- 4. OFFRE PREMIUM -->
-			<div class="glass-card p-8 rounded-3xl flex flex-col interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-premium">
-				<h3 class="text-xl font-display font-bold text-white mb-2">Premium</h3>
-				
-				<div id="price-premium-display" class="text-3xl font-bold text-purple-400 mb-6" data-offer-key="premium"><span class="price-amount">2 990 €</span></div>
-
-				<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow">
-					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Design 100% sur-mesure adapté à votre identité</li>
-					<li class="flex items-center gap-2 font-bold text-white bg-white/5 p-1 rounded pr-2 -ml-1">
-						<i class="ph-bold ph-pencil-simple-line text-purple-400 pl-1"></i> Blog en autonomie : rédigez et publiez vos articles vous-même
-					</li>
-					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Pagination automatique de vos articles (organisation claire dès que le blog grandit)</li>
-					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Intégration des avis Google pour renforcer la confiance</li>
-					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Statistiques & suivi de performance pour mesurer vos résultats</li>
-					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Site responsive mobile & tablette</li>
-					<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400"></i> Mise en ligne et configuration technique</li>
-					<li class="flex items-center gap-2 text-slate-500 italic">
-						<i class="ph-bold ph-shield-plus"></i> Pack Sérénité en option (engagement 12 mois)
-					</li>
-					<li class="flex items-center gap-2 cursor-pointer group" onclick="toggleHosting(true)">
-						<i class="ph-bold ph-info text-slate-500 transition-colors group-hover:text-purple-400"></i>
-						<span class="text-slate-200">
-							Hébergement OVH<br>
-							<strong class="text-purple-400 text-xs hover:underline">~<span data-price-eur="54.79" data-price-suffix="/an">54,79 €/an</span> (Détails)</strong>
-							<span class="block text-xs text-slate-400">1ère année offerte</span>
-						</span>
-					</li>
-				</ul>
-				<div class="relative z-10 space-y-2">
-					<button onclick="selectOffer(this, 'Premium', document.getElementById('pack-premium').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 transition-colors font-bold flex items-center justify-center gap-2 text-sm">
-						<span>Sélectionner ce pack</span>
-					</button>
+				<div class="flex items-start gap-2 font-bold text-white bg-white/5 border border-white/10 p-2.5 rounded-xl text-xs">
+					<i class="ph-bold ph-cloud-check text-amber-400 text-lg mt-0.5 min-w-[16px]"></i>
+					<span>Hébergement, nom de domaine & sécurité inclus</span>
 				</div>
+				<button onclick="selectOffer(this, 'Eclair', document.getElementById('pack-eclair').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-amber-400/30 text-center text-amber-400 hover:bg-amber-400 hover:text-dark-950 transition-all font-bold flex items-center justify-center gap-2 text-sm mt-3">
+					<span>Sélectionner ce pack</span>
+				</button>
 			</div>
 		</div>
+
+		<!-- 2. OFFRE ESSENTIEL -->
+		<div class="glass-card p-8 rounded-3xl flex flex-col justify-between interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-essentiel">
+			
+			<div class="relative z-10">
+				<!-- Header avec offre club intégrée de manière harmonisée -->
+				<div class="min-h-[64px] flex flex-col justify-between mb-2">
+					<h3 class="text-xl font-display font-bold text-white">Vitrine Essentiel</h3>
+					<a href="offre-club/" class="pill-link self-start text-[11px]" title="Découvrir la déclinaison de ce pack pour les clubs et associations">
+						<i class="ph-fill ph-shield-star" aria-hidden="true"></i> Offre club / associations
+					</a>
+				</div>
+
+				<!-- Prix -->
+				<div class="min-h-[85px] flex flex-col justify-center mb-2" data-pack-price="essentiel">
+					<div id="price-essentiel-display" class="mb-1">
+						<span class="text-3xl font-bold text-white pack-price-amount">66 €</span><span class="text-sm font-normal text-slate-400 pack-price-suffix"> / mois</span>
+						<span class="block text-xs text-slate-400 mt-1 pack-price-detail">soit 790 € / an, réglés en une fois</span>
+					</div>
+				</div>
+
+				<!-- Livraison -->
+				<div class="min-h-[28px] mb-4 flex items-center">
+					<span class="text-[10px] text-white/80 flex items-center gap-1.5 font-bold tracking-wide uppercase">
+						<i class="ph-bold ph-timer text-sm"></i> Livré en 2 semaines
+					</span>
+				</div>
+
+				<!-- Placeholder aligné avec le badge de l'éclair -->
+				<div class="min-h-[52px] mb-4 flex items-center invisible opacity-0 select-none" aria-hidden="true">
+					<div class="w-full p-2.5">Placeholder</div>
+				</div>
+			</div>
+
+			<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow relative z-10">
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-white min-w-[16px]"></i> <span><strong>Site One-Page</strong> personnalisé</span></li>
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-white min-w-[16px]"></i> <span><strong>2 à 3 réunions / semaine</strong> pour faire le point</span></li>
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-white min-w-[16px]"></i> <span>Design moderne adapté à votre activité</span></li>
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-white min-w-[16px]"></i> <span>Optimisation mobile & performance</span></li>
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-white min-w-[16px]"></i> <span>Mise en ligne clé en main</span></li>
+			</ul>
+
+			<div class="relative z-10 space-y-2 mt-auto">
+				<div class="flex items-start gap-2 text-slate-400 italic pt-3 border-t border-slate-700/50 text-xs">
+					<i class="ph-bold ph-shield-plus mt-0.5 min-w-[16px]"></i> 
+					<span>Pack Sérénité en option (-50% la 1ère année)</span>
+				</div>
+				<div class="flex items-start gap-2 font-bold text-white bg-white/5 border border-white/10 p-2.5 rounded-xl text-xs">
+					<i class="ph-bold ph-cloud-check text-white text-lg mt-0.5 min-w-[16px]"></i>
+					<span>Hébergement, nom de domaine & sécurité inclus</span>
+				</div>
+				<button onclick="selectOffer(this, 'Essentiel', document.getElementById('pack-essentiel').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-white hover:text-dark-950 transition-all font-bold flex items-center justify-center gap-2 text-sm mt-3">
+					<span>Sélectionner ce pack</span>
+				</button>
+			</div>
+		</div>
+
+		<!-- 3. OFFRE VITRINE ARTISAN (POPULAIRE) -->
+		<div class="glass-card p-8 rounded-3xl flex flex-col justify-between interactive-hover border-accent-400/30 bg-accent-400/5 relative overflow-visible pricing-card transition-all duration-300 gold-selected-card" id="card-vitrine">
+			
+			<div class="absolute top-4 right-4 text-xs font-bold text-accent-400 bg-accent-400/10 px-2 py-1 rounded tag-populaire z-20">POPULAIRE</div>
+			
+			<div class="relative z-10">
+				<!-- Header -->
+				<div class="min-h-[64px] flex flex-col justify-center mb-2">
+					<h3 class="text-xl font-display font-bold text-white">Vitrine Artisan</h3>
+				</div>
+				
+				<!-- Prix -->
+				<div class="min-h-[85px] flex flex-col justify-center mb-2" data-pack-price="vitrine">
+					<div id="price-vitrine-display" class="mb-1">
+						<span class="text-3xl font-bold text-accent-400 pack-price-amount">74 €</span><span class="text-sm font-normal text-slate-400 pack-price-suffix"> / mois</span>
+						<span class="block text-xs text-slate-400 mt-1 pack-price-detail">soit 890 € / an, réglés en une fois</span>
+					</div>
+				</div>
+
+				<!-- Livraison -->
+				<div class="min-h-[28px] mb-4 flex items-center">
+					<span class="text-[10px] text-accent-400/80 flex items-center gap-1.5 font-bold tracking-wide uppercase">
+						<i class="ph-bold ph-timer text-sm"></i> Livré sous 2 à 3 semaines
+					</span>
+				</div>
+
+				<!-- Placeholder aligné -->
+				<div class="min-h-[52px] mb-4 flex items-center invisible opacity-0 select-none" aria-hidden="true">
+					<div class="w-full p-2.5">Placeholder</div>
+				</div>
+			</div>
+
+			<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow relative z-10">
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-accent-400 min-w-[16px]"></i> <span><strong>Site Multipages</strong> (jusqu’à 5 pages)</span></li>
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-accent-400 min-w-[16px]"></i> <span><strong>2 à 3 réunions / semaine</strong> pour faire le point</span></li>
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-accent-400 min-w-[16px]"></i> <span>Intégration des avis Google & Statistiques</span></li>
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-accent-400 min-w-[16px]"></i> <span>Galerie de réalisations & Formulaire de contact</span></li>
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-accent-400 min-w-[16px]"></i> <span>Design moderne et responsive mobile & tablette</span></li>
+			</ul>
+
+			<div class="relative z-10 space-y-2 mt-auto">
+				<div class="flex items-start gap-2 text-slate-400 italic pt-3 border-t border-slate-700/50 text-xs">
+					<i class="ph-bold ph-shield-plus mt-0.5 min-w-[16px]"></i> 
+					<span>Pack Sérénité en option (-50% la 1ère année)</span>
+				</div>
+				<div class="flex items-start gap-2 font-bold text-white bg-white/5 border border-white/10 p-2.5 rounded-xl text-xs">
+					<i class="ph-bold ph-cloud-check text-accent-400 text-lg mt-0.5 min-w-[16px]"></i>
+					<span>Hébergement, nom de domaine & sécurité inclus</span>
+				</div>
+				<button onclick="selectOffer(this, 'Vitrine', document.getElementById('pack-vitrine').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-accent-400/30 text-center text-accent-400 hover:bg-accent-400 hover:text-dark-950 transition-all font-bold flex items-center justify-center gap-2 text-sm mt-3">
+					<span>Sélectionner ce pack</span>
+				</button>
+			</div>
+		</div>
+
+		<!-- 4. OFFRE PREMIUM -->
+		<div class="glass-card p-8 rounded-3xl flex flex-col justify-between interactive-hover relative overflow-visible pricing-card transition-all duration-300" id="card-premium">
+			
+			<div class="relative z-10">
+				<!-- Header -->
+				<div class="min-h-[64px] flex flex-col justify-center mb-2">
+					<h3 class="text-xl font-display font-bold text-white">Vitrine Premium</h3>
+				</div>
+				
+				<!-- Prix -->
+				<div class="min-h-[85px] flex flex-col justify-center mb-2" data-pack-price="premium">
+					<div id="price-premium-display" class="mb-1">
+						<span class="text-3xl font-bold text-purple-400 pack-price-amount">99 €</span><span class="text-sm font-normal text-slate-400 pack-price-suffix"> / mois</span>
+						<span class="block text-xs text-slate-400 mt-1 pack-price-detail">soit 1 188 € / an, réglés en une fois</span>
+					</div>
+				</div>
+
+				<!-- Livraison -->
+				<div class="min-h-[28px] mb-4 flex items-center">
+					<span class="text-[10px] text-purple-400/80 flex items-center gap-1.5 font-bold tracking-wide uppercase">
+						<i class="ph-bold ph-timer text-sm"></i> Livré sous 1 mois
+					</span>
+				</div>
+
+				<!-- Placeholder aligné -->
+				<div class="min-h-[52px] mb-4 flex items-center invisible opacity-0 select-none" aria-hidden="true">
+					<div class="w-full p-2.5">Placeholder</div>
+				</div>
+			</div>
+
+			<ul class="space-y-3 mb-8 text-slate-300 text-sm flex-grow relative z-10">
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-purple-400 min-w-[16px]"></i> <span><strong>Design 100% sur-mesure</strong> adapté à votre identité</span></li>
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-purple-400 min-w-[16px]"></i> <span><strong>2 à 3 réunions / semaine</strong> pour faire le point</span></li>
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-pencil-simple-line text-purple-400 min-w-[16px]"></i> <span><strong>Blog en autonomie</strong> avec pagination automatique</span></li>
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-purple-400 min-w-[16px]"></i> <span>Option Site Multilingue incluse</span></li>
+				<li class="flex items-start gap-2 min-h-[40px] items-center"><i class="ph-bold ph-check text-purple-400 min-w-[16px]"></i> <span>Site responsive mobile & tablette</span></li>
+			</ul>
+
+			<div class="relative z-10 space-y-2 mt-auto">
+				<div class="flex items-start gap-2 text-slate-400 italic pt-3 border-t border-slate-700/50 text-xs">
+					<i class="ph-bold ph-shield-plus mt-0.5 min-w-[16px]"></i> 
+					<span>Pack Sérénité en option (-50% la 1ère année)</span>
+				</div>
+				<div class="flex items-start gap-2 font-bold text-white bg-white/5 border border-white/10 p-2.5 rounded-xl text-xs">
+					<i class="ph-bold ph-cloud-check text-purple-400 text-lg mt-0.5 min-w-[16px]"></i>
+					<span>Hébergement, nom de domaine & sécurité inclus</span>
+				</div>
+				<button onclick="selectOffer(this, 'Premium', document.getElementById('pack-premium').dataset.price)" class="offer-btn w-full py-3 rounded-xl border border-white/10 text-center text-white hover:bg-purple-400 hover:text-dark-950 transition-all font-bold flex items-center justify-center gap-2 text-sm mt-3">
+					<span>Sélectionner ce pack</span>
+				</button>
+			</div>
+		</div>
+
+	</div>
 			
 			<div class="mb-16 reveal">
 				<div class="glass-card p-6 md:p-8 rounded-3xl border border-white/10 bg-gradient-to-br from-dark-900 to-dark-950 relative overflow-hidden">
@@ -917,7 +1013,15 @@
 									<i class="ph-fill ph-check-circle text-accent-400 mt-1 shrink-0 text-lg"></i>
 									<div>
 										<strong class="text-white block">Tarif "Direct Artisan"</strong>
-										À partir de <span class="text-accent-400 font-bold" data-price-eur="690">690 €</span>. Quel que soit votre budget, une formule adaptée à votre besoin. Pas de frais d'agence, pas de commerciaux : vous payez uniquement mon expertise, avec la garantie d'une réponse rapide, qu'il s'agisse d'un service ou d'un simple conseil.
+										À partir de <span class="text-accent-400 font-bold"><span data-offer-key="eclair-monthly">58 €</span> / mois</span>, tout compris (site, hébergement, nom de domaine, sécurité). Pas de frais d'agence, pas de commerciaux : vous payez uniquement mon expertise, avec la garantie d'une réponse rapide, qu'il s'agisse d'un service ou d'un simple conseil.
+									</div>
+								</li>
+
+								<li class="flex items-start gap-3">
+									<i class="ph-fill ph-check-circle text-accent-400 mt-1 shrink-0 text-lg"></i>
+									<div>
+										<strong class="text-white block">Réactivité & tout nikel</strong>
+										Un souci, une question, une modif urgente ? Vous m'écrivez ou m'appelez, et j'y réponds moi-même — pas de ticket qui traîne trois jours dans une file d'attente générique. Sur les plateformes type Wix, vous êtes seul face à un support standardisé qui ne connaît ni vous ni votre site.
 									</div>
 								</li>
 
@@ -933,15 +1037,15 @@
 									<i class="ph-fill ph-check-circle text-accent-400 mt-1 shrink-0 text-lg"></i>
 									<div>
 										<strong class="text-white block">Ligne Directe</strong>
-										Je suis votre seul interlocuteur. On s'appelle régulièrement pendant le projet pour ajuster les détails. Pas d'intermédiaire, pas d'incompréhension.
+										Je suis votre seul interlocuteur, un vrai humain avec qui vous échangez, pas un chatbot ni un commercial. On s'appelle régulièrement pendant le projet pour ajuster les détails. Pas d'intermédiaire, pas d'incompréhension.
 									</div>
 								</li>
 
 								<li class="flex items-start gap-3">
 									<i class="ph-fill ph-check-circle text-accent-400 mt-1 shrink-0 text-lg"></i>
 									<div>
-										<strong class="text-white block">Partenaires dans la durée</strong>
-										Avec le suivi (<span data-offer-key="serenite">49,90 €</span>, engagement 12 mois), votre site n'est jamais abandonné. Je gère la technique et les mises à jour pour que vous restiez concentré sur votre métier.
+										<strong class="text-white block">Tout compris, rien à gérer</strong>
+										Hébergement, nom de domaine et sécurité sont inclus dans votre abonnement : aucun compte technique à ouvrir, aucune facture d'hébergeur à suivre. Et avec le Pack Sérénité (<span data-offer-key="serenite">49,90 €</span>/mois, sans engagement, 1 mois offert supplémentaire en formule annuelle si pris avec la création), votre site n'est jamais abandonné.
 									</div>
 								</li>
 							</ul>
@@ -1000,8 +1104,8 @@
 											</div>
 											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label truncate">Devis</span>
 										</div>
-										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="100" data-price-prefix="">100 €</span>
-										<input type="checkbox" class="service-doc-chk hidden" value="Devis" data-price="100">
+										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="5" data-price-suffix=" / mois">5 € / mois</span>
+										<input type="checkbox" class="service-doc-chk hidden" value="Devis" data-price="5">
 										<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 									</label>
 									<label class="doc-card-service flex items-center justify-between gap-2 p-2.5 rounded-lg cursor-pointer border border-slate-500/20 bg-dark-900 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
@@ -1011,8 +1115,8 @@
 											</div>
 											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label truncate">Factures</span>
 										</div>
-										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="100" data-price-prefix="">100 €</span>
-										<input type="checkbox" class="service-doc-chk hidden" value="Facture" data-price="100">
+										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="5" data-price-suffix=" / mois">5 € / mois</span>
+										<input type="checkbox" class="service-doc-chk hidden" value="Facture" data-price="5">
 										<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 									</label>
 									<label class="doc-card-service flex items-center justify-between gap-2 p-2.5 rounded-lg cursor-pointer border border-slate-500/20 bg-dark-900 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
@@ -1022,8 +1126,8 @@
 											</div>
 											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label truncate">Quittance de loyer</span>
 										</div>
-										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="100" data-price-prefix="">100 €</span>
-										<input type="checkbox" class="service-doc-chk hidden" value="Quittance" data-price="100">
+										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="5" data-price-suffix=" / mois">5 € / mois</span>
+										<input type="checkbox" class="service-doc-chk hidden" value="Quittance" data-price="5">
 										<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 									</label>
 									<label class="doc-card-service flex items-center justify-between gap-2 p-2.5 rounded-lg cursor-pointer border border-slate-500/20 bg-dark-900 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
@@ -1033,8 +1137,8 @@
 											</div>
 											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label truncate">Note de frais</span>
 										</div>
-										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="100" data-price-prefix="">100 €</span>
-										<input type="checkbox" class="service-doc-chk hidden" value="Note de Frais" data-price="100">
+										<span class="text-[10px] font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="5" data-price-suffix=" / mois">5 € / mois</span>
+										<input type="checkbox" class="service-doc-chk hidden" value="Note de Frais" data-price="5">
 										<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 									</label>
 									<label class="doc-card-service flex items-center justify-between gap-2 p-2.5 rounded-lg cursor-pointer border border-slate-500/20 bg-dark-900 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
@@ -1044,8 +1148,8 @@
 											</div>
 											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label truncate">Bail de location</span>
 										</div>
-										<span class="text-[10px] font-bold text-purple-400 bg-purple-400/10 px-1.5 py-0.5 rounded whitespace-nowrap" data-price-eur="300" data-price-prefix="">300 €</span>
-										<input type="checkbox" class="service-doc-chk hidden" value="Bail Location" data-price="300">
+										<span class="text-[10px] font-bold text-purple-400 bg-purple-400/10 px-1.5 py-0.5 rounded whitespace-nowrap" data-price-eur="5" data-price-suffix=" / mois">5 € / mois</span>
+										<input type="checkbox" class="service-doc-chk hidden" value="Bail Location" data-price="5">
 										<div class="absolute inset-0 bg-purple-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 									</label>
 									<label class="doc-card-service flex items-center justify-between gap-2 p-2.5 rounded-lg cursor-pointer border border-slate-500/20 bg-dark-900 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleServiceDocClick(this)">
@@ -1055,8 +1159,8 @@
 											</div>
 											<span class="text-xs text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label truncate">Document sur-mesure</span>
 										</div>
-										<span class="text-[10px] font-bold text-purple-400 bg-purple-400/10 px-1.5 py-0.5 rounded whitespace-nowrap" data-price-eur="300" data-price-prefix="dès ">dès 300 €</span>
-										<input type="checkbox" class="service-doc-chk hidden" value="Autre" data-price="300">
+										<span class="text-[10px] font-bold text-purple-400 bg-purple-400/10 px-1.5 py-0.5 rounded whitespace-nowrap" data-price-eur="15" data-price-suffix=" / mois">15 € / mois</span>
+										<input type="checkbox" class="service-doc-chk hidden" value="Autre" data-price="15">
 										<div class="absolute inset-0 bg-purple-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 									</label>
 								</div>
@@ -1068,10 +1172,13 @@
 						<div class="flex flex-col items-center md:items-end gap-1 min-w-[200px] bg-emerald-950/20 md:bg-transparent p-4 md:p-0 rounded-2xl w-full md:w-auto border border-emerald-500/10 md:border-0">
 							<div class="flex items-baseline gap-1">
 								<span class="text-sm text-emerald-400 font-bold mr-1">À partir de</span>
-								<span class="text-3xl font-display font-bold text-emerald-400" id="service-price-display" data-price-eur="100">100 €</span>
+								<span class="text-3xl font-display font-bold text-emerald-400" id="service-price-display" data-price-eur="5">5 €</span>
 							</div>
-							<div class="text-emerald-200/60 text-xs mb-3 text-center md:text-right" id="service-price-label">par type de document</div>
-							
+							<div class="text-emerald-200/60 text-xs mb-1 text-center md:text-right" id="service-price-label">/ mois par type de document</div>
+							<div class="text-emerald-400/90 text-[11px] font-bold mb-3 text-center md:text-right flex items-center gap-1.5">
+								<i class="ph-bold ph-gift"></i> 3 documents pris ensemble : <span data-price-eur="10">10 €</span> / mois
+							</div>
+
 							<button onclick="toggleServiceConfig()" id="btn-config-doc" class="w-full md:w-auto px-6 py-2.5 rounded-xl border border-emerald-500/50 text-emerald-300 font-bold hover:bg-emerald-500 hover:text-white hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all text-sm flex items-center justify-center gap-2 group/btn">
 								<span>Configurer</span>
 								<i class="ph-bold ph-sliders group-hover/btn:rotate-180 transition-transform"></i>
@@ -1087,58 +1194,57 @@
 				</div>
 			</div>
 			
-			<div class="mb-16 reveal" id="hosting-section">
-				<div class="glass-card rounded-3xl border border-white/10 bg-dark-900/50 overflow-hidden">
-					<div class="p-6 md:p-8 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors" onclick="toggleHosting()">
-						<h3 class="text-xl font-display font-bold text-white flex items-center gap-2">
-							<i class="ph-duotone ph-cloud text-accent-400"></i> Pourquoi payer l'hébergement à part ?
-						</h3>
-						<i id="hosting-chevron" class="ph-bold ph-caret-down text-white text-xl transition-transform duration-300"></i>
-					</div>
+			<div class="mb-16 reveal">
+				<div class="glass-card rounded-3xl border border-accent-400/20 bg-gradient-to-br from-accent-400/5 to-transparent p-6 md:p-8">
+					<h3 class="text-xl font-display font-bold text-white flex items-center gap-2 mb-4">
+						<i class="ph-duotone ph-cloud-check text-accent-400"></i> Hébergement, domaine et sécurité : tout est compris
+					</h3>
+					<p class="text-slate-400 text-sm mb-6 max-w-3xl leading-relaxed">
+						Vous n'avez <strong class="text-white">aucun compte technique à ouvrir</strong> et <strong class="text-white">aucune facture d'hébergeur à gérer</strong>.
+						J'héberge votre site sur mon infrastructure professionnelle et je m'occupe du nom de domaine :
+						c'est compris dans l'abonnement annuel de votre pack, et c'est ce qui rend la mise en ligne
+						immédiate le jour de la livraison.
+					</p>
 
-					<div id="hosting-content">
-						<div class="p-6 md:p-8 pt-0">
-							<p class="text-slate-400 text-sm mb-6 max-w-3xl">
-								Pour que vous soyez <strong>100% propriétaire</strong> de votre site. Je ne prends aucune marge là-dessus. OVH Cloud est le leader français, sécurisé et fiable. C'est un abonnement que vous payez directement à l'hébergeur pour maintenir votre site en ligne et conserver votre nom de domaine.
-							</p>
-							
-							<div class="grid md:grid-cols-2 gap-6">
-								<div class="p-4 rounded-xl bg-white/5 border border-white/5">
-									<div class="flex justify-between items-start mb-2">
-										<h4 class="font-bold text-white text-sm">Pour packs "Essentiel" & "Vitrine"</h4>
-										<span class="text-accent-400 font-bold text-sm"><span data-price-eur="22.05">22,05 €</span> <span class="text-xs font-normal text-slate-400">/an</span></span>
-									</div>
-									<p class="text-xs text-slate-500 mb-3">Offre OVH "Starter" (Idéal vitrine)</p>
-									<ul class="text-xs text-slate-300 space-y-1">
-										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> Hébergement (<span data-price-eur="14.26">14,26 €</span> TTC)</li>
-										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> Nom de domaine (<span data-price-eur="7.79">7,79 €</span> TTC)</li>
-										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-accent-400/70"></i> 1 Go d'espace disque</li>
-									</ul>
-								</div>
-
-								<div class="p-4 rounded-xl bg-white/5 border border-white/5">
-									<div class="flex justify-between items-start mb-2">
-										<h4 class="font-bold text-white text-sm">Pour pack "Premium"</h4>
-										<span class="text-purple-400 font-bold text-sm"><span data-price-eur="54.79">54,79 €</span> <span class="text-xs font-normal text-slate-400">/an</span></span>
-									</div>
-									<p class="text-xs text-slate-500 mb-3">Offre OVH "Perso" (Plus de puissance)</p>
-									<ul class="text-xs text-slate-300 space-y-1">
-										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Hébergement (<span data-price-eur="47">47 €</span> TTC)</li>
-										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> Nom de domaine (<span data-price-eur="7.79">7,79 €</span> TTC)</li>
-										<li class="flex items-center gap-2"><i class="ph-bold ph-check text-purple-400/70"></i> 100 Go d'espace disque</li>
-									</ul>
-								</div>
-							</div>
+					<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+						<div class="p-4 rounded-xl bg-white/5 border border-white/5">
+							<i class="ph-duotone ph-globe-hemisphere-west text-accent-400 text-2xl mb-2 block"></i>
+							<h4 class="font-bold text-white text-sm mb-1">Nom de domaine</h4>
+							<p class="text-xs text-slate-400">Réservé et renouvelé pour vous, à votre nom d'activité.</p>
+						</div>
+						<div class="p-4 rounded-xl bg-white/5 border border-white/5">
+							<i class="ph-duotone ph-hard-drives text-accent-400 text-2xl mb-2 block"></i>
+							<h4 class="font-bold text-white text-sm mb-1">Hébergement pro</h4>
+							<p class="text-xs text-slate-400">Serveurs professionnels, site rapide, disponible jour et nuit.</p>
+						</div>
+						<div class="p-4 rounded-xl bg-white/5 border border-white/5">
+							<i class="ph-duotone ph-lock-key text-accent-400 text-2xl mb-2 block"></i>
+							<h4 class="font-bold text-white text-sm mb-1">Sécurité & HTTPS</h4>
+							<p class="text-xs text-slate-400">Certificat, mises à jour de sécurité et surveillance continue.</p>
+						</div>
+						<div class="p-4 rounded-xl bg-white/5 border border-white/5">
+							<i class="ph-duotone ph-floppy-disk text-accent-400 text-2xl mb-2 block"></i>
+							<h4 class="font-bold text-white text-sm mb-1">Sauvegardes</h4>
+							<p class="text-xs text-slate-400">Copies régulières : une fausse manipulation n'est jamais définitive.</p>
 						</div>
 					</div>
+
+					<p class="text-xs text-slate-500 mt-5 flex items-start gap-2">
+						<i class="ph-bold ph-user-circle text-accent-400 mt-0.5 shrink-0"></i>
+						Et surtout : un seul interlocuteur. Si quelque chose cloche, vous m'appelez —
+						pas un service client à l'autre bout du monde.
+					</p>
 				</div>
 			</div>
 
-			<div class="flex items-center justify-center mb-6 reveal">
-				<div class="billing-cycle-pills inline-flex items-center gap-1 bg-white/5 border border-white/10 rounded-full p-1">
-					<button type="button" class="billing-cycle-pill active" data-cycle="monthly" onclick="setSerenityBillingCycle('monthly')">Mensuel</button>
-					<button type="button" class="billing-cycle-pill" data-cycle="annual" onclick="setSerenityBillingCycle('annual')">Annuel <span class="ml-1 text-emerald-400">— 2 mois offerts</span></button>
+			<div class="flex flex-col items-center gap-3 mb-6 reveal">
+				<div class="billing-cycle-pills inline-flex items-center gap-1 bg-white/5 border border-white/10 rounded-full p-1 flex-wrap justify-center">
+					<button type="button" class="billing-cycle-pill" data-cycle="monthly" onclick="setSerenityBillingCycle('monthly')">Mensuel</button>
+					<button type="button" class="billing-cycle-pill active" data-cycle="annual" onclick="setSerenityBillingCycle('annual')">Annuel <span class="ml-1 billing-cycle-pill__hint">— 2 mois offerts</span></button>
 				</div>
+				<p class="text-[11px] text-slate-500 max-w-lg text-center leading-relaxed" id="billing-cycle-hint">
+					Sans engagement, résiliable à tout moment. En annuel, le montant est <strong class="text-slate-300">réglé en une fois</strong> pour l'année, puis reconduit sauf résiliation.
+				</p>
 			</div>
 
 			<div class="grid md:grid-cols-3 gap-6 reveal">
@@ -1152,7 +1258,7 @@
 							Mises à jour de sécurité, sauvegardes et <strong>1 intervention simple incluse par mois</strong>.
 						</p>
 						<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-300 text-[10px] font-bold mb-2">
-							<i class="ph-bold ph-lock-simple"></i> Engagement 12 mois
+							<i class="ph-bold ph-check-circle"></i> Sans engagement, résiliable à tout moment
 						</div>
 					</div>
 					<div class="mt-3 pt-3 border-t border-white/5">
@@ -1160,6 +1266,8 @@
 							<i class="ph-bold ph-gift"></i> 2 mois offerts
 						</span>
 						<span class="text-xl font-bold text-blue-400 block" data-offer-key="serenite" data-offer-skip><span class="price-amount">49,90 €</span> <span class="text-xs text-slate-500 font-normal price-suffix">/mois</span></span>
+						<p class="text-[10px] text-slate-400 mt-1 serenity-price-detail">soit 499 € / an, réglés en une fois</p>
+						<p class="text-[10px] text-emerald-400 font-bold mt-1">Un mois offert supplémentaire pour le choix du pack Sérénité en formule annuelle, si créé avec moi</p>
 						<div class="mt-3 grid grid-cols-1 gap-2">
 							<button id="btn-serenite-action" onclick="toggleSerenityOption('simple')" class="w-full px-4 py-2.5 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-bold uppercase hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-2">
 								<span>Ajouter au devis</span> <i class="ph-bold ph-plus"></i>
@@ -1180,7 +1288,7 @@
 							Même formule, avec <strong>2 interventions simples incluses par mois</strong> pour les sites qui bougent plus souvent.
 						</p>
 						<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-[10px] font-bold mb-2">
-							<i class="ph-bold ph-lock-simple"></i> Engagement 12 mois
+							<i class="ph-bold ph-check-circle"></i> Sans engagement, résiliable à tout moment
 						</div>
 					</div>
 					<div class="mt-3 pt-3 border-t border-white/5">
@@ -1188,6 +1296,8 @@
 							<i class="ph-bold ph-gift"></i> 2 mois offerts
 						</span>
 						<span class="text-xl font-bold text-indigo-400 block" data-offer-key="serenitePlus" data-offer-skip><span class="price-amount">94,90 €</span> <span class="text-xs text-slate-500 font-normal price-suffix">/mois</span></span>
+						<p class="text-[10px] text-slate-400 mt-1 serenity-price-detail">soit 949 € / an, réglés en une fois</p>
+						<p class="text-[10px] text-emerald-400 font-bold mt-1">Un mois offert supplémentaire pour le choix du pack Sérénité+ en formule annuelle, si créé avec moi</p>
 						<div class="mt-3 grid grid-cols-1 gap-2">
 							<button id="btn-serenite-plus-action" onclick="toggleSerenityOption('plus')" class="w-full px-4 py-2.5 rounded-lg bg-indigo-500/20 text-indigo-300 text-xs font-bold uppercase hover:bg-indigo-500 hover:text-white transition-all flex items-center justify-center gap-2">
 								<span>Ajouter au devis</span> <i class="ph-bold ph-plus"></i>
@@ -1218,10 +1328,13 @@
 								<span class="text-sm text-slate-300 font-bold">Relifting complet du site</span>
 								<span class="text-[10px] text-slate-500">Ancien site → design moderne</span>
 							</div>
-							<span class="font-bold text-accent-400"><span data-i18n="from">À partir de</span> <span data-price-eur="690">690 €</span></span>
+							<span class="text-right">
+								<span class="font-bold text-accent-400 block"><span data-price-eur="66">66 €</span> <span class="text-xs font-normal text-slate-400">/ mois</span></span>
+								<span class="block text-[10px] text-slate-400"><span data-price-eur="1580">1 580 €</span> pour 2 ans</span>
+							</span>
 						</div>
 					</div>
-					<p class="text-[10px] text-slate-600 mt-4 italic">Relifting : devis personnalisé au-delà de 5 pages.</p>
+					<p class="text-[10px] text-slate-600 mt-4 italic">Relifting : les <strong class="text-slate-500">deux premières années sont réglées en une fois</strong> à la commande, le temps de la refonte complète. Devis personnalisé au-delà de 5 pages.</p>
 				</div>
 			</div>
 			
@@ -1341,7 +1454,7 @@
 						<i class="ph-bold ph-phone-call text-xl"></i>
 						06 25 96 51 12
 					</a>
-					<a href="supports/" class="px-8 py-4 rounded-full border border-white/20 bg-white/5 text-white font-bold hover:bg-white/10 transition-all flex items-center gap-2 group">
+					<a href="supports/" id="link-flyers" class="hidden px-8 py-4 rounded-full border border-white/20 bg-white/5 text-white font-bold hover:bg-white/10 transition-all items-center gap-2 group">
 						<i class="ph-bold ph-printer group-hover:-translate-y-1 transition-transform"></i>
 						Flyers &amp; cartes de visite
 					</a>
@@ -1548,14 +1661,21 @@
 
 					<div class="glass-card rounded-2xl border border-white/5 overflow-hidden transition-all duration-300 group">
 						<button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-6 text-left focus:outline-none">
-							<span class="font-bold text-white group-hover:text-accent-400 transition-colors">Suis-je vraiment propriétaire du site ?</span>
+							<span class="font-bold text-white group-hover:text-accent-400 transition-colors">Qu'est-ce qui est compris, et qu'est-ce que je paie exactement ?</span>
 							<i class="ph-bold ph-caret-down text-slate-500 transform transition-transform duration-300"></i>
 						</button>
 						<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out px-6 text-slate-400 text-sm leading-relaxed">
 							<div class="pb-6 border-t border-white/5 pt-4">
-								<strong>OUI, à 100%.</strong> Contrairement aux agences qui vous "louent" un site ou aux plateformes comme Wix, vous êtes le seul propriétaire de votre nom de domaine et de votre hébergement.<br><br>
-								Si demain vous souhaitez changer de prestataire, vous partez avec votre site. Aucune "menotte" contractuelle sur la propriété de votre site.<br><br>
-								<span class="text-slate-500 text-xs italic">Seul le Pack Sérénité (maintenance) implique un engagement de 12 mois, pour garantir un suivi de qualité.</span>
+								<strong>Un seul abonnement, et tout est dedans.</strong> Votre pack couvre la création du site,
+								son hébergement sur mon infrastructure professionnelle, le nom de domaine, le certificat de
+								sécurité (HTTPS) et les sauvegardes. Vous n'avez <strong>aucun compte technique à ouvrir</strong>
+								et <strong>aucune facture d'hébergeur</strong> à gérer de votre côté : c'est précisément ce qui
+								rend la mise en ligne immédiate et la suite sans prise de tête.<br><br>
+								Vous choisissez le rythme : <strong>à l'année</strong>, réglée en une fois (2 mois offerts),
+								ou <strong>au mois</strong>. Dans les deux cas, l'abonnement se reconduit — votre site reste en
+								ligne, entretenu, année après année. Les contenus du site (vos textes, vos photos, votre
+								identité) sont et restent les vôtres.<br><br>
+								<span class="text-slate-500 text-xs italic">Le Pack Sérénité (interventions et modifications) est un service distinct, entièrement facultatif et sans engagement, résiliable à tout moment en mensuel comme en annuel. Le prendre en même temps que la création vous fait bénéficier d'une remise de bienvenue.</span>
 							</div>
 						</div>
 					</div>
@@ -1610,10 +1730,38 @@
 									<li><strong>Sérénité (<span data-offer-key="serenite">49,90 €</span>) :</strong> 1 intervention simple incluse par mois.</li>
 									<li><strong>Sérénité+ (<span data-offer-key="serenitePlus">94,90 €</span>) :</strong> 2 interventions simples incluses par mois, pour les sites qui bougent plus souvent.</li>
 								</ul>
-								<p class="mt-3 text-blue-300 font-bold flex items-center gap-2">
-									<i class="ph-bold ph-lock-simple"></i> Engagement minimum de 12 mois sur les deux formules.
+								<p class="mt-3 text-emerald-300 font-bold flex items-center gap-2">
+									<i class="ph-bold ph-check-circle"></i> Sans engagement sur les deux formules : résiliable à tout moment, en mensuel comme en annuel.
+								</p>
+								<p class="mt-2 text-slate-400">
+									Si vous prenez Sérénité ou Sérénité+ en formule annuelle, en même temps que la création de votre site, vous bénéficiez d'un mois offert supplémentaire la première année (en plus des 2 mois déjà inclus dans la formule annuelle), avant de repasser au tarif annuel normal au renouvellement.
 								</p>
 								Sans pack, les interventions ponctuelles sont facturées à l'heure (voir grille tarifaire). Les interventions incluses non utilisées dans le mois ne sont pas reportées au mois suivant.
+							</div>
+						</div>
+					</div>
+
+					<div class="glass-card rounded-2xl border border-white/5 overflow-hidden transition-all duration-300 group">
+						<button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-6 text-left focus:outline-none">
+							<span class="font-bold text-white group-hover:text-accent-400 transition-colors">Comment se passe le renouvellement chaque année ?</span>
+							<i class="ph-bold ph-caret-down text-slate-500 transform transition-transform duration-300"></i>
+						</button>
+						<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out px-6 text-slate-400 text-sm leading-relaxed">
+							<div class="pb-6 border-t border-white/5 pt-4">
+								<strong>Vous ne serez jamais pris au dépourvu.</strong> Je vous envoie votre
+								<strong>facture de renouvellement par e-mail 10 jours avant la date anniversaire</strong>
+								de votre abonnement, avec son lien de paiement. Vous savez donc toujours à l'avance ce qui
+								arrive, et combien.<br><br>
+								Le tarif de renouvellement est <strong>le même que la première année</strong> : pas de
+								hausse surprise au bout d'un an. Si vous avez pris le Pack Sérénité avec la remise de
+								bienvenue (-50 % la 1ère année), c'est à ce moment-là qu'il repasse à son tarif normal —
+								facturé en même temps que le renouvellement du site, pour n'avoir qu'une seule échéance à
+								retenir.<br><br>
+								Vous restez libre d'arrêter : il suffit de me le dire, aucune justification n'est
+								nécessaire. En revanche, si la facture reste impayée après l'échéance, l'hébergement et le
+								suivi s'arrêtent et, à défaut de régularisation, <strong>le site est mis hors ligne</strong>
+								le temps du règlement. Vos contenus ne sont pas supprimés pour autant : on en reparle
+								quand vous voulez.
 							</div>
 						</div>
 					</div>
@@ -1638,7 +1786,7 @@
 						</button>
 						<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out px-6 text-slate-400 text-sm leading-relaxed">
 							<div class="pb-6 border-t border-white/5 pt-4">
-								Si vous choisissez l'offre <strong>Premium</strong>, vous disposez d'une interface pour écrire et publier vos articles vous-même, avec une pagination automatique pour garder votre blog bien organisé au fil du temps.<br><br>
+								Si vous choisissez l'offre <strong>Vitrine Premium</strong>, vous disposez d'une interface pour écrire et publier vos articles vous-même, avec une pagination automatique pour garder votre blog bien organisé au fil du temps.<br><br>
 								Pour le reste (mise en page, design), je privilégie le code sur-mesure pour la performance. C'est pourquoi le <strong>Pack Sérénité</strong> est intéressant : vous m'envoyez un mail, je fais la modification pour vous. C'est plus simple et vous ne risquez pas de "casser" le design du site.
 							</div>
 						</div>
@@ -1739,9 +1887,9 @@
 						Sélectionnez un créneau ci-contre : je vous appelle pour comprendre votre besoin, puis je vous envoie un devis clair. Rien à payer sur ce site.
 					</p>
 					<div class="space-y-4 mb-8 w-full">
-						<a href="mailto:nathan.marzilli@gmail.com" class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors interactive-hover w-full overflow-hidden">
+						<a href="mailto:contact@clicalaide.com" class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors interactive-hover w-full overflow-hidden">
 							<i class="ph-fill ph-envelope-simple text-2xl text-accent-400 shrink-0"></i>
-							<span class="text-slate-300 truncate text-sm sm:text-base">nathan.marzilli@gmail.com</span>
+							<span class="text-slate-300 truncate text-sm sm:text-base">contact@clicalaide.com</span>
 						</a>
 						<div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 interactive-hover w-full">
 							<i class="ph-fill ph-map-pin text-2xl text-accent-400 shrink-0"></i>
@@ -1855,13 +2003,14 @@
 										<span class="text-[9px] text-slate-500">Fonctionnalité</span>
 										<span class="text-xs text-accent-400 font-bold mt-1" data-price-eur="300">300 €</span>
 									</div>
-									<div class="intervention-btn cursor-pointer flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center select-none border border-white/10 bg-dark-950" data-type="relifting" data-price="690" onclick="selectIntervention(this)">
+									<div class="intervention-btn cursor-pointer flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center select-none border border-white/10 bg-dark-950" data-type="relifting" data-price="1580" onclick="selectIntervention(this)">
 										<span class="text-xs text-slate-300 font-bold">Relifting</span>
 										<span class="text-[9px] text-slate-500">Design moderne</span>
-										<span class="text-xs text-accent-400 font-bold mt-1" data-price-eur="690" data-price-prefix="dès ">dès 690 €</span>
+										<span class="text-xs text-accent-400 font-bold mt-1"><span data-price-eur="66">66 €</span> / mois</span>
+										<span class="text-[9px] text-slate-500"><span data-price-eur="1580">1 580 €</span> · 2 ans</span>
 									</div>
 								</div>
-								<p class="text-[10px] text-slate-500 text-center">Relifting : devis personnalisé au-delà de 5 pages · Cliquez à nouveau pour désélectionner</p>
+								<p class="text-[10px] text-slate-500 text-center">Relifting : abonnement au tarif Vitrine Essentiel, <strong class="text-slate-400">2 ans réglés en une fois</strong> · devis personnalisé au-delà de 5 pages · Cliquez à nouveau pour désélectionner</p>
 							</div>
 
 							<div id="pack-selection-block" class="space-y-2 pt-2">
@@ -1872,16 +2021,16 @@
 										<label for="pack-eclair" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Éclair</label>
 									</div>
 									<div class="relative">
-										<input type="radio" name="project_pack" id="pack-essentiel" value="Essentiel" data-price="990" class="hidden pack-radio-input" onchange="updateCardSelection('Essentiel', parseInt(this.getAttribute('data-price')))">
+										<input type="radio" name="project_pack" id="pack-essentiel" value="Essentiel" data-price="790" class="hidden pack-radio-input" onchange="updateCardSelection('Essentiel', parseInt(this.getAttribute('data-price')))">
 										<label for="pack-essentiel" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Essentiel</label>
 									</div>
 									<div class="relative">
-										<input type="radio" name="project_pack" id="pack-vitrine" value="Vitrine" data-price="1790" class="hidden pack-radio-input" checked onchange="updateCardSelection('Vitrine', parseInt(this.getAttribute('data-price')))">
+										<input type="radio" name="project_pack" id="pack-vitrine" value="Vitrine" data-price="890" class="hidden pack-radio-input" checked onchange="updateCardSelection('Vitrine', parseInt(this.getAttribute('data-price')))">
 										<label for="pack-vitrine" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Vitrine</label>
 									</div>
 									<div class="relative">
-										<input type="radio" name="project_pack" id="pack-premium" value="Premium" data-price="2990" class="hidden pack-radio-input" onchange="updateCardSelection('Premium', parseInt(this.getAttribute('data-price')))">
-										<label for="pack-premium" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Premium</label>
+										<input type="radio" name="project_pack" id="pack-premium" value="Premium" data-price="1188" class="hidden pack-radio-input" onchange="updateCardSelection('Premium', parseInt(this.getAttribute('data-price')))">
+										<label for="pack-premium" class="pack-radio-label block w-full text-center py-2.5 rounded-lg bg-dark-950 text-slate-400 text-xs sm:text-sm font-medium">Vitrine Premium</label>
 									</div>
 								</div>
 							</div>
@@ -1916,8 +2065,8 @@
 													</div>
 													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Devis</span>
 												</div>
-												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="100" data-price-prefix="">100 €</span>
-												<input type="checkbox" class="doc-sub-checkbox hidden" value="Devis" data-price="100">
+												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="5" data-price-suffix=" / mois">5 € / mois</span>
+												<input type="checkbox" class="doc-sub-checkbox hidden" value="Devis" data-price="5">
 												<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 											</label>
 											<label class="doc-card flex items-center justify-between gap-2 p-3 rounded-xl cursor-pointer border border-slate-500/20 bg-dark-950 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
@@ -1927,8 +2076,8 @@
 													</div>
 													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Factures</span>
 												</div>
-												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="100" data-price-prefix="">100 €</span>
-												<input type="checkbox" class="doc-sub-checkbox hidden" value="Facture" data-price="100">
+												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="5" data-price-suffix=" / mois">5 € / mois</span>
+												<input type="checkbox" class="doc-sub-checkbox hidden" value="Facture" data-price="5">
 												<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 											</label>
 											<label class="doc-card flex items-center justify-between gap-2 p-3 rounded-xl cursor-pointer border border-slate-500/20 bg-dark-950 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
@@ -1938,8 +2087,8 @@
 													</div>
 													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Quittance de loyer</span>
 												</div>
-												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="100" data-price-prefix="">100 €</span>
-												<input type="checkbox" class="doc-sub-checkbox hidden" value="Quittance" data-price="100">
+												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="5" data-price-suffix=" / mois">5 € / mois</span>
+												<input type="checkbox" class="doc-sub-checkbox hidden" value="Quittance" data-price="5">
 												<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 											</label>
 											<label class="doc-card flex items-center justify-between gap-2 p-3 rounded-xl cursor-pointer border border-slate-500/20 bg-dark-950 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden" onclick="handleDocClick(this)">
@@ -1949,8 +2098,8 @@
 													</div>
 													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Note de frais</span>
 												</div>
-												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="100" data-price-prefix="">100 €</span>
-												<input type="checkbox" class="doc-sub-checkbox hidden" value="Note de Frais" data-price="100">
+												<span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition-colors whitespace-nowrap" data-price-eur="5" data-price-suffix=" / mois">5 € / mois</span>
+												<input type="checkbox" class="doc-sub-checkbox hidden" value="Note de Frais" data-price="5">
 												<div class="absolute inset-0 bg-emerald-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 											</label>
 											<label class="doc-card flex items-center justify-between gap-2 p-3 rounded-xl cursor-pointer border border-slate-500/20 bg-dark-950 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden col-span-1 sm:col-span-2" onclick="handleDocClick(this)">
@@ -1960,8 +2109,8 @@
 													</div>
 													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Bail de location</span>
 												</div>
-												<span class="text-xs font-bold text-purple-400 bg-purple-400/10 px-2 py-1 rounded whitespace-nowrap" data-price-eur="300" data-price-prefix="">300 €</span>
-												<input type="checkbox" class="doc-sub-checkbox hidden" value="Bail Location" data-price="300">
+												<span class="text-xs font-bold text-purple-400 bg-purple-400/10 px-2 py-1 rounded whitespace-nowrap" data-price-eur="5" data-price-suffix=" / mois">5 € / mois</span>
+												<input type="checkbox" class="doc-sub-checkbox hidden" value="Bail Location" data-price="5">
 												<div class="absolute inset-0 bg-purple-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 											</label>
 											<label class="doc-card flex items-center justify-between gap-2 p-3 rounded-xl cursor-pointer border border-slate-500/20 bg-dark-950 hover:bg-slate-500/5 transition-all duration-200 group relative overflow-hidden col-span-1 sm:col-span-2" onclick="handleDocClick(this); toggleCustomDocInput()">
@@ -1971,8 +2120,8 @@
 													</div>
 													<span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors custom-checkbox-label">Document sur-mesure</span>
 												</div>
-												<span class="text-xs font-bold text-purple-400 bg-purple-400/10 px-2 py-1 rounded whitespace-nowrap" data-price-eur="300" data-price-prefix="dès ">dès 300 €</span>
-												<input type="checkbox" id="check-custom-doc" class="doc-sub-checkbox hidden" value="Autre" data-price="300">
+												<span class="text-xs font-bold text-purple-400 bg-purple-400/10 px-2 py-1 rounded whitespace-nowrap" data-price-eur="15" data-price-suffix=" / mois">15 € / mois</span>
+												<input type="checkbox" id="check-custom-doc" class="doc-sub-checkbox hidden" value="Autre" data-price="15">
 												<div class="absolute inset-0 bg-purple-500/10 opacity-0 transition-opacity duration-300 selection-overlay"></div>
 											</label>
 											<div class="col-span-1 sm:col-span-2">
@@ -1986,36 +2135,39 @@
 							<div class="space-y-2">
 								<div class="flex items-center justify-between flex-wrap gap-2">
 									<div class="form-section-title mt-0"><i class="ph-bold ph-shield-check"></i> Pack Sérénité (optionnel)</div>
-									<div class="billing-cycle-pills inline-flex items-center gap-1 bg-white/5 border border-white/10 rounded-full p-1">
-										<button type="button" class="billing-cycle-pill active" data-cycle="monthly" onclick="setSerenityBillingCycle('monthly')">Mensuel</button>
-										<button type="button" class="billing-cycle-pill" data-cycle="annual" onclick="setSerenityBillingCycle('annual')">Annuel <span class="ml-1 text-emerald-400">-2 mois</span></button>
+									<div class="billing-cycle-pills inline-flex items-center gap-1 bg-white/5 border border-white/10 rounded-full p-1 flex-wrap">
+										<button type="button" class="billing-cycle-pill" data-cycle="monthly" onclick="setSerenityBillingCycle('monthly')">Mensuel</button>
+										<button type="button" class="billing-cycle-pill active" data-cycle="annual" onclick="setSerenityBillingCycle('annual')">Annuel <span class="ml-1 billing-cycle-pill__hint">-2 mois</span></button>
 									</div>
 								</div>
 								<div class="grid grid-cols-2 gap-2">
 									<div id="serenite-toggle-btn" class="serenity-btn cursor-pointer flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center select-none" onclick="toggleSerenityForm('simple')">
 										<span class="text-sm text-slate-300 font-bold">Sérénité</span>
 										<span class="text-[10px] text-slate-500">1 intervention/mois</span>
-										<span id="serenite-form-price" class="text-xs text-blue-400 font-bold mt-1">49,90 € / mois</span>
+										<span id="serenite-form-price" class="text-xs text-blue-400 font-bold mt-1">41,58 € / mois</span>
+										<span id="serenite-form-detail" class="text-[9px] text-slate-500">499,00 € / an</span>
 									</div>
 									<div id="serenite-plus-toggle-btn" class="serenity-btn cursor-pointer flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center select-none" onclick="toggleSerenityForm('plus')">
 										<span class="text-sm text-slate-300 font-bold">Sérénité+</span>
 										<span class="text-[10px] text-slate-500">2 interventions/mois</span>
-										<span id="serenitePlus-form-price" class="text-xs text-indigo-400 font-bold mt-1">94,90 € / mois</span>
+										<span id="serenitePlus-form-price" class="text-xs text-indigo-400 font-bold mt-1">79,08 € / mois</span>
+										<span id="serenitePlus-form-detail" class="text-[9px] text-slate-500">949,00 € / an</span>
 									</div>
 								</div>
 								<p class="text-[10px] text-slate-500 text-center flex items-center justify-center gap-1">
-									<i class="ph-bold ph-lock-simple"></i> Engagement 12 mois minimum · Cliquez à nouveau pour retirer
+									<i class="ph-bold ph-check-circle"></i> Sans engagement · 1 mois offert supplémentaire en formule annuelle si pris avec un pack de création · Cliquez à nouveau pour retirer
 								</p>
 							</div>
 
 							<div id="total-summary-card" class="rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.01] p-4 space-y-2.5">
-								<span id="total-label" class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Total Estimé <span class="text-[10px] font-normal lowercase text-slate-500">(Création)</span></span>
+								<span id="total-label" class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Total Estimé <span class="text-[10px] font-normal lowercase text-slate-500">(1<sup>er</sup> versement)</span></span>
 								<div class="flex items-end justify-between gap-3 flex-wrap">
-									<span id="total-price-display" class="text-[26px] leading-none font-bold text-accent-400 tracking-tight">1 790 €</span>
+									<span id="total-price-display" class="text-[26px] leading-none font-bold text-accent-400 tracking-tight">890 €</span>
 									<span id="total-recurring-chip" class="hidden items-center gap-1.5 text-[11px] font-bold text-blue-300 bg-blue-400/10 border border-blue-400/20 px-3 py-1.5 rounded-full whitespace-nowrap">
 										<i class="ph-fill ph-repeat text-[13px]"></i><span id="total-recurring-chip-text"></span>
 									</span>
 								</div>
+								<p id="total-pack-note" class="hidden text-[10px] text-slate-500 leading-relaxed"></p>
 							</div>
 
 							<div class="space-y-1">
@@ -2044,7 +2196,7 @@
 			</div>
 
 			<div class="flex flex-col md:flex-row justify-between items-center mt-16 pt-8 border-t border-white/5 gap-4">
-				<div class="text-slate-600 text-sm">© <span id="year"></span> Nathan Marzilli.</div>
+				<div class="text-slate-600 text-sm">© <span id="year"></span> Clic à l’aide — Nathan Marzilli.</div>
 				<button onclick="toggleAdminModal()" class="text-slate-700 hover:text-accent-400 transition-colors text-xs flex items-center gap-2 uppercase tracking-widest font-bold">
 					<i class="ph-bold ph-lock-key"></i> Administration
 				</button>
@@ -2109,5 +2261,22 @@
     <script src="assets/js/calendar.js"></script>
     <script src="assets/js/reveal.js"></script>
     <script type="module" src="script.js"></script>
+
+    <!-- Le lien « Flyers & cartes de visite » ne s'affiche que pour
+         Nathan connecté en administrateur (session Supabase Auth déjà
+         active depuis /admin/, best-effort : reste masqué en cas
+         d'erreur ou si non connecté). -->
+    <script type="module">
+        (async function () {
+            try {
+                const db = await window.NM.dbReady;
+                const admin = await db.isAdmin();
+                if (admin) {
+                    const link = document.getElementById('link-flyers');
+                    if (link) { link.classList.remove('hidden'); link.classList.add('flex'); }
+                }
+            } catch (e) { /* silencieux : reste masqué par défaut */ }
+        })();
+    </script>
 </body>
 </html>

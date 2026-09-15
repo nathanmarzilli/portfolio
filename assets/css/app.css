@@ -253,6 +253,14 @@
 }
 .billing-cycle-pill:disabled { pointer-events: none; }
 
+/* Le libellé « — le plus avantageux » vit sur deux fonds très différents :
+   clair quand la pastille est au repos, bleu plein quand elle est active.
+   Le vert du thème (rgb 5 150 105 en clair) devient illisible sur ce bleu :
+   on bascule donc sur un jaune clair dès que la pastille est active.
+   Ne PAS remettre `text-emerald-400` en dur dans le HTML. */
+.billing-cycle-pill__hint { color: rgb(var(--t-emerald-400)); }
+.billing-cycle-pill.active .billing-cycle-pill__hint { color: #ffe08a; }
+
 /* --- Cartes de suivi sélectionnées --- */
 .serenity-selected-card {
 	border-color: rgb(var(--t-blue-400)) !important;

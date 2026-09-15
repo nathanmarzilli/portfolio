@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Solutions Sur-Mesure Clubs Sportifs | Nathan Marzilli</title>
-    
-    <meta name="description" content="Site web clé en main pour clubs et associations sportives : plus d'adhérents, moins d'administratif. Pack L'Essentiel & Suivi décliné pour la vie du club.">
+    <title>Clic à l’aide | Sites internet pour clubs et associations sportives</title>
+
+    <meta name="description" content="Clic à l’aide crée le site de votre club ou association sportive, clé en main : plus d'adhérents, moins d'administratif. Contact humain direct avec Nathan Marzilli.">
+    <link rel="canonical" href="https://www.clicalaide.fr/offre-club/">
+    <meta property="og:title" content="Clic à l’aide | Sites internet pour clubs et associations">
+    <meta property="og:description" content="Le site de votre club ou association, clé en main. Modules dédiés (actualités, résultats, adhésions), suivi humain, sans engagement forcé.">
+    <meta property="og:url" content="https://www.clicalaide.fr/offre-club/">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="fr_FR">
     <meta name="theme-color" content="#f6f8fb">
     <link rel="icon" href="../images/profile-40.jpg">
 
@@ -55,10 +61,10 @@
             <a href="../" class="flex items-center gap-3 group shrink-0" title="Retour à l’accueil">
                 <span class="w-9 h-9 rounded-full overflow-hidden border border-slate-500/20 group-hover:border-accent-400 transition-colors block shrink-0">
                     <img src="../images/profile-96.jpg" srcset="../images/profile-96.jpg 1x, ../images/profile-192.jpg 2x"
-                         width="36" height="36" alt="Nathan Marzilli" class="w-full h-full object-cover" decoding="async">
+                         width="36" height="36" alt="Nathan Marzilli, fondateur de Clic à l’aide" class="w-full h-full object-cover" decoding="async">
                 </span>
                 <span class="leading-tight">
-                    <span class="font-display font-bold text-base tracking-wide text-white block">Nathan Marzilli</span>
+                    <span class="font-display font-bold text-base tracking-wide text-white block">Clic à l’aide</span>
                     <span class="block text-[10px] text-accent-400 font-bold uppercase tracking-wider">Clubs &amp; associations</span>
                 </span>
             </a>
@@ -585,18 +591,19 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5" data-stagger="90">
                 <div class="p-5 rounded-2xl bg-dark-950/50 border border-slate-500/15 interactive-hover">
                     <div class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">L'investissement</div>
-                    <div class="text-3xl font-display font-bold text-white mb-1" data-offer-key="essentiel">990 €</div>
+                    <div class="text-3xl font-display font-bold text-white mb-1"><span data-offer-key="essentiel-monthly">66 €</span> <span class="text-base font-normal text-slate-400">/ mois</span></div>
                     <p class="text-xs text-slate-400 leading-relaxed">
-                        Une fois, pour un site complet dont le club est propriétaire.
-                        Puis <strong class="text-white"><span data-offer-key="serenite-annual" data-price-suffix="/ an">499 € / an</span></strong> de suivi (hébergement, sécurité, sauvegardes, une intervention par mois).
+                        Soit <strong class="text-white"><span data-offer-key="essentiel" data-price-suffix="/ an">790 € / an</span></strong>
+                        réglés en une fois (2 mois offerts), reconductible chaque saison.
+                        Site complet, hébergement, nom de domaine et sécurité compris — rien à payer ailleurs.
                     </p>
                 </div>
 
                 <div class="p-5 rounded-2xl bg-dark-950/50 border border-accent-400/30">
                     <div class="text-xs font-bold uppercase tracking-wider text-accent-400 mb-2">Le point d'équilibre</div>
-                    <div class="text-3xl font-display font-bold text-accent-400 mb-1">7 adhésions</div>
+                    <div class="text-3xl font-display font-bold text-accent-400 mb-1">6 adhésions</div>
                     <p class="text-xs text-slate-400 leading-relaxed">
-                        Sur la base d'une cotisation moyenne de 140 € : sept nouveaux adhérents la première saison
+                        Sur la base d'une cotisation moyenne de 140 € : six nouveaux adhérents dans la saison
                         et le site est remboursé. Au-delà, c'est du budget en plus pour le club.
                     </p>
                 </div>
@@ -644,12 +651,24 @@
                 <div class="p-6 rounded-2xl bg-dark-950/60 border-2 border-accent-400/50 interactive-hover">
                     <div class="flex flex-wrap items-baseline justify-between gap-3 mb-3">
                         <h3 class="text-lg font-bold text-white">Votre site club, complet</h3>
-                        <span class="text-4xl font-display font-bold text-accent-400" data-offer-key="essentiel">990 €</span>
+                        <span class="text-right" data-club-pack-price>
+                            <span class="text-4xl font-display font-bold text-accent-400 pack-price-amount">66 €</span><span class="text-sm text-slate-400 pack-price-suffix"> / mois</span>
+                            <span class="block text-[11px] text-slate-400 mt-1 pack-price-detail">soit 790 € / an, réglés en une fois et reconduits chaque saison</span>
+                        </span>
                     </div>
-                    <p class="text-sm text-slate-400 mb-5">
-                        Paiement unique, à la livraison. Le club est <strong class="text-white">propriétaire</strong> de son site,
-                        de son nom de domaine et de son contenu.
-                    </p>
+
+                    <div class="flex flex-col items-start gap-2 mb-5">
+                        <div class="billing-cycle-pills inline-flex items-center gap-1 rounded-full p-1">
+                            <button type="button" class="billing-cycle-pill" data-pack-cycle="monthly">Mensuel</button>
+                            <button type="button" class="billing-cycle-pill active" data-pack-cycle="annual">Annuel <span class="ml-1 billing-cycle-pill__hint">— 2 mois offerts</span></button>
+                        </div>
+                        <p class="text-sm text-slate-400">
+                            L'abonnement annuel se règle <strong class="text-white">en une seule fois</strong> et se
+                            reconduit chaque saison au même tarif. <strong class="text-white">Hébergement, nom de domaine
+                            et sécurité compris</strong> : le club n'a aucun compte technique à ouvrir, ni aucune facture
+                            d'hébergeur à gérer d'un bureau à l'autre.
+                        </p>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div class="flex items-start gap-2 text-xs text-slate-300"><i class="ph-bold ph-check text-accent-400 mt-0.5" aria-hidden="true"></i> Site responsive, moderne et rapide</div>
                         <div class="flex items-start gap-2 text-xs text-slate-300"><i class="ph-bold ph-check text-accent-400 mt-0.5" aria-hidden="true"></i> Référencement local optimisé</div>
@@ -672,11 +691,14 @@
                         </p>
                     </div>
 
-                    <div class="flex items-center justify-center mb-6">
-                        <div class="billing-cycle-pills inline-flex items-center gap-1 rounded-full p-1">
-                            <button type="button" class="billing-cycle-pill active" data-cycle="monthly">Mensuel</button>
-                            <button type="button" class="billing-cycle-pill" data-cycle="annual">Annuel <span class="ml-1 text-emerald-400">— 2 mois offerts</span></button>
+                    <div class="flex flex-col items-center gap-2 mb-6">
+                        <div class="billing-cycle-pills inline-flex items-center gap-1 rounded-full p-1 flex-wrap justify-center">
+                            <button type="button" class="billing-cycle-pill" data-cycle="monthly">Mensuel</button>
+                            <button type="button" class="billing-cycle-pill active" data-cycle="annual">Annuel <span class="ml-1 billing-cycle-pill__hint">— 2 mois offerts</span></button>
                         </div>
+                        <p class="text-[11px] text-slate-500 max-w-lg text-center leading-relaxed">
+                            Sans engagement, résiliable à tout moment. Un mois offert supplémentaire la 1ère année (Sérénité comme Sérénité+) en formule annuelle, si pris en même temps que la création du site du club.
+                        </p>
                     </div>
 
                     <div class="grid md:grid-cols-3 gap-5" data-stagger="90">
@@ -691,7 +713,7 @@
                                     <strong class="text-white">1 intervention incluse par mois</strong> (texte, photo, actualité…).
                                 </p>
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-300 text-[10px] font-bold mb-2">
-                                    <i class="ph-bold ph-lock-simple" aria-hidden="true"></i> Engagement 12 mois
+                                    <i class="ph-bold ph-check-circle" aria-hidden="true"></i> Sans engagement
                                 </span>
                             </div>
                             <div class="mt-3 pt-3 border-t border-slate-500/15">
@@ -701,6 +723,8 @@
                                 <span class="text-xl font-bold text-blue-400 block" data-offer-key="serenite" data-offer-skip>
                                     <span class="price-amount">49,90 €</span> <span class="text-xs text-slate-500 font-normal price-suffix">/ mois</span>
                                 </span>
+                                <p class="text-[10px] text-slate-400 mt-1 serenity-price-detail">soit 499 € / an, réglés en une fois</p>
+                                <p class="text-[10px] text-emerald-400 font-bold mt-1">Un mois offert supplémentaire pour le choix du pack Sérénité en formule annuelle, si créé avec moi</p>
                                 <button type="button" class="btn-ghost w-full mt-3 !text-[11px]" data-club-serenity="simple">
                                     <span>Ajouter au devis</span> <i class="ph-bold ph-plus" aria-hidden="true"></i>
                                 </button>
@@ -719,7 +743,7 @@
                                     pour les clubs dont le site bouge souvent (résultats, actualités, événements).
                                 </p>
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-[10px] font-bold mb-2">
-                                    <i class="ph-bold ph-lock-simple" aria-hidden="true"></i> Engagement 12 mois
+                                    <i class="ph-bold ph-check-circle" aria-hidden="true"></i> Sans engagement
                                 </span>
                             </div>
                             <div class="mt-3 pt-3 border-t border-slate-500/15">
@@ -729,6 +753,8 @@
                                 <span class="text-xl font-bold text-indigo-400 block" data-offer-key="serenitePlus" data-offer-skip>
                                     <span class="price-amount">94,90 €</span> <span class="text-xs text-slate-500 font-normal price-suffix">/ mois</span>
                                 </span>
+                                <p class="text-[10px] text-slate-400 mt-1 serenity-price-detail">soit 949 € / an, réglés en une fois</p>
+                                <p class="text-[10px] text-emerald-400 font-bold mt-1">Un mois offert supplémentaire pour le choix du pack Sérénité+ en formule annuelle, si créé avec moi</p>
                                 <button type="button" class="btn-ghost w-full mt-3 !text-[11px]" data-club-serenity="plus">
                                     <span>Ajouter au devis</span> <i class="ph-bold ph-plus" aria-hidden="true"></i>
                                 </button>
@@ -759,12 +785,16 @@
                             <i class="ph-bold ph-plus-circle text-accent-400" aria-hidden="true"></i> Modules club (optionnels)
                         </h3>
                         <span class="text-xs font-bold text-accent-400 bg-accent-400/10 border border-accent-400/25 px-3 py-1 rounded-full">
-                            dès <span data-price-eur="100">100 €</span>
+                            dès <span data-price-eur="5" data-price-suffix=" / mois">5 € / mois</span>
                         </span>
                     </div>
-                    <p class="text-xs text-slate-400 mb-5">
+                    <p class="text-xs text-slate-400 mb-2">
                         Cliquez sur un module pour l'ajouter à votre demande : il se coche automatiquement dans le formulaire
                         en bas de page, et le total se met à jour.
+                    </p>
+                    <p class="text-xs text-emerald-400 font-bold mb-5 flex items-center gap-1.5">
+                        <i class="ph-bold ph-gift" aria-hidden="true"></i>
+                        Trois modules à <span data-price-eur="5">5 €</span> pris ensemble : <span data-price-eur="10">10 €</span> / mois au lieu de <span data-price-eur="15">15 €</span>.
                     </p>
                     <div id="club-options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </div>
@@ -783,7 +813,7 @@
                 </div>
                 <div class="p-5 rounded-2xl bg-dark-950/50 border border-slate-500/15 interactive-hover">
                     <h4 class="font-bold text-white text-sm mb-2">« Notre bureau change tous les deux ans. »</h4>
-                    <p class="text-xs text-slate-400 leading-relaxed">Le site appartient au club, pas à une personne. Accès, nom de domaine et hébergement sont au nom de l'association : une passation se fait en dix minutes, et je reste l'interlocuteur stable d'un bureau à l'autre.</p>
+                    <p class="text-xs text-slate-400 leading-relaxed">Le site est celui du club, pas celui d'un bénévole. Contenus, identité et accès de gestion suivent l'association d'un bureau à l'autre — et comme c'est moi qui gère l'hébergement et le nom de domaine, rien ne se perd quand le trésorier change : une passation se fait en dix minutes, et je reste l'interlocuteur stable.</p>
                 </div>
                 <div class="p-5 rounded-2xl bg-dark-950/50 border border-slate-500/15 interactive-hover">
                     <h4 class="font-bold text-white text-sm mb-2">« On a déjà une page Facebook. »</h4>
@@ -819,9 +849,9 @@
                     </ol>
 
                     <div class="space-y-3">
-                        <a href="mailto:nathan.marzilli@gmail.com" class="flex items-center gap-3 p-3.5 rounded-xl bg-slate-500/5 border border-slate-500/15 hover:bg-slate-500/10 transition-colors">
+                        <a href="mailto:contact@clicalaide.com" class="flex items-center gap-3 p-3.5 rounded-xl bg-slate-500/5 border border-slate-500/15 hover:bg-slate-500/10 transition-colors">
                             <i class="ph-fill ph-envelope-simple text-xl text-accent-400 shrink-0" aria-hidden="true"></i>
-                            <span class="text-slate-300 text-sm truncate">nathan.marzilli@gmail.com</span>
+                            <span class="text-slate-300 text-sm truncate">contact@clicalaide.com</span>
                         </a>
                         <a href="tel:+33625965112" class="flex items-center gap-3 p-3.5 rounded-xl bg-slate-500/5 border border-slate-500/15 hover:bg-slate-500/10 transition-colors">
                             <i class="ph-fill ph-phone text-xl text-accent-400 shrink-0" aria-hidden="true"></i>
@@ -961,37 +991,40 @@
                     <div class="space-y-2 pt-4 border-t border-slate-500/15">
                         <div class="flex items-center justify-between flex-wrap gap-2">
                             <div class="form-section-title mt-0"><i class="ph-bold ph-shield-check" aria-hidden="true"></i> Formule de suivi (optionnel)</div>
-                            <div class="billing-cycle-pills inline-flex items-center gap-1 rounded-full p-1">
-                                <button type="button" class="billing-cycle-pill active" data-cycle="monthly">Mensuel</button>
-                                <button type="button" class="billing-cycle-pill" data-cycle="annual">Annuel <span class="ml-1 text-emerald-400">-2 mois</span></button>
+                            <div class="billing-cycle-pills inline-flex items-center gap-1 rounded-full p-1 flex-wrap">
+                                <button type="button" class="billing-cycle-pill" data-cycle="monthly">Mensuel</button>
+                                <button type="button" class="billing-cycle-pill active" data-cycle="annual">Annuel <span class="ml-1 billing-cycle-pill__hint">-2 mois</span></button>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                             <button type="button" id="club-serenite-btn" class="serenity-btn flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center" data-club-serenity="simple">
                                 <span class="text-sm text-slate-300 font-bold">Sérénité</span>
                                 <span class="text-[10px] text-slate-500">1 intervention/mois</span>
-                                <span id="club-serenite-price" class="text-xs text-blue-400 font-bold mt-1">49,90 € / mois</span>
+                                <span id="club-serenite-price" class="text-xs text-blue-400 font-bold mt-1">41,58 € / mois</span>
+                                <span id="club-serenite-detail" class="text-[9px] text-slate-500">499,00 € / an</span>
                             </button>
                             <button type="button" id="club-serenite-plus-btn" class="serenity-btn flex flex-col items-center justify-center py-3 px-2 rounded-xl text-center" data-club-serenity="plus">
                                 <span class="text-sm text-slate-300 font-bold">Sérénité+</span>
                                 <span class="text-[10px] text-slate-500">2 interventions/mois</span>
-                                <span id="club-serenite-plus-price" class="text-xs text-indigo-400 font-bold mt-1">94,90 € / mois</span>
+                                <span id="club-serenite-plus-price" class="text-xs text-indigo-400 font-bold mt-1">79,08 € / mois</span>
+                                <span id="club-serenite-plus-detail" class="text-[9px] text-slate-500">949,00 € / an</span>
                             </button>
                         </div>
                         <p class="text-[10px] text-slate-500 text-center flex items-center justify-center gap-1">
-                            <i class="ph-bold ph-lock-simple" aria-hidden="true"></i> Rien d'obligatoire, mais vivement conseillé · engagement 12 mois · cliquez à nouveau pour retirer
+                            <i class="ph-bold ph-check-circle" aria-hidden="true"></i> Rien d'obligatoire, mais vivement conseillé · sans engagement · cliquez à nouveau pour retirer
                         </p>
                     </div>
 
                     <!-- Total -->
                     <div class="rounded-2xl border border-slate-500/15 bg-slate-500/[0.06] p-4 space-y-2">
-                        <span id="club-total-label" class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Estimation <span class="text-[10px] font-normal lowercase text-slate-500">(création)</span></span>
+                        <span id="club-total-label" class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Estimation <span class="text-[10px] font-normal lowercase text-slate-500">(1<sup>er</sup> versement)</span></span>
                         <div class="flex items-end justify-between gap-3 flex-wrap">
-                            <span id="club-total" class="text-[26px] leading-none font-bold text-accent-400 tracking-tight">990 €</span>
+                            <span id="club-total" class="text-[26px] leading-none font-bold text-accent-400 tracking-tight">790 €</span>
                             <span id="club-recurring-chip" class="hidden items-center gap-1.5 text-[11px] font-bold text-blue-300 bg-blue-400/10 border border-blue-400/20 px-3 py-1.5 rounded-full whitespace-nowrap">
                                 <i class="ph-fill ph-repeat text-[13px]" aria-hidden="true"></i><span id="club-recurring-text"></span>
                             </span>
                         </div>
+                        <p id="club-pack-note" class="hidden text-[10px] text-slate-500 leading-relaxed"></p>
                         <p class="text-[10px] text-slate-500">Estimation indicative : le devis définitif est établi après notre échange.</p>
                     </div>
 
@@ -1025,7 +1058,7 @@
         <a href="../" class="inline-flex items-center gap-2 text-slate-400 hover:text-accent-400 transition-colors font-bold">
             <i class="ph-bold ph-arrow-left" aria-hidden="true"></i> <span data-i18n="navBackHome">Retour à l’accueil</span>
         </a>
-        <p>© <span id="year"></span> Nathan Marzilli — Ingénieur &amp; développeur web. TVA non applicable, article 293 B du CGI.</p>
+        <p>© <span id="year"></span> Clic à l’aide — Nathan Marzilli, ingénieur &amp; développeur web. TVA non applicable, article 293 B du CGI.</p>
     </footer>
 
     <script src="../config.js"></script>

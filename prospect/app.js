@@ -32,11 +32,13 @@
 	var db = null;
 
 	var state = {
-		results: [],      // résultats de la dernière recherche
-		prospects: [],    // le CRM
-		expanded: null,   // id du prospect dont l'analyse est dépliée
-		emailId: null,    // id du prospect ouvert dans l'onglet E-mail
-		busy: {}          // analyses en cours, par id
+		results: [],      
+		totalResults: 0,  // NOUVEAU
+		currentPage: 1,   // NOUVEAU
+		prospects: [],    
+		expanded: null,   
+		emailId: null,    
+		busy: {}          
 	};
 
 	// Colonnes réellement présentes dans nm_prospects. Tout ce qui
@@ -297,7 +299,7 @@
 		});
 
 		lines.push('Pour un club ou une association, l’offre à privilégier est « ' +
-			(((CFG.offers || {})[(CFG.club || {}).baseOfferKey] || {}).name || 'L’Essentiel & Suivi') +
+			(((CFG.offers || {})[(CFG.club || {}).baseOfferKey] || {}).name || 'Vitrine Essentiel') +
 			' », éventuellement complétée d’un ou deux modules.');
 
 		return lines.join('\n');
@@ -359,7 +361,7 @@
 		return state.prospects.filter(function (p) { return p.external_id === externalId; })[0] || null;
 	}
 
-	async function runSearch(event) {
+	async function runSearch(event, isLoadMore) { // Ajouter isLoadMore
 		if (event) event.preventDefault();
 		var query = ($('#search-query').value || '').trim();
 		var place = ($('#search-commune').value || '').trim();
@@ -372,36 +374,62 @@
 			return;
 		}
 
+		// NOUVEAU : Gérer le numéro de page
+		if (isLoadMore) {
+			state.currentPage++;
+		} else {
+			state.currentPage = 1;
+		}
+
 		var payload = {
 			query: query,
 			onlyAssociations: $('#search-assos').checked,
 			perPage: 20,
-			page: 1
+			page: state.currentPage // NOUVEAU : Utiliser l'état
 		};
 		if (/^\d{5}$/.test(place)) payload.commune = place;
 		else if (/^\d{2,3}$/.test(place)) payload.departement = place;
 		if (naf) payload.nafCodes = naf;
 
 		var btn = $('#search-submit');
+		var loadMoreBtn = $('#search-load-more'); // NOUVEAU
 		btn.disabled = true;
+		if (loadMoreBtn) loadMoreBtn.disabled = true; // NOUVEAU
+        
 		hint.className = 'text-xs text-slate-500';
 		hint.textContent = 'Recherche en cours…';
-		$('#search-results').innerHTML = '<p class="text-slate-500 italic text-sm">Recherche en cours…</p>';
+		if (!isLoadMore) $('#search-results').innerHTML = '<p class="text-slate-500 italic text-sm">Recherche en cours…</p>';
 
 		try {
 			var res = await db.searchProspects(payload);
 			if (!res || !res.ok) throw new Error((res && res.error) || 'réponse inattendue');
-			state.results = res.results || [];
+			
+			// NOUVEAU : Ajouter à la suite ou remplacer
+			if (isLoadMore) {
+				state.results = state.results.concat(res.results || []);
+			} else {
+				state.results = res.results || [];
+			}
+			state.totalResults = res.total || 0; // NOUVEAU
+			
+			// AJOUT : Trier pour afficher les plus récents en premier
+			state.results.sort(function (a, b) {
+				var valA = a.created_on ? String(a.created_on) : '';
+				var valB = b.created_on ? String(b.created_on) : '';
+				return valB.localeCompare(valA);
+			});
+
 			hint.textContent = state.results.length
 				? state.results.length + ' résultat(s) affiché(s)' + (res.total ? ' sur ' + res.total : '')
 				: 'Aucun résultat : essayez un autre mot-clé ou un territoire plus large.';
 		} catch (err) {
-			state.results = [];
+			if (!isLoadMore) state.results = [];
 			hint.className = 'text-xs text-red-400';
 			hint.textContent = 'Recherche impossible : ' + (err.message || 'erreur réseau');
 			toast('Recherche impossible : ' + (err.message || 'erreur réseau'), 'error');
 		} finally {
 			btn.disabled = false;
+			if (loadMoreBtn) loadMoreBtn.disabled = false; // NOUVEAU
 		}
 
 		renderResults();
@@ -453,6 +481,15 @@
 				'</div>' +
 			'</article>';
 		}).join('');
+		
+		var paginationBox = $('#pagination-container');
+		if (paginationBox) {
+			if (state.results.length < state.totalResults) {
+				paginationBox.classList.remove('hidden');
+			} else {
+				paginationBox.classList.add('hidden');
+			}
+		}
 	}
 
 	async function addResult(index, existing) {
@@ -897,8 +934,15 @@
 			btn.addEventListener('click', function () { switchTab(btn.dataset.tab); });
 		});
 
-		$('#search-form').addEventListener('submit', runSearch);
-
+		$('#search-form').addEventListener('submit', function(e) { runSearch(e, false); });
+        
+		var loadMoreBtn = $('#search-load-more');
+		if (loadMoreBtn) {
+			loadMoreBtn.addEventListener('click', function(e) {
+				runSearch(e, true);
+			});
+		}
+		
 		$$('#search-presets .preset-chip').forEach(function (chip) {
 			chip.addEventListener('click', function () {
 				var preset = {};
