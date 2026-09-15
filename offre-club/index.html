@@ -190,6 +190,39 @@
                 </div>
             </div>
         </div>
+        
+        <!-- ========================================== -->
+        <!-- NOUVELLE SECTION : PROJETS / BAD EVIAN     -->
+        <!-- ========================================== -->
+        <div id="projects" class="glass-card p-6 lg:p-10 fade-in border-accent-400/30 relative overflow-hidden" style="animation-delay: 0.15s;">
+            <div class="absolute top-0 left-0 w-64 h-64 bg-accent-400/10 blur-3xl rounded-full pointer-events-none"></div>
+            
+            <div class="mb-12 reveal text-center relative z-10">
+                <div class="section-title justify-center border-none mb-2"><i class="ph-duotone ph-laptop"></i> Aperçu du résultat final</div>
+                <p class="text-slate-400 max-w-2xl mx-auto text-sm">
+                    Voici l'interface développée pour le Badminton Club Évian, avec une navigation fluide et pensée pour l'utilisateur.
+                </p>
+            </div>
+            
+            <div id="projects-grid" class="flex flex-col gap-16 relative z-10">
+                <!-- Squelette de chargement affiché avant l'injection JS -->
+                <div class="flex flex-col md:flex-row gap-8 items-stretch min-h-[400px]">
+                     <div class="md:w-1/3 flex flex-col justify-center gap-4">
+                         <div class="h-4 w-24 skeleton rounded"></div>
+                         <div class="h-10 w-3/4 skeleton rounded"></div>
+                         <div class="h-4 w-1/2 skeleton rounded mb-4"></div>
+                         <div class="h-20 w-full skeleton rounded"></div>
+                         <div class="flex gap-2 flex-wrap">
+                             <div class="h-8 w-20 skeleton rounded-lg"></div>
+                             <div class="h-8 w-24 skeleton rounded-lg"></div>
+                             <div class="h-8 w-20 skeleton rounded-lg"></div>
+                         </div>
+                     </div>
+                     <div class="md:w-2/3 h-[300px] md:h-auto skeleton rounded-3xl"></div>
+                </div>
+            </div>
+        </div>
+        <!-- FIN NOUVELLE SECTION PROJETS -->
 
         <!-- Analytics Showcase Section — données réelles Google Search Console -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch fade-in" style="animation-delay: 0.2s;">
@@ -829,7 +862,7 @@
                 <div>
                     <div class="flex flex-wrap items-end justify-between gap-2 mb-2">
                         <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                            <i class="ph-bold ph-plus-circle text-accent-400" aria-hidden="true"></i> Modules club (optionnels)
+                            <i class="ph-bold ph-plus-circle text-accent-400" aria-hidden="true"></i> Modules club (optionnel)
                         </h3>
                         <span class="text-xs font-bold text-accent-400 bg-accent-400/10 border border-accent-400/25 px-3 py-1 rounded-full">
                             dès <span data-price-eur="5" data-price-suffix=" / mois">5 € / mois</span>
@@ -1114,5 +1147,130 @@
     <script src="../assets/js/calendar.js"></script>
     <script src="../assets/js/reveal.js"></script>
     <script src="../assets/js/offre-club.js"></script>
+
+    <!-- JS INJECTÉ POUR LE PROJET BAD EVIAN (Isolation pour éviter les erreurs avec l'accueil) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const projectsData = [
+                {
+                    title: "Badminton Club Évian",
+                    subtitle: "La transformation associative",
+                    story: "En modernisant l’identité du club, j’ai donné une image plus soignée et rassurante, qui inspire confiance aux adhérents du Chablais.",
+                    url: "https://www.badminton-evian.fr", 
+                    type: "Site Club Sportif",
+                    features: [
+                        { icon: "ph-clock-counter-clockwise", text: "Histoire Chablais", desc: "Une navigation temporelle interactive retraçant l'évolution du club en Haute-Savoie." },
+                        { icon: "ph-newspaper", text: "Actualités 74", desc: "Interface d'administration simplifiée pour publier les news du club d'Évian sans compétences techniques." },
+                        { icon: "ph-lightning", text: "Résultats Live", desc: "Connexion API temps réel pour afficher les scores des rencontres en direct." },
+                        { icon: "ph-images", text: "Galerie HD", desc: "Optimisation WebP et Lazy Loading pour un chargement instantané des photos de tournois." },
+                        { icon: "ph-envelope-simple", text: "Contact Asso", desc: "Formulaire sécurisé pour les demandes d'inscription et renseignements." },
+                        { icon: "ph-users", text: "Avis Adhérents", desc: "Intégration automatique des avis Google pour la preuve sociale locale." }
+                    ]
+                }
+            ];
+
+            const projectsGrid = document.getElementById('projects-grid');
+            
+            // Expose globalement les fonctions nécessaires au code injecté
+            window.showProjectDesc = (projectIndex, featureIndex) => {
+                const descBox = document.getElementById(`project-desc-box-${projectIndex}`);
+                const descText = document.getElementById(`project-desc-text-${projectIndex}`);
+                const buttons = document.querySelectorAll(`.proj-btn-${projectIndex}`);
+                
+                // Retirer le style actif de tous les boutons
+                buttons.forEach(btn => {
+                    btn.classList.remove('bg-accent-400/20', 'border-accent-400', 'text-white');
+                    btn.classList.add('bg-dark-900', 'border-white/10', 'text-slate-300');
+                });
+                
+                // Mettre le style actif sur le bouton cliqué
+                const clickedBtn = buttons[featureIndex];
+                clickedBtn.classList.remove('bg-dark-900', 'border-white/10', 'text-slate-300');
+                clickedBtn.classList.add('bg-accent-400/20', 'border-accent-400', 'text-white');
+                
+                // Afficher le texte
+                descText.textContent = clickedBtn.getAttribute('data-desc');
+                descBox.classList.remove('hidden');
+            };
+
+            window.toggleMobilePreview = (container) => {
+                // Pour mobile, ajoute une classe active pour annuler le pointer-events-none sur l'iframe
+                const link = container.querySelector('a');
+                if(window.innerWidth < 768 && link) {
+                    // Ouvre dans un nouvel onglet si on est sur mobile
+                    window.open(link.href, '_blank');
+                }
+            };
+            
+            if (projectsGrid) {
+                // Simulation délai réseau pour laisser voir le Skeleton (effet de chargement)
+                setTimeout(() => {
+                    projectsGrid.innerHTML = projectsData.map((project, index) => {
+                        const featuresHtml = project.features && project.features.length > 0 ? `
+                            <div class="w-full mb-6 mt-4 block relative">
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    ${project.features.map((f, i) => `
+                                        <button onclick="window.showProjectDesc(${index}, ${i})" 
+                                            class="proj-btn-${index} group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 bg-dark-900 text-xs text-slate-300 hover:border-accent-400 hover:text-white hover:bg-white/5 transition-all duration-300 cursor-pointer focus:outline-none"
+                                            data-desc="${f.desc}">
+                                            <i class="ph-bold ${f.icon} text-accent-400 group-hover:scale-110 transition-transform"></i>
+                                            <span>${f.text}</span>
+                                        </button>
+                                    `).join('')}
+                                </div>
+                                <div id="project-desc-box-${index}" class="hidden w-full bg-white/5 border-l-2 border-accent-400 p-4 rounded-xl text-sm text-slate-300 animate-pop-in relative">
+                                    <i class="ph-duotone ph-info text-xl text-accent-400 absolute top-4 right-4 opacity-50"></i>
+                                    <p id="project-desc-text-${index}" class="leading-relaxed pr-8"></p>
+                                </div>
+                            </div>
+                        ` : '';
+
+                        return `
+                        <article class="flex flex-col md:flex-row gap-8 items-stretch min-h-[400px] reveal group" style="transition-delay: ${index * 100}ms">
+                            <div class="md:w-1/3 flex flex-col justify-center order-2 md:order-1 min-w-0">
+                                <div class="mb-2">
+                                    <span class="text-accent-400 text-xs font-bold uppercase tracking-wider mb-2 block">${project.type}</span>
+                                    <h3 class="text-3xl font-display font-bold text-white mb-1">${project.title}</h3>
+                                    <p class="text-slate-500 italic text-sm mb-4">${project.subtitle}</p>
+                                </div>
+                                <p class="text-slate-300 leading-relaxed text-sm mb-2 border-l-2 border-accent-400 pl-4">"${project.story}"</p>
+                                ${featuresHtml}
+                                <a href="${project.url}" target="_blank" class="inline-flex items-center gap-2 text-white font-bold hover:text-accent-400 transition-colors w-fit group/link mt-auto">
+                                    Visiter le site <i class="ph-bold ph-arrow-right group-hover/link:translate-x-1 transition-transform"></i>
+                                </a>
+                            </div>
+                            <div class="md:w-2/3 order-1 md:order-2 relative rounded-3xl overflow-hidden border border-white/10 bg-dark-900 group/frame interactive-hover h-[300px] md:h-auto project-frame-container cursor-pointer" onclick="toggleMobilePreview(this)">
+                                <div class="absolute top-0 left-0 right-0 h-10 bg-dark-950/90 backdrop-blur border-b border-white/5 flex items-center px-4 gap-2 z-20">
+                                    <div class="flex gap-1.5"><div class="w-2.5 h-2.5 rounded-full bg-slate-600"></div><div class="w-2.5 h-2.5 rounded-full bg-slate-600"></div></div>
+                                    <div class="ml-4 text-[10px] text-slate-500 font-mono opacity-50 flex-grow truncate">${project.url.replace('https://', '')}</div>
+                                </div>
+                                <div class="absolute inset-0 top-10 bg-white transition-all duration-700 ease-out grayscale group-hover/frame:grayscale-0 iframe-container project-iframe">
+                                     <iframe src="${project.url}" class="w-[200%] h-[200%] border-0 transform scale-50 origin-top-left pointer-events-none" loading="lazy"></iframe>
+                                    <div class="absolute inset-0 bg-dark-950/10 backdrop-blur-[2px] group-hover/frame:backdrop-blur-0 transition-all duration-500 iframe-overlay"></div>
+                                    <div class="absolute inset-0 flex items-center justify-center opacity-100 group-hover/frame:opacity-0 transition-opacity duration-300 pointer-events-none hint-overlay">
+                                        <span class="px-4 py-2 bg-dark-950/80 rounded-full text-xs text-white backdrop-blur-md border border-white/10 flex items-center gap-2">
+                                            <i class="ph-bold ph-hand-tap md:hidden"></i>
+                                            <span class="md:hidden">Touchez pour aperçu</span>
+                                            <span class="hidden md:inline">Survoler pour aperçu</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <a href="${project.url}" target="_blank" class="absolute inset-0 z-30 md:hidden pointer-events-none"></a>
+                            </div>
+                        </article>
+                        `;
+                    }).join('');
+
+                    // FORCE L'AFFICHAGE (Correction du bug "invisible")
+                    setTimeout(() => {
+                        if (window.NM && NM.reveal) NM.reveal.refresh();
+                        const newProjectElements = document.querySelectorAll('#projects-grid .reveal');
+                        newProjectElements.forEach(el => el.classList.add('active'));
+                    }, 50);
+
+                }, 500);
+            }
+        });
+    </script>
 </body>
 </html>
