@@ -1039,3 +1039,95 @@ que `audit.mjs` (0 anomalie) et une vérification directe de la sortie de
 `quote-builder.js` (via un script Node isolé) pour les 4 cas : pack + Sérénité
 annuel, pack + Sérénité+ annuel, site existant + Sérénité annuel (pas de
 remise), pack + Sérénité mensuel (pas de remise).
+
+---
+
+## 23. Passe de cohérence avant prospection (17/09/2026)
+
+Objectif : un site transmissible aux clubs et prêt pour une cinquantaine
+d'e-mails de prospection.
+
+### Tarifs Sérénité « nets »
+
+La remise combo (formule annuelle + site créé par Nathan) affiche désormais
+des montants ronds : **Sérénité 37,90 € / mois · 454,80 € / an**,
+**Sérénité+ 71,90 € / mois · 862,80 € / an**. Porté par
+`comboDiscount.firstYearMonthlyEur` dans `config.js`, lu en priorité par
+`APP_CONFIG.applyComboToAnnual()` (× 12). `extraMonthsFree: 1` reste la
+description commerciale (« +1 mois offert »). Mensuel inchangé (49,90 / 94,90).
+
+- Cartes Sérénité : phrase « Un mois offert supplémentaire… » supprimée ; à
+  côté de « 2 mois offerts », étiquette **« +1 mois offert »** avec infobulle
+  (site créé par Nathan). Les cartes de `offre-club/index.html` sont une
+  **copie conforme** de celles d'`index.html` (seuls les boutons diffèrent :
+  `data-club-serenity` au lieu de `onclick`).
+
+### Composants partagés ajoutés (`assets/css/app.css`)
+
+- `.nm-tip` / `.nm-tip--start` : infobulle CSS (survol, focus, toucher).
+  Utilisée sur « Livré en … » (délai indicatif) et « +1 mois offert ».
+- `.hover-tile` : même animation de survol que `.interactive-hover`, pour les
+  tuiles (hébergement, comparatif, chiffres de l'offre club…).
+- `.funnel-step.is-current` + `.funnel-step__here` / `__free` : étape 1
+  « Vous êtes ici — gratuit & sans engagement » (accueil et club).
+- `.eq-frame` : bordure animée du « point d'équilibre » (dégradé conique via
+  `@property`), remplace le carré de 2 500 px en rotation.
+- `.total-split` / `.total-legend` : total estimé en deux couleurs (site en
+  accent + Sérénité en bleu), qui passe à la ligne au lieu de déborder.
+- Cartes de packs : sous 1024 px, les hauteurs minimales d'alignement et les
+  lignes fantômes sont neutralisées (alignement ordinateur conservé).
+
+### Bugs corrigés
+
+- **Pastille « Annuel » pas bleue** : le sélecteur de survol était plus
+  spécifique que `.active`. Le survol ne vise plus que la pastille inactive.
+  Le libellé devient une étiquette verre dépoli (fini le jaune clair).
+- **« / mois / mois »** : `data-offer-key` sur une offre récurrente ou
+  `*-monthly` ajoute DÉJÀ « / mois ». Ne jamais écrire « / mois » derrière
+  (ou poser `data-price-suffix=""`).
+- Bail de location : affiché 5 € alors que facturé 10 € (catalogue) → 10 €,
+  même couleur que les autres documents.
+- `prospect/` — **« Analyser le site » sans effet** : l'adresse tapée dans la
+  fiche n'était pas enregistrée, et Gemini renvoyait parfois un JSON tronqué
+  (`data: null` enregistré en silence). Adresse enregistrée automatiquement,
+  réponse vide signalée, et fonction Edge `ai-assist` **v3 déployée** (sortie
+  JSON forcée, 4 096 jetons, repli d'extraction, `ok:false` si illisible).
+- `prospect/` — prix des modules vides (`priceEur` → `monthlyEur`).
+
+### Nouveautés
+
+- **`/aide-domicile/`** : page dédiée (section « Le numérique, sans prise de
+  tête » déplacée depuis l'accueil, où reste un encart + onglet de nav),
+  bouton « Appelez-moi » (nav, en-tête, barre fixe mobile) et **estimation du
+  temps de trajet** (`assets/js/aide-domicile.js`) : Géoplateforme IGN
+  (autocomplétion, géocodage, itinéraire — gratuit, sans clé), repli
+  Nominatim / OSRM, puis estimation à vol d'oiseau. Point de départ : domicile
+  de Nathan, jamais affiché. Ajoutée au `sitemap.xml` et à `config.pages`.
+- **`assets/js/projects-showcase.js`** : aperçu des réalisations partagé
+  accueil / club (le script inline de `offre-club/` est supprimé).
+  `data-projects="bad-evian"` filtre les projets affichés.
+- Module club **« Gestion & suivi des essais »** (5 € / mois).
+- FAQ réécrite en une seule grille alignée (10 questions) : délais par pack,
+  paiement Stripe uniquement (plus de RIB), disponibilité de Nathan.
+- Parrainage : les 50 € sont versés une fois le site du filleul livré et réglé.
+- Largeur harmonisée : `max-w-7xl` sur `/offre-club/`, `/aide-domicile/`, FAQ
+  et contact de l'accueil.
+- Formulaire : packs nommés Éclair / Essentiel / Artisan / Premium ; total en
+  deux montants + « Paiement reconduit chaque année à la date de facturation ».
+
+### Prospection (`prospect/`)
+
+- Pagination complète des résultats (numéros + « Charger la suite ») et tri
+  (date de création, nom, ville, non suivis d'abord) — tri appliqué aux pages
+  chargées (l'annuaire ne trie pas).
+- Tri des prospects (score, date d'ajout, nom, dernier contact, relance).
+- E-mail pré-rempli : modèle **club** (reconversion, adhérent, bureau soulagé,
+  nouveaux adhérents, premier échange gratuit, conseils offerts) ou modèle
+  structure. Bouton « Message pré-rempli ».
+- Blocs « Ce que vous pouvez leur proposer » cliquables : 1 vitrine, 1 Pack
+  Sérénité, modules multiples → réécrit le paragraphe « Concrètement… ».
+- **Passage en rendez-vous** (bouton « RDV » ou statut « Rendez-vous ») :
+  fenêtre de saisie puis insertion dans `nm_leads` (`source: 'prospection'`),
+  donc visible dans `/admin/`.
+- `/admin/` : **suppression d'une demande** (`db.deleteLead`, confirmation
+  `nmConfirm`) ; briefs/documents liés conservés (FK ON DELETE SET NULL).

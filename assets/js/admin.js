@@ -262,6 +262,8 @@
 					'<div class="flex flex-wrap items-center justify-end gap-1.5">' +
 						'<button class="btn-ghost !py-1.5 !px-2.5 !text-[11px]" data-action="lead-convert" data-id="' + lead.id + '" title="Créer ou ouvrir la fiche client à partir de cette demande — c’est depuis la fiche client que le devis et la facture se génèrent.">' +
 							'<i class="ph-bold ph-user-plus" aria-hidden="true"></i> Fiche client</button>' +
+						'<button class="btn-ghost btn-danger !py-1.5 !px-2.5 !text-[11px]" data-action="lead-delete" data-id="' + lead.id + '" title="Supprimer cette demande (saisie erronée)">' +
+							'<i class="ph-bold ph-trash" aria-hidden="true"></i></button>' +
 					'</div>' +
 				'</td>' +
 			'</tr>';
@@ -837,6 +839,21 @@
 			if (action === 'lead-convert') {
 				var lead = state.leads.filter(function (l) { return l.id === id; })[0];
 				if (lead) openClientModal(leadToClient(lead), lead);
+			} else if (action === 'lead-delete') {
+				var leadToDelete = state.leads.filter(function (l) { return l.id === id; })[0];
+				var leadName = leadToDelete
+					? (leadToDelete.organisation || ((leadToDelete.first_name || '') + ' ' + (leadToDelete.last_name || '')).trim() || 'cette demande')
+					: 'cette demande';
+				var okDeleteLead = await window.nmConfirm(
+					'Supprimer définitivement la demande de rendez-vous de ' + leadName + ' ?\n\nÀ utiliser pour une demande mal saisie. Une éventuelle fiche client, ses devis et factures ne sont pas touchés.',
+					{ title: 'Supprimer la demande', okLabel: 'Supprimer', danger: true }
+				);
+				if (!okDeleteLead) return;
+				try {
+					await db.deleteLead(id);
+					toast('Demande supprimée.');
+					await loadAll();
+				} catch (err) { toast('Suppression impossible : ' + (err.message || 'erreur inconnue'), 'error'); }
 			} else if (action === 'client-edit') {
 				openClientModal(state.clients.filter(function (c) { return c.id === id; })[0], null);
 			} else if (action === 'client-quote' || action === 'client-invoice') {

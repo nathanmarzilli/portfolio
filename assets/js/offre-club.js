@@ -540,9 +540,19 @@
 				btn.classList.toggle('active', on && tier === 'simple');
 				btn.classList.toggle('active-plus', on && tier === 'plus');
 			} else {
+				// Mêmes états visuels que les boutons des cartes de l'accueil
+				// (script.js -> updateSerenityCardInServices) : les cartes sont
+				// une copie conforme de celles d'index.html.
+				var isPlus = tier === 'plus';
+				var idle = isPlus ? ['bg-indigo-500/20', 'text-indigo-300'] : ['bg-blue-500/20', 'text-blue-300'];
+				var active = isPlus
+					? ['bg-indigo-500', 'text-white', 'shadow-[0_0_20px_rgba(99,102,241,0.5)]', 'scale-105']
+					: ['bg-blue-500', 'text-white', 'shadow-[0_0_20px_rgba(59,130,246,0.5)]', 'scale-105'];
 				btn.innerHTML = on
-					? '<i class="ph-bold ph-check-circle" aria-hidden="true"></i> <span>Ajouté au devis</span>'
+					? '<span>Ajouté</span> <i class="ph-bold ph-check-circle text-lg animate-pop-in" aria-hidden="true"></i>'
 					: '<span>Ajouter au devis</span> <i class="ph-bold ph-plus" aria-hidden="true"></i>';
+				(on ? idle : active).forEach(function (c) { btn.classList.remove(c); });
+				(on ? active : idle).forEach(function (c) { btn.classList.add(c); });
 				btn.classList.toggle('is-on', on);
 			}
 		});
@@ -570,8 +580,8 @@
 			var lines = [];
 			if (packAmount > 0) {
 				lines.push(state.packCycle === 'annual'
-					? 'Site : ' + fmt(packAmount) + ' pour la saison, réglés en une fois et reconduits chaque année.'
-					: 'Site : ' + fmt(packAmount) + ' / mois, reconductible.');
+					? 'Site : ' + fmt(packAmount) + ' pour la saison, réglés en une fois.'
+					: 'Site : ' + fmt(packAmount) + ' / mois.');
 			}
 			if (modulesMonthly > 0) {
 				var saving = optionsBundleSavingEur();
@@ -591,22 +601,56 @@
 
 		var chip = document.getElementById('club-recurring-chip');
 		var chipText = document.getElementById('club-recurring-text');
+		var plusEl = document.getElementById('club-serenity-amount');
+		var packLegend = document.getElementById('club-pack-legend');
 		if (chip && chipText) {
 			if (state.serenityTier) {
 				var offer = (CFG.offers || {})[state.serenityTier === 'plus' ? 'serenitePlus' : 'serenite'];
 				var combo = serenityComboFor(state.serenityTier, state.serenityCycle);
+				var isAnnual = state.serenityCycle === 'annual';
 				// Montant MENSUEL affiché, montant réellement facturé rappelé.
 				var monthly = serenityMonthlyShownEur(state.serenityTier, state.serenityCycle);
 				var billed = serenityAmountEur(state.serenityTier, state.serenityCycle);
-				var note = combo ? offer.name + ', ' + combo.label : offer.name + ', sans engagement';
-				var billedText = state.serenityCycle === 'annual' ? ' (' + fmt(billed) + ' / an)' : '';
-				chipText.textContent = fmt(monthly) + ' / mois' + billedText + ' · ' + note;
+				var note = combo ? '2 mois offerts +1 mois offert (site créé avec moi)'
+					: (isAnnual ? '2 mois offerts' : 'sans engagement');
+				chipText.textContent = offer.name + ' : ' + fmt(monthly) + ' / mois' +
+					(isAnnual ? ' (' + fmt(billed) + ' / an)' : '') + ' · ' + note;
+				if (plusEl) {
+					plusEl.textContent = '+ ' + fmt(billed) + (isAnnual ? '' : ' / mois');
+					plusEl.classList.remove('hidden');
+				}
+				if (packLegend) {
+					var row = packLegend.parentElement;
+					if (oneShot > 0) {
+						var what = state.requestType === 'existing'
+							? 'Intervention'
+							: 'Site du club' + (optionsMonthlyEur() > 0 ? ' + modules' : '');
+						packLegend.textContent = what + ' : ' + fmt(oneShot) +
+							(state.requestType === 'existing' ? '' : (state.packCycle === 'annual' ? ' / an' : ' / mois'));
+						row.classList.remove('hidden');
+					} else {
+						row.classList.add('hidden');
+					}
+				}
 				chip.classList.remove('hidden');
-				chip.classList.add('inline-flex');
+				chip.classList.add('flex');
 			} else {
+				if (plusEl) { plusEl.classList.add('hidden'); plusEl.textContent = ''; }
 				chip.classList.add('hidden');
-				chip.classList.remove('inline-flex');
+				chip.classList.remove('flex');
 			}
+		}
+
+		// Rappel : reconduction à la date de facturation.
+		if (packNote && (baseAmountEur() > 0 || state.serenityTier)) {
+			var monthlyRenew = (baseAmountEur() > 0 && state.packCycle === 'monthly') ||
+				(!baseAmountEur() && state.serenityTier && state.serenityCycle === 'monthly');
+			var renewText = monthlyRenew
+				? 'Paiement reconduit chaque mois à la date de facturation, sans engagement.'
+				: 'Paiement reconduit chaque année à la date de facturation.';
+			packNote.innerHTML = (packNote.innerHTML ? packNote.innerHTML + '<br>' : '') +
+				'<span class="text-slate-400">' + renewText + '</span>';
+			packNote.classList.remove('hidden');
 		}
 	}
 

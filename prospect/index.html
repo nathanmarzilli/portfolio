@@ -85,6 +85,47 @@
 			border: 1px solid rgb(var(--t-hairline) / var(--t-hairline-alpha));
 			background: rgb(var(--t-dark-900));
 		}
+		dialog.nm-modal {
+			border: none; padding: 0; background: transparent;
+			max-width: min(560px, 94vw); width: 100%;
+		}
+		dialog.nm-modal::backdrop { background: rgb(2 6 23 / .72); backdrop-filter: blur(6px); }
+
+		/* Pagination complète des résultats de recherche */
+		.page-btn {
+			min-width: 2.2rem; height: 2.2rem; padding: 0 .6rem; border-radius: .6rem;
+			display: inline-flex; align-items: center; justify-content: center; gap: .3rem;
+			font-size: .8rem; font-weight: 700; color: rgb(var(--t-slate-400));
+			border: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 2));
+			background: rgb(var(--t-slate-500) / .06); transition: all .2s ease;
+		}
+		.page-btn:hover:not(:disabled) { color: rgb(var(--t-accent-400)); border-color: rgb(var(--t-accent-400) / .45); }
+		.page-btn.is-current { background: rgb(var(--t-accent-400)); color: rgb(var(--t-dark-950)); border-color: rgb(var(--t-accent-400)); }
+		.page-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+		/* Blocs d'offres cliquables (onglet E-mail) */
+		.offer-pick {
+			position: relative; cursor: pointer; text-align: left; width: 100%;
+			transition: border-color .2s ease, background-color .2s ease, transform .2s ease, box-shadow .2s ease;
+		}
+		.offer-pick:hover { border-color: rgb(var(--t-accent-400) / .45); transform: translateY(-2px); }
+		.offer-pick.is-picked {
+			border-color: rgb(var(--t-accent-400)) !important;
+			background: rgb(var(--t-accent-400) / .08);
+			box-shadow: 0 0 0 1px rgb(var(--t-accent-400) / .35);
+		}
+		.offer-pick .pick-check {
+			position: absolute; top: .55rem; right: .55rem;
+			width: 1.25rem; height: 1.25rem; border-radius: 999px;
+			display: flex; align-items: center; justify-content: center;
+			border: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 3));
+			color: transparent; font-size: .7rem;
+		}
+		.offer-pick.is-picked .pick-check { background: rgb(var(--t-accent-400)); border-color: rgb(var(--t-accent-400)); color: rgb(var(--t-dark-950)); }
+		.module-pick { cursor: pointer; border-radius: .6rem; padding: .35rem .5rem; border: 1px solid transparent; transition: all .2s ease; }
+		.module-pick:hover { background: rgb(var(--t-slate-500) / .08); }
+		.module-pick.is-picked { background: rgb(var(--t-accent-400) / .1); border-color: rgb(var(--t-accent-400) / .4); color: rgb(var(--t-white)); }
+
 		.analysis-block h4 {
 			font-size: .68rem; text-transform: uppercase; letter-spacing: .06em;
 			font-weight: 800; margin-bottom: .5rem;
@@ -307,10 +348,25 @@
 					Sans adresse de site, le prospect s'enregistre quand même — l'analyse se fera plus tard.
 				</div>
 
+				<div id="results-toolbar" class="hidden flex flex-wrap items-center justify-between gap-3">
+					<p class="text-xs text-slate-400" id="results-summary"></p>
+					<div class="flex flex-wrap items-center gap-2">
+						<label class="text-[11px] text-slate-500 font-bold uppercase tracking-wider" for="results-sort">Trier</label>
+						<select id="results-sort" class="select-premium !py-2 !text-sm w-56">
+							<option value="created_desc">Date de création (récentes d'abord)</option>
+							<option value="created_asc">Date de création (anciennes d'abord)</option>
+							<option value="name_asc">Nom (A → Z)</option>
+							<option value="city_asc">Ville / code postal</option>
+							<option value="untracked">Pas encore suivis d'abord</option>
+						</select>
+					</div>
+				</div>
+
 				<div id="search-results" class="grid gap-3 md:grid-cols-2">
 					<p class="text-slate-500 italic text-sm">Lancez une recherche pour voir des résultats.</p>
 				</div>
-				<div id="pagination-container" class="mt-4 flex justify-center hidden">
+				<div id="pagination-container" class="mt-4 flex flex-col items-center gap-3 hidden">
+					<nav id="search-pages" class="flex flex-wrap items-center justify-center gap-1.5" aria-label="Pages de résultats"></nav>
 					<button type="button" class="btn-ghost" id="search-load-more">
 						<i class="ph-bold ph-plus" aria-hidden="true"></i> Charger la suite
 					</button>
@@ -325,10 +381,18 @@
 					<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
 						<div>
 							<h2 class="font-display font-bold text-lg text-white">Mes prospects</h2>
-							<p class="text-[11px] text-slate-500 mt-0.5">Classés du plus intéressant au moins intéressant (score décroissant).</p>
+							<p class="text-[11px] text-slate-500 mt-0.5" id="prospects-sort-hint">Classés du plus intéressant au moins intéressant (score décroissant).</p>
 						</div>
 						<div class="flex flex-wrap items-center gap-2">
 							<input type="search" id="prospect-search" class="input-premium !py-2 !text-sm w-44" placeholder="Rechercher…" aria-label="Rechercher un prospect">
+							<select id="prospect-sort" class="select-premium !py-2 !text-sm w-48" aria-label="Trier les prospects">
+								<option value="score_desc">Score (meilleurs d'abord)</option>
+								<option value="added_desc">Date d'ajout (récents d'abord)</option>
+								<option value="added_asc">Date d'ajout (anciens d'abord)</option>
+								<option value="name_asc">Nom (A → Z)</option>
+								<option value="contact_desc">Dernier contact</option>
+								<option value="followup_asc">Prochaine relance</option>
+							</select>
 							<select id="prospect-filter-status" class="select-premium !py-2 !text-sm w-40" aria-label="Filtrer par statut">
 								<option value="">Tous les statuts</option>
 							</select>
@@ -395,6 +459,7 @@
 						</div>
 
 						<div class="flex flex-wrap items-center gap-2">
+							<button type="button" class="btn-ghost" id="email-template" title="Remplace l'objet et le message par le modèle pré-rempli (club ou autre structure)"><i class="ph-bold ph-sparkle" aria-hidden="true"></i> Message pré-rempli</button>
 							<button type="button" class="btn-ghost" id="email-copy"><i class="ph-bold ph-copy" aria-hidden="true"></i> Copier</button>
 							<a class="btn-ghost" id="email-mailto" href="#"><i class="ph-bold ph-arrow-square-out" aria-hidden="true"></i> Ouvrir dans ma messagerie</a>
 							<button type="button" class="btn-ghost" id="email-save"><i class="ph-bold ph-floppy-disk" aria-hidden="true"></i> Enregistrer le brouillon</button>
@@ -410,10 +475,14 @@
 
 				<!-- Rappel des offres — prix rendus par assets/js/i18n.js -->
 				<div class="glass-card p-5 border border-slate-500/15">
-					<h3 class="font-display font-bold text-white mb-1">Ce que vous pouvez leur proposer</h3>
+					<div class="flex flex-wrap items-start justify-between gap-2 mb-1">
+						<h3 class="font-display font-bold text-white">Ce que vous pouvez leur proposer</h3>
+						<button type="button" class="btn-ghost !py-1.5 !px-2.5 !text-[11px]" id="offers-clear"><i class="ph-bold ph-eraser" aria-hidden="true"></i> Tout désélectionner</button>
+					</div>
 					<p class="text-[11px] text-slate-500 mb-4">
-						Cette liste est aussi celle transmise à l'assistant : elle vient de <code class="text-accent-400">config.js</code>,
-						jamais d'un prix recopié à la main.
+						Cliquez pour adapter l'e-mail : <strong class="text-slate-300">une seule vitrine</strong>,
+						<strong class="text-slate-300">un seul Pack Sérénité</strong>, et autant de modules que vous voulez.
+						Le paragraphe « proposition » du message se réécrit tout seul. Tarifs issus de <code class="text-accent-400">config.js</code>.
 					</p>
 					<div id="offers-list" class="grid gap-2 sm:grid-cols-2"></div>
 				</div>
@@ -438,6 +507,39 @@
 			</a>
 		</footer>
 	</div>
+
+	<!-- Passage d'un prospect en demande de rendez-vous -> nm_leads (espace clients) -->
+	<dialog id="rdv-modal" class="nm-modal">
+		<form method="dialog" class="glass-card p-6 space-y-4 bg-dark-900" id="rdv-form">
+			<div class="flex items-center justify-between">
+				<h2 class="font-display font-bold text-lg text-white">Demande de rendez-vous</h2>
+				<button type="button" class="text-slate-500 hover:text-white" data-close-rdv aria-label="Fermer"><i class="ph-bold ph-x text-xl" aria-hidden="true"></i></button>
+			</div>
+			<p class="text-xs text-slate-400 leading-relaxed">
+				Le prospect <strong class="text-white" id="rdv-prospect-name"></strong> passe en « Rendez-vous » et une demande
+				est créée dans l'<a href="../admin/" class="text-accent-400 underline">espace clients</a>, comme une réservation du site.
+				Une demande mal saisie peut être supprimée depuis l'espace clients.
+			</p>
+			<div class="grid sm:grid-cols-2 gap-3">
+				<div><label class="label-premium" for="rdv-firstname">Prénom du contact</label><input class="input-premium" id="rdv-firstname"></div>
+				<div><label class="label-premium" for="rdv-lastname">Nom du contact</label><input class="input-premium" id="rdv-lastname"></div>
+			</div>
+			<div class="grid sm:grid-cols-2 gap-3">
+				<div><label class="label-premium" for="rdv-email">E-mail</label><input type="email" class="input-premium" id="rdv-email"></div>
+				<div><label class="label-premium" for="rdv-phone">Téléphone</label><input class="input-premium" id="rdv-phone"></div>
+			</div>
+			<div class="grid sm:grid-cols-2 gap-3">
+				<div><label class="label-premium" for="rdv-date">Date (facultatif)</label><input type="date" class="input-premium" id="rdv-date"></div>
+				<div><label class="label-premium" for="rdv-time">Heure</label><input type="time" class="input-premium" id="rdv-time" value="18:00"></div>
+			</div>
+			<div><label class="label-premium" for="rdv-message">Note</label><textarea class="textarea-premium !min-h-[80px]" id="rdv-message" rows="3"></textarea></div>
+			<p id="rdv-error" class="hidden text-xs font-bold text-red-400"></p>
+			<div class="flex justify-end gap-2">
+				<button type="button" class="btn-ghost" data-close-rdv>Annuler</button>
+				<button type="submit" class="btn-primary" id="rdv-submit"><i class="ph-bold ph-calendar-plus" aria-hidden="true"></i> Créer la demande</button>
+			</div>
+		</form>
+	</dialog>
 
 	<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 glass-card px-5 py-3 flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300 z-[80] bg-dark-900">
 		<i id="toast-icon" class="ph-fill ph-check-circle text-accent-400 text-xl" aria-hidden="true"></i>

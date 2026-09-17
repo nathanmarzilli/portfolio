@@ -232,7 +232,13 @@
 				// annuelle. En mensuel, le tarif est toujours plein (49,90 €).
 				// (Avant septembre 2026 : -50 % la 1ère année — jugé bien
 				// trop généreux par Nathan, remplacé par ce mois offert.)
-				comboDiscount: { extraMonthsFree: 1, scope: 'firstYear', cycles: ['annual'], label: 'un mois offert supplémentaire, formule annuelle, si créé avec moi' }
+				// `firstYearMonthlyEur` (depuis le 17/09/2026) : Nathan a demandé des
+				// montants « nets » plutôt que le calcul exact au centime
+				// (37,43 € -> 37,90 € / mois, soit 454,80 € la 1ère année).
+				// Quand ce champ est présent, applyComboToAnnual() l'utilise
+				// en priorité (× 12) ; `extraMonthsFree` reste la description
+				// commerciale de l'avantage (« +1 mois offert »).
+				comboDiscount: { extraMonthsFree: 1, firstYearMonthlyEur: 37.90, scope: 'firstYear', cycles: ['annual'], label: '+1 mois offert la 1ère année (site créé avec moi)' }
 			},
 			serenitePlus: {
 				key: 'serenitePlus',
@@ -249,7 +255,8 @@
 				// (Avant septembre 2026 : -10 € / mois « à vie » — jugé bien
 				// trop généreux par Nathan, remplacé par ce mois offert, pour
 				// un traitement identique à Sérénité.)
-				comboDiscount: { extraMonthsFree: 1, scope: 'firstYear', cycles: ['annual'], label: 'un mois offert supplémentaire, formule annuelle, si créé avec moi' }
+				// 71,18 € -> 71,90 € / mois (862,80 € la 1ère année), voir Sérénité.
+				comboDiscount: { extraMonthsFree: 1, firstYearMonthlyEur: 71.90, scope: 'firstYear', cycles: ['annual'], label: '+1 mois offert la 1ère année (site créé avec moi)' }
 			}
 		},
 
@@ -306,7 +313,9 @@
 					{ src: 'images-tournoi/04-participants.png', alt: 'Participants et classements en temps réel', caption: 'Participants et classements en temps réel' }
 				]
 			},
-			{ key: 'adhesions', label: 'Inscriptions & adhésions en ligne', monthlyEur: 5, icon: 'ph-user-plus', desc: 'Formulaire d’adhésion, liste des membres et relances de renouvellement.' }
+			{ key: 'adhesions', label: 'Inscriptions & adhésions en ligne', monthlyEur: 5, icon: 'ph-user-plus', desc: 'Formulaire d’adhésion, liste des membres et relances de renouvellement.' },
+			// Ajouté le 17/09/2026 à la demande de Nathan.
+			{ key: 'essais', label: 'Gestion & suivi des essais', monthlyEur: 5, icon: 'ph-hand-waving', desc: 'Demandes de séance d’essai centralisées, créneau proposé, relance et suivi jusqu’à l’adhésion.' }
 		],
 
 		// --------------------------------------------------------
@@ -430,6 +439,7 @@
 			services: '#services',
 			contact: '#contact',
 			club: 'offre-club/',
+			aideDomicile: 'aide-domicile/',
 			kickoff: 'kickoff/',
 			merci: 'merci/',
 			admin: 'admin/',
@@ -591,6 +601,8 @@
 	//                             l'année (ancienne forme Sérénité+)
 	APP_CONFIG.applyComboToAnnual = function (annualEur, combo, monthlyRefEur) {
 		if (!annualEur || !combo) return annualEur;
+		// Montant mensuel « net » fixé à la main pour la 1ère année (prioritaire).
+		if (combo.firstYearMonthlyEur) return Math.round(combo.firstYearMonthlyEur * 12 * 100) / 100;
 		if (combo.extraMonthsFree) {
 			var ref = (monthlyRefEur != null) ? monthlyRefEur : (annualEur / 10);
 			return Math.max(0, Math.round((annualEur - ref * combo.extraMonthsFree) * 100) / 100);

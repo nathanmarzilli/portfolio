@@ -58,7 +58,7 @@ function clamp(value: unknown, max: number): string {
   return String(value ?? "").slice(0, max);
 }
 
-async function askGemini(key: string, prompt: string, maxTokens = 700) {
+async function askGemini(key: string, prompt: string, maxTokens = 700, jsonMode = false) {
   let lastError = "";
   for (const model of MODELS) {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
@@ -69,7 +69,13 @@ async function askGemini(key: string, prompt: string, maxTokens = 700) {
         headers: { "Content-Type": "application/json", "x-goog-api-key": key },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.7, maxOutputTokens: maxTokens },
+          // jsonMode (prospection) : sortie JSON forcée. Sans ça, le modèle
+          // ajoutait parfois du texte autour ou était coupé en plein JSON
+          // (budget de jetons consommé par la réflexion) -> analyse vide
+          // côté page : « rien ne se passe » (bug signalé le 17/09/2026).
+          generationConfig: jsonMode
+            ? { temperature: 0.6, maxOutputTokens: maxTokens, responseMimeType: "application/json" }
+            : { temperature: 0.7, maxOutputTokens: maxTokens },
         }),
       });
     } catch (e) {
@@ -163,7 +169,7 @@ ${clamp(p?.pageText, 6000) || "(contenu non récupérable)"}
 </contenu_du_site>
 
 Offres disponibles (n'en recommande qu'UNE, la plus adaptée) :
-${clamp(p?.offers, 1500)}
+${clamp(p?.offers, 5000)}
 
 Réponds STRICTEMENT en JSON valide, sans texte autour, sans bloc de code, avec exactement ces clés :
 {
@@ -173,7 +179,7 @@ Réponds STRICTEMENT en JSON valide, sans texte autour, sans bloc de code, avec 
   "offre": "<le nom exact de l'offre recommandée, telle qu'écrite dans la liste ci-dessus>",
   "pourquoi_cette_offre": "<une phrase expliquant ce choix>",
   "email_objet": "<objet d'e-mail court, concret, sans majuscules criardes ni point d'exclamation>",
-  "email_corps": "<e-mail de 90 à 140 mots, tutoiement exclu : vouvoiement. Il doit citer UN détail précis et vérifiable du site pour montrer qu'il a été réellement regardé, nommer un bénéfice concret pour la structure, et se terminer par une question simple proposant un échange. Pas de superlatifs, pas de promesse de résultat chiffré, pas de pression commerciale. Signé : Nathan.>"
+  "email_corps": "<e-mail de 120 à 180 mots, vouvoiement. Ton humain, chaleureux et empathique, jamais insistant. Il doit citer UN détail précis et vérifiable du site pour montrer qu'il a été réellement regardé. Pour un club sportif ou une association : dire que Nathan s'est reconverti pour aider les clubs à soigner leur image et à dynamiser leurs inscriptions, qu'il est lui-même adhérent d'un club et qu'il adore ça ; que son but est de faire vivre le club, de simplifier la vie du bureau et d'amener de nouveaux adhérents pour que le site soit gagnant-gagnant ; que le premier échange est gratuit et sans engagement, et que le bureau peut lui poser n'importe quelle question sur le club, il répond et conseille volontiers gratuitement. Terminer par une question simple proposant un échange. Pas de superlatifs, pas de promesse de résultat chiffré, pas de pression commerciale. Signé : Nathan Marzilli — Clic à l'aide.>"
 }`;
 }
 
@@ -227,13 +233,13 @@ Deno.serve(async (req: Request) => {
     maxTokens = 500;
   } else if (task === "prospect-analysis") {
     prompt = prospectPrompt(body?.payload ?? {});
-    maxTokens = 1200;
+    maxTokens = 4096;
   } else {
     return json({ ok: false, error: "Tâche inconnue." }, 400);
   }
 
   try {
-    const { text, model } = await askGemini(key, prompt, maxTokens);
+    const { text, model } = await askGemini(key, prompt, maxTokens, task === "prospect-analysis");
 
     // Pour la prospection, on renvoie du JSON déjà décodé si possible.
     if (task === "prospect-analysis") {
@@ -241,7 +247,16 @@ Deno.serve(async (req: Request) => {
       try {
         return json({ ok: true, model, data: JSON.parse(cleaned) });
       } catch {
-        return json({ ok: true, model, data: null, text: cleaned });
+        // Repli : on isole le premier objet { … } de la réponse.
+        const start = cleaned.indexOf("{");
+        const end = cleaned.lastIndexOf("}");
+        if (start !== -1 && end > start) {
+          try {
+            return json({ ok: true, model, data: JSON.parse(cleaned.slice(start, end + 1)) });
+          } catch { /* on tombe sur la réponse explicite ci-dessous */ }
+        }
+        // Réponse inexploitable : on le DIT au lieu de renvoyer ok:true vide.
+        return json({ ok: false, code: "unparsable", error: "Réponse de l'assistant illisible (JSON incomplet). Relancez l'analyse.", text: cleaned.slice(0, 2000) }, 200);
       }
     }
 

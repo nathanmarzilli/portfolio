@@ -246,8 +246,15 @@
 	padding: 9px 16px; border-radius: 9999px;
 	cursor: pointer; transition: all .2s ease; white-space: nowrap;
 }
-.billing-cycle-pill:hover:not(:disabled) { color: rgb(var(--t-slate-200)); background: rgb(var(--t-slate-500) / .12); }
-.billing-cycle-pill.active {
+/* ⚠️ Bug corrigé le 17/09/2026 : l'ancien sélecteur de survol
+   `.billing-cycle-pill:hover:not(:disabled)` était PLUS spécifique que
+   `.active`. Juste après un clic, la souris étant encore sur la pastille,
+   le gris du survol écrasait le bleu : « la couleur bleue n'apparaît pas
+   forcément ». Le survol ne concerne plus que la pastille inactive. */
+.billing-cycle-pill:not(.active):not(:disabled):hover { color: rgb(var(--t-slate-200)); background: rgb(var(--t-slate-500) / .12); }
+.billing-cycle-pill.active,
+.billing-cycle-pill.active:hover,
+.billing-cycle-pill.active:focus {
 	background: rgb(var(--t-blue-500)); color: #fff;
 	box-shadow: 0 4px 14px rgb(var(--t-blue-500) / .35);
 }
@@ -258,8 +265,20 @@
    Le vert du thème (rgb 5 150 105 en clair) devient illisible sur ce bleu :
    on bascule donc sur un jaune clair dès que la pastille est active.
    Ne PAS remettre `text-emerald-400` en dur dans le HTML. */
-.billing-cycle-pill__hint { color: rgb(var(--t-emerald-400)); }
-.billing-cycle-pill.active .billing-cycle-pill__hint { color: #ffe08a; }
+/* Mise à jour 17/09/2026 : le jaune clair sur bleu jugé peu élégant.
+   Le libellé devient une petite étiquette : verte au repos, blanche
+   translucide (verre dépoli) quand la pastille est active. */
+.billing-cycle-pill__hint {
+	display: inline-flex; align-items: center;
+	margin-left: .35rem !important; padding: 3px 7px; border-radius: 9999px;
+	font-size: 10px; font-weight: 700; letter-spacing: .01em;
+	color: rgb(var(--t-emerald-400)); background: rgb(var(--t-emerald-400) / .12);
+	transition: background-color .2s ease, color .2s ease;
+}
+.billing-cycle-pill.active .billing-cycle-pill__hint {
+	color: #fff; background: rgb(255 255 255 / .2);
+	box-shadow: inset 0 0 0 1px rgb(255 255 255 / .28);
+}
 
 /* --- Cartes de suivi sélectionnées --- */
 .serenity-selected-card {
@@ -419,3 +438,133 @@
 	position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
 	overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
+
+
+/* ============================================================
+   AJOUTS DU 17/09/2026
+   ============================================================ */
+
+/* ---------- Infobulle design (délais indicatifs, mois offert…) ----------
+   Usage : <span class="nm-tip" tabindex="0" data-tip="Texte">…</span>
+   Survol à la souris, focus au clavier, toucher sur mobile (tabindex).
+   `.nm-tip--start` ancre la bulle à gauche (élément collé au bord gauche). */
+.nm-tip { position: relative; display: inline-flex; align-items: center; gap: .3rem; cursor: help; outline: none; }
+.nm-tip__icon { opacity: .7; font-size: 12px; transition: opacity .2s ease; }
+.nm-tip:hover .nm-tip__icon, .nm-tip:focus .nm-tip__icon { opacity: 1; }
+.nm-tip::after {
+	content: attr(data-tip);
+	position: absolute; left: 50%; bottom: calc(100% + 10px);
+	width: max-content; max-width: min(260px, 78vw);
+	padding: 10px 12px; border-radius: 12px;
+	background: rgb(var(--t-dark-950) / .97); color: rgb(var(--t-slate-200));
+	border: 1px solid rgb(var(--t-accent-400) / .25);
+	box-shadow: var(--t-elevation), 0 10px 30px rgb(0 0 0 / .18);
+	font-size: 11.5px; font-weight: 500; line-height: 1.45; letter-spacing: normal;
+	text-transform: none; text-align: left; white-space: normal;
+	opacity: 0; pointer-events: none; z-index: 60;
+	transform: translate(-50%, 6px); transition: opacity .2s ease, transform .2s ease;
+	-webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+.nm-tip::before {
+	content: ""; position: absolute; left: 50%; bottom: calc(100% + 4px);
+	width: 10px; height: 10px; transform: translate(-50%, 6px) rotate(45deg);
+	background: rgb(var(--t-dark-950) / .97);
+	border-right: 1px solid rgb(var(--t-accent-400) / .25);
+	border-bottom: 1px solid rgb(var(--t-accent-400) / .25);
+	opacity: 0; pointer-events: none; z-index: 61; transition: opacity .2s ease, transform .2s ease;
+}
+.nm-tip--start::after { left: -6px; transform: translate(0, 6px); }
+.nm-tip--start::before { left: 12px; }
+.nm-tip:hover::after, .nm-tip:focus::after, .nm-tip:focus-within::after { opacity: 1; transform: translate(-50%, 0); }
+.nm-tip:hover::before, .nm-tip:focus::before, .nm-tip:focus-within::before { opacity: 1; transform: translate(-50%, 0) rotate(45deg); }
+.nm-tip--start:hover::after, .nm-tip--start:focus::after, .nm-tip--start:focus-within::after { transform: translate(0, 0); }
+
+/* Étiquette « +1 mois offert » à côté de « 2 mois offerts » */
+.gift-extra {
+	display: inline-flex; align-items: center; gap: 4px;
+	padding: 2px 8px; border-radius: 9999px;
+	font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .02em;
+	color: rgb(var(--t-accent-400)); background: rgb(var(--t-accent-400) / .1);
+	border: 1px dashed rgb(var(--t-accent-400) / .45);
+}
+
+/* ---------- Cartes de packs : alignement ordinateur / compact mobile ----------
+   Sur ordinateur (4 colonnes), les hauteurs minimales et les lignes
+   « fantômes » alignent les rubriques d'une carte à l'autre (réglage de
+   Nathan). En dessous de 1024 px, les cartes ne sont plus côte à côte :
+   ces réservations d'espace créaient de grands vides. On les neutralise. */
+@media (max-width: 1023.98px) {
+	#services .pricing-card [class*="min-h-"] { min-height: 0 !important; }
+	#services .pricing-card [aria-hidden="true"].invisible { display: none !important; }
+	#services .pricing-card > .relative > div { margin-bottom: .5rem; }
+	#services .pricing-card ul { margin-bottom: 1.25rem; }
+	#services .pricing-card ul.space-y-3 > :not([hidden]) ~ :not([hidden]) { margin-top: .5rem; }
+	#services .pricing-card { padding: 1.5rem; }
+}
+
+/* ---------- Tuiles : même animation au survol partout ---------- */
+.hover-tile { transition: transform .3s cubic-bezier(.4, 0, .2, 1), box-shadow .3s ease, border-color .3s ease, background-color .3s ease; }
+.hover-tile:hover {
+	transform: translateY(-3px) scale(1.02);
+	box-shadow: var(--t-elevation);
+	border-color: rgb(var(--t-accent-400) / .3);
+}
+.hover-tile i { transition: transform .3s ease; }
+.hover-tile:hover i { transform: scale(1.12); }
+@media (prefers-reduced-motion: reduce) {
+	.hover-tile, .interactive-hover { transition: none; }
+	.hover-tile:hover, .interactive-hover:hover { transform: none; }
+}
+
+/* ---------- Étape en cours d'un parcours ---------- */
+.funnel-step.is-current {
+	border-color: rgb(var(--t-accent-400) / .55) !important;
+	background: linear-gradient(135deg, rgb(var(--t-accent-400) / .10), transparent 70%);
+	box-shadow: 0 0 0 1px rgb(var(--t-accent-400) / .15), 0 12px 30px rgb(var(--t-accent-400) / .10);
+}
+.funnel-step.is-current .funnel-step__num { background: rgb(var(--t-accent-400)); color: rgb(var(--t-dark-950)); }
+.funnel-step__here {
+	display: inline-flex; align-items: center; gap: 4px;
+	font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em;
+	color: rgb(var(--t-accent-400)); background: rgb(var(--t-accent-400) / .12);
+	border-radius: 9999px; padding: 2px 8px; margin-bottom: 4px;
+}
+.funnel-step__free {
+	display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;
+	font-size: 10px; font-weight: 700; color: rgb(var(--t-emerald-400));
+}
+
+/* ---------- Bordure animée « point d'équilibre » ----------
+   Remplace l'ancien carré de 2 500 px en rotation (tracé irrégulier dans
+   les angles, bord qui « saute ») par un dégradé conique animé via une
+   propriété CSS enregistrée : vitesse constante, épaisseur régulière. */
+@property --eq-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.eq-frame {
+	position: relative; border-radius: 1.25rem; padding: 1.5px;
+	background: conic-gradient(from var(--eq-angle),
+		rgb(var(--t-emerald-400) / .18) 0deg,
+		rgb(var(--t-emerald-400) / .18) 220deg,
+		rgb(var(--t-emerald-400) / .9) 300deg,
+		rgb(var(--t-accent-400)) 330deg,
+		rgb(var(--t-emerald-400) / .18) 360deg);
+	box-shadow: 0 0 28px rgb(var(--t-emerald-400) / .12);
+	animation: eq-spin 6s linear infinite;
+}
+.eq-frame > .eq-frame__inner { border-radius: calc(1.25rem - 1.5px); }
+@keyframes eq-spin { to { --eq-angle: 360deg; } }
+@media (prefers-reduced-motion: reduce) { .eq-frame { animation: none; } }
+
+/* ---------- Aperçu des réalisations (partagé accueil / club) ---------- */
+.project-frame-container.mobile-active .iframe-overlay { opacity: 0 !important; pointer-events: none; }
+.project-frame-container.mobile-active .project-iframe iframe { pointer-events: auto !important; }
+.project-frame-container.mobile-active .project-iframe { filter: grayscale(0) !important; }
+.project-frame-container.mobile-active .hint-overlay { display: none !important; }
+.skeleton { background: rgb(var(--t-slate-500) / 0.10); animation: pulse-skeleton 1.5s infinite ease-in-out; }
+@keyframes pulse-skeleton { 0% { opacity: 0.4; } 50% { opacity: 0.8; } 100% { opacity: 0.4; } }
+
+/* ---------- Total estimé : deux montants, deux couleurs ---------- */
+.total-split { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; min-width: 0; }
+.total-split__plus { font-size: 20px; line-height: 1; font-weight: 700; color: rgb(var(--t-blue-400)); letter-spacing: -.01em; }
+.total-legend { display: flex; flex-direction: column; gap: 4px; font-size: 11px; line-height: 1.35; color: rgb(var(--t-slate-400)); }
+.total-legend__row { display: flex; align-items: flex-start; gap: 6px; min-width: 0; overflow-wrap: anywhere; }
+.total-legend__dot { width: 8px; height: 8px; border-radius: 9999px; margin-top: 4px; flex-shrink: 0; }

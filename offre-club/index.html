@@ -57,7 +57,7 @@
 
     <!-- Navigation -->
     <nav class="w-full nav-glass sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between gap-3">
             <a href="../" class="flex items-center gap-3 group shrink-0" title="Retour à l’accueil">
                 <span class="w-9 h-9 rounded-full overflow-hidden border border-slate-500/20 group-hover:border-accent-400 transition-colors block shrink-0">
                     <img src="../images/profile-96.jpg" srcset="../images/profile-96.jpg 1x, ../images/profile-192.jpg 2x"
@@ -68,10 +68,10 @@
                     <span class="block text-[10px] text-accent-400 font-bold uppercase tracking-wider">Clubs &amp; associations</span>
                 </span>
             </a>
-            <div class="flex items-center gap-2">
-                <div data-lang-select></div>
+            <div class="flex items-center gap-2 shrink-0">
+                <div data-lang-select class="hidden sm:block"></div>
                 <div data-theme-toggle></div>
-                <a href="../" class="text-xs font-bold text-slate-400 hover:text-white flex items-center gap-2 border border-slate-500/20 px-3 py-2 rounded-lg bg-slate-500/5 transition-all whitespace-nowrap">
+                <a href="../" class="text-xs font-bold text-slate-400 hover:text-white hidden sm:flex items-center gap-2 border border-slate-500/20 px-3 py-2 rounded-lg bg-slate-500/5 transition-all whitespace-nowrap">
                     <i class="ph-bold ph-arrow-left" aria-hidden="true"></i> <span class="hidden sm:inline" data-i18n="navBackHome">Retour à l’accueil</span>
                 </a>
                 <a href="#reserver" class="px-4 py-2 rounded-full bg-accent-400 text-dark-950 font-bold text-[11px] uppercase tracking-wider whitespace-nowrap hover:brightness-110 transition-all">
@@ -82,7 +82,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-4 lg:px-8 pt-12 relative z-40 space-y-16">
+    <main class="max-w-7xl mx-auto px-4 md:px-6 pt-12 relative z-40 space-y-16">
         
         <!-- Hero Section -->
         <div class="text-center space-y-4 fade-in">
@@ -98,13 +98,11 @@
         </div>
 		
 		<!-- Banner Point d'Équilibre (Haut de page avec bordure animée) -->
-        <div class="relative w-full max-w-4xl mx-auto rounded-[1.25rem] overflow-hidden p-[2px] shadow-[0_0_25px_rgba(16,185,129,0.15)] group">
-            
-            <!-- Le faisceau lumineux rotatif (Affûté à 10% pour un effet de tracé unique) -->
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[2500px] h-[2500px] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_90%,#10b981_100%)]"></div>
+        <!-- Bordure animée : dégradé conique régulier (.eq-frame, assets/css/app.css) -->
+        <div class="eq-frame w-full max-w-4xl mx-auto group">
             
             <!-- Contenu principal de la carte -->
-            <div class="glass-card relative z-10 w-full h-full p-6 sm:p-8 rounded-[calc(1.25rem-2px)] !border-0 flex flex-col gap-6 bg-slate-50/95 dark:bg-[#0b1120]/95 backdrop-blur-xl">
+            <div class="eq-frame__inner glass-card relative z-10 w-full h-full p-6 sm:p-8 !border-0 flex flex-col gap-6 bg-dark-950 overflow-hidden">
                 
                 <!-- Lueur verte interne -->
                 <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-3xl rounded-full pointer-events-none"></div>
@@ -182,7 +180,7 @@
             <div class="glass-card p-6 border border-emerald-500/30 flex flex-col justify-between interactive-hover">
                 <div class="flex items-center justify-between text-emerald-400 mb-4">
                     <i class="ph-duotone ph-chat-circle-dots text-3xl"></i>
-                    <span class="text-xs font-mono uppercase bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">Inquiries</span>
+                    <span class="text-xs font-mono uppercase bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">Demandes</span>
                 </div>
                 <div>
                     <div class="text-3xl sm:text-4xl font-display font-bold text-white mb-1">3 à 5 / mois</div>
@@ -204,7 +202,7 @@
                 </p>
             </div>
             
-            <div id="projects-grid" class="flex flex-col gap-16 relative z-10">
+            <div id="projects-grid" class="flex flex-col gap-16 relative z-10" data-projects="bad-evian" data-projects-divider="off">
                 <!-- Squelette de chargement affiché avant l'injection JS -->
                 <div class="flex flex-col md:flex-row gap-8 items-stretch min-h-[400px]">
                      <div class="md:w-1/3 flex flex-col justify-center gap-4">
@@ -360,7 +358,7 @@
                     </div>
 
                     <!-- Keyword 3: Generic -->
-                    <div class="p-5 rounded-2xl bg-dark-950/50 border border-white/10 space-y-3">
+                    <div class="hover-tile p-5 rounded-2xl bg-dark-950/50 border border-white/10 space-y-3">
                         <div class="flex items-baseline justify-between">
                             <h4 class="font-display font-bold text-white text-base">Termes génériques</h4>
                             <span class="text-xs bg-indigo-500/20 text-indigo-400 px-2.5 py-1 rounded-full font-bold">📊 Conquête</span>
@@ -380,7 +378,7 @@
                             </div>
                         </div>
                         <div class="pt-2 border-t border-white/5">
-                            <p class="text-[11px] text-slate-400">Prospects en phase de découverte. Demande de l'optimisation SEO, mais fort potentiel de croissance.</p>
+                            <p class="text-[11px] text-slate-400">Prospects en phase de découverte. Demande un vrai travail de référencement, mais fort potentiel de croissance.</p>
                         </div>
                     </div>
                 </div>
@@ -391,7 +389,7 @@
                         <i class="ph-bold ph-lightbulb text-accent-400"></i> Stratégie pour maximiser votre trafic
                     </h4>
                     <p class="text-sm text-slate-300">
-                        Nous construisons votre site pour dominer les 2-3 requêtes clés où votre intention locale est la plus forte. Résultat : <strong>la majorité de vos prospects vous trouve directement</strong>, sans dépenser en Google Ads. Plus vous avez une audience locale concentrée, plus vos CTR seront forts.
+                        Nous construisons votre site pour dominer les 2-3 requêtes clés où votre intention locale est la plus forte. Résultat : <strong>la majorité de vos futurs adhérents vous trouve directement</strong>, sans dépenser en Google Ads.avez une audience locale concentrée, plus vos CTR seront forts.
                     </p>
                 </div>
             </div>
@@ -408,7 +406,7 @@
                     <div class="space-y-4">
                         <h4 class="font-display font-bold text-white mb-4">Dynamique de croissance (sept. 2026)</h4>
 
-                        <div class="flex items-center gap-4 p-3 rounded-xl bg-dark-950/60 border border-white/5">
+                        <div class="hover-tile flex items-center gap-4 p-3 rounded-xl bg-dark-950/60 border border-white/5">
                             <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-xs shrink-0">
                                 1️⃣
                             </div>
@@ -418,7 +416,7 @@
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-4 p-3 rounded-xl bg-dark-950/60 border border-white/5">
+                        <div class="hover-tile flex items-center gap-4 p-3 rounded-xl bg-dark-950/60 border border-white/5">
                             <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-xs shrink-0">
                                 2️⃣
                             </div>
@@ -428,7 +426,7 @@
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-4 p-3 rounded-xl bg-dark-950/60 border border-white/5 border-emerald-500/50 bg-emerald-500/5">
+                        <div class="hover-tile flex items-center gap-4 p-3 rounded-xl bg-dark-950/60 border border-white/5 border-emerald-500/50 bg-emerald-500/5">
                             <div class="w-8 h-8 rounded-lg bg-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-xs shrink-0">
                                 🔥
                             </div>
@@ -438,7 +436,7 @@
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-4 p-3 rounded-xl bg-dark-950/60 border border-white/5">
+                        <div class="hover-tile flex items-center gap-4 p-3 rounded-xl bg-dark-950/60 border border-white/5">
                             <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-xs shrink-0">
                                 5️⃣
                             </div>
@@ -448,7 +446,7 @@
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-4 p-3 rounded-xl bg-dark-950/60 border border-white/5">
+                        <div class="hover-tile flex items-center gap-4 p-3 rounded-xl bg-dark-950/60 border border-white/5">
                             <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-xs shrink-0">
                                 6️⃣
                             </div>
@@ -463,15 +461,15 @@
                     <div class="space-y-4">
                         <h4 class="font-display font-bold text-white mb-4">Performance globale — Sept. 2026</h4>
 
-                        <div class="p-4 rounded-xl bg-dark-950/60 border border-emerald-500/30">
+                        <div class="hover-tile p-4 rounded-xl bg-dark-950/60 border border-emerald-500/30">
                             <div class="flex justify-between items-center mb-2">
-                                <span class="text-slate-400 text-sm">Total clics septembre (7-7)</span>
+                                <span class="text-slate-400 text-sm">Total clics du 1er au 7 septembre</span>
                                 <span class="text-emerald-400 font-display font-bold text-xl">73</span>
                             </div>
                             <p class="text-[11px] text-slate-500">Soit 13% de <strong>tous les clics</strong> de votre site sur les 6 mois — en seulement 7 jours !</p>
                         </div>
 
-                        <div class="p-4 rounded-xl bg-dark-950/60 border border-emerald-500/30">
+                        <div class="hover-tile p-4 rounded-xl bg-dark-950/60 border border-emerald-500/30">
                             <div class="flex justify-between items-center mb-2">
                                 <span class="text-slate-400 text-sm">Impressions cumulées</span>
                                 <span class="text-white font-display font-bold text-xl">653</span>
@@ -479,7 +477,7 @@
                             <p class="text-[11px] text-slate-500">Une visibilité massive auprès de votre audience locale pendant la période critique d'inscription.</p>
                         </div>
 
-                        <div class="p-4 rounded-xl bg-accent-400/10 border border-accent-400/30">
+                        <div class="hover-tile p-4 rounded-xl bg-accent-400/10 border border-accent-400/30">
                             <div class="flex justify-between items-center mb-2">
                                 <span class="text-slate-200 text-sm font-bold">CTR moyen septembre</span>
                                 <span class="text-accent-400 font-display font-bold text-xl">12,5%</span>
@@ -489,7 +487,7 @@
 
                         <div class="mt-4 p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/20 flex gap-3">
                             <i class="ph-bold ph-check text-emerald-400 shrink-0 mt-0.5"></i>
-                            <p class="text-xs text-slate-300"><strong>Conclusion :</strong> Septembre est votre "fenêtre d'or". Chaque jour, vous attirez des prospects qualifiés. Une bonne base de connaissance + une UX fluide = conversions massives.</p>
+                            <p class="text-xs text-slate-300"><strong>Conclusion :</strong> Septembre est votre "fenêtre d'or". Chaque jour, vous attirez des prospects qualifiés. Des infos claires et un parcours d'inscription simple transforment ces visites en adhésions.</p>
                         </div>
                     </div>
                 </div>
@@ -617,7 +615,7 @@
                         <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 font-bold">
                             <i class="ph-bold ph-users"></i>
                         </div>
-                        <h4 class="font-display font-bold text-white">Zero budget marketing à dépenser</h4>
+                        <h4 class="font-display font-bold text-white">Zéro budget publicitaire</h4>
                     </div>
                     <p class="text-xs text-slate-400">
                         Pas besoin de Google Ads ou de campagnes payantes. Votre site bien optimisé génère du trafic organique. Budget maîtrisé = liberté budgétaire pour le club.
@@ -629,10 +627,10 @@
                         <div class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 font-bold">
                             <i class="ph-bold ph-lock"></i>
                         </div>
-                        <h4 class="font-display font-bold text-white">Indépendance numérique totale</h4>
+                        <h4 class="font-display font-bold text-white">Pas de plateforme imposée</h4>
                     </div>
                     <p class="text-xs text-slate-400">
-                        <strong>Vous êtes propriétaire de votre site</strong>. Pas d'esclavage à une plateforme. Vous pouvez tout gérer, le transférer, l'abandonner sans friction.
+                        <strong>Les contenus restent ceux du club</strong> : textes, photos, identité. Pas de plateforme qui vous enferme, et un seul interlocuteur qui connaît votre site sur le bout des doigts.
                     </p>
                 </div>
 
@@ -656,7 +654,7 @@
                         <h4 class="font-display font-bold text-white">Un partenaire, pas un prestataire</h4>
                     </div>
                     <p class="text-xs text-slate-400">
-                        Vous avez besoin d'aide pour publier une actualité ? D'une modification ? Une intervention technique par mois est incluse. Vous n'êtes jamais seul.
+                        Besoin d'aide pour publier une actualité ou d'une modification ? Avec le Pack Sérénité, une intervention par mois est incluse. Et une question sur la vie du club en ligne ? Posez-la, vous n'êtes jamais seul.
                     </p>
                 </div>
             </div>
@@ -671,7 +669,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5" data-stagger="90">
                 <div class="p-5 rounded-2xl bg-dark-950/50 border border-slate-500/15 interactive-hover">
                     <div class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">L'investissement</div>
-                    <div class="text-3xl font-display font-bold text-white mb-1"><span data-offer-key="essentiel-monthly">66 €</span> <span class="text-base font-normal text-slate-400">/ mois</span></div>
+                    <div class="text-3xl font-display font-bold text-white mb-1"><span data-offer-key="essentiel-monthly" data-price-suffix="">66 €</span> <span class="text-base font-normal text-slate-400">/ mois</span></div>
                     <p class="text-xs text-slate-400 leading-relaxed">
                         Soit <strong class="text-white"><span data-offer-key="essentiel" data-price-suffix="/ an">790 € / an</span></strong>
                         réglés en une fois (2 mois offerts), reconductible chaque saison.
@@ -679,7 +677,7 @@
                     </p>
                 </div>
 
-                <div class="p-5 rounded-2xl bg-dark-950/50 border border-accent-400/30">
+                <div class="hover-tile p-5 rounded-2xl bg-dark-950/50 border border-accent-400/30">
                     <div class="text-xs font-bold uppercase tracking-wider text-accent-400 mb-2">Le point d'équilibre</div>
                     <div class="text-3xl font-display font-bold text-accent-400 mb-1">6 adhésions</div>
                     <p class="text-xs text-slate-400 leading-relaxed">
@@ -688,7 +686,7 @@
                     </p>
                 </div>
 
-                <div class="p-5 rounded-2xl bg-dark-950/50 border border-emerald-500/30">
+                <div class="hover-tile p-5 rounded-2xl bg-dark-950/50 border border-emerald-500/30">
                     <div class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2">Le temps gagné</div>
                     <div class="text-3xl font-display font-bold text-emerald-400 mb-1">~4 h / mois</div>
                     <p class="text-xs text-slate-400 leading-relaxed">
@@ -720,7 +718,7 @@
                 </span>
                 <h2 class="font-display text-2xl sm:text-3xl font-bold text-white mb-3">Une seule offre, pensée pour les clubs</h2>
                 <p class="text-slate-400 text-sm sm:text-base">
-                    C'est le pack <strong class="text-white">« L'Essentiel &amp; Suivi »</strong> du site, décliné pour la vie associative.
+                    C'est le pack <strong class="text-white">Vitrine Essentiel</strong> du site, décliné pour la vie associative.
                     Même tarif, mêmes garanties — avec des modules propres aux clubs, à ajouter seulement si vous en avez l'usage.
                 </p>
             </div>
@@ -740,7 +738,7 @@
                     <div class="flex flex-col items-start gap-2 mb-5">
                         <div class="billing-cycle-pills inline-flex items-center gap-1 rounded-full p-1">
                             <button type="button" class="billing-cycle-pill" data-pack-cycle="monthly">Mensuel</button>
-                            <button type="button" class="billing-cycle-pill active" data-pack-cycle="annual">Annuel <span class="ml-1 billing-cycle-pill__hint">— 2 mois offerts</span></button>
+                            <button type="button" class="billing-cycle-pill active" data-pack-cycle="annual">Annuel <span class="billing-cycle-pill__hint">2 mois offerts</span></button>
                         </div>
                         <p class="text-sm text-slate-400">
                             L'abonnement annuel se règle <strong class="text-white">en une seule fois</strong> et se
@@ -774,79 +772,103 @@
                     <div class="flex flex-col items-center gap-2 mb-6">
                         <div class="billing-cycle-pills inline-flex items-center gap-1 rounded-full p-1 flex-wrap justify-center">
                             <button type="button" class="billing-cycle-pill" data-cycle="monthly">Mensuel</button>
-                            <button type="button" class="billing-cycle-pill active" data-cycle="annual">Annuel <span class="ml-1 billing-cycle-pill__hint">— 2 mois offerts</span></button>
+                            <button type="button" class="billing-cycle-pill active" data-cycle="annual">Annuel <span class="billing-cycle-pill__hint">2 mois offerts</span></button>
                         </div>
                         <p class="text-[11px] text-slate-500 max-w-lg text-center leading-relaxed">
-                            Sans engagement, résiliable à tout moment. Un mois offert supplémentaire la 1ère année (Sérénité comme Sérénité+) en formule annuelle, si pris en même temps que la création du site du club.
+                            Sans engagement, résiliable à tout moment. En annuel, le montant est <strong class="text-slate-300">réglé en une fois</strong> pour l'année, puis reconduit sauf résiliation.
                         </p>
                     </div>
 
                     <div class="grid md:grid-cols-3 gap-5" data-stagger="90">
-                        <div class="p-6 rounded-2xl border border-blue-500/25 bg-blue-500/5 interactive-hover flex flex-col justify-between" id="card-serenite">
-                            <div>
-                                <div class="flex items-center gap-3 mb-3">
-                                    <i class="ph-duotone ph-shield-check text-2xl text-blue-400" aria-hidden="true"></i>
-                                    <h4 class="text-base font-bold text-white">Pack Sérénité</h4>
-                                </div>
-                                <p class="text-slate-400 text-xs mb-3">
-                                    Hébergement, sauvegardes, mises à jour de sécurité et
-                                    <strong class="text-white">1 intervention incluse par mois</strong> (texte, photo, actualité…).
-                                </p>
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-300 text-[10px] font-bold mb-2">
-                                    <i class="ph-bold ph-check-circle" aria-hidden="true"></i> Sans engagement
-                                </span>
-                            </div>
-                            <div class="mt-3 pt-3 border-t border-slate-500/15">
-                                <span id="serenite-annual-badge" class="hidden items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-400/10 border border-emerald-400/30 text-emerald-400 text-[10px] font-bold uppercase mb-1.5">
-                                    <i class="ph-bold ph-gift" aria-hidden="true"></i> 2 mois offerts
-                                </span>
-                                <span class="text-xl font-bold text-blue-400 block" data-offer-key="serenite" data-offer-skip>
-                                    <span class="price-amount">49,90 €</span> <span class="text-xs text-slate-500 font-normal price-suffix">/ mois</span>
-                                </span>
-                                <p class="text-[10px] text-slate-400 mt-1 serenity-price-detail">soit 499 € / an, réglés en une fois</p>
-                                <p class="text-[10px] text-emerald-400 font-bold mt-1">Un mois offert supplémentaire pour le choix du pack Sérénité en formule annuelle, si créé avec moi</p>
-                                <button type="button" class="btn-ghost w-full mt-3 !text-[11px]" data-club-serenity="simple">
-                                    <span>Ajouter au devis</span> <i class="ph-bold ph-plus" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                        </div>
+<!-- Cartes Sérénité / Sérénité+ / Interventions : copie CONFORME de index.html (seuls les boutons diffèrent : data-club-serenity au lieu de onclick). Toute modification doit être reportée des deux côtés. -->
+<div class="glass-card p-6 rounded-3xl border border-blue-500/20 bg-blue-500/5 interactive-hover flex flex-col justify-between transition-all duration-300" id="card-serenite">
+					<div>
+						<div class="flex items-center gap-3 mb-3">
+							<i class="ph-duotone ph-shield-check text-2xl text-blue-400"></i>
+							<h3 class="text-lg font-bold text-white">Pack Sérénité</h3>
+						</div>
+						<p class="text-slate-400 text-xs mb-3">
+							Mises à jour de sécurité, sauvegardes et <strong>1 intervention simple incluse par mois</strong>.
+						</p>
+						<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-300 text-[10px] font-bold mb-2">
+							<i class="ph-bold ph-check-circle"></i> Sans engagement, résiliable à tout moment
+						</div>
+					</div>
+					<div class="mt-3 pt-3 border-t border-white/5">
+						<div id="serenite-annual-badge" class="hidden flex flex-wrap items-center gap-1.5 mb-1.5">
+							<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-400/10 border border-emerald-400/30 text-emerald-400 text-[10px] font-bold uppercase"><i class="ph-bold ph-gift" aria-hidden="true"></i> 2 mois offerts</span>
+							<span class="gift-extra nm-tip nm-tip--start" tabindex="0" data-tip="Si votre site est créé par moi : un mois offert supplémentaire la 1ère année, en formule annuelle (3 mois offerts au total).">+1 mois offert <i class="ph-bold ph-info nm-tip__icon" aria-hidden="true"></i></span>
+						</div>
+						<span class="text-xl font-bold text-blue-400 block" data-offer-key="serenite" data-offer-skip><span class="price-amount">49,90 €</span> <span class="text-xs text-slate-500 font-normal price-suffix">/mois</span></span>
+						<p class="text-[10px] text-slate-400 mt-1 serenity-price-detail">soit 499 € / an, réglés en une fois</p>
+						<div class="mt-3 grid grid-cols-1 gap-2">
+							<button id="btn-serenite-action" type="button" data-club-serenity="simple" class="w-full px-4 py-2.5 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-bold uppercase hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-2">
+								<span>Ajouter au devis</span> <i class="ph-bold ph-plus"></i>
+							</button>
+						</div>
+						<p class="text-[10px] text-slate-500 mt-2 text-center">Ajouté à votre devis, jamais facturé par carte séparément.</p>
+					</div>
+				</div>
 
-                        <div class="p-6 rounded-2xl border border-indigo-500/30 bg-indigo-500/5 interactive-hover flex flex-col justify-between relative" id="card-serenite-plus">
-                            <span class="absolute top-3 right-3 text-[9px] font-bold text-indigo-300 bg-indigo-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">Le + demandé</span>
-                            <div>
-                                <div class="flex items-center gap-3 mb-3">
-                                    <i class="ph-duotone ph-shield-star text-2xl text-indigo-400" aria-hidden="true"></i>
-                                    <h4 class="text-base font-bold text-white">Pack Sérénité+</h4>
-                                </div>
-                                <p class="text-slate-400 text-xs mb-3">
-                                    Même formule, avec <strong class="text-white">2 interventions incluses par mois</strong> —
-                                    pour les clubs dont le site bouge souvent (résultats, actualités, événements).
-                                </p>
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-[10px] font-bold mb-2">
-                                    <i class="ph-bold ph-check-circle" aria-hidden="true"></i> Sans engagement
-                                </span>
-                            </div>
-                            <div class="mt-3 pt-3 border-t border-slate-500/15">
-                                <span id="serenitePlus-annual-badge" class="hidden items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-400/10 border border-emerald-400/30 text-emerald-400 text-[10px] font-bold uppercase mb-1.5">
-                                    <i class="ph-bold ph-gift" aria-hidden="true"></i> 2 mois offerts
-                                </span>
-                                <span class="text-xl font-bold text-indigo-400 block" data-offer-key="serenitePlus" data-offer-skip>
-                                    <span class="price-amount">94,90 €</span> <span class="text-xs text-slate-500 font-normal price-suffix">/ mois</span>
-                                </span>
-                                <p class="text-[10px] text-slate-400 mt-1 serenity-price-detail">soit 949 € / an, réglés en une fois</p>
-                                <p class="text-[10px] text-emerald-400 font-bold mt-1">Un mois offert supplémentaire pour le choix du pack Sérénité+ en formule annuelle, si créé avec moi</p>
-                                <button type="button" class="btn-ghost w-full mt-3 !text-[11px]" data-club-serenity="plus">
-                                    <span>Ajouter au devis</span> <i class="ph-bold ph-plus" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                        </div>
+				<div class="glass-card p-6 rounded-3xl border border-indigo-500/30 bg-indigo-500/5 interactive-hover flex flex-col justify-between transition-all duration-300 relative overflow-visible" id="card-serenite-plus">
+					<div class="absolute top-3 right-3 text-[9px] font-bold text-indigo-300 bg-indigo-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">Le + demandé</div>
+					<div>
+						<div class="flex items-center gap-3 mb-3">
+							<i class="ph-duotone ph-shield-star text-2xl text-indigo-400"></i>
+							<h3 class="text-lg font-bold text-white">Pack Sérénité+</h3>
+						</div>
+						<p class="text-slate-400 text-xs mb-3">
+							Même formule, avec <strong>2 interventions simples incluses par mois</strong> pour les sites qui bougent plus souvent.
+						</p>
+						<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-[10px] font-bold mb-2">
+							<i class="ph-bold ph-check-circle"></i> Sans engagement, résiliable à tout moment
+						</div>
+					</div>
+					<div class="mt-3 pt-3 border-t border-white/5">
+						<div id="serenitePlus-annual-badge" class="hidden flex flex-wrap items-center gap-1.5 mb-1.5">
+							<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-400/10 border border-emerald-400/30 text-emerald-400 text-[10px] font-bold uppercase"><i class="ph-bold ph-gift" aria-hidden="true"></i> 2 mois offerts</span>
+							<span class="gift-extra nm-tip nm-tip--start" tabindex="0" data-tip="Si votre site est créé par moi : un mois offert supplémentaire la 1ère année, en formule annuelle (3 mois offerts au total).">+1 mois offert <i class="ph-bold ph-info nm-tip__icon" aria-hidden="true"></i></span>
+						</div>
+						<span class="text-xl font-bold text-indigo-400 block" data-offer-key="serenitePlus" data-offer-skip><span class="price-amount">94,90 €</span> <span class="text-xs text-slate-500 font-normal price-suffix">/mois</span></span>
+						<p class="text-[10px] text-slate-400 mt-1 serenity-price-detail">soit 949 € / an, réglés en une fois</p>
+						<div class="mt-3 grid grid-cols-1 gap-2">
+							<button id="btn-serenite-plus-action" type="button" data-club-serenity="plus" class="w-full px-4 py-2.5 rounded-lg bg-indigo-500/20 text-indigo-300 text-xs font-bold uppercase hover:bg-indigo-500 hover:text-white transition-all flex items-center justify-center gap-2">
+								<span>Ajouter au devis</span> <i class="ph-bold ph-plus"></i>
+							</button>
+						</div>
+						<p class="text-[10px] text-slate-500 mt-2 text-center">Ajouté à votre devis, jamais facturé par carte séparément.</p>
+					</div>
+				</div>
 
-                        <div class="p-6 rounded-2xl border border-slate-500/15 bg-dark-950/50 interactive-hover">
-                            <h4 class="text-base font-bold text-white mb-1">Interventions ponctuelles</h4>
-                            <p class="text-slate-500 text-xs mb-5">Sans formule de suivi :</p>
-                            <div class="space-y-3" id="club-interventions-list"></div>
-                            <p class="text-[10px] text-slate-500 mt-4 italic">Relifting : devis personnalisé au-delà de 5 pages.</p>
-                        </div>
+				<div class="glass-card p-6 rounded-3xl interactive-hover">
+					<h3 class="text-lg font-bold text-white mb-4">Interventions Ponctuelles</h3>
+					<p class="text-slate-500 text-xs mb-6">Sans pack maintenance :</p>
+					<div class="space-y-4">
+						<div class="flex justify-between items-center border-b border-white/5 pb-2">
+							<span class="text-sm text-slate-300">Simple (Texte/Photo)</span>
+							<span class="font-bold text-white" data-price-eur="100">100 €</span>
+						</div>
+						<div class="flex justify-between items-center border-b border-white/5 pb-2">
+							<span class="text-sm text-slate-300">Moyenne (Mise en page)</span>
+							<span class="font-bold text-white" data-price-eur="200">200 €</span>
+						</div>
+						<div class="flex justify-between items-center border-b border-white/5 pb-2">
+							<span class="text-sm text-slate-300">Complexe (Fonctionnalité)</span>
+							<span class="font-bold text-white" data-price-eur="300">300 €</span>
+						</div>
+						<div class="flex justify-between items-center pt-1">
+							<div class="flex flex-col">
+								<span class="text-sm text-slate-300 font-bold">Relifting complet du site</span>
+								<span class="text-[10px] text-slate-500">Ancien site → design moderne</span>
+							</div>
+							<span class="text-right">
+								<span class="font-bold text-accent-400 block"><span data-price-eur="66">66 €</span> <span class="text-xs font-normal text-slate-400">/ mois</span></span>
+								<span class="block text-[10px] text-slate-400"><span data-price-eur="1580">1 580 €</span> pour 2 ans</span>
+							</span>
+						</div>
+					</div>
+					<p class="text-[10px] text-slate-600 mt-4 italic">Relifting : les <strong class="text-slate-500">deux premières années sont réglées en une fois</strong> à la commande, le temps de la refonte complète. Devis personnalisé au-delà de 5 pages.</p>
+				</div>
                     </div>
 
                     <p class="text-center text-xs text-slate-500 mt-5">
@@ -889,7 +911,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5" data-stagger="80">
                 <div class="p-5 rounded-2xl bg-dark-950/50 border border-slate-500/15 interactive-hover">
                     <h4 class="font-bold text-white text-sm mb-2">« Personne chez nous n'est à l'aise avec l'informatique. »</h4>
-                    <p class="text-xs text-slate-400 leading-relaxed">C'est justement le principe : vous n'avez rien à administrer. Une intervention par mois est incluse dans le suivi — vous m'écrivez, je m'en occupe. Et si vous préférez publier vous-même, le module Actualités est fait pour ça.</p>
+                    <p class="text-xs text-slate-400 leading-relaxed">C'est justement le principe : vous n'avez rien à administrer. Avec le Pack Sérénité, une intervention par mois est incluse — vous m'écrivez, je m'en occupe. Et si vous préférez publier vous-même, le module Actualités est fait pour ça.</p>
                 </div>
                 <div class="p-5 rounded-2xl bg-dark-950/50 border border-slate-500/15 interactive-hover">
                     <h4 class="font-bold text-white text-sm mb-2">« Notre bureau change tous les deux ans. »</h4>
@@ -920,12 +942,17 @@
                         Réservez un créneau de 20 à 30 minutes. On fait le tour de vos besoins, je vous dis franchement
                         ce qui est utile pour un club de votre taille — et ce qui ne l'est pas.
                     </p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-400/10 border border-emerald-400/30 text-emerald-400 text-xs font-bold"><i class="ph-bold ph-gift" aria-hidden="true"></i> 100 % gratuit</span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent-400/10 border border-accent-400/30 text-accent-400 text-xs font-bold"><i class="ph-bold ph-hand-heart" aria-hidden="true"></i> Sans engagement</span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold"><i class="ph-bold ph-chat-circle-dots" aria-hidden="true"></i> Conseils offerts, quelle que soit votre question</span>
+                    </div>
 
                     <ol class="space-y-4 mb-8 list-none" data-stagger="110">
-                        <li class="funnel-step flex gap-3 p-3 rounded-xl border border-slate-500/10"><span class="funnel-step__num">1</span><div><strong class="text-white text-sm block">Je réserve mon rendez-vous</strong><span class="text-xs text-slate-400">20 à 30 minutes, gratuit, sans engagement.</span></div></li>
+                        <li class="funnel-step is-current flex gap-3 p-3 rounded-xl border border-slate-500/10" aria-current="step"><span class="funnel-step__num">1</span><div><span class="funnel-step__here"><i class="ph-fill ph-map-pin" aria-hidden="true"></i> Vous êtes ici</span><strong class="text-white text-sm block">Je réserve mon rendez-vous</strong><span class="text-xs text-slate-400">20 à 30 minutes pour faire le tour de vos besoins.</span><span class="funnel-step__free"><i class="ph-bold ph-check-circle" aria-hidden="true"></i> Gratuit &amp; sans engagement</span></div></li>
                         <li class="funnel-step flex gap-3 p-3 rounded-xl border border-slate-500/10"><span class="funnel-step__num">2</span><div><strong class="text-white text-sm block">Je prépare le rendez-vous</strong><span class="text-xs text-slate-400">Un court formulaire pour cadrer le projet et gagner du temps.</span></div></li>
                         <li class="funnel-step flex gap-3 p-3 rounded-xl border border-slate-500/10"><span class="funnel-step__num">3</span><div><strong class="text-white text-sm block">Je reçois mon devis</strong><span class="text-xs text-slate-400">Détaillé, valable 30 jours, présentable en réunion de bureau.</span></div></li>
-                        <li class="funnel-step flex gap-3 p-3 rounded-xl border border-slate-500/10"><span class="funnel-step__num">4</span><div><strong class="text-white text-sm block">Je règle à la livraison</strong><span class="text-xs text-slate-400">Facture envoyée par e-mail. Rien à payer sur ce site.</span></div></li>
+                        <li class="funnel-step flex gap-3 p-3 rounded-xl border border-slate-500/10"><span class="funnel-step__num">4</span><div><strong class="text-white text-sm block">Je règle à la livraison</strong><span class="text-xs text-slate-400">Facture par e-mail, lien de paiement sécurisé Stripe. Rien à payer sur ce site.</span></div></li>
                     </ol>
 
                     <div class="space-y-3">
@@ -1073,7 +1100,7 @@
                             <div class="form-section-title mt-0"><i class="ph-bold ph-shield-check" aria-hidden="true"></i> Formule de suivi (optionnel)</div>
                             <div class="billing-cycle-pills inline-flex items-center gap-1 rounded-full p-1 flex-wrap">
                                 <button type="button" class="billing-cycle-pill" data-cycle="monthly">Mensuel</button>
-                                <button type="button" class="billing-cycle-pill active" data-cycle="annual">Annuel <span class="ml-1 billing-cycle-pill__hint">-2 mois</span></button>
+                                <button type="button" class="billing-cycle-pill active" data-cycle="annual">Annuel <span class="billing-cycle-pill__hint">-2 mois</span></button>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
@@ -1098,11 +1125,13 @@
                     <!-- Total -->
                     <div class="rounded-2xl border border-slate-500/15 bg-slate-500/[0.06] p-4 space-y-2">
                         <span id="club-total-label" class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Estimation <span class="text-[10px] font-normal lowercase text-slate-500">(1<sup>er</sup> versement)</span></span>
-                        <div class="flex items-end justify-between gap-3 flex-wrap">
+                        <div class="total-split">
                             <span id="club-total" class="text-[26px] leading-none font-bold text-accent-400 tracking-tight">790 €</span>
-                            <span id="club-recurring-chip" class="hidden items-center gap-1.5 text-[11px] font-bold text-blue-300 bg-blue-400/10 border border-blue-400/20 px-3 py-1.5 rounded-full whitespace-nowrap">
-                                <i class="ph-fill ph-repeat text-[13px]" aria-hidden="true"></i><span id="club-recurring-text"></span>
-                            </span>
+                            <span id="club-serenity-amount" class="total-split__plus hidden"></span>
+                        </div>
+                        <div id="club-recurring-chip" class="total-legend hidden">
+                            <span class="total-legend__row"><span class="total-legend__dot bg-accent-400"></span><span id="club-pack-legend"></span></span>
+                            <span class="total-legend__row"><span class="total-legend__dot bg-blue-400"></span><span id="club-recurring-text"></span></span>
                         </div>
                         <p id="club-pack-note" class="hidden text-[10px] text-slate-500 leading-relaxed"></p>
                         <p class="text-[10px] text-slate-500">Estimation indicative : le devis définitif est établi après notre échange.</p>
@@ -1134,7 +1163,7 @@
 
     </main>
 
-    <footer class="max-w-6xl mx-auto px-4 mt-16 pb-10 text-center text-xs text-slate-500 space-y-3">
+    <footer class="max-w-7xl mx-auto px-4 md:px-6 mt-16 pb-10 text-center text-xs text-slate-500 space-y-3">
         <a href="../" class="inline-flex items-center gap-2 text-slate-400 hover:text-accent-400 transition-colors font-bold">
             <i class="ph-bold ph-arrow-left" aria-hidden="true"></i> <span data-i18n="navBackHome">Retour à l’accueil</span>
         </a>
@@ -1148,129 +1177,6 @@
     <script src="../assets/js/reveal.js"></script>
     <script src="../assets/js/offre-club.js"></script>
 
-    <!-- JS INJECTÉ POUR LE PROJET BAD EVIAN (Isolation pour éviter les erreurs avec l'accueil) -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const projectsData = [
-                {
-                    title: "Badminton Club Évian",
-                    subtitle: "La transformation associative",
-                    story: "En modernisant l’identité du club, j’ai donné une image plus soignée et rassurante, qui inspire confiance aux adhérents du Chablais.",
-                    url: "https://www.badminton-evian.fr", 
-                    type: "Site Club Sportif",
-                    features: [
-                        { icon: "ph-clock-counter-clockwise", text: "Histoire Chablais", desc: "Une navigation temporelle interactive retraçant l'évolution du club en Haute-Savoie." },
-                        { icon: "ph-newspaper", text: "Actualités 74", desc: "Interface d'administration simplifiée pour publier les news du club d'Évian sans compétences techniques." },
-                        { icon: "ph-lightning", text: "Résultats Live", desc: "Connexion API temps réel pour afficher les scores des rencontres en direct." },
-                        { icon: "ph-images", text: "Galerie HD", desc: "Optimisation WebP et Lazy Loading pour un chargement instantané des photos de tournois." },
-                        { icon: "ph-envelope-simple", text: "Contact Asso", desc: "Formulaire sécurisé pour les demandes d'inscription et renseignements." },
-                        { icon: "ph-users", text: "Avis Adhérents", desc: "Intégration automatique des avis Google pour la preuve sociale locale." }
-                    ]
-                }
-            ];
-
-            const projectsGrid = document.getElementById('projects-grid');
-            
-            // Expose globalement les fonctions nécessaires au code injecté
-            window.showProjectDesc = (projectIndex, featureIndex) => {
-                const descBox = document.getElementById(`project-desc-box-${projectIndex}`);
-                const descText = document.getElementById(`project-desc-text-${projectIndex}`);
-                const buttons = document.querySelectorAll(`.proj-btn-${projectIndex}`);
-                
-                // Retirer le style actif de tous les boutons
-                buttons.forEach(btn => {
-                    btn.classList.remove('bg-accent-400/20', 'border-accent-400', 'text-white');
-                    btn.classList.add('bg-dark-900', 'border-white/10', 'text-slate-300');
-                });
-                
-                // Mettre le style actif sur le bouton cliqué
-                const clickedBtn = buttons[featureIndex];
-                clickedBtn.classList.remove('bg-dark-900', 'border-white/10', 'text-slate-300');
-                clickedBtn.classList.add('bg-accent-400/20', 'border-accent-400', 'text-white');
-                
-                // Afficher le texte
-                descText.textContent = clickedBtn.getAttribute('data-desc');
-                descBox.classList.remove('hidden');
-            };
-
-            window.toggleMobilePreview = (container) => {
-                // Pour mobile, ajoute une classe active pour annuler le pointer-events-none sur l'iframe
-                const link = container.querySelector('a');
-                if(window.innerWidth < 768 && link) {
-                    // Ouvre dans un nouvel onglet si on est sur mobile
-                    window.open(link.href, '_blank');
-                }
-            };
-            
-            if (projectsGrid) {
-                // Simulation délai réseau pour laisser voir le Skeleton (effet de chargement)
-                setTimeout(() => {
-                    projectsGrid.innerHTML = projectsData.map((project, index) => {
-                        const featuresHtml = project.features && project.features.length > 0 ? `
-                            <div class="w-full mb-6 mt-4 block relative">
-                                <div class="flex flex-wrap gap-2 mb-4">
-                                    ${project.features.map((f, i) => `
-                                        <button onclick="window.showProjectDesc(${index}, ${i})" 
-                                            class="proj-btn-${index} group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 bg-dark-900 text-xs text-slate-300 hover:border-accent-400 hover:text-white hover:bg-white/5 transition-all duration-300 cursor-pointer focus:outline-none"
-                                            data-desc="${f.desc}">
-                                            <i class="ph-bold ${f.icon} text-accent-400 group-hover:scale-110 transition-transform"></i>
-                                            <span>${f.text}</span>
-                                        </button>
-                                    `).join('')}
-                                </div>
-                                <div id="project-desc-box-${index}" class="hidden w-full bg-white/5 border-l-2 border-accent-400 p-4 rounded-xl text-sm text-slate-300 animate-pop-in relative">
-                                    <i class="ph-duotone ph-info text-xl text-accent-400 absolute top-4 right-4 opacity-50"></i>
-                                    <p id="project-desc-text-${index}" class="leading-relaxed pr-8"></p>
-                                </div>
-                            </div>
-                        ` : '';
-
-                        return `
-                        <article class="flex flex-col md:flex-row gap-8 items-stretch min-h-[400px] reveal group" style="transition-delay: ${index * 100}ms">
-                            <div class="md:w-1/3 flex flex-col justify-center order-2 md:order-1 min-w-0">
-                                <div class="mb-2">
-                                    <span class="text-accent-400 text-xs font-bold uppercase tracking-wider mb-2 block">${project.type}</span>
-                                    <h3 class="text-3xl font-display font-bold text-white mb-1">${project.title}</h3>
-                                    <p class="text-slate-500 italic text-sm mb-4">${project.subtitle}</p>
-                                </div>
-                                <p class="text-slate-300 leading-relaxed text-sm mb-2 border-l-2 border-accent-400 pl-4">"${project.story}"</p>
-                                ${featuresHtml}
-                                <a href="${project.url}" target="_blank" class="inline-flex items-center gap-2 text-white font-bold hover:text-accent-400 transition-colors w-fit group/link mt-auto">
-                                    Visiter le site <i class="ph-bold ph-arrow-right group-hover/link:translate-x-1 transition-transform"></i>
-                                </a>
-                            </div>
-                            <div class="md:w-2/3 order-1 md:order-2 relative rounded-3xl overflow-hidden border border-white/10 bg-dark-900 group/frame interactive-hover h-[300px] md:h-auto project-frame-container cursor-pointer" onclick="toggleMobilePreview(this)">
-                                <div class="absolute top-0 left-0 right-0 h-10 bg-dark-950/90 backdrop-blur border-b border-white/5 flex items-center px-4 gap-2 z-20">
-                                    <div class="flex gap-1.5"><div class="w-2.5 h-2.5 rounded-full bg-slate-600"></div><div class="w-2.5 h-2.5 rounded-full bg-slate-600"></div></div>
-                                    <div class="ml-4 text-[10px] text-slate-500 font-mono opacity-50 flex-grow truncate">${project.url.replace('https://', '')}</div>
-                                </div>
-                                <div class="absolute inset-0 top-10 bg-white transition-all duration-700 ease-out grayscale group-hover/frame:grayscale-0 iframe-container project-iframe">
-                                     <iframe src="${project.url}" class="w-[200%] h-[200%] border-0 transform scale-50 origin-top-left pointer-events-none" loading="lazy"></iframe>
-                                    <div class="absolute inset-0 bg-dark-950/10 backdrop-blur-[2px] group-hover/frame:backdrop-blur-0 transition-all duration-500 iframe-overlay"></div>
-                                    <div class="absolute inset-0 flex items-center justify-center opacity-100 group-hover/frame:opacity-0 transition-opacity duration-300 pointer-events-none hint-overlay">
-                                        <span class="px-4 py-2 bg-dark-950/80 rounded-full text-xs text-white backdrop-blur-md border border-white/10 flex items-center gap-2">
-                                            <i class="ph-bold ph-hand-tap md:hidden"></i>
-                                            <span class="md:hidden">Touchez pour aperçu</span>
-                                            <span class="hidden md:inline">Survoler pour aperçu</span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <a href="${project.url}" target="_blank" class="absolute inset-0 z-30 md:hidden pointer-events-none"></a>
-                            </div>
-                        </article>
-                        `;
-                    }).join('');
-
-                    // FORCE L'AFFICHAGE (Correction du bug "invisible")
-                    setTimeout(() => {
-                        if (window.NM && NM.reveal) NM.reveal.refresh();
-                        const newProjectElements = document.querySelectorAll('#projects-grid .reveal');
-                        newProjectElements.forEach(el => el.classList.add('active'));
-                    }, 50);
-
-                }, 500);
-            }
-        });
-    </script>
+    <script src="../assets/js/projects-showcase.js"></script>
 </body>
 </html>

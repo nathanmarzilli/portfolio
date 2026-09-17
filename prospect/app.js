@@ -38,7 +38,14 @@
 		prospects: [],    
 		expanded: null,   
 		emailId: null,    
-		busy: {}          
+		busy: {},
+		resultsSort: 'created_desc', // tri des résultats de recherche
+		pageSize: 20,                // résultats par page (annuaire public : 25 max)
+		loadedPages: [],             // pages chargées (pagination + « Charger la suite »)
+		// Sélection « Ce que vous pouvez leur proposer » (onglet E-mail) :
+		// une vitrine au plus, un Pack Sérénité au plus, modules libres.
+		pick: { vitrine: null, serenite: null, modules: [] },
+		rdvId: null                  // prospect en cours de passage en RDV
 	};
 
 	// Colonnes réellement présentes dans nm_prospects. Tout ce qui
@@ -238,9 +245,13 @@
 			}
 			list.push({
 				key: key,
+				group: 'vitrine',
 				name: o.name,
 				priceEur: (o.price || {}).EUR,
-				priceLabel: 'création, une fois',
+				monthlyEur: CFG.packMonthlyEquivalent ? CFG.packMonthlyEquivalent(key, 'EUR') : null,
+				// Depuis septembre 2026 : abonnement annuel reconductible
+				// (hébergement, domaine et sécurité compris), plus un achat unique.
+				priceLabel: 'abonnement annuel, hébergement compris',
 				audience: audience,
 				club: !!o.clubVariant
 			});
@@ -251,12 +262,13 @@
 			if (!o) return;
 			list.push({
 				key: key,
+				group: 'serenite',
 				name: o.name,
 				priceEur: (o.price || {}).EUR,
 				annualEur: (o.annualPrice || {}).EUR,
 				priceLabel: 'suivi mensuel',
 				audience: 'Entretien du site après livraison : ' + (o.includedInterventions || 0) +
-					' intervention(s) incluse(s) par an. Facturation annuelle possible (deux mois offerts).'
+					' intervention(s) incluse(s) par mois, sans engagement. Formule annuelle : deux mois offerts, +1 mois offert si le site est créé par Nathan.'
 			});
 		});
 
@@ -266,7 +278,9 @@
 	/** Les modules club, eux aussi issus de config.js. */
 	function clubModules() {
 		return (CFG.clubOptions || []).map(function (o) {
-			return { key: o.key, label: o.label, priceEur: o.priceEur, desc: o.desc || '' };
+			// `monthlyEur` depuis septembre 2026 (l'ancien `priceEur` n'existe plus :
+			// les prix des modules s'affichaient vides).
+			return { key: o.key, label: o.label, priceEur: o.monthlyEur != null ? o.monthlyEur : o.priceEur, desc: o.desc || '' };
 		});
 	}
 
@@ -280,7 +294,7 @@
 		offerCatalogue().forEach(function (o) {
 			var price = money(o.priceEur);
 			if (o.annualEur) price += ' / mois ou ' + money(o.annualEur) + ' / an';
-			else price += ' (' + o.priceLabel + ')';
+			else price += ' / an' + (o.monthlyEur ? ' (soit ' + money(o.monthlyEur) + ' / mois)' : '') + ', ' + o.priceLabel;
 			lines.push('- ' + o.name + ' — ' + price + ' — ' + o.audience);
 		});
 
@@ -289,7 +303,7 @@
 			lines.push('Modules additionnels pour les clubs et associations (à ajouter à l’offre « ' +
 				((CFG.offers || {}).essentiel || {}).name + ' ») :');
 			modules.forEach(function (m) {
-				lines.push('- ' + m.label + ' — ' + money(m.priceEur) + ' — ' + m.desc);
+				lines.push('- ' + m.label + ' — ' + money(m.priceEur) + ' / mois — ' + m.desc);
 			});
 		}
 
@@ -305,7 +319,8 @@
 		return lines.join('\n');
 	}
 
-	/** Affichage à l'écran — les prix passent par data-offer-key / data-price-eur. */
+	/** Affichage à l'écran — les prix passent par data-offer-key / data-price-eur.
+	 *  Chaque bloc est cliquable et adapte l'e-mail (voir applyPickToEmail). */
 	function renderOffers() {
 		var grid = $('#offers-list');
 		if (!grid) return;
@@ -313,25 +328,30 @@
 		var cards = offerCatalogue().map(function (o) {
 			var priceHtml = o.annualEur
 				? '<span data-offer-key="' + esc(o.key) + '"></span> <span class="text-slate-500">ou</span> <span data-offer-key="' + esc(o.key) + '-annual"></span>'
-				: '<span data-offer-key="' + esc(o.key) + '"></span>';
-			return '<article class="rounded-xl border ' + (o.club ? 'border-accent-400/30' : 'border-slate-500/15') + ' p-3">' +
-				'<div class="flex items-start justify-between gap-2">' +
-					'<h4 class="font-display font-bold text-sm text-white">' + esc(o.name) + '</h4>' +
+				: '<span data-offer-key="' + esc(o.key) + '-monthly"></span>';
+			var picked = state.pick[o.group] === o.key;
+			return '<button type="button" class="offer-pick rounded-xl border ' + (o.club ? 'border-accent-400/30' : 'border-slate-500/15') + ' p-3' + (picked ? ' is-picked' : '') + '" ' +
+					'data-pick-group="' + esc(o.group) + '" data-pick-key="' + esc(o.key) + '" aria-pressed="' + picked + '">' +
+				'<span class="pick-check" aria-hidden="true"><i class="ph-bold ph-check"></i></span>' +
+				'<span class="flex items-start justify-between gap-2 pr-6">' +
+					'<span class="font-display font-bold text-sm text-white">' + esc(o.name) + '</span>' +
 					(o.club ? '<span class="nm-badge nm-badge--accent">Clubs</span>' : '') +
-				'</div>' +
-				'<p class="text-accent-400 font-bold text-sm mt-1">' + priceHtml + '</p>' +
-				'<p class="text-[11px] text-slate-500 mt-1 leading-relaxed">' + esc(o.audience) + '</p>' +
-			'</article>';
+				'</span>' +
+				'<span class="block text-accent-400 font-bold text-sm mt-1">' + priceHtml + '</span>' +
+				'<span class="block text-[11px] text-slate-500 mt-1 leading-relaxed">' + esc(o.audience) + '</span>' +
+			'</button>';
 		});
 
 		var modules = clubModules();
 		if (modules.length) {
 			cards.push('<article class="rounded-xl border border-slate-500/15 p-3 sm:col-span-2">' +
-				'<h4 class="font-display font-bold text-sm text-white mb-2">Modules club &amp; associations</h4>' +
+				'<h4 class="font-display font-bold text-sm text-white mb-2">Modules club &amp; associations <span class="text-[10px] font-normal text-slate-500">(plusieurs choix possibles)</span></h4>' +
 				'<ul class="text-[11px] text-slate-400 space-y-1">' +
 					modules.map(function (m) {
-						return '<li class="flex justify-between gap-3"><span>' + esc(m.label) + '</span>' +
-							'<strong class="text-accent-400 whitespace-nowrap" data-price-eur="' + Number(m.priceEur) + '"></strong></li>';
+						var on = state.pick.modules.indexOf(m.key) !== -1;
+						return '<li class="module-pick flex justify-between gap-3' + (on ? ' is-picked' : '') + '" role="button" tabindex="0" data-pick-module="' + esc(m.key) + '" aria-pressed="' + on + '">' +
+							'<span class="flex items-center gap-2"><i class="ph-bold ' + (on ? 'ph-check-square text-accent-400' : 'ph-square') + '" aria-hidden="true"></i>' + esc(m.label) + '</span>' +
+							'<strong class="text-accent-400 whitespace-nowrap" data-price-eur="' + Number(m.priceEur) + '" data-price-suffix=" / mois"></strong></li>';
 					}).join('') +
 				'</ul></article>');
 		}
@@ -361,7 +381,72 @@
 		return state.prospects.filter(function (p) { return p.external_id === externalId; })[0] || null;
 	}
 
-	async function runSearch(event, isLoadMore) { // Ajouter isLoadMore
+	// Tri des résultats chargés. ⚠️ L'annuaire public ne sait pas trier :
+	// le tri s'applique aux résultats DÉJÀ chargés (la page affichée, ou
+	// toutes les pages ajoutées via « Charger la suite »).
+	function applyResultsSort() {
+		var mode = state.resultsSort || 'created_desc';
+		var byText = function (a, b, key) {
+			return String(a[key] || '').localeCompare(String(b[key] || ''), 'fr', { sensitivity: 'base' });
+		};
+		state.results.sort(function (a, b) {
+			var ca = a.created_on ? String(a.created_on) : '';
+			var cb = b.created_on ? String(b.created_on) : '';
+			if (mode === 'created_asc') {
+				if (!ca) return 1; if (!cb) return -1;
+				return ca.localeCompare(cb);
+			}
+			if (mode === 'name_asc') return byText(a, b, 'name');
+			if (mode === 'city_asc') return String(a.postal_code || '').localeCompare(String(b.postal_code || '')) || byText(a, b, 'city');
+			if (mode === 'untracked') {
+				var ta = alreadyTracked(a.external_id) ? 1 : 0;
+				var tb = alreadyTracked(b.external_id) ? 1 : 0;
+				if (ta !== tb) return ta - tb;
+			}
+			// Par défaut : les plus récents en premier (tri ajouté par Nathan)
+			return cb.localeCompare(ca);
+		});
+	}
+
+	function totalPages() {
+		return Math.max(1, Math.ceil((state.totalResults || 0) / state.pageSize));
+	}
+
+	/** Pagination complète : « Préc. 1 … 4 5 6 … 12 Suiv. ». */
+	function renderPagination() {
+		var box = $('#pagination-container');
+		var nav = $('#search-pages');
+		var loadMore = $('#search-load-more');
+		if (!box) return;
+		var pages = totalPages();
+		if (!state.results.length || pages <= 1) { box.classList.add('hidden'); return; }
+		box.classList.remove('hidden');
+
+		var current = state.currentPage;
+		var loaded = state.loadedPages;
+		var first = loaded.length ? Math.min.apply(null, loaded) : current;
+		var last = loaded.length ? Math.max.apply(null, loaded) : current;
+
+		if (nav) {
+			var nums = [];
+			for (var i = 1; i <= pages; i++) {
+				if (i === 1 || i === pages || Math.abs(i - current) <= 2) nums.push(i);
+				else if (nums[nums.length - 1] !== '…') nums.push('…');
+			}
+			nav.innerHTML =
+				'<button type="button" class="page-btn" data-page="' + (first - 1) + '"' + (first <= 1 ? ' disabled' : '') + ' aria-label="Page précédente"><i class="ph-bold ph-caret-left" aria-hidden="true"></i></button>' +
+				nums.map(function (n) {
+					if (n === '…') return '<span class="px-1 text-slate-500">…</span>';
+					var isOn = loaded.indexOf(n) !== -1;
+					return '<button type="button" class="page-btn' + (isOn ? ' is-current' : '') + '" data-page="' + n + '"' + (isOn ? ' aria-current="page"' : '') + '>' + n + '</button>';
+				}).join('') +
+				'<button type="button" class="page-btn" data-page="' + (last + 1) + '"' + (last >= pages ? ' disabled' : '') + ' aria-label="Page suivante"><i class="ph-bold ph-caret-right" aria-hidden="true"></i></button>' +
+				'<span class="text-[11px] text-slate-500 ml-2">Page ' + (first === last ? first : first + ' à ' + last) + ' sur ' + pages + '</span>';
+		}
+		if (loadMore) loadMore.classList.toggle('hidden', last >= pages);
+	}
+
+	async function runSearch(event, isLoadMore, goToPage) { // Ajouter isLoadMore
 		if (event) event.preventDefault();
 		var query = ($('#search-query').value || '').trim();
 		var place = ($('#search-commune').value || '').trim();
@@ -376,7 +461,9 @@
 
 		// NOUVEAU : Gérer le numéro de page
 		if (isLoadMore) {
-			state.currentPage++;
+			state.currentPage = (state.loadedPages.length ? Math.max.apply(null, state.loadedPages) : state.currentPage) + 1;
+		} else if (goToPage) {
+			state.currentPage = goToPage;
 		} else {
 			state.currentPage = 1;
 		}
@@ -384,7 +471,7 @@
 		var payload = {
 			query: query,
 			onlyAssociations: $('#search-assos').checked,
-			perPage: 20,
+			perPage: state.pageSize,
 			page: state.currentPage // NOUVEAU : Utiliser l'état
 		};
 		if (/^\d{5}$/.test(place)) payload.commune = place;
@@ -407,17 +494,15 @@
 			// NOUVEAU : Ajouter à la suite ou remplacer
 			if (isLoadMore) {
 				state.results = state.results.concat(res.results || []);
+				state.loadedPages.push(state.currentPage);
 			} else {
 				state.results = res.results || [];
+				state.loadedPages = [state.currentPage];
 			}
 			state.totalResults = res.total || 0; // NOUVEAU
 			
-			// AJOUT : Trier pour afficher les plus récents en premier
-			state.results.sort(function (a, b) {
-				var valA = a.created_on ? String(a.created_on) : '';
-				var valB = b.created_on ? String(b.created_on) : '';
-				return valB.localeCompare(valA);
-			});
+			// AJOUT : Trier (par défaut, les plus récents en premier) — voir applyResultsSort()
+			applyResultsSort();
 
 			hint.textContent = state.results.length
 				? state.results.length + ' résultat(s) affiché(s)' + (res.total ? ' sur ' + res.total : '')
@@ -433,15 +518,29 @@
 		}
 
 		renderResults();
+		if (goToPage) {
+			var top = $('#results-toolbar');
+			if (top && top.scrollIntoView) top.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		}
 	}
 
 	function renderResults() {
 		var box = $('#search-results');
 		$('#count-results').textContent = state.results.length;
+		var toolbar = $('#results-toolbar');
+		var summary = $('#results-summary');
 
 		if (!state.results.length) {
 			box.innerHTML = '<p class="text-slate-500 italic text-sm">Aucun résultat à afficher.</p>';
+			if (toolbar) toolbar.classList.add('hidden');
+			renderPagination();
 			return;
+		}
+		if (toolbar) toolbar.classList.remove('hidden');
+		if (summary) {
+			var from = (Math.min.apply(null, state.loadedPages.length ? state.loadedPages : [1]) - 1) * state.pageSize + 1;
+			summary.innerHTML = '<strong class="text-white">' + from + '–' + (from + state.results.length - 1) + '</strong> sur <strong class="text-white">' +
+				(state.totalResults || state.results.length) + '</strong> structure(s) trouvée(s)';
 		}
 
 		box.innerHTML = state.results.map(function (r, index) {
@@ -482,14 +581,9 @@
 			'</article>';
 		}).join('');
 		
-		var paginationBox = $('#pagination-container');
-		if (paginationBox) {
-			if (state.results.length < state.totalResults) {
-				paginationBox.classList.remove('hidden');
-			} else {
-				paginationBox.classList.add('hidden');
-			}
-		}
+		// Pagination complète (remplace le seul bouton « Charger la suite »,
+		// qui reste disponible pour empiler les pages).
+		renderPagination();
 	}
 
 	async function addResult(index, existing) {
@@ -528,6 +622,19 @@
 	// 4. Onglet « Mes prospects »
 	// ------------------------------------------------------------
 	function sortedProspects() {
+		var mode = ($('#prospect-sort') && $('#prospect-sort').value) || 'score_desc';
+		var time = function (v) { var d = v ? new Date(v).getTime() : NaN; return isNaN(d) ? null : d; };
+		if (mode !== 'score_desc') {
+			return state.prospects.slice().sort(function (a, b) {
+				if (mode === 'name_asc') return String(a.name || '').localeCompare(String(b.name || ''), 'fr', { sensitivity: 'base' });
+				var field = mode.indexOf('added') === 0 ? 'created_at' : (mode === 'contact_desc' ? 'last_contact_at' : 'next_followup_at');
+				var ta = time(a[field]), tb = time(b[field]);
+				if (ta === null && tb === null) return 0;
+				if (ta === null) return 1;   // sans date : toujours en bas
+				if (tb === null) return -1;
+				return (mode === 'added_asc' || mode === 'followup_asc') ? ta - tb : tb - ta;
+			});
+		}
 		return state.prospects.slice().sort(function (a, b) {
 			var sa = (a.score === null || a.score === undefined) ? -1 : Number(a.score);
 			var sb = (b.score === null || b.score === undefined) ? -1 : Number(b.score);
@@ -554,6 +661,11 @@
 	function analysisHtml(p) {
 		var problems = Array.isArray(p.problems) ? p.problems : [];
 		var hasAnalysis = !!(p.verdict || problems.length || p.offer || p.email_body);
+		if (!hasAnalysis && p.analyzed_at) {
+			return '<div class="analysis-block text-[11px] text-slate-400">' +
+				'Le site a été lu le ' + esc(shortDate(p.analyzed_at)) + ', mais l’assistant n’a rien pu rédiger. ' +
+				'Relancez « Analyser le site » ; si le problème persiste, le site bloque peut-être la lecture automatique.</div>';
+		}
 
 		if (!hasAnalysis) {
 			return '<div class="analysis-block text-[11px] text-slate-400">' +
@@ -650,6 +762,10 @@
 							(busy ? 'Analyse…' : 'Analyser le site') + '</button>' +
 						'<button class="btn-ghost !py-1.5 !px-2.5 !text-[11px]" data-action="open-email" data-id="' + esc(p.id) + '">' +
 							'<i class="ph-bold ph-envelope-simple" aria-hidden="true"></i> E-mail</button>' +
+						(p.status !== 'rdv'
+							? '<button class="btn-ghost !py-1.5 !px-2.5 !text-[11px]" data-action="to-rdv" data-id="' + esc(p.id) + '" title="Passer en demande de rendez-vous (espace clients)">' +
+								'<i class="ph-bold ph-calendar-plus" aria-hidden="true"></i> RDV</button>'
+							: '') +
 						'<button class="btn-ghost !py-1.5 !px-2.5 !text-[11px]" data-action="toggle" data-id="' + esc(p.id) + '" aria-expanded="' + (open ? 'true' : 'false') + '">' +
 							'<i class="ph-bold ' + (open ? 'ph-caret-up' : 'ph-caret-down') + '" aria-hidden="true"></i> Détail</button>' +
 						'<button class="btn-ghost btn-danger !py-1.5 !px-2.5 !text-[11px]" data-action="delete" data-id="' + esc(p.id) + '" title="Retirer ce prospect">' +
@@ -669,7 +785,9 @@
 							'<button class="btn-ghost !py-2 !px-3 !text-sm" data-action="save-site" data-id="' + esc(p.id) + '"><i class="ph-bold ph-floppy-disk" aria-hidden="true"></i> Enregistrer</button>' +
 							'<a class="btn-ghost !py-2 !px-3 !text-sm" target="_blank" rel="noopener" href="' + esc('https://www.google.com/search?q=' + encodeURIComponent((p.name || '') + ' ' + (p.city || '') + ' site officiel')) + '"><i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i> Trouver le site</a>' +
 						'</div>' +
-						analysisHtml(p) +
+						(busy
+							? '<div class="analysis-block text-[12px] text-slate-300 flex items-center gap-2"><i class="ph-bold ph-spinner animate-spin text-accent-400 text-lg" aria-hidden="true"></i> Analyse en cours : lecture du site, relevé technique puis rédaction de l’e-mail…</div>'
+							: analysisHtml(p)) +
 						(p.analyzed_at ? '<p class="text-[10px] text-slate-500">Analysé le ' + esc(shortDate(p.analyzed_at)) + '.</p>' : '') +
 					'</div>' +
 				'</td></tr>';
@@ -746,6 +864,19 @@
 		var p = findProspect(id);
 		if (!p) return;
 
+		// Bug signalé (17/09/2026) : l'adresse tapée dans la fiche dépliée
+		// n'était prise en compte qu'après « Enregistrer ». On l'enregistre
+		// désormais automatiquement avant de lancer l'analyse.
+		var typed = $('[data-site-input="' + id + '"]');
+		if (typed) {
+			var typedUrl = (typed.value || '').trim();
+			if (typedUrl && !/^https?:\/\//i.test(typedUrl)) typedUrl = 'https://' + typedUrl;
+			if (typedUrl && typedUrl !== (p.website || '')) {
+				var savedSite = await patchProspect(p, { website: typedUrl });
+				if (!savedSite) return;
+			}
+		}
+
 		if (!p.website) {
 			state.expanded = id;
 			renderProspects();
@@ -756,6 +887,7 @@
 		state.busy[id] = true;
 		state.expanded = id;
 		renderProspects();
+		toast('Analyse lancée : lecture du site puis rédaction (20 à 40 secondes)…');
 
 		try {
 			var inspection = await db.inspectProspectSite(p.website);
@@ -792,6 +924,16 @@
 				offers: offersText()
 			});
 
+			var aiData = ai && ai.ok ? ai.data : null;
+			// Réponse « ok » mais vide ou non décodée : on le signale au lieu
+			// d'enregistrer une analyse vide (la fiche restait blanche).
+			if (ai && ai.ok && (!aiData || typeof aiData !== 'object') && ai.text) {
+				try { aiData = JSON.parse(String(ai.text).slice(String(ai.text).indexOf('{'), String(ai.text).lastIndexOf('}') + 1)); } catch (e) { aiData = null; }
+			}
+			if (ai && ai.ok && !(aiData && (aiData.verdict || aiData.email_corps || (aiData.problemes || []).length))) {
+				ai = { ok: false, error: 'l’assistant a renvoyé une réponse vide. Relancez l’analyse dans un instant.' };
+			}
+
 			if (!ai || !ai.ok) {
 				if (ai && ai.code === 'gemini_not_configured') {
 					showGeminiNotice();
@@ -806,7 +948,7 @@
 				return;
 			}
 
-			var d = ai.data || {};
+			var d = aiData || ai.data || {};
 			var aiProblems = Array.isArray(d.problemes) ? d.problemes.map(String) : [];
 			// Les constats mesurés d'abord, la lecture de l'assistant ensuite,
 			// sans doublon évident.
@@ -844,19 +986,186 @@
 			'&body=' + encodeURIComponent(body);
 	}
 
+	// ------------------------------------------------------------
+	// Modèles d'e-mail (aucun envoi : Nathan envoie depuis sa messagerie)
+	// ------------------------------------------------------------
+	function isClubProspect(p) {
+		if (!p) return false;
+		if (p.kind === 'association') return true;
+		return /club|association|asso\b|sport|amicale|comit[ée]|union sportive|\bUS\b|\bAS\b|\bES\b|\bFC\b|judo|karat|tennis|badminton|foot|basket|hand|volley|rugby|escalade|danse|gym|natation|ski|voile|rando/i.test(p.name || '');
+	}
+
+	/** Nom lisible (l'annuaire renvoie souvent tout en MAJUSCULES). */
+	function niceName(name) {
+		var n = String(name || '').trim();
+		if (!n) return 'votre club';
+		if (n !== n.toUpperCase()) return n;
+		var small = { de: 1, du: 1, des: 1, la: 1, le: 1, les: 1, et: 1, en: 1, sur: 1, a: 1, au: 1, aux: 1, l: 1, d: 1 };
+		return n.toLowerCase().split(/(\s+|-|')/).map(function (w, i) {
+			if (!w.trim() || w === '-' || w === "'") return w;
+			if (i > 0 && small[w]) return w;
+			if (/^(fc|us|as|es|sc|ac|asc|mjc|bc|tc|jc|cs)$/.test(w)) return w.toUpperCase();
+			return w.charAt(0).toUpperCase() + w.slice(1);
+		}).join('');
+	}
+
+	function cityOnly(city) {
+		return String(city || '').replace(/^\d{4,5}\s*/, '').trim();
+	}
+
+	function eurText(amount) { return money(amount).replace(/\u202f|\u00a0/g, ' '); }
+
+	/** Paragraphe « proposition », construit à partir des blocs cliqués. */
+	function proposalBlock(p) {
+		var club = isClubProspect(p);
+		var offers = CFG.offers || {};
+		var lines = [];
+
+		if (state.pick.vitrine && offers[state.pick.vitrine]) {
+			var o = offers[state.pick.vitrine];
+			var monthly = CFG.packMonthlyEquivalent ? CFG.packMonthlyEquivalent(state.pick.vitrine, 'EUR') : null;
+			var what = {
+				eclair: 'un site simple et efficace, livré rapidement',
+				essentiel: club ? 'un site complet pour le club : présentation, créneaux, tarifs, contact et demandes d’essai' : 'un site one-page soigné, entretenu toute l’année',
+				vitrine: 'un site jusqu’à 5 pages, avec galerie, avis Google et formulaire de contact',
+				premium: 'un site sur-mesure, avec un espace pour publier vos actualités en autonomie'
+			}[state.pick.vitrine] || (o.tagline || '');
+			lines.push('- ' + o.name + ' : ' + what + ', pour ' + (monthly ? eurText(monthly) + ' / mois' : eurText(o.price.EUR) + ' / an') +
+				' (' + eurText(o.price.EUR) + ' / an), hébergement, nom de domaine et sécurité compris.');
+		}
+		if (state.pick.serenite && offers[state.pick.serenite]) {
+			var sOffer = offers[state.pick.serenite];
+			var combo = sOffer.comboDiscount && sOffer.comboDiscount.firstYearMonthlyEur;
+			lines.push('- ' + sOffer.name + ' : ' + (sOffer.includedInterventions || 1) + ' intervention' + ((sOffer.includedInterventions || 1) > 1 ? 's' : '') +
+				' par mois (actualités, photos, horaires…), sauvegardes et mises à jour, sans engagement — ' + eurText(sOffer.price.EUR) + ' / mois' +
+				(state.pick.vitrine && combo ? ', ou ' + eurText(combo) + ' / mois la première année en formule annuelle avec la création du site' : '') + '.');
+		}
+		if (state.pick.modules.length) {
+			var mods = state.pick.modules.map(function (key) {
+				var m = (CFG.clubOptions || []).filter(function (x) { return x.key === key; })[0];
+				return m ? m.label + ' (' + eurText(m.monthlyEur) + ' / mois)' : null;
+			}).filter(Boolean);
+			if (mods.length) lines.push('- ' + (mods.length > 1 ? 'Les modules ' : 'Le module ') + mods.join(', ') + ', pour ' + (club ? 'soulager le bureau au quotidien.' : 'gagner du temps au quotidien.'));
+		}
+
+		if (!lines.length) {
+			var base = offers[(CFG.club || {}).baseOfferKey || 'essentiel'];
+			var baseMonthly = CFG.packMonthlyEquivalent ? CFG.packMonthlyEquivalent((CFG.club || {}).baseOfferKey || 'essentiel', 'EUR') : null;
+			return club
+				? 'Concrètement, je propose aux clubs un site complet, clair et facile à tenir à jour, à partir de ' + (baseMonthly ? eurText(baseMonthly) : eurText(base.price.EUR)) + ' / mois, hébergement compris, avec des modules à la carte (inscriptions en ligne, suivi des essais, résultats…) seulement si vous en avez l’usage.'
+				: 'Concrètement, je crée et j’entretiens des sites clairs et rapides, à partir de ' + eurText(CFG.packMonthlyEquivalent ? CFG.packMonthlyEquivalent('eclair', 'EUR') : 58) + ' / mois, hébergement compris, sans rien à gérer de votre côté.';
+		}
+		return 'Concrètement, voici ce que je pourrais vous proposer :\n' + lines.join('\n');
+	}
+
+	function buildEmailTemplate(p) {
+		var name = niceName(p.name);
+		var city = cityOnly(p.city);
+		var site = ((CFG.brand || {}).url || 'https://www.clicalaide.fr/');
+		var contact = CFG.contact || {};
+		var cs = CFG.caseStudy || {};
+		var impressions = cs.metrics && cs.metrics.impressions ? Number(cs.metrics.impressions).toLocaleString('fr-FR').replace(/\u202f|\u00a0/g, ' ') : null;
+		var signature = 'Nathan Marzilli\n' + ((CFG.brand || {}).name || 'Clic à l’aide') +
+			(isClubProspect(p) ? ' — sites internet pour clubs et associations' : ' — création et suivi de sites internet') + '\n' +
+			(contact.phoneDisplay || '') + ' · ' + (contact.email || '') + '\n' +
+			(isClubProspect(p) ? site + 'offre-club/' : site);
+
+		if (isClubProspect(p)) {
+			return {
+				subject: name + ' : un coup de main pour les inscriptions et le site du club ?',
+				body: [
+					'Bonjour,',
+					'Je me permets de vous écrire au sujet de ' + name + (city ? ', à ' + city : '') + '.',
+					'Je m’appelle Nathan Marzilli. Je me suis reconverti pour faire ce qui me passionne : aider les clubs à soigner leur image et à dynamiser leurs inscriptions. Je suis moi-même adhérent d’un club, et je sais tout ce que les bénévoles du bureau donnent de leur temps — souvent en plus d’un travail et d’une vie de famille.',
+					'Mon but est simple : faire vivre votre club en ligne, simplifier la vie du bureau (infos pratiques, inscriptions, demandes d’essai centralisées) et vous amener de nouveaux adhérents, pour que le site soit gagnant-gagnant plutôt qu’une dépense de plus.' +
+						(cs.clubName && impressions ? ' Pour le ' + cs.clubName + ', le site que j’ai refait est apparu ' + impressions + ' fois dans les recherches Google en six mois, avec un vrai pic à la rentrée, quand les familles cherchent un club.' : ''),
+					proposalBlock(p),
+					'Le premier échange est gratuit et sans engagement. Et même si un nouveau site n’est pas d’actualité pour vous, n’hésitez pas à me poser vos questions sur la communication ou les inscriptions du club : je vous répondrai avec plaisir, et gratuitement.',
+					'Seriez-vous d’accord pour qu’on en parle 20 minutes, au téléphone ou autour d’un café, au moment qui vous arrange ?',
+					'Bien sportivement,\n' + signature
+				].join('\n\n')
+			};
+		}
+		return {
+			subject: name + ' : une idée pour votre présence en ligne',
+			body: [
+				'Bonjour,',
+				'Je me permets de vous écrire au sujet de ' + name + (city ? ', à ' + city : '') + '.',
+				'Je m’appelle Nathan Marzilli : je crée et j’entretiens des sites internet pour les artisans, commerçants et associations de la région, avec un seul interlocuteur du premier appel jusqu’au suivi.',
+				'Mon but est que votre site vous rapporte : être trouvé facilement sur Google, rassurer vos futurs clients et vous faire gagner du temps — sans aucun compte technique à gérer de votre côté.',
+				proposalBlock(p),
+				'Le premier échange est gratuit et sans engagement, et je réponds volontiers à vos questions même si vous n’avez pas de projet immédiat.',
+				'Seriez-vous d’accord pour qu’on en parle 20 minutes, au moment qui vous arrange ?',
+				'Bien cordialement,\n' + signature
+			].join('\n\n')
+		};
+	}
+
+	/** Réécrit uniquement le paragraphe « Concrètement… » du message. */
+	function applyPickToEmail() {
+		var p = findProspect(state.emailId);
+		var bodyEl = $('#email-body');
+		if (!p || !bodyEl) return;
+		var body = bodyEl.value || '';
+		var block = proposalBlock(p);
+		var re = /(^|\n\n)Concrètement[\s\S]*?(?=\n\n|$)/;
+		if (re.test(body)) {
+			body = body.replace(re, function (m, lead) { return lead + block; });
+		} else if (body.trim()) {
+			// Message rédigé à la main ou par l'assistant : on insère la
+			// proposition avant la formule de politesse / la signature.
+			var parts = body.split('\n\n');
+			var at = parts.length;
+			for (var i = parts.length - 1; i >= 0; i--) {
+				if (/nathan|cordialement|sportivement|belle journée|bien à vous/i.test(parts[i])) { at = i; break; }
+			}
+			parts.splice(at, 0, block);
+			body = parts.join('\n\n');
+		} else {
+			body = buildEmailTemplate(p).body;
+		}
+		bodyEl.value = body;
+		refreshMailto();
+	}
+
+	function togglePick(group, key) {
+		if (group === 'module') {
+			var idx = state.pick.modules.indexOf(key);
+			if (idx === -1) state.pick.modules.push(key); else state.pick.modules.splice(idx, 1);
+		} else {
+			state.pick[group] = state.pick[group] === key ? null : key;
+		}
+		renderOffers();
+		if (state.emailId) applyPickToEmail();
+		else toast('Sélection notée : ouvrez l’e-mail d’un prospect pour l’appliquer.');
+	}
+
 	function openEmail(id) {
 		var p = findProspect(id);
 		if (!p) return;
 		state.emailId = id;
+		var template = buildEmailTemplate(p);
 
 		$('#email-empty').classList.add('hidden');
 		$('#email-editor').classList.remove('hidden');
-		$('#email-target').textContent = p.name + (p.city ? ' · ' + p.city : '');
+		$('#email-target').textContent = p.name + (p.city ? ' · ' + p.city : '') + (isClubProspect(p) ? ' · modèle club' : '');
 		$('#email-to').value = p.email || '';
-		$('#email-subject').value = p.email_subject || ('Votre site — ' + p.name);
-		$('#email-body').value = p.email_body || '';
+		// Brouillon enregistré (ou rédigé par l'assistant) en priorité ;
+		// sinon, le message pré-rempli adapté (club / autre structure).
+		$('#email-subject').value = p.email_subject || template.subject;
+		$('#email-body').value = p.email_body || template.body;
 		refreshMailto();
 		switchTab('email');
+	}
+
+	function resetEmailTemplate() {
+		var p = findProspect(state.emailId);
+		if (!p) return;
+		var template = buildEmailTemplate(p);
+		$('#email-subject').value = template.subject;
+		$('#email-body').value = template.body;
+		refreshMailto();
+		toast('Message pré-rempli rechargé.');
 	}
 
 	async function saveEmailDraft(silent) {
@@ -909,6 +1218,92 @@
 	}
 
 	// ------------------------------------------------------------
+	// 6 bis. Prospect -> demande de rendez-vous (espace clients)
+	// ------------------------------------------------------------
+	function openRdvModal(p) {
+		var modal = $('#rdv-modal');
+		if (!modal) return;
+		state.rdvId = p.id;
+		$('#rdv-prospect-name').textContent = p.name || '';
+		$('#rdv-firstname').value = '';
+		$('#rdv-lastname').value = '';
+		$('#rdv-email').value = p.email || '';
+		$('#rdv-phone').value = p.phone || '';
+		$('#rdv-date').value = '';
+		$('#rdv-time').value = '18:00';
+		$('#rdv-message').value = 'Issu de la prospection' + (p.offer ? ' — offre envisagée : ' + p.offer : '') + (p.website ? ' — site actuel : ' + p.website : '') + '.';
+		$('#rdv-error').classList.add('hidden');
+		if (typeof modal.showModal === 'function') modal.showModal(); else modal.setAttribute('open', '');
+	}
+
+	function closeRdvModal() {
+		var modal = $('#rdv-modal');
+		if (!modal) return;
+		if (typeof modal.close === 'function') modal.close(); else modal.removeAttribute('open');
+		state.rdvId = null;
+	}
+
+	async function submitRdv(e) {
+		e.preventDefault();
+		var p = findProspect(state.rdvId);
+		var errEl = $('#rdv-error');
+		if (!p) { closeRdvModal(); return; }
+		var date = $('#rdv-date').value;
+		var time = $('#rdv-time').value;
+		var label = 'À planifier';
+		if (date) {
+			var d = new Date(date + 'T00:00:00');
+			label = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }) + (time ? ' à ' + time : '');
+		}
+		var btn = $('#rdv-submit');
+		btn.disabled = true;
+		try {
+			// Colonnes existantes de nm_leads uniquement (voir règle 8 du projet).
+			var res = await db.client.from((CFG.supabase && CFG.supabase.tables && CFG.supabase.tables.leads) || 'nm_leads').insert({
+				source: 'prospection',
+				request_type: 'newsite',
+				first_name: ($('#rdv-firstname').value || '').trim() || null,
+				last_name: ($('#rdv-lastname').value || '').trim() || null,
+				organisation: p.name || null,
+				email: ($('#rdv-email').value || '').trim() || null,
+				phone: ($('#rdv-phone').value || '').trim() || null,
+				rdv_date: date || null,
+				rdv_time: date ? (time || null) : null,
+				rdv_label: label,
+				// Même forme que les demandes de /offre-club/ : clé du pack de base,
+				// libellés des modules (pas leurs clés).
+				pack: state.pick.vitrine || (isClubProspect(p) ? ((CFG.club && CFG.club.baseOfferKey) || 'essentiel') : null),
+				pack_label: state.pick.vitrine
+					? (((CFG.offers || {})[state.pick.vitrine] || {}).name || null)
+					: (isClubProspect(p) ? ((CFG.club || {}).name || null) : null),
+				serenity_tier: state.pick.serenite ? (state.pick.serenite === 'serenitePlus' ? 'plus' : 'simple') : null,
+				serenity_cycle: state.pick.serenite ? 'annual' : null,
+				club_options: state.pick.modules.map(function (key) {
+					var m = (CFG.clubOptions || []).filter(function (x) { return x.key === key; })[0];
+					return m ? m.label : key;
+				}),
+				message: ($('#rdv-message').value || '').trim() || null,
+				status: 'nouveau'
+			});
+			if (res && res.error) throw res.error;
+			var now = new Date();
+			await patchProspect(p, {
+				status: 'rdv',
+				last_contact_at: now.toISOString(),
+				next_followup_at: null,
+				email: p.email || ($('#rdv-email').value || '').trim() || null,
+				phone: p.phone || ($('#rdv-phone').value || '').trim() || null
+			}, 'Rendez-vous créé : la demande est dans l’espace clients.');
+			closeRdvModal();
+		} catch (err) {
+			errEl.textContent = 'Création impossible : ' + (err.message || 'erreur inconnue');
+			errEl.classList.remove('hidden');
+		} finally {
+			btn.disabled = false;
+		}
+	}
+
+	// ------------------------------------------------------------
 	// 7. Interface
 	// ------------------------------------------------------------
 	var TABS = ['recherche', 'prospects', 'email'];
@@ -955,11 +1350,57 @@
 		});
 
 		$('#prospect-search').addEventListener('input', renderProspects);
+		var sortSel = $('#prospect-sort');
+		if (sortSel) sortSel.addEventListener('change', function () {
+			var hint = $('#prospects-sort-hint');
+			if (hint) hint.textContent = 'Tri : ' + sortSel.options[sortSel.selectedIndex].text + '.';
+			renderProspects();
+		});
+		var resultsSort = $('#results-sort');
+		if (resultsSort) resultsSort.addEventListener('change', function () {
+			state.resultsSort = resultsSort.value;
+			applyResultsSort();
+			renderResults();
+		});
+		var pagesNav = $('#search-pages');
+		if (pagesNav) pagesNav.addEventListener('click', function (e) {
+			var b = e.target.closest('[data-page]');
+			if (!b || b.disabled) return;
+			var page = Number(b.dataset.page);
+			if (page >= 1 && page <= totalPages()) runSearch(null, false, page);
+		});
+
+		// Blocs « Ce que vous pouvez leur proposer » : vitrine et Sérénité
+		// exclusives, modules indépendants.
+		var offersGrid = $('#offers-list');
+		if (offersGrid) {
+			offersGrid.addEventListener('click', function (e) {
+				var mod = e.target.closest('[data-pick-module]');
+				if (mod) { togglePick('module', mod.dataset.pickModule); return; }
+				var card = e.target.closest('[data-pick-group]');
+				if (card) togglePick(card.dataset.pickGroup, card.dataset.pickKey);
+			});
+			offersGrid.addEventListener('keydown', function (e) {
+				var mod = e.target.closest('[data-pick-module]');
+				if (mod && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); togglePick('module', mod.dataset.pickModule); }
+			});
+		}
+		var clearBtn = $('#offers-clear');
+		if (clearBtn) clearBtn.addEventListener('click', function () {
+			state.pick = { vitrine: null, serenite: null, modules: [] };
+			renderOffers();
+			if (state.emailId) applyPickToEmail();
+		});
+		var resetTpl = $('#email-template');
+		if (resetTpl) resetTpl.addEventListener('click', resetEmailTemplate);
 		$('#prospect-filter-status').addEventListener('change', renderProspects);
 		$('#prospect-filter-followup').addEventListener('change', renderProspects);
 		$$('[data-refresh]').forEach(function (b) { b.addEventListener('click', loadProspects); });
 
 		$('#email-copy').addEventListener('click', copyEmail);
+		var rdvForm = $('#rdv-form');
+		if (rdvForm) rdvForm.addEventListener('submit', submitRdv);
+		$$('[data-close-rdv]').forEach(function (b) { b.addEventListener('click', closeRdvModal); });
 		$('#email-save').addEventListener('click', function () { saveEmailDraft(false); });
 		$('#email-sent').addEventListener('click', markAsSent);
 		['#email-to', '#email-subject', '#email-body'].forEach(function (sel) {
@@ -973,6 +1414,13 @@
 			var p = findProspect(sel.dataset.prospectStatus);
 			if (!p) return;
 			var value = sel.value;
+			// « Rendez-vous » : la demande part dans l'espace clients
+			// (nm_leads). Le statut ne change qu'une fois la demande créée.
+			if (value === 'rdv' && p.status !== 'rdv') {
+				sel.value = p.status || 'a_contacter';
+				openRdvModal(p);
+				return;
+			}
 			var patch = { status: value };
 			var now = new Date();
 			if (value === 'relance') {
@@ -1004,6 +1452,10 @@
 
 			} else if (action === 'open-email') {
 				openEmail(id);
+
+			} else if (action === 'to-rdv') {
+				var rdvTarget = findProspect(id);
+				if (rdvTarget) openRdvModal(rdvTarget);
 
 			} else if (action === 'save-site') {
 				var target = findProspect(id);

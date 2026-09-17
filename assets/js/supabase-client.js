@@ -166,6 +166,14 @@ async function updateLead(id, patch) {
 	return true;
 }
 
+/** Supprime une demande (saisie erronée). Les briefs et documents liés
+ *  sont conservés : leurs clés étrangères passent à NULL (ON DELETE SET NULL). */
+async function deleteLead(id) {
+	const { error } = await client.from(T.leads || 'nm_leads').delete().eq('id', id);
+	if (error) throw error;
+	return true;
+}
+
 async function listClients() {
 	const { data, error } = await client
 		.from(T.clients || 'nm_clients')
@@ -364,7 +372,7 @@ const NMDB = {
 	// public
 	saveLead, saveBrief,
 	// admin
-	listLeads, updateLead,
+	listLeads, updateLead, deleteLead,
 	listClients, getClient, saveClient, deleteClient, listBriefs,
 	// documents
 	nextDocumentNumber, listDocuments, getDocument, saveDocument, deleteDocument,
