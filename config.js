@@ -91,7 +91,7 @@
 					'0.15': 0.15, '5': 5, '10': 9.5, '15': 14, '33': 31,
 					'50': 47, '66': 62, '70': 65, '90': 85, '100': 95,
 					'120': 115, '200': 190, '250': 235, '300': 285, '320': 300,
-					'1580': 1490
+					'1580': 1490, '35': 33, '630': 590, '85': 80
 				}
 			},
 			GBP: {
@@ -100,7 +100,7 @@
 					'0.15': 0.13, '5': 4.5, '10': 9, '15': 13, '33': 28,
 					'50': 43, '66': 56, '70': 60, '90': 77, '100': 85,
 					'120': 105, '200': 170, '250': 215, '300': 255, '320': 275,
-					'1580': 1350
+					'1580': 1350, '35': 30, '630': 540, '85': 73
 				}
 			},
 			USD: {
@@ -109,7 +109,7 @@
 					'0.15': 0.17, '5': 6, '10': 12, '15': 17, '33': 38,
 					'50': 58, '66': 76, '70': 80, '90': 105, '100': 115,
 					'120': 140, '200': 230, '250': 290, '300': 345, '320': 370,
-					'1580': 1820
+					'1580': 1820, '35': 40, '630': 725, '85': 98
 				}
 			}
 		},
@@ -356,11 +356,36 @@
 		// Facilitateur numérique (interventions à domicile)
 		// --------------------------------------------------------
 		facilitateur: {
-			hourlyEur: 70,
-			diagnosticEur: 90,
-			pack5hEur: 320,
-			cassetteEur: 70,
-			photoEur: 0.15
+			// ⚙️ SOURCE UNIQUE des tarifs « aide à domicile » (17/09/2026).
+			// Changer un chiffre ici met à jour la page /aide-domicile/,
+			// l'encart de l'accueil, les flyers (/supports/) et la facture
+			// rapide Stripe. Rien n'est écrit en dur ailleurs.
+			prestationEur: 70,          // prix d'UNE prestation (plus de tarif horaire : ça rassure)
+			complexSurchargeEur: 15,    // supplément éventuel si le problème s'avère complexe
+			noFixNoFee: true,           // déplacement sans solution trouvée = gratuit
+			diagnosticEur: 90,          // diagnostic complet (1 h 30)
+			cassetteEur: 70,            // numérisation d'une cassette (VHS, Hi8, MiniDV)
+			cassetteBundle: { count: 10, freeItems: 1 },   // lot de 10 = 1 cassette offerte
+			photoEur: 0.15,             // photo papier numérisée
+			// Carte de fidélité : la N-ième intervention bénéficie de X % de remise.
+			loyalty: { visits: 5, discountPercent: 50 },
+			// Prestations facturables (page /aide-domicile/ + facture rapide).
+			// `amount` = clé lue par APP_CONFIG.facilitateurAmount().
+			services: [
+				{ key: 'contact', label: 'Rester en contact avec vos proches', amount: 'prestationEur', unit: 'prestation' },
+				{ key: 'installation', label: 'Installation & divertissement', amount: 'prestationEur', unit: 'prestation' },
+				{ key: 'securite', label: 'Sécurité & sérénité numérique', amount: 'prestationEur', unit: 'prestation' },
+				{ key: 'formation', label: 'Formation & accompagnement', amount: 'prestationEur', unit: 'prestation' },
+				{ key: 'sante', label: 'Santé & télémédecine', amount: 'prestationEur', unit: 'prestation' },
+				{ key: 'administratif', label: 'Aide administrative numérique', amount: 'prestationEur', unit: 'prestation' },
+				{ key: 'depannage', label: 'Dépannage (box, imprimante, TV, téléphone)', amount: 'prestationEur', unit: 'prestation' },
+				{ key: 'diagnostic', label: 'Diagnostic complet (1 h 30)', amount: 'diagnosticEur', unit: 'diagnostic' },
+				{ key: 'cassette', label: 'Numérisation de cassettes (VHS, Hi8, MiniDV)', amount: 'cassetteEur', unit: 'cassette', quantity: true },
+				{ key: 'cassetteBundle', label: 'Lot de cassettes numérisées (une offerte)', amount: 'cassetteBundle', unit: 'lot' },
+				{ key: 'photo', label: 'Photos papier numérisées', amount: 'photoEur', unit: 'photo', quantity: true }
+			],
+			// Alias conservé pour compatibilité (anciens appels « hourlyEur »).
+			get hourlyEur() { return this.prestationEur; }
 		},
 
 		// --------------------------------------------------------
@@ -675,6 +700,57 @@
 	};
 
 	// ------------------------------------------------------------
+	// Aide à domicile — montants DÉRIVÉS de `facilitateur` (jamais en dur).
+	//   facilitateurAmount('cassetteBundle') -> 630  (70 × (10 − 1))
+	//   facilitateurAmount('loyaltyVisit')   -> 35   (70 × (1 − 50 %))
+	// Et un « hydrateur » : tout élément portant data-fac-price="clé"
+	// reçoit data-price-eur (rendu ensuite par i18n.js), et tout élément
+	// data-fac-text="clé" reçoit le texte correspondant (5, 50 %, 10…).
+	// ------------------------------------------------------------
+	APP_CONFIG.facilitateurAmount = function (key) {
+		var F = APP_CONFIG.facilitateur || {};
+		var b = F.cassetteBundle || { count: 10, freeItems: 1 };
+		var l = F.loyalty || { visits: 5, discountPercent: 50 };
+		switch (key) {
+			case 'cassetteBundle': return Math.round(F.cassetteEur * (b.count - b.freeItems) * 100) / 100;
+			case 'cassetteBundleSaving': return Math.round(F.cassetteEur * b.freeItems * 100) / 100;
+			case 'loyaltyVisit': return Math.round(F.prestationEur * (1 - l.discountPercent / 100) * 100) / 100;
+			case 'prestationComplex': return F.prestationEur + F.complexSurchargeEur;
+			default: return F[key];
+		}
+	};
+	APP_CONFIG.facilitateurText = function (key) {
+		var F = APP_CONFIG.facilitateur || {};
+		var b = F.cassetteBundle || {};
+		var l = F.loyalty || {};
+		switch (key) {
+			case 'loyaltyVisits': return String(l.visits);
+			case 'loyaltyVisitOrdinal': return l.visits + (l.visits === 1 ? 'ʳᵉ' : 'ᵉ');
+			case 'loyaltyPercent': return l.discountPercent + ' %';
+			case 'bundleCount': return String(b.count);
+			case 'bundleFree': return b.freeItems > 1 ? b.freeItems + ' cassettes offertes' : 'une cassette offerte';
+			default: return '';
+		}
+	};
+	APP_CONFIG.hydrateFacilitateur = function (root) {
+		if (typeof document === 'undefined') return;
+		var scope = root || document;
+		scope.querySelectorAll('[data-fac-price]').forEach(function (el) {
+			var v = APP_CONFIG.facilitateurAmount(el.getAttribute('data-fac-price'));
+			if (v !== undefined && v !== null) {
+				el.setAttribute('data-price-eur', v);
+				if (!el.textContent.trim() || /€/.test(el.textContent)) {
+					el.textContent = String(v).replace('.', ',') + ' €';
+				}
+			}
+		});
+		scope.querySelectorAll('[data-fac-text]').forEach(function (el) {
+			var t = APP_CONFIG.facilitateurText(el.getAttribute('data-fac-text'));
+			if (t) el.textContent = t;
+		});
+	};
+
+	// ------------------------------------------------------------
 	// Résolution des chemins : renvoie une URL correcte depuis
 	// n'importe quelle page du site, quel que soit son niveau
 	// d'imbrication et quel que soit le préfixe de déploiement.
@@ -699,5 +775,15 @@
 	};
 
 	root.APP_CONFIG = APP_CONFIG;
+
+	// Hydratation automatique des tarifs « aide à domicile » AVANT le rendu
+	// des prix par i18n.js (config.js est toujours chargé avant lui).
+	if (typeof document !== 'undefined') {
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', function () { APP_CONFIG.hydrateFacilitateur(); });
+		} else {
+			APP_CONFIG.hydrateFacilitateur();
+		}
+	}
 
 })(typeof window !== 'undefined' ? window : this);

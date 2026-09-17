@@ -268,6 +268,82 @@
 	.cards-sheet__notes strong { color: var(--ink); }
 	.cards-sheet__notes ul { margin: 2mm 0 0; padding-left: 4mm; }
 
+	/* ============================================================
+	   AJOUTS DU 17/09/2026 — ne modifient AUCUN bloc de texte existant
+	   ============================================================ */
+
+	/* Photo de fond (case « Image de fond ») : la photo est posée DANS la
+	   zone visuelle (.f-stage) mais déborde sur toute la largeur de la
+	   feuille. Deux calques : un flou très large qui fond la photo dans le
+	   blanc, et la photo nette au centre, avec des bords en dégradé. Le
+	   dessin vectoriel reste dans le flux (invisible) : la mise en page et
+	   la position de chaque texte sont strictement identiques. */
+	.f-stage { position: relative; }
+	.f-photo { display: none; position: absolute; z-index: 0; pointer-events: none; overflow: hidden;
+		top: -9mm; bottom: -9mm; left: -15mm; right: -15mm; }
+	.flyer.has-photo .f-photo { display: block; }
+	/* Les blocs situés au-dessus de la photo restent au premier plan (le fondu blanc ne doit jamais les voiler). */
+	.flyer > .f-head, .flyer > .f-kicker, .flyer > .f-title, .flyer > .f-sub, .flyer > .f-rule, .flyer > .f-band, .flyer > .f-price-row { z-index: 2; }
+	.flyer.has-photo .f-stage .f-art { visibility: hidden; }
+	.f-stage .f-list { position: relative; z-index: 1; }
+	.f-photo__blur, .f-photo__sharp {
+		position: absolute; inset: 0;
+		background-image: var(--img); background-repeat: no-repeat;
+		background-size: cover; background-position: var(--pos, center);
+	}
+	/* Fondu du calque flou : voiles blancs en dégradé plutôt que des
+	   masques CSS — rendu identique à l'écran ET à l'impression (les
+	   masques combinés sont ignorés par certains moteurs d'impression). */
+	.f-photo__blur { filter: blur(10px) saturate(1.05); opacity: .85; }
+	.f-photo::before {
+		content: ""; position: absolute; inset: -2px; z-index: 1;
+		background: linear-gradient(to bottom, #fff 0%, #fff 3%, rgba(255,255,255,.75) 12%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 72%, rgba(255,255,255,.75) 88%, #fff 97%, #fff 100%);
+	}
+	.f-photo__sharp { z-index: 0; }
+	.f-photo__sharp {
+		-webkit-mask-image: radial-gradient(ellipse 62% 56% at 50% 50%, #000 52%, rgba(0,0,0,.5) 74%, transparent 100%);
+		        mask-image: radial-gradient(ellipse 62% 56% at 50% 50%, #000 52%, rgba(0,0,0,.5) 74%, transparent 100%);
+	}
+	/* Thèmes avec liste à gauche : la photo occupe la droite et s'efface
+	   vers la liste pour qu'elle reste parfaitement lisible. */
+	.f-stage--split .f-photo { left: 50mm; }
+	.f-stage--split .f-photo::after {
+		content: ""; position: absolute; top: -1px; bottom: -1px; left: -1px; width: 42mm; z-index: 1;
+		background: linear-gradient(to right, #fff 0%, rgba(255,255,255,.8) 38%, rgba(255,255,255,0) 100%);
+	}
+	.f-stage--split .f-photo__sharp {
+		-webkit-mask-image: radial-gradient(ellipse 58% 54% at 58% 50%, #000 48%, rgba(0,0,0,.45) 72%, transparent 100%);
+		        mask-image: radial-gradient(ellipse 58% 54% at 58% 50%, #000 48%, rgba(0,0,0,.45) 72%, transparent 100%);
+	}
+
+	/* Petite mention en pied de flyer (fidélité / lot de cassettes), posée
+	   dans la marge basse : aucun autre bloc ne bouge. */
+	.f-foot {
+		position: absolute !important; left: 15mm; right: 15mm; bottom: 3.2mm; z-index: 2;
+		display: flex; align-items: center; justify-content: center; gap: 1.6mm;
+		font-size: 7.4pt; font-weight: 600; color: var(--ink-soft); text-align: center;
+	}
+	.f-foot svg { width: 3.4mm; height: 3.4mm; color: var(--accent); flex: 0 0 auto; }
+	.f-foot b { color: var(--accent); font-weight: 800; }
+
+	/* Carte de visite — variante « carte de fidélité » (recto à tamponner) */
+	.card-front.is-loyal .card-front__logo { height: 11.5mm; }
+	.card-front.is-loyal .card-front__baseline { margin-top: 1.6mm; }
+	.card-front.is-loyal .card-front__rule { margin: 1.8mm auto; }
+	.card-front__loyal { margin-top: 1mm; display: flex; flex-direction: column; align-items: center; }
+	.card-front__loyal-title { font-size: 6.6pt; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #0d9488; }
+	.card-front__stamps { display: flex; gap: 2.6mm; margin-top: 1.8mm; }
+	.stamp { width: 9.6mm; height: 9.6mm; border-radius: 999px; border: .35mm dashed #94a3b8;
+		display: flex; align-items: center; justify-content: center; font-size: 6pt; font-weight: 700; color: #94a3b8; box-sizing: border-box; }
+	.stamp--gift { border: .45mm solid #0d9488; background: #e6f6f4; color: #0d9488; font-size: 6.4pt; font-weight: 800; line-height: 1; text-align: center; }
+	.card-front__loyal-note { margin-top: 1.8mm; font-size: 6.2pt; font-weight: 600; color: #0f2744; }
+
+	/* Réglages écran */
+	.opt-toggle { display: inline-flex; align-items: center; gap: .55rem; padding: .55rem .9rem; border-radius: 999px;
+		border: 1px solid rgb(var(--t-hairline) / calc(var(--t-hairline-alpha) * 3)); font-size: .8rem; font-weight: 700;
+		color: rgb(var(--t-slate-300)); cursor: pointer; user-select: none; }
+	.opt-toggle input { accent-color: rgb(var(--t-accent-400)); width: 1rem; height: 1rem; }
+
 	/* ---------- Habillage écran ---------- */
 	.theme-btn.is-on { background: rgb(var(--t-accent-400) / .18); border-color: rgb(var(--t-accent-400)); color: rgb(var(--t-accent-400)); }
 	</style>
@@ -303,6 +379,12 @@
 		<section class="glass-card p-6 rounded-3xl">
 			<h2 class="font-display font-bold text-sm uppercase tracking-widest text-slate-400 mb-4">Choisir le thème du flyer</h2>
 			<div id="theme-buttons" class="flex flex-wrap gap-3"></div>
+
+			<div class="flex flex-wrap gap-3 mt-5">
+				<label class="opt-toggle"><input type="checkbox" id="opt-photo" checked> <i class="ph-bold ph-image" aria-hidden="true"></i> Image de fond</label>
+				<label class="opt-toggle"><input type="checkbox" id="opt-loyalty-card" checked> <i class="ph-bold ph-stamp" aria-hidden="true"></i> Cartes de visite : recto « carte de fidélité »</label>
+			</div>
+			<p class="text-xs text-slate-500 mt-2">Image de fond décochée : les dessins vectoriels d’origine. Les tarifs, le taux de fidélité et le lot de cassettes se règlent dans <code class="text-accent-400">config.js → facilitateur</code>.</p>
 
 			<div class="flex flex-wrap gap-3 mt-6 pt-6 border-t border-white/10">
 				<button type="button" id="btn-print-flyer" class="px-6 py-3 rounded-full bg-accent-400 text-dark-950 font-bold hover:scale-105 transition-all flex items-center gap-2">
@@ -365,6 +447,7 @@
 		<symbol id="ic-file" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 2.5H7a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M13.5 2.5V8H19"/><path d="M8.6 13h6.8M8.6 17h4.8"/></g></symbol>
 		<symbol id="ic-cassette" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8.5" cy="12" r="2.6"/><circle cx="15.5" cy="12" r="2.6"/></g></symbol>
 		<symbol id="ic-pin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.2a7.3 7.3 0 0 0-7.3 7.3c0 5.3 7.3 12.3 7.3 12.3s7.3-7 7.3-12.3A7.3 7.3 0 0 0 12 2.2m0 10a2.8 2.8 0 1 1 0-5.6 2.8 2.8 0 0 1 0 5.6"/></symbol>
+		<symbol id="ic-stamp" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 13.5 9 9.8a3 3 0 1 1 6 0l-.5 3.7"/><path d="M4.5 17.5v-1.8A2.2 2.2 0 0 1 6.7 13.5h10.6a2.2 2.2 0 0 1 2.2 2.2v1.8z"/><path d="M5.5 21h13"/></g></symbol>
 		<symbol id="ic-globe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9.3"/><ellipse cx="12" cy="12" rx="4" ry="9.3"/><path d="M3 9h18M3 15h18"/></g></symbol>
 	</defs></svg>
 
@@ -513,6 +596,7 @@
 				sub: 'Je leur redonne une nouvelle vie.',
 				band: 'VHS • Hi8 • MiniDV • Photos',
 				priceEur: F.cassetteEur, unit: '/ cassette',
+				photo: 'cassettes.jpeg', photoPos: 'center 58%',
 				note: 'Vos originaux vous sont rendus.'
 			},
 			{
@@ -526,7 +610,8 @@
 					['phone', 'Téléphone'],
 					['sliders', 'Réglage et accompagnement']
 				],
-				priceEur: F.hourlyEur, unit: '/ heure',
+				priceEur: F.prestationEur, unit: '/ prestation',
+				photo: 'ordi-imprimante.jpeg', photoPos: '62% center',
 				noteHtml: 'Diagnostic : ' + priceInline(F.diagnosticEur)
 			},
 			{
@@ -540,7 +625,8 @@
 					['key', 'Mots de passe sécurisés'],
 					['camera', 'Imprimantes et caméras']
 				],
-				priceEur: F.hourlyEur, unit: '/ heure'
+				priceEur: F.prestationEur, unit: '/ prestation',
+				photo: 'securite.jpeg', photoPos: 'center 52%',
 			},
 			{
 				key: 'formation', label: 'Formation', icon: 'graduation',
@@ -552,7 +638,8 @@
 					['user', 'Accompagnement personnalisé'],
 					['chat', 'Des explications simples et claires']
 				],
-				priceEur: F.hourlyEur, unit: '/ heure'
+				priceEur: F.prestationEur, unit: '/ prestation',
+				photo: 'assistance.jpeg', photoPos: 'center 55%',
 			},
 			{
 				key: 'demarches', label: 'Démarches', icon: 'file',
@@ -565,7 +652,8 @@
 					['health', 'Ameli, Mon Espace Santé'],
 					['steps', 'Un accompagnement pas à pas (sans signer à votre place)']
 				],
-				priceEur: F.hourlyEur, unit: '/ heure'
+				priceEur: F.prestationEur, unit: '/ prestation',
+				photo: 'ameli.jpeg', photoPos: 'center 50%', photoLeft: '64mm',
 			}
 		];
 
@@ -595,14 +683,14 @@
 				var li = t.list.map(function (row) {
 					return '<li><span class="f-chip">' + ic(row[0]) + '</span><span>' + esc(row[1]) + '</span></li>';
 				}).join('');
-				stage = '<div class="f-stage f-stage--split"><ul class="f-list">' + li + '</ul>' + ART[t.key] + '</div>';
+				stage = '<div class="f-stage f-stage--split">' + photoLayer(t) + '<ul class="f-list">' + li + '</ul>' + ART[t.key] + '</div>';
 			} else {
-				stage = '<div class="f-stage f-stage--solo">' + ART[t.key] + '</div>';
+				stage = '<div class="f-stage f-stage--solo">' + photoLayer(t) + ART[t.key] + '</div>';
 			}
 
 			var note = t.noteHtml ? t.noteHtml : (t.note ? esc(t.note) : '');
 
-			return '<div class="sheet flyer" data-theme="' + t.key + '">' + CURVES +
+			return '<div class="sheet flyer' + (usePhoto && t.photo ? ' has-photo' : '') + '" data-theme="' + t.key + '">' + CURVES +
 				'<div class="f-head">' +
 					'<img class="f-logo" src="../images/logo/Logo-1.png" alt="' + esc(brand.name || '') + '">' +
 					'<div class="f-baseline">Votre aide numérique au quotidien</div>' +
@@ -624,7 +712,28 @@
 				'</div>' +
 				'<div class="f-promise">Sans jargon • À votre rythme • Premier échange gratuit</div>' +
 				'<div class="f-site" data-cfg="brand.site"></div>' +
+				footNote(t) +
 			'</div>';
+		}
+
+		/* Photo de fond (images/flyer/…), fondue dans la feuille — voir .f-photo */
+		function photoLayer(t) {
+			if (!t.photo) return '';
+			var style = '--img:url(\'../images/flyer/' + t.photo + '\');--pos:' + (t.photoPos || 'center');
+			if (t.photoLeft) style += ';left:' + t.photoLeft;
+			return '<div class="f-photo" style="' + style + '" aria-hidden="true"><div class="f-photo__blur"></div><div class="f-photo__sharp"></div></div>';
+		}
+
+		/* Mention de pied de page — chiffres issus de config.js → facilitateur */
+		function footNote(t) {
+			var L = F.loyalty || { visits: 5, discountPercent: 50 };
+			if (t.key === 'souvenirs' && F.cassetteBundle) {
+				return '<div class="f-foot">' + ic('cassette') +
+					'<span>Lot de ' + F.cassetteBundle.count + ' cassettes : ' + '<b data-price-eur="' + C.facilitateurAmount('cassetteBundle') + '"></b>' +
+					' (' + esc(C.facilitateurText ? C.facilitateurText('bundleFree') : 'une cassette offerte') + ')</span></div>';
+			}
+			return '<div class="f-foot">' + ic('stamp') +
+				'<span>Carte de fidélité : la <b>' + L.visits + '<sup>e</sup> intervention à -' + L.discountPercent + ' %</b></span></div>';
 		}
 
 		/* --------------------------------------------------------
@@ -637,9 +746,26 @@
 				'<span class="crop h r y1"></span><span class="crop h r y2"></span>';
 		}
 
+		/* Recto « carte de fidélité » : N cases à tamponner, la dernière
+		   porte la remise (config.js → facilitateur.loyalty). */
+		function loyaltyBlock() {
+			var L = F.loyalty || { visits: 5, discountPercent: 50 };
+			var cells = '';
+			for (var i = 1; i <= L.visits; i++) {
+				cells += i === L.visits
+					? '<span class="stamp stamp--gift">-' + L.discountPercent + '%</span>'
+					: '<span class="stamp">' + i + '</span>';
+			}
+			return '<div class="card-front__loyal">' +
+				'<div class="card-front__loyal-title">Carte de fidélité</div>' +
+				'<div class="card-front__stamps">' + cells + '</div>' +
+				'<div class="card-front__loyal-note">La ' + L.visits + '<sup>e</sup> intervention à -' + L.discountPercent + ' % · à garder sur le frigo</div>' +
+			'</div>';
+		}
+
 		function buildCards() {
 			var front =
-				'<div class="card-face card-front">' +
+				'<div class="card-face card-front' + (useLoyaltyCard ? ' is-loyal' : '') + '">' +
 					'<span class="card-front__bar"></span>' +
 					'<svg class="card-front__curve" viewBox="0 0 60 40" preserveAspectRatio="none" aria-hidden="true">' +
 						'<path d="M60 6c-24 2-40 16-46 34h46z" fill="#eaf4f9"/>' +
@@ -648,6 +774,7 @@
 						'<img class="card-front__logo" src="../images/logo/Logo-1.png" alt="">' +
 						'<div class="card-front__baseline">Votre aide numérique au quotidien</div>' +
 						'<div class="card-front__rule"></div>' +
+						(useLoyaltyCard ? loyaltyBlock() :
 						'<div class="card-front__grid">' +
 							'<span>' + ic('wrench') + 'Dépannage</span>' +
 							'<span>' + ic('shield') + 'Sécurité</span>' +
@@ -655,7 +782,7 @@
 							'<span>' + ic('file') + 'Démarches</span>' +
 							'<span>' + ic('cassette') + 'Numérisation</span>' +
 							'<span>' + ic('desktop') + 'Création de sites</span>' +
-						'</div>' +
+						'</div>') +
 					'</div>' +
 				'</div>';
 
@@ -703,6 +830,8 @@
 						'en précisant « 85 × 55 mm, fonds perdus 3 mm, recto/verso ».</li>' +
 						'<li>Les fonds perdus servent à absorber la tolérance de coupe : les aplats de couleur doivent ' +
 						'toucher le bord de la zone dessinée, jamais s’arrêter au format fini.</li>' +
+						(useLoyaltyCard ? '<li><strong>Carte de fidélité</strong> : demander un recto <em>mat non pelliculé</em> pour que l’encre du tampon sèche ' +
+						'(un tampon rond de 8 mm maximum). Pour le frigo : un aimant adhésif au dos, ou une pince aimantée.</li>' : '') +
 					'</ul>' +
 				'</div>' +
 			'</div>';
@@ -716,11 +845,27 @@
 		var btnHost = document.getElementById('theme-buttons');
 		var caption = document.getElementById('flyer-caption');
 
-		flyersHost.innerHTML = THEMES.map(function (t) {
-			return '<div class="preview-frame" data-kind="flyer" data-sheet="' + t.key + '">' + buildFlyer(t) + '</div>';
-		}).join('');
+		/* Préférences d'affichage (mémorisées dans ce navigateur) */
+		function readPref(key, fallback) {
+			try { var v = localStorage.getItem('nm-supports-' + key); return v === null ? fallback : v === '1'; } catch (e) { return fallback; }
+		}
+		function writePref(key, value) {
+			try { localStorage.setItem('nm-supports-' + key, value ? '1' : '0'); } catch (e) { /* stockage indisponible */ }
+		}
+		var usePhoto = readPref('photo', true);
+		var useLoyaltyCard = readPref('loyalty-card', true);
+		var optPhoto = document.getElementById('opt-photo');
+		var optLoyal = document.getElementById('opt-loyalty-card');
+		if (optPhoto) optPhoto.checked = usePhoto;
+		if (optLoyal) optLoyal.checked = useLoyaltyCard;
 
-		cardsHost.innerHTML = '<div class="preview-frame" data-kind="cards" data-sheet="cartes">' + buildCards() + '</div>';
+		function renderSheets() {
+			flyersHost.innerHTML = THEMES.map(function (t) {
+				return '<div class="preview-frame" data-kind="flyer" data-sheet="' + t.key + '">' + buildFlyer(t) + '</div>';
+			}).join('');
+			cardsHost.innerHTML = '<div class="preview-frame" data-kind="cards" data-sheet="cartes">' + buildCards() + '</div>';
+		}
+		renderSheets();
 
 		btnHost.innerHTML = THEMES.map(function (t) {
 			return '<button type="button" class="theme-btn px-5 py-2.5 rounded-full border border-white/15 bg-white/5 ' +
@@ -745,7 +890,23 @@
 			var b = e.target.closest('[data-theme-key]');
 			if (b) selectTheme(b.getAttribute('data-theme-key'));
 		});
+		// Lien direct depuis /aide-domicile/ (mode admin) : ?theme=depannage, ?theme=cartes…
+		var wanted = (window.location.search.match(/[?&]theme=([a-z]+)/) || [])[1];
+		if (wanted && THEMES.some(function (t) { return t.key === wanted; })) current = wanted;
 		selectTheme(current);
+		if (wanted === 'cartes') {
+			window.setTimeout(function () { cardsHost.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 400);
+		}
+
+		function rerender() {
+			renderSheets();
+			selectTheme(current);
+			injectConfig();
+			rescale();
+			renderPrices();
+		}
+		if (optPhoto) optPhoto.addEventListener('change', function () { usePhoto = optPhoto.checked; writePref('photo', usePhoto); rerender(); });
+		if (optLoyal) optLoyal.addEventListener('change', function () { useLoyaltyCard = optLoyal.checked; writePref('loyalty-card', useLoyaltyCard); rerender(); });
 
 		/* Injection des données de config.js (marque, téléphone, zone, site) */
 		function fromPath(path) {

@@ -1131,3 +1131,98 @@ description commerciale (« +1 mois offert »). Mensuel inchangé (49,90 / 94,90
   donc visible dans `/admin/`.
 - `/admin/` : **suppression d'une demande** (`db.deleteLead`, confirmation
   `nmConfirm`) ; briefs/documents liés conservés (FK ON DELETE SET NULL).
+
+---
+
+## 24. Aide à domicile : tarifs centralisés, fidélité, facture rapide, flyers photo (17/09/2026)
+
+### Tarifs — un seul endroit : `config.js → facilitateur`
+
+| Clé | Valeur | Rôle |
+|---|---|---|
+| `prestationEur` | 70 € | prix d'une prestation (plus de tarif horaire) |
+| `complexSurchargeEur` | 15 € | supplément si le problème s'avère complexe |
+| `noFixNoFee` | `true` | déplacement sans solution = gratuit |
+| `diagnosticEur` | 90 € | diagnostic complet |
+| `cassetteEur` | 70 € | numérisation d'une cassette |
+| `cassetteBundle` | `{ count: 10, freeItems: 1 }` | lot de 10 = 630 € (calculé) |
+| `photoEur` | 0,15 € | photo numérisée |
+| `loyalty` | `{ visits: 5, discountPercent: 50 }` | carte de fidélité |
+| `services` | liste | prestations facturables (facture rapide) |
+
+`hourlyEur` reste un **alias** (getter) de `prestationEur`. L'ancien `pack5hEur`
+est supprimé : le « pack 5 heures » devient la carte de fidélité (rien à payer
+d'avance).
+
+- Montants dérivés : `APP_CONFIG.facilitateurAmount('cassetteBundle' | 'loyaltyVisit' | 'prestationComplex' | <clé>)`.
+- Textes dérivés : `APP_CONFIG.facilitateurText('loyaltyVisitOrdinal' | 'loyaltyPercent' | 'bundleCount' | 'bundleFree')`.
+- Dans le HTML : `data-fac-price="<clé>"` (reçoit `data-price-eur`, rendu par i18n.js)
+  et `data-fac-text="<clé>"`. `hydrateFacilitateur()` tourne automatiquement
+  au chargement de config.js, AVANT le rendu des prix.
+- **Passer à 80 €** : modifier `prestationEur` (et `cassetteEur` si besoin) —
+  la page, l'encart, les flyers et la facture rapide suivent (vérifié par test).
+
+### Page `/aide-domicile/`
+
+- Bandeau d'engagements (70 € la prestation, +15 € si complexe, pas de solution
+  = gratuit, carte de fidélité), prix « / prestation » sur chaque carte, option
+  **lot de 10 cassettes**, carte « Votre fidélité est récompensée » avec les
+  tampons dessinés depuis `loyalty`.
+- **Mode admin** (utilisateur connecté présent dans `nm_admins`, vérifié via
+  `db.isAdmin()`) : barre « Mode administrateur » (facture rapide + liens
+  d'impression des flyers `../supports/?theme=…`) et bouton « Facturer » sur
+  chaque prestation. Rien de visible pour un visiteur (`.admin-only.hidden`).
+
+### Facture rapide — `assets/js/quick-invoice.js`
+
+Disponible sur `/aide-domicile/` (admin) et `/admin/` (onglet Clients →
+« Facture rapide »). Une fenêtre : prestation, quantité, supplément complexe,
+remise fidélité, « aucune solution trouvée » (visite gratuite enregistrée),
+coordonnées du client.
+
+1. `nm_clients` : fiche `source: 'aide-domicile'`, `pack: 'aide-domicile'`,
+   `pack_label` = prestation, `status: 'livre'`.
+2. `nm_documents` : facture numérotée (`nm_next_doc_number`).
+3. Stripe (`stripe-invoice` **v5**, `onsite: true`) : e-mail facultatif ;
+   s'il est fourni, Stripe envoie aussi la facture.
+4. QR code de la page de paiement Stripe (bibliothèque `qrcode-generator`
+   chargée depuis cdnjs) + bouton « Ouvrir la page de paiement ».
+5. Suivi toutes les 4 s (`action: 'status'`) : facture → `payee`,
+   client → `invoice_status: 'payee'`.
+
+Stripe refuse les lignes négatives : la remise fidélité est intégrée à la
+ligne principale (« — remise fidélité appliquée »), le détail reste sur la
+facture interne.
+
+**Limite assumée :** « poser son téléphone sur celui de Nathan » (Tap to Pay,
+NFC) n'est pas possible depuis une page web — Stripe le réserve à son
+application mobile / SDK Terminal. Le client paie en scannant le QR code avec
+son téléphone (carte, Apple Pay, Google Pay), ou sur le téléphone de Nathan.
+
+`/admin/` : `packLabel('aide-domicile')` = « Aide à domicile », option ajoutée
+au sélecteur de pack ; modifier une telle fiche conserve le montant et le
+libellé de la prestation.
+
+### Fonction Edge `stripe-invoice` v5 (`integrations/stripe-invoice.ts`)
+
+Rétrocompatible : sans `onsite`, comportement identique à la v4 (e-mail
+obligatoire, envoi par Stripe). Ajouts : `onsite` (e-mail facultatif, client
+Stripe créé au nom), `action: 'status'`, champ `emailed` dans la réponse.
+Toujours `unit_amount_decimal` (règle 10).
+
+### Flyers & cartes (`/supports/`)
+
+- Case **« Image de fond »** (cochée par défaut, mémorisée) : photos
+  `images/flyer/cassettes.jpeg`, `ordi-imprimante.jpeg`, `securite.jpeg`,
+  `assistance.jpeg`, `ameli.jpeg`. La photo est un calque de la zone visuelle
+  (`.f-photo`) : calque flou + calque net, fondus par des **voiles blancs en
+  dégradé** (pas de masques combinés : ignorés à l'impression). Le dessin
+  vectoriel reste dans le flux en `visibility: hidden` → **aucun texte ne
+  bouge**. Les blocs au-dessus de la photo passent en `z-index: 2`.
+- Prix « / prestation » issus de `prestationEur`.
+- **Pied de flyer** (dans la marge basse, sans décaler le reste) : carte de
+  fidélité ; sur « Souvenirs », le lot de 10 cassettes.
+- Case **« recto carte de fidélité »** : 5 cases à tamponner, la dernière
+  « -50 % », note « à garder sur le frigo » ; conseils d'impression (recto mat
+  non pelliculé, aimant adhésif).
+- Lien direct `?theme=souvenirs|depannage|securite|formation|demarches|cartes`.

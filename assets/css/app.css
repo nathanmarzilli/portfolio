@@ -568,3 +568,6 @@
 .total-legend { display: flex; flex-direction: column; gap: 4px; font-size: 11px; line-height: 1.35; color: rgb(var(--t-slate-400)); }
 .total-legend__row { display: flex; align-items: flex-start; gap: 6px; min-width: 0; overflow-wrap: anywhere; }
 .total-legend__dot { width: 8px; height: 8px; border-radius: 9999px; margin-top: 4px; flex-shrink: 0; }
+
+/* Éléments réservés à l’administrateur (facture rapide, impression des flyers) */
+.admin-only.hidden { display: none !important; }

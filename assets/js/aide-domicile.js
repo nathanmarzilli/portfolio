@@ -231,3 +231,48 @@
 	var year = document.getElementById('year');
 	if (year) year.textContent = new Date().getFullYear();
 })();
+
+/* ============================================================
+   AIDE À DOMICILE — carte de fidélité (visuel) + outils admin
+   ------------------------------------------------------------
+   • Les tampons de la carte de fidélité sont dessinés d'après
+     config.js → facilitateur.loyalty (nombre de passages, %).
+   • Les éléments `.admin-only` (facture rapide, impression des
+     flyers) ne s'affichent QUE si l'utilisateur connecté figure
+     dans nm_admins. Pour un visiteur, rien ne change.
+   ============================================================ */
+(function () {
+	'use strict';
+	var C = window.APP_CONFIG || {};
+	var L = (C.facilitateur && C.facilitateur.loyalty) || { visits: 5, discountPercent: 50 };
+
+	var stamps = document.getElementById('loyalty-stamps');
+	if (stamps) {
+		var html = '';
+		for (var i = 1; i <= L.visits; i++) {
+			var last = i === L.visits;
+			html += '<span class="w-9 h-9 rounded-full flex items-center justify-center text-[10px] font-bold ' +
+				(last
+					? 'bg-accent-400 text-dark-950 shadow-[0_0_14px_rgba(13,148,136,.35)]'
+					: 'border-2 border-dashed border-accent-400/40 text-accent-400/70') + '">' +
+				(last ? '-' + L.discountPercent + '%' : i) + '</span>';
+		}
+		stamps.innerHTML = html;
+	}
+
+	function showAdmin() {
+		document.querySelectorAll('.admin-only').forEach(function (el) { el.classList.remove('hidden'); });
+		document.addEventListener('click', function (e) {
+			var btn = e.target.closest('[data-invoice-service]');
+			if (!btn || !window.NM || !NM.quickInvoice) return;
+			e.preventDefault();
+			NM.quickInvoice.open({ service: btn.getAttribute('data-invoice-service') || undefined });
+		});
+	}
+
+	if (window.NM && NM.dbReady) {
+		NM.dbReady.then(function (db) {
+			return db.isAdmin().then(function (admin) { if (admin) showAdmin(); });
+		}).catch(function () { /* hors ligne ou non connecté : mode visiteur */ });
+	}
+})();

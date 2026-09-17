@@ -64,6 +64,7 @@
 		if (offer) return offer.name;
 		if (key === 'club') return (CFG.club && CFG.club.name) || 'Offre Club';
 		if (key === 'existing') return 'Site existant (suivi seul)';
+		if (key === 'aide-domicile') return 'Aide à domicile';
 		return key || '—';
 	}
 
@@ -442,6 +443,7 @@
 		});
 		options.push('<option value="club">' + esc((CFG.club && CFG.club.name) || 'Offre Club') + '</option>');
 		options.push('<option value="existing">Site existant (suivi seul)</option>');
+		options.push('<option value="aide-domicile">Aide à domicile</option>');
 		sel.innerHTML = options.join('');
 	}
 
@@ -661,6 +663,17 @@
 			status: $('#cf-status').value,
 			notes: $('#cf-notes').value.trim() || null
 		};
+		// Fiche « aide à domicile » (facture rapide) : le montant et le libellé
+		// de la prestation ne viennent pas du catalogue des packs — on les
+		// conserve tels quels lors d'une modification.
+		if (packKey === 'aide-domicile' && $('#cf-id').value) {
+			var previous = state.clients.filter(function (c) { return c.id === $('#cf-id').value; })[0];
+			if (previous) {
+				record.pack_label = previous.pack_label;
+				record.pack_price = previous.pack_price;
+				record.total_one_time = previous.total_one_time;
+			}
+		}
 		if ($('#cf-id').value) record.id = $('#cf-id').value;
 		// Remarque : nm_clients n'a pas de colonne lead_id — le lien se
 		// fait dans l'autre sens (nm_leads.client_id). L'envoyer ici
@@ -806,6 +819,14 @@
 		$('#client-search').addEventListener('input', renderClients);
 		$('#doc-filter').addEventListener('change', renderDocuments);
 		$('#new-client-btn').addEventListener('click', function () { openClientModal(null, null); });
+		// Facture rapide « aide à domicile » (assets/js/quick-invoice.js) :
+		// la fiche client et la facture sont créées par le module, puis on
+		// recharge les listes à la fermeture de la fenêtre.
+		var quickBtn = $('#quick-invoice-btn');
+		if (quickBtn && window.NM && NM.quickInvoice) {
+			NM.quickInvoice.onDone(function () { loadAll(); });
+			quickBtn.addEventListener('click', function () { NM.quickInvoice.open(); });
+		}
 		$('#client-form').addEventListener('submit', saveClientFromModal);
 		$('#cf-pack').addEventListener('change', refreshModalTotal);
 		$('#cf-serenity').addEventListener('change', refreshModalTotal);
