@@ -47,7 +47,7 @@
 			// E-mail AFFICHÉ publiquement (footer, mentions légales, CGV,
 			// balises SEO/structured data, supports imprimés). Boîte pro
 			// dédiée à l'activité « Clic à l'aide ».
-			email: 'contact@clicalaide.com',
+			email: 'contact@clicalaide.fr',
 			// ⚠️ Identifiant de connexion Supabase Auth pour l'espace
 			// d'administration (/admin/). NE JAMAIS afficher publiquement,
 			// et ne jamais remplacer par `email` ci-dessus : ce champ est

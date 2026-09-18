@@ -212,7 +212,7 @@ septembre 2026 :
 - `nathan.marzilli@gmail.com` — identifiant de connexion admin (Supabase Auth)
   et destinataire des notifications techniques (Google Apps Script). Ne doit
   **jamais** apparaître comme contact public.
-- `contact@clicalaide.com` — adresse affichée publiquement partout sur le site
+- `contact@clicalaide.fr` — adresse affichée publiquement partout sur le site
   (`config.js` → `contact.email`). C'est celle que voient les visiteurs et les
   clients.
 
